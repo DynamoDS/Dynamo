@@ -244,19 +244,19 @@
             <summary>最大点</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem">
-            <summary>The CoordinateSystem of the BoundingBox.
-            For an axis-aligned box, the CS is oriented along with the X, Y, Z axes and is located at the center of the box.
-            For a non-aligned box, the CS can have an arbitrary orientation and is centered at the center of the box.</summary>
+            <summary>BoundingBox の CoordinateSystem。
+             軸に位置合わせされたボックスの場合、CoordinateSystem は X、Y、Z 軸に合わせて方向が設定され、ボックスの中心に配置されます。
+             位置合わせされていないボックスの場合、CoordinateSystem の方向を任意に設定でき、その中心はボックスの中心に配置されます。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersection(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Get the intersection of two BoundingBoxes.
-            Note: This does not work for non-axis-aligned boxes as those intersections might not result in a box. Intersect their corresponding cuboids instead.</summary>
+            <summary>2 つの BoundingBox の交点を取得します。
+            注: 軸に位置合わせされていないボックスの場合は交点がボックスにならない可能性があるため、この方法は機能しません。代わりに、対応する直方体を交差させます。</summary>
             <param name="other">交差するその他の境界ボックス</param>
             <returns>境界ボックスの交差から取得された境界ボックス</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersects(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Determine whether two BoundingBoxes intersect.
-            Note: This works only if both bounding boxes have the same alignment (transform). In such cases, test the intersection between their corresponding cuboids.</summary>
+            <summary>2 つの BoundingBox が交差しているかどうかを判断します。
+            注: これは、両方の境界ボックスの位置合わせ(変換)が同じ場合にのみ機能します。該当する場合は、対応する直方体間の交差をテストします。</summary>
             <param name="other">その他の境界ボックス</param>
             <returns>境界ボックスの交差を実行する</returns>
             <search>get overlap</search>
@@ -294,13 +294,13 @@
             <returns>入力されたジオメトリを囲む、方向が設定された境界ボックス。</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometry, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>入力されたジオメトリの周囲に、軸に位置合わせされていない BoundingBox を作成します。
+            その方向は CoordinateSystem の X 軸、Y 軸、Z 軸に設定されます。</summary>
             <search>bounding,bound</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometries, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>入力されたジオメトリの周囲に、軸に位置合わせされていない BoundingBox を作成します。
+            その方向は CoordinateSystem の X 軸、Y 軸、Z 軸に設定されます。</summary>
             <search>bounding,bound,multiple,boundall</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
@@ -308,11 +308,11 @@
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box),
-            to maximum coordinates (upper-right-front corner of the box). CoordinateSystem
-            is the transform FROM the coordinate space of the box TO the model space.
-            This method is designed to match Revit's API, allowing you to extract out the parameters
-            from a Revit BoundingBox without any conversions.</summary>
+            <summary>最小座標(ボックスの左下後ろコーナー)から最大座標(ボックスの右上前コーナー)までを
+            指定した BoundingBox を作成します。CoordinateSystem は、ボックスの
+            座標空間からモデル空間への変換です。このメソッドは Revit の API に
+            一致するように設計されており、変換することなく、Revit BoundingBox から
+            パラメータを抽出できます。</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
@@ -322,8 +322,8 @@
             <summary>円の半径を返します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Creates a Circle with input center Point and radius in the world XY
-            plane, with world Z as normal.</summary>
+            <summary>入力された中心点と半径をワールド座標系の XY 平面に持ち、ワールド座標系の
+            Z 軸を法線とする円を作成します。</summary>
             <param name="centerPoint">円の中心点</param>
             <param name="radius">半径</param>
             <returns>中心点と半径を指定して作成した円</returns>
@@ -338,8 +338,8 @@
             <search>circle,alignedcircle</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Create a Circle centered at the input Plane origin (root), lying in
-            the input Plane, with given radius.</summary>
+            <summary>入力された平面の原点(ルート点)を中心として、指定された半径を持つ円を
+            その平面上に作成します。</summary>
             <param name="plane">円の中心に使用する平面のルート</param>
             <param name="radius">半径</param>
             <returns>平面と半径で作成した円</returns>
@@ -432,31 +432,31 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Cone with given base radius at start Point, extending to a
-            apex at end Point.</summary>
+            <summary>始点の基礎部の半径を指定し、終点の頂点まで延ばした円錐を
+            作成します。</summary>
             <search>cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Cone with axis from start Point to end Point, with given
-            radiuses at start and end. This object does not have an apex, and
-            can be thought of as a trimmed Cone.</summary>
+            <summary>始点から終点までの軸を持ち、始点と終点の半径を指定した円錐を作成します。
+            このオブジェクトは頂点を持たず、トリミングされた円錐と
+            考えることができます。</summary>
             <search>trimmed cone,cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>CoordinateSystem の原点を基準点とし、CoordinateSystem の Z 軸方向に
+            延びた長さを持ち、CoordinateSystem の XY 平面に円形の底面を持つ
+            円錐を作成します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>CoordinateSystem の原点を基準点とし、CoordinateSystem の Z 軸方向に
+            延びた長さを持ち、CoordinateSystem の XY 平面に円形の底面を持つ
+            円錐を作成します。</summary>
             <search>cone,cone by height,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
-            <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
-            <param name="matrix">4x4 transformation matrix</param>
-            <returns>CoordinateSystem from the matrix</returns>
+            <summary>4x4 行列から CoordinateSystem を作成します。このメソッドは非推奨です。可能な限り他のコンストラクタの使用を推奨します。</summary>
+            <param name="matrix">4x4 変換行列</param>
+            <returns>行列からの CoordinateSystem</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.FromJson(System.String)">
             <summary>autodesk.math:matrix44d-1.0.0 スキーマでフォーマットされて取り込まれる JSON 文字列を解析します。</summary>
@@ -492,13 +492,13 @@
             <summary>座標系の Z 軸を返します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
-            <summary>Returns the length of the X axis vector from the coordinate system.</summary>
+            <summary>座標系における X 軸ベクトルの長さを返します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor">
-            <summary>Returns the length of the Y axis vector from the coordinate system.</summary>
+            <summary>座標系における Y 軸ベクトルの長さを返します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
-            <summary>Returns the length of the Z axis vector from the coordinate system.</summary>
+            <summary>座標系における Z 軸ベクトルの長さを返します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane">
             <summary>X 軸と Y 軸がある平面を返します。ルートは基準点になります。</summary>
@@ -511,17 +511,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
             <summary>この座標系の反転を取得します。基準点を反転するジオメトリの一部にこの座標系を適用します。</summary>
-            <returns>Returns inverted coordinate system from the input</returns>
+            <returns>入力から反転した座標系を返します</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem after this one - Result = this * other.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>この座標系の後に引数 CoordinateSystem を適用します。Result = this * other。</summary>
+            <param name="other">その他の座標系</param>
+            <returns>乗算による新しい座標系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem before this one - Result = other * this.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>この座標系の前に引数 CoordinateSystem を適用します。Result = other * this。</summary>
+            <param name="other">その他の座標系</param>
+            <returns>乗算による新しい座標系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor">
             <summary>X、Y、Z スケール係数を含む Vector を返します。</summary>
@@ -530,7 +530,7 @@
             <summary>2 つの CoordinateSystem が等しいかどうかを判断</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(System.Double,System.Double,System.Double)">
-            <summary>WCS でそれぞれ設定したX、Y、Z 方向の変位を指定して、指定したジオメトリ 
+            <summary>WCS でそれぞれ設定した X、Y、Z 方向の変位を指定して、指定したジオメトリ 
             を変換します。</summary>
             <param name="xTranslation">X 軸に沿った変位。</param>
             <param name="yTranslation">Y 軸に沿った変位。</param>
@@ -543,8 +543,8 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>指定した方向に距離を指定して、任意のジオメトリ タイプを
+            変換します。</summary>
             <param name="direction">変位の向き。</param>
             <param name="distance">指定した向きに沿った変位距離。</param>
             <returns>変換後の Geometry。</returns>
@@ -556,31 +556,29 @@
             <returns>変換後の座標系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>このジオメトリを、その位置が targetCoordinateSystem に対して
+            相対的に表現され、sourceCoordinateSystem のフレーム内に配置された形で返します。
+            sourceCoordinateSystem 内の結果のローカル位置は、
+            targetCoordinateSystem 内の入力のローカル位置と一致します。
+            指定した座標系内のワールド空間におけるジオメトリの座標を取得するには、
+            sourceCoordinateSystem として CoordinateSystem.Identity を、
+            targetCoordinateSystem として指定した CoordinateSystem を渡します。
+            その結果得られるジオメトリの座標は、そのターゲット フレームを基準とした
+            入力の座標と等しくなります。</summary>
+            <param name="targetCoordinateSystem">ジオメトリを相対的に表現する CoordinateSystem。</param>
+            <param name="sourceCoordinateSystem">ジオメトリが現在表現されている CoordinateSystem。
+            ワールド空間で作業するには、CoordinateSystem.Identity() を渡します。</param>
             <returns>変換後の Geometry。</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>角度を指定して、原点と軸を中心にオブジェクトを回転します</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>角度を指定して、平面の原点と法線を中心にオブジェクトを回転します</summary>
+            <param name="basePlane">回転の中心となる参照平面</param>
+            <param name="degrees">回転角度(度単位)</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
@@ -596,15 +594,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>2 つの選択点をスカラーとして使用し、指定された点を中心に均等にスケールします</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>基準点と 2 つの選択点により、1 次元に不均等にスケールします。スケーリング軸は基準点と最初点間の線分によって設定されます。</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>基準点と 2 つの選択点により、2 次元にスケールします。2 次元のスケール係数を決定するために、2 つの選択点が基本平面上に投影されます</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -612,8 +610,8 @@
             <search>reflect,flip over</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
-            <summary>Creates a CoordinateSystem as the World Coordinate System: origin at
-            0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1</summary>
+            <summary>CoordinateSystem をワールド座標系として作成します。原点は
+            0, 0, 0、x 軸は 1, 0, 0、y 軸は 0, 1, 0、z 軸は 0, 0, 1 です</summary>
             <search>zero,wcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double)">
@@ -630,50 +628,50 @@
             X 軸および Y 軸に設定した座標系を作成します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>Create a CoordinateSystem with origin equal to input Plane origin, and
-            X and Y axes lying in the Plane, aligned with Plane X and Y axes.</summary>
+            <summary>原点が入力平面の原点と同じであり、X 軸と Y 軸が平面上に存在し、かつ
+            平面の X 軸と Y 軸が位置合わせされた CoordinateSystem を作成します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis.
-            Input Vectors are normalized before creating the CoordinateSystem.</summary>
+            <summary>原点に、X 軸と Y 軸を持つ CoordinateSystem を作成します。
+            入力ベクトルは CoordinateSystem を作成する前に正規化されます。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis, with Z
-            axis ignored completely. Input Vectors are normalized before creating
-            the CoordinateSystem.</summary>
+            <summary>原点に、X 軸、Y 軸、Z 軸を完全に無視した CoordinateSystem を
+            作成します。入力ベクトルは CoordinateSystem を作成する前に
+            正規化されます。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified cylindrical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>指定された座標系を基準として、指定された円柱座標パラメータで CoordinateSystem を作成します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>指定された座標系を基準として、指定された球座標パラメータで CoordinateSystem を作成します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
-            <summary>Returns length distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>長さの距離を返します。
+            注: これは直方体の入力寸法を返すものです。実際のワールド空間の
+            寸法を返すわけではありません。たとえば幅(X 軸)が 10 の直方体を作成後、
+            X 軸が 2 倍にスケールされた CoordinateSystem にその直方体を
+            変換したとしても、幅は 10 のままになります。ASM ではボディの頂点を
+            予測可能な順番で抽出することができないため、変換後の寸法を
+            決定することはできません。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Width">
-            <summary>Returns width distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>幅の距離を返します。
+            注: これは直方体の入力寸法を返すものです。実際のワールド空間の
+            寸法を返すわけではありません。たとえば幅(X 軸)が 10 の直方体を作成後、
+            X 軸が 2 倍にスケールされた CoordinateSystem にその直方体を
+            変換したとしても、幅は 10 のままになります。ASM ではボディの頂点を
+            予測可能な順番で抽出することができないため、変換後の寸法を
+            決定することはできません。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
-            <summary>Returns height distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>高さの距離を返します。
+            注: これは直方体の入力寸法を返すものです。実際のワールド空間の
+            寸法を返すわけではありません。たとえば幅(X 軸)が 10 の直方体を作成後、
+            X 軸が 2 倍にスケールされた CoordinateSystem にその直方体を
+            変換したとしても、幅は 10 のままになります。ASM ではボディの頂点を
+            予測可能な順番で抽出することができないため、変換後の寸法を
+            決定することはできません。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(System.Double,System.Double,System.Double)">
             <summary>ワールド座標系の基準点を中心として、指定された幅、長さ、高さを持つ直方体を作成します。</summary>
@@ -684,8 +682,8 @@
             <search>box,cube,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double)">
-            <summary>Create a Cuboid centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>入力された点を中心として、指定された幅、長さ、高さを持つ直方体を
+            作成します。</summary>
             <param name="origin">原点</param>
             <param name="width">直方体の幅</param>
             <param name="length">直方体の長さ</param>
@@ -751,16 +749,16 @@
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>Get a Vector perpendicular to the curve at a specified parameter between StartParameter() and EndParameter()
-            The curve must be planar. The resulting normal will be consistent across the entire curvature of the curve.</summary>
+            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線に直交するベクトルを取得します。
+            曲線が平面状になっている必要があります。曲線の曲率全体で一貫性のある法線が作成されます。</summary>
             <param name="param">評価するパラメータ</param>
             <param name="side">'side' が false に設定されている場合、法線は曲線の右側を向きます(曲線の始点から終点まで)。'side' が true の場合、法線は曲線の左側を向きます。</param>
             <returns>パラメータ上で曲線に直交するベクトル</returns>
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal,
-            the YAxis is aligned with the curve tangent at this point, and the ZAxis is aligned with the up-vector or binormal at this point</summary>
+            <summary>指定したパラメータの位置に原点を持つ CoordinateSystem を取得します。XAxis は曲線の法線に、
+            YAxis はこの点における曲線の接線に、ZAxis はこの点におけるアップ ベクトルまたは従法線に位置合わせされます</summary>
             <param name="param">評価するパラメータ</param>
             <returns>曲線のパラメータを基準とする座標系</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
@@ -772,9 +770,9 @@
             <search>frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>Returns a Plane whose normal aligns with the tangent of the Curve.
-            Parameters are adjusted such that 0 is always the start Point
-            and 1 is always the end Point.</summary>
+            <summary>曲線の接線で法線を位置合わせした平面を返します。
+            始点は常に 0 になり、また終点は常に 1 になるように、
+            パラメータが調整されます。</summary>
             <search>planeoncurve,planecurve,tangentplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
@@ -784,14 +782,14 @@
             <search>pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>Returns points spaced equally along the curve length
-            based on the input number of divisions</summary>
+            <summary>入力された分割数に基づいて、曲線の長さに沿って等間隔に
+            配置された点群を返します</summary>
             <param name="divisions">分割数</param>
             <returns>曲線の長さに沿って等間隔に配置された点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>Returns points spaced along curve at equal chord length
-            based on the input number of divisions</summary>
+            <summary>入力された分割数に基づいて、曲線上に等しい弦長で
+            配置された点群を返します</summary>
             <param name="divisions">分割数</param>
             <returns>曲線上の点のリスト</returns>
         </member>
@@ -804,8 +802,8 @@
             <search>measure from,measure to,parameteratdist</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Returns points spaced equally along the curve at given segment length
-            from the given point</summary>
+            <summary>指定された点を基準として、指定されたセグメントの長さまで、曲線上に
+            等間隔に配置された点群を返します</summary>
             <param name="point">計測元となる参照点</param>
             <param name="segmentLength">評価する曲線上の距離</param>
             <returns>曲線の方向に沿った、指定された点を含む曲線上の点のリスト。</returns>
@@ -817,16 +815,15 @@
             <returns>曲線の方向に沿った、指定された点を含む曲線上の点のリスト。</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>Returns a CoordinateSystem at specified distance from Curve start Point.
-            Y Axis lies tangent to the Curve, X Axis is the curvature.</summary>
+            <summary>曲線の始点から指定された距離にある CoordinateSystem を返します。
+            Y 軸は曲線の接線、X 軸は曲率になります。</summary>
             <param name="segmentLength">評価する曲線上の距離</param>
             <returns>曲線上の座標系</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>Returns a Plane at the specified distance along the Curve from the
-            start Point. The normal of the Plane aligns with the tangent of the
-            Curve.</summary>
+            <summary>始点から曲線に沿って指定された距離にある平面を返します。
+            平面の法線は曲線の接線と位置合わせされます。</summary>
             <param name="segmentLength">評価する曲線上の距離</param>
             <returns>曲線に基づく平面</returns>
             <search>planeoncurve,planecurve,tangentplane</search>
@@ -869,8 +866,8 @@
             <search>measure,distance,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Get the parameter at a given point along the curve. If the point is not on the curve then ParameterAtPoint will still return a value
-            which will correspond to a nearby point on the curve, but the point is not in general the closest point.</summary>
+            <summary>曲線に沿った指定された点でパラメータを取得します。点が曲線上にない場合でも、ParameterAtPoint は
+            曲線上の近い点に対応する値を返しますが、通常この点は最も近い点ではありません。</summary>
             <param name="point">曲線に沿っているか近くにある点</param>
             <returns>曲線上の指定された点のパラメータ。</returns>
             <search>projectpoint,closestparam,curveparam</search>
@@ -968,10 +965,10 @@
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more curves by offsetting a planar curve by the given distance in a plane defined by the plane normal. If there are gaps between the offset component curves then, they are filled by extending the offset curves.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>平面の法線で定義された平面で、平面曲線を指定された距離だけオフセットして、1 つまたは複数の曲線を作成します。オフセットされたコンポーネント曲線間にギャップがある場合は、オフセットされた曲線を延長してそのギャップを埋めます。
+            既定では、入力引数「planeNormal」は曲線を含む平面の法線に設定されますが、元の曲線の法線に平行な明示的な法線となるため、オフセットの方向を簡単にコントロールできます。
+            たとえば、同じ平面を共有している複数の曲線のオフセット方向を一致させる必要がある場合に「planeNormal」を使用すると、個々の曲線の法線を変更し、すべての曲線を強制的に同じ方向にオフセットできます。
+            法線を反転すると、オフセットの方向が反転します。</summary>
             <param name="signedDistance">正のオフセット距離は、曲線の接線と平面の法線ベクトルの外積の方向に適用され、負のオフセット距離はその反対の方向に適用されます。</param>
             <param name="planeNormal">曲線の平面法線。既定では入力された曲線の平面法線に設定されます</param>
             <returns>1 つまたは複数のオフセットされた曲線</returns>
@@ -1154,19 +1151,19 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CurveGeometry">
             <summary>エッジ作成の基準とする曲線</summary>
-            <returns>Curve representation of edge</returns>
+            <returns>エッジの曲線表現</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.AdjacentFaces">
             <summary>このエッジに接する面</summary>
-            <returns>Adjacent faces of edge</returns>
+            <returns>エッジの隣接面</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.StartVertex">
             <summary>このエッジの始端の頂点</summary>
-            <returns>Start vertex of edge</returns>
+            <returns>エッジの開始頂点</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.EndVertex">
             <summary>このエッジの終端の頂点</summary>
-            <returns>End vertex of edge</returns>
+            <returns>エッジの終了頂点</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>このエッジに関連付けられている共有エッジ</summary>
@@ -1182,8 +1179,8 @@
             <summary>楕円の副軸。短い方の軸です。ベクトルの長さは Minor 半径です。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create an Ellipse centered at input Point, aligned with WCS XY Plane,
-            with specified X and Y axis radii.</summary>
+            <summary>入力された点を中心とし、ワールド座標系 XY 平面に位置合わせされ、
+            指定された X 軸半径と Y 軸半径を持つ楕円を作成します。</summary>
             <param name="origin">楕円の原点</param>
             <param name="xAxisRadius">X 軸半径</param>
             <param name="yAxisRadius">Y 軸半径</param>
@@ -1191,8 +1188,8 @@
             <search>ellipse</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an Ellipse centered at input Point, with two specified axes.
-            Axes should be be at 90 degrees to each other.</summary>
+            <summary>入力された点を中心とし、2 つの指定された軸を持つ楕円を作成します。
+            軸は互いに直交する必要があります。</summary>
             <param name="origin">楕円の原点</param>
             <param name="xAxisRadius">X 軸半径</param>
             <param name="yAxisRadius">Y 軸半径</param>
@@ -1200,9 +1197,9 @@
             <search>ellipsebylengths,ellipsebyvectors</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input CoordinateSystem,
-            with a x_radius radius in the CS X direction, and y_radius radius in the
-            CS Y direction.</summary>
+            <summary>入力された CoordinateSystem を中心とし、位置合わせされた楕円を
+            作成します。x_radius 半径を CoordinateSystem の X 軸方向に、
+            y_radius 半径を CoordinateSystem の Y 軸方向に指定します。</summary>
             <param name="origin">楕円の原点座標系</param>
             <param name="xAxisRadius">X 軸半径</param>
             <param name="yAxisRadius">Y 軸半径</param>
@@ -1210,9 +1207,9 @@
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input Plane, with a x_radius
-            radius in the Plane X axis direction, and y_radius radius in the
-            Plane Y axis direction.</summary>
+            <summary>入力された平面を中心とし、位置合わせされた楕円を作成します。
+            x_radius 半径を平面の X 軸方向に、y_radius 半径を平面の
+            Y 軸方向に指定します。</summary>
             <param name="plane">楕円弧が描画される平面</param>
             <param name="xAxisRadius">X 軸半径</param>
             <param name="yAxisRadius">Y 軸半径</param>
@@ -1337,8 +1334,8 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>指定した方向に距離を指定して、任意のジオメトリ タイプを
+            変換します。</summary>
             <param name="direction">変位の向き。</param>
             <param name="distance">指定した向きに沿った変位距離。</param>
             <returns>変換後の Geometry。</returns>
@@ -1350,31 +1347,29 @@
             <returns>変換後の座標系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>このジオメトリを、その位置が targetCoordinateSystem に対して
+            相対的に表現され、sourceCoordinateSystem のフレーム内に配置された形で返します。
+            sourceCoordinateSystem 内の結果のローカル位置は、
+            targetCoordinateSystem 内の入力のローカル位置と一致します。
+            指定した座標系内のワールド空間におけるジオメトリの座標を取得するには、
+            sourceCoordinateSystem として CoordinateSystem.Identity を、
+            targetCoordinateSystem として指定した CoordinateSystem を渡します。
+            その結果得られるジオメトリの座標は、そのターゲット フレームを基準とした
+            入力の座標と等しくなります。</summary>
+            <param name="targetCoordinateSystem">ジオメトリを相対的に表現する CoordinateSystem。</param>
+            <param name="sourceCoordinateSystem">ジオメトリが現在表現されている CoordinateSystem。
+            ワールド空間で作業するには、CoordinateSystem.Identity() を渡します。</param>
             <returns>変換後の Geometry。</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>角度を指定して、原点と軸を中心にオブジェクトを回転します</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>角度を指定して、平面の原点と法線を中心にオブジェクトを回転します</summary>
+            <param name="basePlane">回転の中心となる参照平面</param>
+            <param name="degrees">回転角度(度単位)</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -1394,15 +1389,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>2 つの選択点をスカラーとして使用し、指定された点を中心に均等にスケールします</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>基準点と 2 つの選択点により、1 次元に不均等にスケールします。スケーリング軸は基準点と最初点間の線分によって設定されます。</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>基準点と 2 つの選択点により、2 次元にスケールします。2 次元のスケール係数を決定するために、2 つの選択点が基本平面上に投影されます</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
@@ -1506,7 +1501,7 @@
             <notranslation>true</notranslation>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
-            <summary>The CoordinateSystem that this Geometry is defined in</summary>
+            <summary>このジオメトリが設定されている CoordinateSystem</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>別の Geometry オブジェクトがこのオブジェクトと交差するかどうかを判断します</summary>
@@ -1518,14 +1513,14 @@
             <summary>このオブジェクトの Geometry の交点と別の Geometry の集合の交点を取得します。その中から共通のジオメトリを求めます。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToSolidDef">
-            <summary>Convert to SolidDef json</summary>
+            <summary>SolidDef JSON 形式に変換</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
             <summary>指定された方向に沿って、このジオメトリに点のコレクションを投影します。
             結果のジオメトリのフラットな配列を返します。</summary>
-            <param name="points">Points to project.</param>
-            <param name="projectionDirection">Projection direction.</param>
-            <returns>Flat array of resulting Geometry.</returns>
+            <param name="points">投影する点。</param>
+            <param name="projectionDirection">投影方向。</param>
+            <returns>結果のジオメトリのフラットな配列。</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>らせんがその長さだけ回転する角度(度単位)</summary>
@@ -1544,11 +1539,11 @@
             <search>origin,helixstart</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Helix. The helix always rotates clockwise about the supplied
-            axis direction. If viewing along the axis direction, the viewer will see
-            the point turning clockwise around the axis as it moves along the curve
-            in the direction of increasing parameter. Pitch is Distance the helix
-            moves in the axis direction per turn. This can be positive or negative.</summary>
+            <summary>らせんを作成します。らせんは、指定した軸の方向を中心に常に時計回りに
+            回転します。軸の方向に沿って見ると、パラメータ値が増加する方向に、
+            曲線に沿って移動するように、点が軸を中心に時計回りに回転するのが
+            確認できます。Pitch はらせんが回転ごとに軸の方向に移動する距離です。
+            正または負の値を設定できます。</summary>
             <param name="axisPoint">軸の点</param>
             <param name="axisDirection">軸方向ベクトル</param>
             <param name="startPoint">らせんの始点</param>
@@ -1607,16 +1602,16 @@
             <search>line,approximate,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByTangency(Autodesk.DesignScript.Geometry.Curve,System.Double)">
-            <summary>Create a Line tangent to the input Curve, positioned at the parameter
-            Point of the input Curve.</summary>
+            <summary>入力された曲線に接し、曲線のパラメータで指定された点に位置する直線を
+            作成します。</summary>
             <param name="curve">接線のベース曲線</param>
             <param name="parameter">パラメータ値</param>
             <returns>接線</returns>
             <search>tangentline,tangentto,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Create a straight Line starting at start Point, extending in Vector
-            direction by specified length.</summary>
+            <summary>始点から始まり、ベクトルの向きに指定された長さだけ延ばした線分を
+            作成します。</summary>
             <param name="startPoint">線分の始点</param>
             <param name="direction">方向ベクトル</param>
             <param name="length">線分の長さ</param>
@@ -1652,7 +1647,7 @@
             <returns>Mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToJson">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
+            <summary>メッシュを dynamo.geometry:mesh-1.0.0 スキーマでフォーマットされた JSON オブジェクトに変換します。</summary>
             <returns>結果として得られる JSON 文字列</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.FaceIndices">
@@ -1722,23 +1717,23 @@
             <returns name="mesh">メッシュ</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.BooleanIntersection(Autodesk.DesignScript.Geometry.Mesh)">
-            <summary>Returns a new mesh consisting of the intersection between the tool
-            mesh and the original mesh.</summary>
+            <summary>ツール メッシュと元のメッシュの間の交差に一致する
+            新しいメッシュを返します。</summary>
             <param name="tool"/>
             <returns name="mesh">メッシュ</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Repair">
-            <summary>Returns a new Mesh with the following defects repaired:
-            Small components: if the Mesh contains very small, disconnected
-            segments, relative to the overall Mesh size, they will be
-            discarded.
-            Holes: holes in the mesh are filled in
-            Non-manifold regions: if a vertex is connected to more than
-            two *boundary* edges, or an edge is connected to more than
-            two triangles then the vertex / edge is non-manifold. The
-            mesh toolkit will remove geometry until the mesh is manifold
-            This method tries to preserve as much of the original mesh as
-            possible, as opposed to MakeWatertight, which resamples the Mesh</summary>
+            <summary>次の不具合が修正された新しいメッシュを返します。
+            小さいコンポーネント: メッシュ全体のサイズと比較して、非常に小さい、
+            切断されたセグメントがメッシュに含まれている場合、それらは
+            破棄されます。
+            穴: メッシュ内の穴は塗り潰されます。
+            非多様体領域: 頂点が 3 つ以上の *境界* エッジに接続されている場合
+            またはエッジが 3 つ以上の三角形に接続されている場合、
+            その頂点/エッジは非多様体です。メッシュ ツールキットは、
+            メッシュが多様体になるまでジオメトリを削除します。
+            このメソッドでは、メッシュを再サンプリングする MakeWatertight とは
+            対照的に、元のメッシュを可能な限り保持しようとします</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.CloseCracks">
             <summary>メッシュの内部境界を削除します。内部境界は、
@@ -1746,11 +1741,11 @@
             頂点が一致する場合に発生します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeWatertight">
-            <summary>Returns a new Mesh that is watertight and 3D printable. As a result of
-            making a Mesh watertight, self-intersections, overlaps, and non-manifold
-            geometry is removed from the mesh.
-            The Mesh is filled with a bunch of tiny boxes, and a new
-            mesh is created around this.</summary>
+            <summary>隙間のない 3D プリント可能な新しいメッシュを返します。メッシュの
+            密度を高めた結果として、自己交差、重複、非多様体ジオメトリが
+            メッシュから削除されます。
+            メッシュはたくさんの小さなボックスで満たされており、
+            この周りに新しいメッシュが作成されます。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeHollow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
             <summary>3D プリント用に空洞化された新しいメッシュを返します。</summary>
@@ -1776,13 +1771,13 @@
             <returns name="mesh">削減されたメッシュ</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Remesh">
-            <summary>Returns a new Mesh distributing triangles more evenly over the whole of the selection
-            regardless of any change in triangle normals across the given selection.</summary>
+            <summary>指定された選択範囲における三角形の法線の変化に関係なく、選択範囲全体に
+            三角形をより均等に配分する新しいメッシュを返します。</summary>
             <returns name="mesh">メッシュ</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Smooth(System.Double)">
-            <summary>Returns a new smooth Mesh. Smoothing type by default is
-            cotangent which smooths without spreading the vertices.</summary>
+            <summary>新しいスムーズ メッシュを返します。既定のスムーズ化タイプは
+            余接であり、頂点を広げずに滑らかになります。</summary>
             <param name="scale">スムーズ化の「空間スケール」を設定します。値が小さいほど、より局所的なスムーズ化が行われ
             通常は見た目の「滑らかさ」が低下した結果になります(0.1 ～ 64.0)</param>
             <returns name="mesh">スムーズ メッシュ</returns>
@@ -1791,8 +1786,8 @@
             <summary>正確な幾何学的平面カットを作成し、
             平面の法線方向の側面にあるメッシュの一部を削除します。</summary>
             <param name="plane">切り取りに使用する平面を設定</param>
-            <param name="makeSolid">Attempt to create a minimal fill using the fewest
-            number of triangles.</param>
+            <param name="makeSolid">最小限の三角形の数を使用して、最小限の塗り潰しを
+            作成しようとしています。</param>
             <returns name="mesh">メッシュ</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Intersect(Autodesk.DesignScript.Geometry.Plane)">
@@ -1808,13 +1803,13 @@
             <summary>入力された平面全体にメッシュを反射する</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotate the Mesh around the input axis by the given angle.</summary>
+            <summary>入力軸を中心に、指定された角度だけメッシュを回転します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double)">
             <summary>入力した量でメッシュをスケールします</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double,System.Double,System.Double)">
-            <summary>Scale Mesh non-uniformly by scale factors</summary>
+            <summary>スケール係数によってメッシュを不均等にスケールします</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(Autodesk.DesignScript.Geometry.Vector)">
             <summary>ベクトルの長さだけ入力ベクトルの方向にメッシュを移動します</summary>
@@ -1842,12 +1837,12 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>与えられた点とインデックスから新しいメッシュを作成します。点は
+            重複しないようにする必要があります。インデックスは
+            三角形の 3 点の点群配列の 3 つの位置を示す
+            3 つの整数のセットである必要があります</summary>
             <param name="points">点群のリスト</param>
-            <param name="indices">Flat list of point indices</param>
+            <param name="indices">点インデックスのフラット リスト</param>
             <returns>Mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
@@ -1871,13 +1866,13 @@
             メッシュの解像度は、Dynamo のレンダリング精度によって決まります</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied vertices and indices. Vertices should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the vertices array
-            of the three points of a triangle</summary>
+            <summary>与えられた頂点とインデックスから新しいメッシュを作成します。頂点は
+            重複しないようにする必要があります。インデックスは
+            三角形の 3 点の頂点配列の 3 つの位置を示す
+            3 つの整数のセットである必要があります</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
-            <summary>Create a mesh plane based on the given inputs.</summary>
+            <summary>指定された入力に基づいてメッシュ平面を作成します。</summary>
             <param name="origin"/>
             <param name="xWidth"/>
             <param name="yWidth"/>
@@ -1940,7 +1935,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
             <summary>周期的 NURBS 曲線の真に周期的な制御点です。
             注: この操作は周期的な曲線に対してのみ可能であり、曲線が周期的でない場合は失敗します。</summary>
-            <returns>Periodic control points of a NURBS curve</returns>
+            <returns>NURBS 曲線の周期的な制御点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>曲線のノット。ノットは、制御点が曲線に影響を与える位置とその影響の程度を判断するために使用される、一連のパラメータ値(倍精度浮動小数点数)です。</summary>
@@ -1957,24 +1952,24 @@
             <search>ptweight</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>明示的な制御点を使用して BSplineCurve を作成します。
+            注 1: deg=1 の BSplineCurve には G1 不連続が発生し、押し出し、スイープ、
+            その他の操作に問題が生じます。これらの問題は回避する必要があります。
+            代わりに PolyCurve を使用します。
+            注 2: 曲線が周期曲線である(閉じている)場合、最初の点と最後の点を
+            同じにする必要があります。</summary>
             <param name="points">NURBS 曲線の点群</param>
             <returns>点群から作成した NURBS 曲線</returns>
             <search>nurbscurve,spline,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>明示的な制御点を使用して BSplineCurve を作成します。
+            注 1: deg=1 の BSplineCurve には G1 不連続が発生し、押し出し、スイープ、
+            その他の操作に問題が生じます。これらの問題は回避する必要があります。
+            代わりに PolyCurve を使用します。
+            注 2: 曲線が周期曲線である(閉じている)場合、最初の点と最後の点を
+            同じにする必要があります。</summary>
             <param name="points">NURBS 曲線の点群</param>
             <param name="degree">曲線の次数</param>
             <returns>点群から作成した NURBS 曲線</returns>
@@ -1982,12 +1977,12 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32,System.Boolean)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>明示的な制御点を使用して BSplineCurve を作成します。
+            注 1: deg=1 の BSplineCurve には G1 不連続が発生し、押し出し、スイープ、
+            その他の操作に問題が生じます。これらの問題は回避する必要があります。
+            代わりに PolyCurve を使用します。
+            注 2: 曲線が周期曲線である(閉じている)場合、最初の点と最後の点を
+            同じにする必要があります。</summary>
             <param name="points">NURBS 曲線の点群</param>
             <param name="degree">曲線の次数</param>
             <param name="closeCurve">切り替えて曲線を閉じる</param>
@@ -1996,19 +1991,18 @@
             <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double[],System.Double[],System.Int32)">
-            <summary>Create a BSplineCurve by from control vertices, weights, and knots.
-            FROM ASM DOCS:
-            Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum
-            B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: The knot vector should be a non-decreasing sequence. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows curves with G1 discontinuities to be
-            represented). Note that non-clamped knot vectors are supported, but will be
-            converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.
-            knot array: the array size must be num_control_points + degree + 1</summary>
+            <summary>制御頂点、重み、ノットから BSplineCurve を作成します。
+            ASM ドキュメントから:
+            次数: 1 より大きく(折れ線状スプライン)、かつ 26 未満(ASM がサポートする
+            最大 B スプライン基準次数)である必要があります。
+            重み: すべての重み値(指定する場合)は、かならず正でなければなりません。
+            1e-11 よりも小さい重みは却下され、動作しなくなります。
+            ノット: ノット ベクトルは非減少シーケンスである必要があります。内部ノットの
+            多重度は開始/終了ノットの次数 + 1 以下、および内部ノットの次数以下である
+            必要があります(これにより、G1 の不連続を持つ曲線を表現できます)。
+            未固定ノット ベクトルはサポートされていますが、これらは固定ノット ベクトルに
+            変換され、対応する制御点/重みデータに変更が適用されます。
+            ノット配列: 配列サイズは num_control_points + 次数 + 1 とする必要があります</summary>
             <search>explicit,nurbscurve,spline,degree,spline byarray,lines</search>
             <weights>0.5,0.5,0.5,0.5,0.5,0.45</weights>
         </member>
@@ -2020,9 +2014,9 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>Create a BSplineCurve by interpolating between points.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>点間を補間して、BSplineCurve を作成します。
+            注 2: 曲線が周期曲線である(閉じている)場合、最初の点と最後の点を
+            同じにする必要があります。</summary>
             <param name="points">NURBS 曲線の点群</param>
             <param name="closeCurve">切り替えて曲線を閉じる</param>
             <returns>点群から作成した NURBS 曲線</returns>
@@ -2088,9 +2082,8 @@
             <returns>サーフェスの NURBS V ノット</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.</summary>
+            <summary>補間した点、U 次数、V 次数を指定して NurbsSurface を作成します。
+            作成されるサーフェスはすべての点を通過します。</summary>
             <param name="points">NURBS サーフェスの点群のグリッド</param>
             <param name="uDegree">U 方向の次数</param>
             <param name="vDegree">V 方向の次数</param>
@@ -2098,21 +2091,20 @@
             <search>fit,topoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.  The number of tangents must match the number of
-            points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.</summary>
+            <summary>補間した点、U 次数、V 次数を指定して NurbsSurface を作成します。
+            作成されるサーフェスはすべての点を通過します。
+            接線の数は対応する方向の点の数に一致する必要があります。
+            作成されるサーフェスは U 方向と V 方向ともに次数 3 となります。</summary>
             <search>fit,topoints,totangents</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Double[],System.Double[],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface satisfying a collection of different surface characteristics.
-            This is the most advanced surface fitting method.  The resultant surface
-            will pass through all of the points.  The number of tangents must match
-            the number of points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.  The corner derivatives should be
-            second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],
-            [ lowU, highV ], [ highU, highV ].</summary>
+            <summary>異なるサーフェス特性の集合を満たす NurbsSurface を作成します。
+            これは、最も高度なサーフェス フィット メソッドです。
+            作成されるサーフェスはすべての点を通過します。
+            接線の数は対応する方向の点の数に一致する必要があります。
+            作成されるサーフェスは U 方向と V 方向ともに次数 3 となります。
+            コーナーの導関数は 2 次(dP/dUdV)とし、[ lowU, lowV ]、[ highU, lowV ]、
+            [ lowU, highV ]、[ highU, highV ]の順に指定する必要があります。</summary>
             <search>fit,topoints,totangents,fit corners,complex fit</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
@@ -2123,20 +2115,17 @@
             <returns>制御点で作成した NURBS サーフェス</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots(Autodesk.DesignScript.Geometry.Point[][],System.Double[][],System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified control vertices, knots, weights,
-            and U V degrees.
-            There are several restrictions on the data which, if
-            broken, will cause the function to fail and will throw an exception.
-            Degree: Both u- and v- degree should be &gt;= 1 (piecewise-linear spline)
-            and  less than 26 (the maximum B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: Both knot vectors should be non-decreasing sequences. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows surfaces with G1 discontinuities to
-            be represented). Note that non-clamped knot vectors are supported, but will
-            be converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.</summary>
+            <summary>制御頂点、ノット、重み、U 次数、V 次数を指定して NurbsSurface を作成します。
+            データが破損していると関数が失敗し例外がスローされるという制限があります。
+            次数: u- および v- の両方の次数は 1 以上(折れ線状スプライン)、かつ 26 未満
+            (ASM がサポートする最大 B スプライン基準次数)である必要があります。
+            重み: すべての重み値(指定する場合)は、かならず正でなければなりません。
+            1e-11 よりも小さい重みは却下され、動作しなくなります。
+            ノット: ノット ベクトルは非減少シーケンスである必要があります。内部ノットの
+            多重度は開始/終了ノットの次数 + 1 以下、および内部ノットの次数以下である
+            必要があります(これにより、G1 の不連続を持つ曲線を表現できます)。
+            未固定ノット ベクトルはサポートされていますが、これらは固定ノット ベクトルに
+            変換され、対応する制御点/重みデータに変更が適用されます。</summary>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
@@ -2165,7 +2154,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices(System.Int32[])">
             <summary>パネル インデックスのリスト内の各パネルの頂点の数を返します。</summary>
-            <param name="panelIndices">List of panel indices to query number of vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">頂点の数を照会するパネル インデックスのリスト。既定値の null は、サーフェス内のすべてのパネルを示します。</param>
             <returns>頂点の数</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetVertex(System.Int32)">
@@ -2186,17 +2175,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices(System.Int32[])">
             <summary>パネル インデックスのリストにある各パネルの頂点を返します。</summary>
-            <param name="panelIndices">Panel index to query vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">頂点を照会するパネル インデックス。既定値の null は、サーフェス内のすべてのパネルを示します。</param>
             <returns>頂点の配列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints(System.Int32[])">
             <summary>パネル インデックスのリストにある各パネルの点を返します。</summary>
-            <param name="panelIndices">Panel indices to query points for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">点を照会するパネル インデックス。既定値の null はサーフェス内のすべてのパネルを示します。</param>
             <returns>点の配列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon(System.Int32[])">
             <summary>パネル インデックスのリストにある各パネルのポリゴン境界を返します。</summary>
-            <param name="panelIndices">Panel indices used to construct Polygon. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">ポリゴンの作成に使用されるパネル インデックス。既定値の null はサーフェス内のすべてのパネルを示します。</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.SetTransform(System.Double,System.Double,System.Double,System.Double,Autodesk.DesignScript.Geometry.Point)">
@@ -2256,7 +2245,7 @@
             <search>panel, surface, split, diamond</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Int32,System.Double,System.Boolean,Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition)">
-            <summary>Panels the input surface in parallelograms tiled vertically and horizontally. Each parallelogram is a square with a shear applied along the V-axis or U-axis determined by the ‘alignWithUAxis’ input and a shear factor. By default the parallelograms are aligned with the V-axis</summary>
+            <summary>垂直および水平に平行四辺形のタイルで入力サーフェスをパネル化します。各平行四辺形は [alignWithUAxis] 入力とせん断係数で決定される V 軸または U 軸に沿って正方形にせん断が加えられたものです。既定では、平行四辺形は V 軸と位置合わせされます</summary>
             <param name="surface">パネル化する入力サーフェス</param>
             <param name="numU">U 方向のパターン数</param>
             <param name="numV">V 方向のパターン数</param>
@@ -2322,14 +2311,14 @@
             <summary>平面の Y 基準点</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">
-            <summary>Produces a new CoordinateSystem representing this plane. It is based on
-            the origin, and X and Y axis basis.</summary>
+            <summary>この平面を表す新しい CoordinateSystem を作成します。原点、X 軸、Y 軸を
+            基準にします。</summary>
             <returns/>
             <search>converttoCS,convert2cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.Offset(System.Double)">
-            <summary>Create a new Plane offset by this Plane in the normal direction by
-            the specified distance.</summary>
+            <summary>法線方向のこの平面を使用し、距離を指定して新しい平面オフセットを
+            作成します。</summary>
             <search>alongnormal,moveplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -2340,10 +2329,10 @@
             <search>plane,tonormal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an "oriented" Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            to splitting, intersect, project, etc operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>原点に配置され、ベクトル法線を持ち、ただし指定された X 軸の向きで
+            「方向付けられた」平面を作成します。この X 軸によって分割、
+            交差、投影などの操作に影響が生じることはなく、単に
+            入力された CoordinateSystem の方向が指定されます。</summary>
             <param name="origin">平面の原点</param>
             <param name="normal">法線方向ベクトル</param>
             <param name="xAxis">X 軸方向ベクトル</param>
@@ -2365,8 +2354,8 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Create the Plane containing the input Line and external Point. Point
-            cannot lie on the Line or in the Line axis.</summary>
+            <summary>入力された線分と外部の点を含む平面を作成します。点を線分上または
+            線分軸内に配置することはできません。</summary>
             <param name="line">平面の決定に使用する線分</param>
             <param name="point">平面の決定に使用する点</param>
             <returns>線分と点から作成した平面</returns>
@@ -2497,10 +2486,10 @@
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more Polycurves by offsetting a planar polycurve by the given distance in a plane defined by the plane normal.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>平面の法線で設定された平面で、平面ポリカーブを指定された距離だけオフセットして、1 つまたは複数のポリカーブを作成します。
+            既定では、入力引数「planeNormal」は曲線を含む平面の法線に設定されますが、元の曲線の法線に平行な明示的な法線となるため、オフセットの方向を簡単にコントロールできます。
+            たとえば、同じ平面を共有している複数の曲線のオフセット方向を一致させる必要がある場合に「planeNormal」を使用すると、個々の曲線の法線を変更し、すべての曲線を強制的に同じ方向にオフセットできます。
+            法線を反転すると、オフセットの方向が反転します。</summary>
             <param name="signedDistance">正のオフセット距離は、ポリカーブの接線と平面の法線ベクトルの外積の方向に適用され、負のオフセット距離はその反対の方向に適用されます。</param>
             <param name="extendCircular">オフセットされたコンポーネント曲線間にギャップがある場合は、ギャップを埋める処理の設定に応じて、円弧で埋めて滑らかなコーナーにする(true 値の場合)か、オフセットされた曲線を延長して埋める(false 値の場合)ことができます。</param>
             <param name="planeNormal">曲線の平面法線。既定では入力された曲線の平面法線に設定されます</param>
@@ -2514,7 +2503,7 @@
             <search>round,smooth,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.</summary>
+            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
             <summary>接線楕円でポリカーブを延長します</summary>
@@ -2544,8 +2533,8 @@
             <returns>オフセットされたポリカーブ</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>Heals a self-intersecting PolyCurve by returning a new one that isn't self-intersecting
-            if the overlapping segment length is less than or equal to trimLength.</summary>
+            <summary>重複しているセグメントの長さが trimLength 以下の場合に、自己交差していない
+            新しい PolyCurve を返すことで、自己交差している PolyCurve を修復します。</summary>
             <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
             <returns>自己交差も重複もしていないポリカーブ</returns>
         </member>
@@ -2572,9 +2561,9 @@
             <search>segments,joincurves</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。
+            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。
+            値が小さいと厳密になりすぎて、接続する必要がある曲線が結合されない場合があります。値が大きいと、短い曲線が意図せず結合されたり、縮退した点に集約される可能性があります。</summary>
             <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <returns/>
@@ -2618,11 +2607,11 @@
             <summary>ポリゴンの辺の間の自己交差を返します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Returns whether an input point is contained within the polygon.
-            If the polygon is not planar then the point will be projected onto the
-            best-fit plane and the containment will be computed using the projection
-            of the polygon onto the best-fit plane.
-            This will return a failed status if the polygon self-intersects.</summary>
+            <summary>入力された点がポリゴン内に含まれているかどうかを返します。
+            ポリゴンが平面でない場合、点は最適フィット平面上に投影され、
+            ポリゴンをこの最適フィット平面上に投影することで、
+            含まれているかどうかが計算されます。
+            ポリゴンが自己交差している場合は、失敗ステータスを返します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>点を接続してポリゴン カーブを作成します。</summary>
@@ -2635,8 +2624,8 @@
             <search>subsurfaces,getsurfaces,explode</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Locate Surfaces by point. Takes first intersection in forward direction.
-            Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex</summary>
+            <summary>サーフェスの位置を点で探します。前方向の最初の交点を取得します。
+            サーフェスの内部にヒットした場合は 1 つのサーフェスを、エッジの内部にヒットした場合は 2 つのサーフェスを、頂点にヒットした場合は多数のサーフェスを返します</summary>
             <search>surfacesatpoint,findsurfaces,extractsurfaces</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine(Autodesk.DesignScript.Geometry.Line)">
@@ -2726,16 +2715,16 @@
             <search>rectbypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the WCS origin in the WCS XY Plane, with
-            specified width (X Axis length), and length (Y Axis length).</summary>
+            <summary>指定された幅(X 軸の長さ)と長さ(Y 軸の長さ)を持ち、ワールド座標系の
+            原点を中心とする長方形を、ワールド座標系の XY 平面に作成します。</summary>
             <param name="width">長方形の幅</param>
             <param name="length">長方形の長さ</param>
             <returns>幅と長さで作成した長方形</returns>
             <search>rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at input Plane root, with input width
-            (Plane X axis length), and length (Plane Y axis length).</summary>
+            <summary>入力された幅(平面の X 軸の長さ)と長さ(平面の Y 軸の長さ)を持ち、
+            入力された平面のルートを中心とする長方形を作成します。</summary>
             <param name="plane">長方形の中心に使用する平面</param>
             <param name="width">長方形の幅</param>
             <param name="length">長方形の長さ</param>
@@ -2743,9 +2732,9 @@
             <search>rectangle,rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the input origin in the CoordinateSystem
-            XY Plane, with specified width (X Axis length), and length
-            (Y Axis length).</summary>
+            <summary>指定された幅(X 軸の長さ)と長さ(Y 軸の長さ)を持ち、
+            入力された原点を中心とする長方形を、
+            CoordinateSystem の XY 平面に作成します。</summary>
             <param name="coordinateSystem">長方形の座標系(長方形の中心)</param>
             <param name="width">長方形の幅</param>
             <param name="length">長方形の長さ</param>
@@ -2777,12 +2766,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>このソリッドの面からソリッド シェルを取得します</summary>
             <param name="internalFaceThickness">シェルの内側を延長する距離</param>
-            <param name="externalFaceThickness">シェルの外側を延長する距離</param>
+            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Solid in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>入力されたジオメトリを、入力されたベクトルの方向で、このソリッド上に投影します。
+            !!現在この投影方法では、点または曲線のみがサポートされています!!</summary>
             <search>projectonto,projectonsolid,projecttosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
@@ -2814,17 +2803,17 @@
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Create a Solid by lofting between input cross section closed Curves,
-            with guide Curves to assist. Guide Curves must intersect all cross
-            section Curves.</summary>
+            <summary>補助的なガイド曲線を付け、入力された閉じた断面曲線間のロフトにより
+            ソリッドを作成します。ガイド曲線はすべての断面曲線と
+            交差する必要があります。</summary>
             <search>Brep,brep,guides,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Boolean)">
-            <summary>Create a Solid by lofting between input cross-sections comprising of closed PolyCurves.
-            This operation is optimized for sections composed of line segments exclusively,
-            with vertices following the same order.
-            The check and repair option guarantees the validity of the produced solid
-            when enabled, while disabling it should increase performance.</summary>
+            <summary>閉じた PolyCurve で構成される入力断面間のロフトによりソリッドを作成します。
+            この操作は、線分セグメントのみで頂点が同じ順序となるように構成されている断面に
+            最適化されています。
+            確認と修復のオプションを有効にすると、生成されるソリッドの有効性が保証され、
+            無効にすると、パフォーマンスが向上します。</summary>
             <search>Brep,brep,ruled,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
@@ -2847,9 +2836,9 @@
             <search>Brep,brep,sweep2,guides,sweepprofile</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Solid of revolution, sweeping the profile Curve around the
-            axis Ray formed by the origin and the axis Vector, from the start
-            angle in degrees to the sweep angle in degrees.</summary>
+            <summary>原点と軸ベクトルによって形成される軸放射線の周囲に、
+            開始角度(度)からスイープ角度(度)までプロファイル曲線を
+            スイープして、回転ソリッドを作成します。</summary>
             <param name="profile">回転するプロファイル曲線</param>
             <param name="axisOrigin">回転軸原点</param>
             <param name="axisDirection">回転軸方向</param>
@@ -2871,7 +2860,7 @@
             <summary>球の半径を返します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
+            <summary>入力された点を中心とし、指定された半径を持つソリッド球体を作成します。</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -2903,8 +2892,8 @@
             <search>difference,trim,removefrom,cut</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>The boolean difference of this Surface and the union of input Surfaces.
-            This method might return a polySurface if the resulting boolean is non-manifold or multi-faced.</summary>
+            <summary>このサーフェスと、入力されたサーフェスの和のブール演算差。
+            ブール演算の結果が非多様体または複数の面を持つ場合、このメソッドは polySurface を返します。</summary>
             <param name="others">減算するもう一方のサーフェス</param>
             <returns>ブール演算後のサーフェスまたはポリサーフェス</returns>
             <search>subtract,differencemany,diffall,diff multi</search>
@@ -2915,16 +2904,16 @@
             <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves.
-            One of the loops needs to be the boundary loop of the input surface.
-            In addition, one or more inner loops need to be added for holes.</summary>
+            <summary>サーフェスを、1 つまたは複数の閉じた PolyCurve の集合でトリムします。
+            その中の 1 つのループを入力サーフェスの境界ループにする必要があります。
+            また、穴には 1 つまたは複数の内側のループを追加する必要があります。</summary>
             <search>trim multiple,removeloops,cutloops</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves that must all lie on the surface within the specified tolerance.
-            If one or more holes need to be trimmed from the input surface, there must be one outer loop specified for the boundary of the surface and one inner loop for each hole.
-            If the region between the surface boundary and the hole(s) needs to be trimmed, only the loop for each hole should be provided.
-            For a periodic surface with no outer loop such as a spherical surface, the trimmed region can be controlled by reversing the direction of the loop curve.</summary>
+            <summary>サーフェスを、1 つまたは複数の閉じた PolyCurve の集合でトリムします。すべての PolyCurve は指定した許容値内でサーフェス上に存在する必要があります。
+            入力されたサーフェスから 1 つまたは複数の穴をトリムする必要がある場合は、サーフェスの境界用に外側のループを 1 つ指定し、穴ごとに内側のループを 1 つ指定する必要があります。
+            サーフェス境界と穴の間の領域をトリムする必要がある場合は、各穴のループのみを指定する必要があります。
+            球面のサーフェスなど、外側のループがない周期的なサーフェスの場合は、ループの曲線の方向を反転することで、トリムされる領域をコントロールできます。</summary>
             <param name="loops">任意の順序で入力できる 1 つまたは複数の閉じたポリカーブ。これらのループが互いに交差しないようにする必要があります。</param>
             <param name="tolerance">曲線の終端が一致するかどうか、および曲線とサーフェスが一致するかどうかを判断する際に使用する許容値。入力されたポリカーブの作成に使用された許容値よりも小さい許容値を入力することはできません。既定値の 0.0 では、入力されたポリカーブの作成に使用された最大許容値が使用されます。</param>
             <returns>閉じたループでトリムされたサーフェス。</returns>
@@ -2937,32 +2926,32 @@
             <search>perpendicular</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>サーフェスの NURBS 表現を取得します。特定の状況では、このメソッドは
+            近似のサーフェスを取得します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>サーフェスの NURBS 表現を取得します。特定の状況では、このメソッドは
+            近似のサーフェスを取得します。</summary>
             <param name="limitSurface">変換前にサーフェスを元のパラメータ範囲に戻すかどうかを決定します。たとえば Trim を使用すると、サーフェスのパラメータ範囲が制限されます。</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>Gets a Nurbs representation of the Surface within a specified tolerance. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>指定した許容値内でサーフェスの NURBS 表現を取得します。特定の状況では、このメソッドは
+            近似のサーフェスを取得します。</summary>
             <param name="tolerance">指定公差</param>
             <returns>サーフェスの NURBS サーフェス表示</returns>
             <search>tonurbs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals on both sides of the Surface.</summary>
+            <summary>サーフェスに厚みを持たせてソリッドを作成します。サーフェスを
+            法線の方向に両側に押し出します。</summary>
             <param name="thickness">厚み付け量</param>
             <returns>ソリッドとして厚みを付けたサーフェス</returns>
             <search>offset,tosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals. If both_sides parameter is true, surface is thickened
-            on both sides.</summary>
+            <summary>サーフェスに厚みを持たせてソリッドを作成します。サーフェスを
+            法線の方向に押し出します。both_sides パラメータが
+            True の場合は、サーフェスの厚さが両側に設定されます。</summary>
             <param name="thickness">厚み付け量</param>
             <param name="both_sides">True の場合は両側に、False の場合は片側に厚み付けします</param>
             <returns>ソリッドとして厚みを付けたサーフェス</returns>
@@ -2974,8 +2963,8 @@
             <returns>オフセットしたサーフェス</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>The returned coordination system use xAxis, yAxis and zAxis to represent the uDir, vDir and normal.
-            The length of xAxis, yAxis represents the curvatures.</summary>
+            <summary>返される座標系では、uDir、vDir、法線を表すのに xAxis、yAxis、zAxis を使用します。
+            xAxis、yAxis の長さが曲率を表します。</summary>
             <param name="u">パラメータの U コンポーネント</param>
             <param name="v">パラメータの V コンポーネント</param>
             <returns>サーフェス上の UV 位置の法線、U 方向、V 方向に基づく座標系</returns>
@@ -3033,32 +3022,32 @@
             <search>edges</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>Create a parameter line curve on the given surface.
-            Create a Curve that represents a u or v parameter line on the Surface. A
-            parameter line runs in the direction of increasing u or v parameter at a
-            constant opposite u or v parameter. The resulting Curve will match the
-            Surface parameterisation and its range will be bounded by the Surface
-            parameter range. The type of Curve returned will depend on the Surface
-            type.</summary>
+            <summary>指定したサーフェスにパラメータ線分の曲線を作成します。
+            サーフェスに U または V パラメータ線分を表す曲線を作成します。
+            パラメータ線分は U または V パラメータが増加する方向に向き、U または
+            V パラメータと逆の割合で増加していきます。作成される曲線は、
+            サーフェスのパラメータ設定に一致し、その範囲はサーフェス パラメータの
+            範囲に限定されます。返される曲線のタイプはサーフェスのタイプによって
+            異なります。</summary>
             <param name="isoDirection">direction == 0 の場合は U パラメータ線分が作成され、direction == 1 の場合は V パラメータ線分が作成されます。</param>
             <param name="parameter"/>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>Returns a new Surface with the Normal flipped. Leaves this surface
-            unchanged.</summary>
+            <summary>法線を反転させた新しいサーフェスを返します。このサーフェスは
+            変更されません。</summary>
             <returns>サーフェス。入力サーフェスと同じですが、法線が反転されます</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
             <summary>このサーフェスと入力されたサーフェスを組み合わせてポリサーフェスを作成します</summary>
             <search>topolysurface</search>
-            <summary>このサーフェスと入力されたサーフェスをポリサーフェスに組み合わせます</summary>
+            <summary>このサーフェスと入力されたサーフェスを組み合わせてポリサーフェスを作成します</summary>
             <search>join multiple,joinmany,joinall,topolysurface</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Surface in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>入力されたジオメトリを、入力されたベクトルの方向で、このサーフェス上に投影します。
+            !!現在この投影方法では、点または曲線のみがサポートされています!!</summary>
             <search>projecttosurface,projectonto</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
@@ -3066,9 +3055,9 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Union a collection of surfaces into one surface.
-            This method might return a polySurface
-            if the resulting union is non-manifold or multi-faced.</summary>
+            <summary>サーフェスの集合を 1 つのサーフェスにまとめます。
+            まとめた結果が非多様体または複数の面を持つ場合、
+            このメソッドは polySurface を返します。</summary>
             <param name="surfaces">サーフェスの集合です。</param>
             <returns>サーフェスの和</returns>
             <search>merge,join,boolean,addition</search>
@@ -3080,15 +3069,14 @@
             <returns>ロフトで作成したサーフェス</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>Create a Surface by lofting between input cross section Lines.  This is slightly faster
-            and produces a less smooth result than Surface.ByLoft.</summary>
+            <summary>入力された断面線分間のロフトによりサーフェスを作成します。これにより、
+            Surface.ByLoft よりも短時間で、若干粗い結果が生成されます。</summary>
             <search>ruledsurface,lines</search>
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Loft a Surface through the cross sections with a specified guide curves
-            (aka a rails). Guide curves must intersect all of the cross section
-            curves.</summary>
+            <summary>ガイド曲線(レール)を指定し、断面全体にサーフェスをロフトします。
+            ガイド曲線は、断面のすべての曲線と交差する必要があります。</summary>
             <search>loftbyrails,loft rails,guides</search>
             <param name="crossSections">ロフトで通過する曲線</param>
             <param name="guideCurves">ロフトの通過をガイドする曲線</param>
@@ -3112,8 +3100,8 @@
             <search>sweep,rail,guide,sweep1</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a Polygon Surface connecting input Points in a closed Polygon and
-            patching it.</summary>
+            <summary>入力された点群を閉じたポリゴンでつなぎ、パッチしてポリゴン サーフェスを
+            作成します。</summary>
             <param name="points">ペリメータ点群のリスト</param>
             <returns>ペリメータ点群から作成したサーフェス</returns>
             <search>patch,surfacebypolygon</search>
@@ -3127,9 +3115,9 @@
             <search>sweep2,guides</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Surface by sweeping the profile Curve around the axis ray formed
-            by origin Point in the direction of the axis Vector, starting
-            at start_angle in degrees, sweeping sweep_angle in degrees.</summary>
+            <summary>原点によって形成される軸放射線の周囲に、start_angle (度）から
+            sweep_angle (度）まで軸ベクトルの方向にプロファイル曲線を
+            スイープして、サーフェスを作成します。</summary>
             <param name="profile">回転するプロファイル曲線</param>
             <param name="axisOrigin">回転軸原点</param>
             <param name="axisDirection">回転軸方向</param>
@@ -3139,8 +3127,8 @@
             <search>lathe</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Create a Surface by filling in the interior of a closed boundary
-            defined by input Curves.</summary>
+            <summary>入力された曲線で設定される閉じた境界の内部を塗り潰して
+            サーフェスを作成します。</summary>
             <param name="closedCurve">サーフェス境界として使用する閉じた曲線</param>
             <returns>パッチで作成したサーフェス</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
@@ -3249,8 +3237,8 @@
             <search>tspline,symmetry,reflection,axial</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ByRadial(Autodesk.DesignScript.Geometry.Plane,System.Int32,System.Double)">
-            <summary>Create radial reflection for t-spline symmetry by given plane
-            with given segments count and given angle (in degrees) between each pair of segments.</summary>
+            <summary>指定されたセグメント数とセグメントの各ペア間に角度を持つ
+            指定された平面により、T スプラインの放射状反射対称を作成します。</summary>
             <param name="plane">法線が T スプラインの放射状の反射の軸になる平面。ワールド座標系で指定します。</param>
             <param name="segmentsCount">放射状の反射のセグメントの数</param>
             <param name="segmentAngle">放射相称の各ペア間の角度。この角度を 0 に設定すると、(360 / segmentsCount)という計算式によって角度が計算されます。</param>
@@ -3338,7 +3326,7 @@
             <search>tspline,symmetry,reflections</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsInBoxMode">
-            <summary>Whether t-spline is in box or smooth mode</summary>
+            <summary>T スプラインがボックス モードかスムーズ モードか</summary>
             <search>tspline,boxmode,smooth</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsExtractable">
@@ -3346,7 +3334,7 @@
             <search>tspline,extractable</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsClosed">
-            <summary>Whether t-spline is closed</summary>
+            <summary>T スプラインが閉じているかどうか</summary>
             <search>tspline,closed</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsWaterTight">
@@ -3359,8 +3347,8 @@
             <search>tspline,standard</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToBRep(System.Boolean)">
-            <summary>Convert TSpline surface to Solid or Surface depending on shape.
-            Note: There could be subtle unexpected changes in the resulting B-Rep if the input surface is created in a higher T-Splines version than the version loaded in Dynamo as in this case the surface will be downgraded to the Dynamo version.</summary>
+            <summary>T スプライン サーフェスを、その形状に応じてソリッドまたはサーフェスに変換します。
+            注: 入力サーフェスが Dynamo にロードされているバージョンよりも新しいバージョンの T スプラインで作成された場合、結果として得られる B-Rep に予期しない変化がわずかに生じることがあります。これは、サーフェスが Dynamo バージョンにダウングレードされるためです。</summary>
             <param name="matchTopology">結果として得られる本体のトポロジを入力 T スプライン サーフェスと同じトポロジにするかどうかを決定します。</param>
             <returns>トポロジ エンティティ(ソリッドまたはサーフェス)</returns>
             <search>tspline,brep,solid,surface</search>
@@ -3433,7 +3421,7 @@
             <search>tspline,unweld,vertex</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
-            <summary>Create match with T-Spline and closed loop from curves</summary>
+            <summary>T スプラインと、曲線の閉じたループとの一致を作成します</summary>
             <param name="tsEdges">一致を作成する閉じた T スプライン エッジ ループ</param>
             <param name="curves">一致を作成する閉じた曲線ループ</param>
             <param name="continuity">一致させるためのジオメトリの連続性: G0、G1、G2</param>
@@ -3557,7 +3545,7 @@
             <param name="edges">内側に穴のあるエッジのセット。エッジは境界である必要があります。</param>
             <param name="fillMethod">穴を埋める方法(0 - テッセレーション、1 - 多角形、2 - 集約、3 - 集約と連結)を指定します。</param>
             <param name="keepSubdCreases">入力トポロジの再分割された折り目を保存</param>
-            <returns>TSpline surface with filled hole</returns>
+            <returns>穴が埋められた T スプライン サーフェス</returns>
             <search>tspline,edge,fill,hole</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.AddReflections(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineReflection},System.Boolean,System.Double)">
@@ -3572,9 +3560,9 @@
             <returns>指定の反射が削除された T スプライン サーフェス</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CompressIndexes">
-            <summary>Compress all topology on the surface and make the indices contiguous.
-            This function maintains the relative order of the indices.</summary>
-            <returns>TSpline with compressed indexes</returns>
+            <summary>サーフェス上のすべてのトポロジを圧縮し、インデックスを隣接させます。
+            この機能はインデックスの相対順序を維持します。</summary>
+            <returns>圧縮されたインデックスを持つ T スプライン</returns>
             <search>tspline,index,compress</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SubdivideFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace},System.Boolean)">
@@ -3587,10 +3575,9 @@
             <search>tspline,subdivide,faces,simple</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Interpolate(System.Boolean)">
-            <summary>Forward interpolation moves control points to their parametric locations
-            on the surface. Reverse interpolation generates a point on the surface
-            for each original control point and moves this control point to its
-            corresponding surface point.</summary>
+            <summary>前進補間を実行すると、制御点がサーフェスのパラメータ指定位置に
+            移動します。逆補間を実行すると、元の制御点ごとにサーフェス上に
+            点が生成され、この制御点は対応するサーフェス上の点に移動します。</summary>
             <param name="reverse">補間方向を指定します。false を指定すると前進補間、true を指定すると逆補間になります。</param>
             <returns>指定の方向に補間された T スプライン</returns>
             <search>tspline,interpolate,reverse</search>
@@ -3609,7 +3596,7 @@
             <summary>入力された頂点の制御点を平坦化し、1 つの平面にします。
             このコマンドを実行するには、頂点を 4 つ以上入力する必要があります。</summary>
             <param name="vertices">頂点のリスト</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>頂点が平坦化された T スプライン サーフェス</returns>
             <search>tspline,flatten,vertices</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Plane)">
@@ -3618,11 +3605,11 @@
             このコマンドを実行するには、頂点を 4 つ以上入力する必要があります。</summary>
             <param name="vertices">頂点のリスト</param>
             <param name="parallelPlane">次の要素に平行になるように頂点を配置する平面:</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>頂点が平坦化された T スプライン サーフェス</returns>
             <search>tspline,flatten,vertices,fitparallel</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace})">
-            <summary>Copy chosen faces to the new surface. New surface has no symmetry.</summary>
+            <summary>選択された面を新しいサーフェスにコピーします。新しいサーフェスに対称性はありません。</summary>
             <param name="faces">複製する面</param>
             <returns>選択された面のみを持つ T スプライン サーフェス</returns>
             <search>tspline,face,duplicate</search>
@@ -3647,12 +3634,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.MoveVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Vector,System.Boolean)">
             <summary>入力された頂点を指定のベクトルに沿って移動します。</summary>
             <param name="vertices">移動する頂点のリスト</param>
-            <param name="vector">Vector to move along</param>
-            <param name="onSurface">Flag, indicating whether to use surface or control points of vertices to move</param>
+            <param name="vector">移動の基準とするベクトル</param>
+            <param name="onSurface">移動に、サーフェスの点と頂点の制御点のどちらを使用するかを示すフラグ</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Repair">
-            <summary>Attempts to repair the TsplineSurface.</summary>
+            <summary>TsplineSurface の修復を試みます。</summary>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
@@ -3669,10 +3656,10 @@
             <search>tspline,plane,origin,normal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create an "oriented" T-Spline Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            on splitting, intersect, project, etc. operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>原点に配置され、ベクトル法線を持ち、ただし指定された X 軸の向きで
+            「方向付けされた」T スプライン平面を作成します。この X 軸によって分割、
+            交差、投影などの操作に影響が生じることはなく、単に
+            入力された CoordinateSystem の方向が指定されます。</summary>
             <param name="origin">平面のルート点</param>
             <param name="normal">平面の法線</param>
             <param name="xAxis">平面の X 軸</param>
@@ -3742,7 +3729,7 @@
             <summary>親の座標系、円柱の半径、円柱の高さによって定義される T スプライン円柱を作成します</summary>
             <param name="cs">円柱の中心と底面は、この座標系の XY 平面に合わせて調整されます</param>
             <param name="radius">円柱の半径</param>
-            <param name="height">Height of cylinder</param>
+            <param name="height">円柱の高さ</param>
             <param name="radiusSpans">円周上のスパンの数</param>
             <param name="heightSpans">高さ方向のスパンの数</param>
             <param name="symmetry">T スプライン サーフェスの対称オプション</param>
@@ -3763,11 +3750,11 @@
             <search>tspline,cylinder,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with given base radius at start Point, extending to an
-            apex at end Point.</summary>
+            <summary>始点の基礎部の半径を指定し、終点の頂点まで延ばした T スプライン円錐を
+            作成します。</summary>
             <param name="startPoint">円錐の始点</param>
             <param name="endPoint">円錐の終点</param>
-            <param name="radius">Radius of base of a cone</param>
+            <param name="radius">円錐の基礎部の半径</param>
             <param name="radiusSpans">円周上のスパンの数</param>
             <param name="heightSpans">高さ方向のスパンの数</param>
             <param name="symmetry">T スプライン サーフェスの対称オプション</param>
@@ -3776,8 +3763,8 @@
             <search>tspline,cone,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with axis from start Point to end Point, with given
-            radii at start and end. This object does not have an apex, and is in the shape of a frustum.</summary>
+            <summary>始点から終点までを軸として、始点と終点でそれぞれ指定された半径を持つ
+            T スプライン円錐を作成します。このオブジェクトに頂点はなく、錐台形状です。</summary>
             <param name="startPoint">円錐の始点</param>
             <param name="endPoint">円錐の終点</param>
             <param name="startRadius">円錐の始点の半径</param>
@@ -3790,8 +3777,8 @@
             <search>tspline,cone,radii,points,truncated</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending in the direction of the Z-axis of the CoordinateSystem,
-            with a  circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>CoordinateSystem の原点を基準点とし、CoordinateSystem の Z 軸方向に延ばして、CoordinateSystem の XY 平面に
+            円形の底面を持つ T スプライン円錐を作成します。</summary>
             <param name="cs">円錐の中心と底面は、この座標系の XY 平面に合わせて調整されます</param>
             <param name="height">円錐の高さ</param>
             <param name="radius">円錐の半径</param>
@@ -3803,9 +3790,9 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>CoordinateSystem の原点を基準点とし、CoordinateSystem の
+            Z 軸方向に延びた長さを持ち、CoordinateSystem の XY 平面に
+            円形の底面を持つ T スプライン円錐を作成します。</summary>
             <param name="cs">円錐の中心と底面は、この座標系の XY 平面に合わせて調整されます</param>
             <param name="height">円錐の高さ</param>
             <param name="startRadius">円錐の始点の半径</param>
@@ -3818,7 +3805,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
+            <summary>入力された点を中心として、指定された半径で T スプライン球体を作成します。</summary>
             <param name="centerPoint">球体の中心点</param>
             <param name="radius">球体の半径</param>
             <param name="radiusSpans">放射状のスパンの数</param>
@@ -3861,7 +3848,7 @@
             <search>tspline,torus,radii,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCenterRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Torus with given center and radii, aligned with the default World XY plane</summary>
+            <summary>既定のワールド XY 平面に位置合わせされ、指定された中心と半径を持つ T スプライン トーラスを作成します</summary>
             <param name="center">トーラスの中心点</param>
             <param name="innerRadius">トーラスの内径</param>
             <param name="outerRadius">トーラスの外径</param>
@@ -3886,8 +3873,8 @@
             <search>tspline,box,cuboid,cube,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>入力された点を中心として、指定された幅、長さ、高さを持つ T スプライン
+            直方体を作成します。</summary>
             <param name="origin">直方体の中心点</param>
             <param name="width">直方体の幅</param>
             <param name="length">直方体の長さ</param>
@@ -3901,8 +3888,8 @@
             <search>tspline,box,cuboid,cube,size,center</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered and oriented to input CoordinateSystem, with
-            specified width, length, and height.</summary>
+            <summary>入力された CoordinateSystem を中心として方向付けされ、指定された幅、長さ、
+            高さを持つ T スプライン直方体を作成します。</summary>
             <param name="cs">直方体の XY 平面は、座標系の X 軸に位置合わせされます</param>
             <param name="width">直方体の幅</param>
             <param name="length">直方体の長さ</param>
@@ -3928,45 +3915,45 @@
             <search>tspline, box,cube,min,max,corner,point</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCoordinateSystemRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with center at CoordinateSystem origin
-            and given radius</summary>
+            <summary>CoordinateSystem の原点を中心として、指定された半径を持つ
+            T スプライン クワッドボールを作成します</summary>
             <param name="cs">ローカル座標系</param>
             <param name="radius">クワッドボールの半径</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">クワッドボールの各側面の 2 方向におけるスパンの数</param>
             <param name="symmetry">T スプライン サーフェスの対称オプション</param>
             <param name="inSmoothMode">ボックスの表示スタイルかスムーズな表示スタイルで T スプライン サーフェスを表示</param>
             <returns>T スプライン クワッドボール</returns>
             <search>quadball,tspline,coordinate system,raduis</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCenterRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with given center and radius, aligned with
-            default World XY plane</summary>
+            <summary>既定のワールド XY 平面に位置合わせされ、指定された中心と半径を持つ
+            T スプライン クワッドボールを作成します</summary>
             <param name="center">クワッドボールの中心点</param>
             <param name="radius">クワッドボールの半径</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">クワッドボールの各側面の 2 方向におけるスパンの数</param>
             <param name="symmetry">T スプライン サーフェスの対称オプション</param>
             <param name="inSmoothMode">ボックスの表示スタイルかスムーズな表示スタイルで T スプライン サーフェスを表示</param>
             <returns>T スプライン クワッドボール</returns>
             <search>quadball,tsplines,center,point,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceUniform(Autodesk.DesignScript.Geometry.NurbsSurface,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using uniform strategy.
-            Input NURBS surface is rebuilt with uniform knots placed at equal parametric or
-            arc length intervals depending on corresponding useArcLen flag, and approximated by
-            degree 3 NURBS surface. Output T-Spline is divided by given span counts
-            in u and v directions.</summary>
+            <summary>均一な配置方法を使用して、NURBS サーフェスから T スプライン サーフェスを作成します。
+            入力 NURBS サーフェスは、対応する useArcLen フラグに応じてパラメータで指定された
+            間隔または弧長の間隔で等間隔に配置された均一なノットによって再作成され、次数 3 の
+            NURBS サーフェスによって近似値が算出されます。出力 T スプラインは、指定された
+            スパンの数で、U 方向と V 方向に分割されます。</summary>
             <param name="nurbsSurface">入力 NURBS サーフェス</param>
             <param name="uSpans">U 方向で必要なスパンの数</param>
             <param name="vSpans">V 方向に必要なスパンの数</param>
-            <param name="uUseArcLen">Whether to use arcLen or parametric subdivision in u parametric direction</param>
-            <param name="vUseArcLen">Whether to use arcLen or parametric subdivision in v parametric direction</param>
+            <param name="uUseArcLen">パラメータ指定の U 方向で、arcLen かパラメータによる再分割のどちらを使用するか</param>
+            <param name="vUseArcLen">パラメータ指定の V 方向で、arcLen かパラメータによる再分割のどちらを使用するか</param>
             <param name="inSmoothMode">ボックスの表示スタイルかスムーズな表示スタイルで T スプライン サーフェスを表示</param>
             <search>nurbs surface,tspline,uniform</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceCurvature(Autodesk.DesignScript.Geometry.NurbsSurface,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using curvature subdivision strategy.
-            Input NURBS surface is rebuilt to degree 3. Output T-Spline has span counts and
-            positions in each direction detected automatically depending on curvature.</summary>
+            <summary>曲率による再分割の方法を使用して、NURBS サーフェスから T スプライン サーフェスを作成します。
+            入力 NURBS サーフェスは次数 3 として再作成されます。出力 T スプラインには、
+            各方向におけるスパンの数と位置が曲率によって自動的に検出され、格納されます。</summary>
             <param name="nurbsSurface">入力 NURBS サーフェス</param>
             <param name="inSmoothMode">ボックスの表示スタイルかスムーズな表示スタイルで T スプライン サーフェスを表示</param>
             <search>nurbs surface,tspline,curvature</search>
@@ -3988,7 +3975,7 @@
             <summary>断面の曲線をパスに沿ってスイープすることにより、T スプラインを作成します。</summary>
             <param name="profile">プロファイル曲線</param>
             <param name="path">パス曲線</param>
-            <param name="parallel">Is spans should be parallel in path direction</param>
+            <param name="parallel">スパンがパスの方向に平行であるべきかどうか</param>
             <param name="pathSpans">パス内のスパンの数</param>
             <param name="profileSpans">プロファイル内のスパンの数。0 以下の値を指定すると、スパンの数が自動的に設定されます。</param>
             <param name="pathUniform">パスに沿ってスパンを配置する際に、均一な配置方法と曲率による配置方法のどちらを使用するか</param>
@@ -3997,9 +3984,9 @@
             <search>tspline,sweep,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double,System.Int32,System.Int32,System.Boolean,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Surface by sweeping the profile Curve around the axis formed
-            by the axis origin and axis direction, starting at start_angle in degrees,
-            and sweeping by sweep_angle in degrees.</summary>
+            <summary>軸の原点と軸の方向によって形成される軸の周囲に、プロファイル曲線を
+            start_angle (度)から開始し、sweep_angle (度)でスイープして、
+            T スプライン サーフェスを作成します。</summary>
             <param name="profile">プロファイル曲線</param>
             <param name="axisOrigin">回転の中心点</param>
             <param name="axisDirection">回転軸</param>
@@ -4233,7 +4220,7 @@
             <param name="otherVector">もう一方のベクトル</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Determine whether two vectors are almost equal. A tolerance value of 1e-5 is used.</summary>
+            <summary>2 つのベクトルがほぼ等しいかどうかを判断します。許容差の値 1e-5 が使用されます。</summary>
             <returns>ベクトルがほぼ等しい場合は True を返し、それ以外の場合は False を返します。</returns>
             <param name="otherVector">もう一方のベクトル</param>
             <search>vector approximate,near,same</search>
@@ -4242,13 +4229,11 @@
             <summary>このベクトルを入力された座標系マトリックスによって変換します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates a Vector around an axis by a specified number of
-            degrees</summary>
+            <summary>角度の数値を指定して、軸を中心にベクトルを回転します</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates a vector around the Plane origin and normal by a specified
-            degree</summary>
+            <summary>角度を指定して、平面の原点と法線を中心にベクトルを回転します</summary>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
@@ -4266,8 +4251,8 @@
             <search>rotation angle,</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Returns the angle between the two vectors in degrees from 0 to 360.
-            It uses axis of rotation to determine the direction of the angle.</summary>
+            <summary>0 ～ 360 度の範囲で、2 つのベクトル間の角度を返します。
+            角度の方向の決定には回転軸が使用されます。</summary>
             <param name="otherVector">もう一方のベクトル</param>
             <param name="rotationAxis">回転軸</param>
             <returns>指定されたベクトル間の角度を 0 ~ 360 度の範囲で返します</returns>
@@ -4292,24 +4277,24 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>2 つの端点からベクトルを作成します。結果は始点から終点までのベクトルになります。</summary>
-            <param name="start">Start point of vector</param>
-            <param name="end">End point of vector</param>
-            <returns>Vector created from two points</returns>
+            <param name="start">ベクトルの始点</param>
+            <param name="end">ベクトルの終点</param>
+            <returns>2 点から作成したベクトル</returns>
             <search>vector2</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.XAxis">
             <summary>基底 X 軸ベクトル(1,0,0)を取得します</summary>
-            <returns>Canonical X axis vector (1,0,0)</returns>
+            <returns>基底 X 軸ベクトル(1,0,0)</returns>
             <search>x, basis,right</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.YAxis">
             <summary>基底 Y 軸ベクトル(0,1,0)を取得します</summary>
-            <returns>Canonical Y axis vector (0,1,0)</returns>
+            <returns>基底 Y 軸ベクトル(0,1,0)</returns>
             <search>y, basis,forward</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ZAxis">
             <summary>基底 Z 軸ベクトル(0,0,1)を取得します</summary>
-            <returns>Canonical Z axis vector (0,0,1)</returns>
+            <returns>基底 Z 軸ベクトル(0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
@@ -4434,7 +4419,7 @@
             <summary>「{0} はゼロ未満です」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに Mesh.ByPointsIndices (Point[] points, Indices : int[])を使用してください」に類似するローカライズされた文字列を検索します。</summary>

@@ -244,19 +244,19 @@
             <summary>Maximální bod</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem">
-            <summary>The CoordinateSystem of the BoundingBox.
-            For an axis-aligned box, the CS is oriented along with the X, Y, Z axes and is located at the center of the box.
-            For a non-aligned box, the CS can have an arbitrary orientation and is centered at the center of the box.</summary>
+            <summary>Systém CoordinateSystem objektu BoundingBox.
+             U kvádru zarovnaného s osami je souřadnicový systém orientován společně s osami X, Y, Z a je umístěn ve středu kvádru.
+             U kvádru bez zarovnání s osami může mít systém CoordinateSystemlibovolnou orientaci a je vystředěn ke středu kvádru.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersection(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Get the intersection of two BoundingBoxes.
-            Note: This does not work for non-axis-aligned boxes as those intersections might not result in a box. Intersect their corresponding cuboids instead.</summary>
+            <summary>Získejte průsečík dvou objektů BoundingBox.
+           Poznámka: Toto nefunguje u objektů, které nejsou zarovnány s osami, protože tyto průsečíky nemusí vytvořit kvádr. Proveďte průnik příslušných kvádrů.</summary>
             <param name="other">Jiný hraniční obdélník k protnutí</param>
             <returns>Hraniční obdélník získaný z průniku hraničních obdélníků</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersects(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Determine whether two BoundingBoxes intersect.
-            Note: This works only if both bounding boxes have the same alignment (transform). In such cases, test the intersection between their corresponding cuboids.</summary>
+            <summary>Určete, zda se protínají dva objekty BoundingBox.
+            Poznámka: Toto funguje pouze v případě, že mají oba ohraničující kvádry stejné zarovnání (transformaci). V takových případech vyzkoušejte průnik příslušných kvádrů.</summary>
             <param name="other">Jiný hraniční obdélník</param>
             <returns>Protínají se hraniční obdélníky</returns>
             <search>get overlap</search>
@@ -294,13 +294,13 @@
             <returns>Orientovaný ohraničující kvádr kolem vstupních geometrií.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometry, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>Vytvoří osově nezarovnaný objekt BoundingBox kolem vstupní geometrie,
+            orientovaný na osy X, Y a Z systému CoordinateSystem.</summary>
             <search>bounding,bound</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometries, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>Vytvoří osově nezarovnaný objekt BoundingBox kolem vstupních geometrií,
+            orientovaný na osy X, Y a Z systému CoordinateSystem.</summary>
             <search>bounding,bound,multiple,boundall</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
@@ -308,11 +308,11 @@
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box),
-            to maximum coordinates (upper-right-front corner of the box). CoordinateSystem
-            is the transform FROM the coordinate space of the box TO the model space.
-            This method is designed to match Revit's API, allowing you to extract out the parameters
-            from a Revit BoundingBox without any conversions.</summary>
+            <summary>Sestaví objekt BoundingBox z minimálních souřadnic (levý dolní roh)
+            a maximálních souřadnic (pravý horní roh). Systém CoordinateSystem
+            je transformace ZE souřadnicového prostoru pole DO modelového prostoru.
+            Tato metoda je navržena tak, aby odpovídala rozhraní API aplikace Revit, což vám umožňuje extrahovat parametry
+            z objektu BoundingBox aplikace Revit bez nutnosti jakéhokoli převádění.</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
@@ -322,8 +322,8 @@
             <summary>Vrací poloměr kružnice.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Creates a Circle with input center Point and radius in the world XY
-            plane, with world Z as normal.</summary>
+            <summary>Vytvoří kružnici se zadaným středem a poloměrem v globální rovině XY
+           s rovinou Z jako normálou.</summary>
             <param name="centerPoint">Střed kružnice</param>
             <param name="radius">Poloměr</param>
             <returns>Kružnice vytvořená pomocí středu a poloměru</returns>
@@ -338,8 +338,8 @@
             <search>circle,alignedcircle</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Create a Circle centered at the input Plane origin (root), lying in
-            the input Plane, with given radius.</summary>
+            <summary>Vytvoří kružnici vystředěnou na počátku vstupní roviny (kořenu), ležící ve
+            vstupní rovině, se zadaným poloměrem.</summary>
             <param name="plane">Kořen roviny použitý k vystředění kružnice</param>
             <param name="radius">Poloměr</param>
             <returns>Kružnice vytvořená pomocí roviny a poloměru</returns>
@@ -432,31 +432,31 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Cone with given base radius at start Point, extending to a
-            apex at end Point.</summary>
+            <summary>Vytvoří kužel s daným základním poloměrem v počátečním bodu, s prodloužením na
+            vrchol v koncovém bodu.</summary>
             <search>cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Cone with axis from start Point to end Point, with given
-            radiuses at start and end. This object does not have an apex, and
-            can be thought of as a trimmed Cone.</summary>
+            <summary>Vytvoří kužel s osou z počátečního bodu ke koncovému bodu, s danými 
+            poloměry na začátku a na konci. Tento objekt nemá vrchol a
+            může být považován za oříznutý kužel.</summary>
             <search>trimmed cone,cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>Vytvoří kužel se základním bodem v počátku systému CoordinateSystem, s prodloužením v délce 
+            vykreslení osy Z systému CoordinateSystem, s
+            kruhovou základnou v rovině XY systému CoordinateSystem.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>Vytvoří kužel se základním bodem v počátku systému CoordinateSystem, s prodloužením
+              v délce vykreslení osy Z systému CoordinateSystem,
+              s kruhovými základnami v rovině XY systému CoordinateSystem.</summary>
             <search>cone,cone by height,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
-            <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
-            <param name="matrix">4x4 transformation matrix</param>
-            <returns>CoordinateSystem from the matrix</returns>
+            <summary>Vytvoří systém CoordinateSystem z matice 4×4. Tato metoda je vyřazena. Kde je to možné, upřednostňujte jiné konstruktory.</summary>
+            <param name="matrix">Transformační matice 4x4</param>
+            <returns>Systém CoordinateSystem z matice</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.FromJson(System.String)">
             <summary>Analyzujte importovaný řetězec JSON naformátovaný pomocí schématu autodesk.math:matrix44d-1.0.0.</summary>
@@ -492,13 +492,13 @@
             <summary>Vrací osu Z systému CoordinateSystem.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
-            <summary>Returns the length of the X axis vector from the coordinate system.</summary>
+            <summary>Vrací délku vektoru osy X ze souřadnicového systému.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor">
-            <summary>Returns the length of the Y axis vector from the coordinate system.</summary>
+            <summary>Vrací délku vektoru osy Y ze souřadnicového systému.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
-            <summary>Returns the length of the Z axis vector from the coordinate system.</summary>
+            <summary>Vrací délku vektoru osy Z ze souřadnicového systému.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane">
             <summary>Vrací rovinu, v níž leží osy X a Y, s kořenem v počátku.</summary>
@@ -511,17 +511,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
             <summary>Získat inverzní systém k tomuto systému CoordinateSystem – přičemž se použije tento systém CoordinateSystem na část geometrie, což otočí původní systém.</summary>
-            <returns>Returns inverted coordinate system from the input</returns>
+            <returns>Vrátí inverzní souřadnicový systém ze vstupu.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem after this one - Result = this * other.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>Použije argument systém CoordinateSystem argumentu po tomto – výsledek = tento * jiný</summary>
+            <param name="other">Jiný souřadnicový systém</param>
+            <returns>Nový souřadnicový systém z násobení</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem before this one - Result = other * this.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>Použije argument systému CoordinateSystem před tímto – výsledek = tento * jiný</summary>
+            <param name="other">Jiný souřadnicový systém</param>
+            <returns>Nový souřadnicový systém z násobení</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor">
             <summary>Vrací vektor, který obsahuje faktory měřítka X, Y a Z.</summary>
@@ -530,8 +530,8 @@
             <summary>Určit, zda jsou dva systémy CoordinateSystems stejné</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(System.Double,System.Double,System.Double)">
-            <summary>Převádí libovolnou danou geometrii podle zadaného posunutí ve směru X, Y
-            a Z definovaném v GSS.</summary>
+            <summary>Převádí libovolnou danou geometrii podle zadaného posunutí ve směrech X, Y
+            a Z definovaných v GSS.</summary>
             <param name="xTranslation">Posunutí podél osy X</param>
             <param name="yTranslation">Posunutí podél osy Y</param>
             <param name="zTranslation">Posunutí podél osy Z</param>
@@ -543,8 +543,8 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>Převede libovolný typ geometrie pomocí zadané vzdálenosti v daném
+            směru.</summary>
             <param name="direction">Směr posunutí</param>
             <param name="distance">Vzdálenost posunutí v daném směru</param>
             <returns>Transformovaná geometrie</returns>
@@ -556,31 +556,31 @@
             <returns>Transformovaný souřadnicový systém</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>Vrací tuto geometrii s její polohou vyjádřenou vzhledem k
+            systému targetCoordinateSystem, umístěnouv rámci systému sourceCoordinateSystem.
+            Místní poloha výsledku v rámci systému sourceCoordinateSystem
+            odpovídá místní poloze vstupu v rámci systému targetCoordinateSystem.
+            Abyste získali souřadnice geometrie v glogálním prostoru v rámci daného souřadnicového
+            systému, použijte systém CoordinateSystem.Identity jako systém sourceCoordinateSystem
+            a daný souřadnicový systém jako systém targetCoordinateSystem.
+            Výsledné souřadnice geometrie budou rovny souřadnicicím vstupu
+            relativně k danému cílovému rámci.</summary>
+            <param name="targetCoordinateSystem">Systém CoordinateSystem k vyjádření geometrie vzhledem k.</param>
+            <param name="sourceCoordinateSystem">Systém CoordinateSystem, ve kterém je geometrie aktuálně vyjádřena.
+            Předejte funkci CoordinateSystem.Identity() pro práci v globálním prostoru.</param>
             <returns>Transformovaná geometrie</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>Otočí objekt kolem počátku a osy o zadaný
+            počet stupňů</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>Otočí objekt kolem počátku a normály dané roviny o zadaný počet
+            stupňů.</summary>
+            <param name="basePlane">Referenční rovina, kolem které se má otáčet</param>
+            <param name="degrees">Úhel otočení ve stupních</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
@@ -596,15 +596,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>Změní měřítko rovnoměrně kolem daného bodu pomocí dvou bodů jako skalárních hodnot</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>Upraví měřítko v jednom rozměru pomocí základny a dvou vybraných bodů. Osa změny měřítka je definována čarou mezi základním bodem a počátečním bodem.</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>Upraví měřítko ve dvou rozměrech podle základny a 2 vybraných bodů. Dva vybrané body jsou promítnuty na základní rovinu za účelem určení 2D faktorů měřítka.</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -612,8 +612,8 @@
             <search>reflect,flip over</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
-            <summary>Creates a CoordinateSystem as the World Coordinate System: origin at
-            0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1</summary>
+            <summary>Vytvoří systém CoordinateSystem jako globální souřadnicový systém: počátek na
+            0, 0, 0; osa X na 1, 0, 0; osa Y na 0, 1, 0; osa Z na 0, 0, 1.</summary>
             <search>zero,wcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double)">
@@ -630,50 +630,49 @@
             osami X a Y nastavenými jako osy X a Y v GSS.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>Create a CoordinateSystem with origin equal to input Plane origin, and
-            X and Y axes lying in the Plane, aligned with Plane X and Y axes.</summary>
+            <summary>Vytvoří systém CoordinateSystem s počátkem, který bude roven počátku vstupní roviny a
+            osami X a Y ležícími v rovině zarovnané s osami X a Y roviny.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis.
-            Input Vectors are normalized before creating the CoordinateSystem.</summary>
+            <summary>Vytvoří systém CoordinateSystem v počátku s osami X a Y. 
+            Vstupní vektory se normalizují před vytvořením systému CoordinateSystem.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis, with Z
-            axis ignored completely. Input Vectors are normalized before creating
-            the CoordinateSystem.</summary>
+            <summary>Vytvořit systém CoordinateSystem v počátku s osami X a Y, přičemž osa Z 
+            je kompletně ignorována. Vstupní vektory se normalizují před vytvořením 
+            systému CoordinateSystem.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified cylindrical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>Vytvoří systém CoordinateSystem v zadaných válcových souřadnicových parametrech s ohledem na zadaný souřadnicový systém.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>Vytvoří systém CoordinateSystem v zadaných kulových souřadnicových parametrech s ohledem na zadaný souřadnicový systém.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
-            <summary>Returns length distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>Vrací vzdálenost délky.
+            Poznámka: Tento příkaz vrátí vstupní kóty kvádru, NIKOLI
+            skutečné kóty globálního prostoru. Jinými slovy, pokud vytvoří kvádr,
+            se šířkou (osa X), délkou 10 a transformuje jej do systému CoordinateSystem se
+            změnou měřítka 2x v ose X, šířka bude stále 10. ASM vám neumožňuje
+            extrahovat vrcholy tělesa v libovolném předvídatelném pořadí, takže není možné
+            určit kóty po transformaci.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Width">
-            <summary>Returns width distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>Vrací vzdálenost šířky.
+            Poznámka: Tento příkaz vrátí vstupní kóty kvádru, NIKOLI
+            skutečné kóty globálního prostoru. Jinými slovy, pokud vytvoříte kvádr,
+             šířka (osa X), délka 10 a transformujete jej do systému CoordinateSystem se změnou
+            měřítka 2x v ose X, šířka bude stále 10. ASM vám neumožňuje extrahovat vrcholy tělesa v libovolném předvídatelném pořadí, takže není
+            možné určit kóty po transformaci.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
-            <summary>Returns height distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>Vrací vzdálenost výšky.
+            Poznámka: Tento příkaz vrátí vstupní kóty kvádru, NIKOLI
+            skutečné kóty globálního prostoru. Jinými slovy, pokud vytvoříte kvádr,
+             šířka (osa X), délka 10 a transformujete jej do systému CoordinateSystem se změnou měřítka
+             2x v ose X, šířka bude stále 10. ASM vám neumožňuje
+              extrahovat vrcholy tělesa v libovolném předvídatelném pořadí, takže není
+             možné určit kóty po transformaci.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(System.Double,System.Double,System.Double)">
             <summary>Vytvořte kvádr vystředěný na počátek GSS, se šířkou, délkou a výškou.</summary>
@@ -684,8 +683,8 @@
             <search>box,cube,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double)">
-            <summary>Create a Cuboid centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>Vytvoří kvádr vystředěný na vstupní bod, s určenou šířkou, délkou
+            a výškou.</summary>
             <param name="origin">Bod počátku</param>
             <param name="width">Šířka kvádru</param>
             <param name="length">Délka kvádru</param>
@@ -751,16 +750,16 @@
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>Get a Vector perpendicular to the curve at a specified parameter between StartParameter() and EndParameter()
-            The curve must be planar. The resulting normal will be consistent across the entire curvature of the curve.</summary>
+            <summary>Získejte vektor kolmý ke křivce v zadaném parametru mezi objekty StartParameter() a EndParameter()
+             Křivka musí být rovinná. Výsledná normála bude konzistentní napříč celým zakřivením křivky.</summary>
             <param name="param">Parametr, ve kterém vyhodnocovat</param>
             <param name="side">Pokud je možnost 'strana' nastavena na hodnotu false, normála bude ukazovat směrem doprava od křivky (posun od počátečního bodu ke koncovému bodu křivky). Pokud je možnost 'strana' nastavena na hodnotu true, normála bude ukazovat směrem doleva od křivky.</param>
             <returns>Vektor kolmý ke křivce v parametru</returns>
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal,
-            the YAxis is aligned with the curve tangent at this point, and the ZAxis is aligned with the up-vector or binormal at this point</summary>
+            <summary>Získá systém CoordinateSystem s počátkem v bodě v zadaném parametru. Osa XAsis je zarovnána s normálou
+             křivky, osa YAxis je zarovnána s tečnou křivky v tomto bodě a osa ZAxis je zarovnána s vektorem UP nebo binormálou v tomto bodě.</summary>
             <param name="param">Parametr, ve kterém vyhodnocovat</param>
             <returns>Objekt CoordinateSystem v parametru křivky</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
@@ -772,9 +771,9 @@
             <search>frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>Returns a Plane whose normal aligns with the tangent of the Curve.
-            Parameters are adjusted such that 0 is always the start Point
-            and 1 is always the end Point.</summary>
+            <summary>Vrací rovinu, jejíž normála je zarovnána s tečnou křivky.
+             Parametry jsou upraveny tak, aby bod 0 vždy byl počátečním bodem
+             a bod 1 vždy byl koncovým bodem.</summary>
             <search>planeoncurve,planecurve,tangentplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
@@ -784,14 +783,14 @@
             <search>pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>Returns points spaced equally along the curve length
-            based on the input number of divisions</summary>
+            <summary>Vrátí body rovnoměrně rozmístěné podél délky křivky
+             na základě vstupního počtu dělení.</summary>
             <param name="divisions">Počet dělení</param>
             <returns>Body rovnoměrně rozmístěné podél délky křivky</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>Returns points spaced along curve at equal chord length
-            based on the input number of divisions</summary>
+            <summary>Vrátí body rozmístěné podél křivky pomocí stejné délky tětivy
+            na základě vstupního počtu dělení.</summary>
             <param name="divisions">Počet dělení</param>
             <returns>Seznam bodů na křivce</returns>
         </member>
@@ -804,8 +803,8 @@
             <search>measure from,measure to,parameteratdist</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Returns points spaced equally along the curve at given segment length
-            from the given point</summary>
+            <summary>Vrátí body rovnoměrně rozmístěné podél křivky pomocí dané délky
+            úseku od daného bodu.</summary>
             <param name="point">Referenční bod, od kterého měřit</param>
             <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
             <returns>Seznam bodů na křivce včetně daného bodu a směru křivky.</returns>
@@ -817,16 +816,16 @@
             <returns>Seznam bodů na křivce včetně daného bodu a směru křivky.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>Returns a CoordinateSystem at specified distance from Curve start Point.
-            Y Axis lies tangent to the Curve, X Axis is the curvature.</summary>
+            <summary>Vrací systém CoordinateSystem v zadané vzdálenosti od počátečního bodu křivky.
+            Osa Y leží tečně ke křivce, osa X je zakřivení.</summary>
             <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
             <returns>Systém CoordinateSystem na křivce</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>Returns a Plane at the specified distance along the Curve from the
-            start Point. The normal of the Plane aligns with the tangent of the
-            Curve.</summary>
+            <summary>Vrací rovinu v zadané vzdálenosti podél křivky od počátečního bodu.
+             Normála roviny je zarovnána s
+             tečnou křivky.</summary>
             <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
             <returns>Rovina na křivce</returns>
             <search>planeoncurve,planecurve,tangentplane</search>
@@ -869,8 +868,8 @@
             <search>measure,distance,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Get the parameter at a given point along the curve. If the point is not on the curve then ParameterAtPoint will still return a value
-            which will correspond to a nearby point on the curve, but the point is not in general the closest point.</summary>
+            <summary>Získá parametr v daném bodě podél křivky. Pokud bod není na křivce, objekt ParameterAtPoint bude vracet hodnotu,
+             která bude odpovídat blízkému bodu na křivce, bod však obecně není nejbližším bodem.</summary>
             <param name="point">Bod podél nebo poblíž křivky</param>
             <returns>Parametr na křivce pro daný bod.</returns>
             <search>projectpoint,closestparam,curveparam</search>
@@ -968,10 +967,10 @@
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more curves by offsetting a planar curve by the given distance in a plane defined by the plane normal. If there are gaps between the offset component curves then, they are filled by extending the offset curves.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>Vytvoří jednu nebo více křivek odsazením rovinné křivky o zadanou vzdálenost v rovině definované normálou roviny. Pokud mezi odsazenými křivkami komponenty existují mezery, budou vyplněny prodloužením odsazených křivek.
+             Vstupní argument „planeNormal“ má jako výchozí hodnotu normálu roviny obsahující křivku, je však možné určit explicitní normálu rovnoběžnou s původní normálou křivky za účelem lepšího řízení směru odsazení.
+             Pokud je například požadován konzistentní směr odsazení u více křivek sdílejících stejnou rovinu, je možné pomocí hodnoty „planeNormal“ přepsat jednotlivé normály křivky a vynutit stejný směr odsazení u všech křivek.
+             Obrácení normály obrází směr odsazení.</summary>
             <param name="signedDistance">Kladná vzdálenost odsazení se použije ve směru vektorového součinu vektoru tečny křivky a normálového vektoru roviny, zatímco záporné odsazení se použije v opačném směru.</param>
             <param name="planeNormal">Normála roviny křivky. Výchozí hodnotou je normála roviny vstupní křivky</param>
             <returns>Jedna nebo více odsazených křivek</returns>
@@ -1154,19 +1153,19 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CurveGeometry">
             <summary>Základní křivka tvořící hranu</summary>
-            <returns>Curve representation of edge</returns>
+            <returns>Znázornění hrany pomocí křivky</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.AdjacentFaces">
             <summary>Plochy přilehlé k této hraně</summary>
-            <returns>Adjacent faces of edge</returns>
+            <returns>Přilehlé plochy hrany</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.StartVertex">
             <summary>Vrchol, ve kterém začíná tato hrana</summary>
-            <returns>Start vertex of edge</returns>
+            <returns>Počáteční vrchol hrany</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.EndVertex">
             <summary>Vrchol, ve kterém končí tato hrana</summary>
-            <returns>End vertex of edge</returns>
+            <returns>Koncový vrchol hrany</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>Objekty CoEdge přiřazené k této hraně</summary>
@@ -1182,8 +1181,8 @@
             <summary>Vedlejší osa elipsy. Toto je kratší osa. Délka vektoru je vedlejší poloměr.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create an Ellipse centered at input Point, aligned with WCS XY Plane,
-            with specified X and Y axis radii.</summary>
+            <summary>Vytvoří elipsu vystředěnou na vstupní bod, zarovnanou s rovinou XY
+             GSS a s určenými poloměry osy X a Y.</summary>
             <param name="origin">Bod počátku elipsy</param>
             <param name="xAxisRadius">Poloměr osy X</param>
             <param name="yAxisRadius">Poloměr osy Y</param>
@@ -1191,8 +1190,8 @@
             <search>ellipse</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an Ellipse centered at input Point, with two specified axes.
-            Axes should be be at 90 degrees to each other.</summary>
+            <summary>Vytvoří elipsu vystředěnou na vstupní bod, se dvěma zadanými osami.
+             Osy by navzájem měly svírat úhel 90 stupňů.</summary>
             <param name="origin">Bod počátku elipsy</param>
             <param name="xAxisRadius">Poloměr osy X</param>
             <param name="yAxisRadius">Poloměr osy Y</param>
@@ -1200,9 +1199,9 @@
             <search>ellipsebylengths,ellipsebyvectors</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input CoordinateSystem,
-            with a x_radius radius in the CS X direction, and y_radius radius in the
-            CS Y direction.</summary>
+            <summary>Vytvoří elipsu vystředěnou a zarovnanou se vstupním systémem CoordinateSystem,
+             s poloměrem x_radius ve směru X systému CS a poloměrem y_radius ve směru
+             Y systému CS.</summary>
             <param name="origin">Souřadnicový systém počátku elipsy</param>
             <param name="xAxisRadius">Poloměr osy X</param>
             <param name="yAxisRadius">Poloměr osy Y</param>
@@ -1210,9 +1209,9 @@
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input Plane, with a x_radius
-            radius in the Plane X axis direction, and y_radius radius in the
-            Plane Y axis direction.</summary>
+            <summary>Vytvoří elipsu vystředěnou a zarovnanou se vstupní rovinou, s poloměrem
+             x_radius ve směru osy X roviny a s poloměrem y_radius ve směru
+             osy Y roviny.</summary>
             <param name="plane">Rovina, kde je nakreslen oblouk elipsy</param>
             <param name="xAxisRadius">Poloměr osy X</param>
             <param name="yAxisRadius">Poloměr osy Y</param>
@@ -1333,48 +1332,48 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Přesune objekt ve směru a dle velikosti vstupního vektoru.</summary>
+            <summary>Přesune objekt pomocí směru a velikosti vstupního vektoru.</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>Převede libovolný typ geometrie pomocí zadané vzdálenosti v daném
+            směru.</summary>
             <param name="direction">Směr posunutí</param>
             <param name="distance">Vzdálenost posunutí v daném směru</param>
             <returns>Transformovaná geometrie</returns>
             <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Transformovat tento objekt pomocí vstupní matice systému CoordinateSystem.</summary>
+            <summary>Transformuje tento objekt pomocí vstupní matice systému CoordinateSystem.</summary>
             <param name="coordinateSystem">vstupní souřadnicový systém</param>
             <returns>Transformovaný souřadnicový systém</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>Vrací tuto geometrii s její polohou vyjádřenou vzhledem k
+            systému targetCoordinateSystem, umístěnouv rámci systému sourceCoordinateSystem.
+            Místní poloha výsledku v rámci systému sourceCoordinateSystem
+            odpovídá místní poloze vstupu v rámci systému targetCoordinateSystem.
+            Abyste získali souřadnice geometrie v glogálním prostoru v rámci daného souřadnicového
+            systému, použijte systém CoordinateSystem.Identity jako systém sourceCoordinateSystem
+            a daný souřadnicový systém jako systém targetCoordinateSystem.
+            Výsledné souřadnice geometrie budou rovny souřadnicicím vstupu
+            relativně k danému cílovému rámci.</summary>
+            <param name="targetCoordinateSystem">Systém CoordinateSystem k vyjádření geometrie.</param>
+            <param name="sourceCoordinateSystem">Systém CoordinateSystem, ve kterém je geometrie aktuálně vyjádřena.
+            Předejte funkci CoordinateSystem.Identity() pro práci v globálním prostoru.</param>
             <returns>Transformovaná geometrie</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>Otočí objekt kolem počátku a osy o zadaný
+            počet stupňů</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>Otočí objekt kolem počátku roviny a normály o zadaný
+            počet stupňů</summary>
+            <param name="basePlane">Referenční rovina, kolem které se má otáčet</param>
+            <param name="degrees">Úhel otočení ve stupních</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -1394,20 +1393,20 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>Změní měřítko rovnoměrně kolem daného bodu pomocí dvou bodů jako skalárních hodnot.</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>Upraví měřítko v jednom rozměru pomocí základny a dvou vybraných bodů. Osa změny měřítka je definována čarou mezi základním bodem a počátečním bodem.</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>Upraví měřítko ve dvou rozměrech podle základny a 2 vybraných bodů. Dva vybrané body jsou promítnuty na základní rovinu za účelem určení 2D faktorů měřítka.</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Získat vzdálenost z této geometrie do jiné</summary>
-            <param name="entity">Jiná geometrie</param>
+            <param name="entity">Druhá geometrie</param>
             <returns>Vzdálenost</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo(Autodesk.DesignScript.Geometry.Geometry)">
@@ -1502,7 +1501,7 @@
             <notranslation>true</notranslation>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
-            <summary>The CoordinateSystem that this Geometry is defined in</summary>
+            <summary>Získá systém CoordinateSystem, ve kterém je definována tato geometrie.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Určit, zda se jiný objekt geometrie protíná s tímto</summary>
@@ -1514,14 +1513,14 @@
             <summary>Získejte průsečík geometrie pro tento objekt a kolekci dalších geometrií. Najde společné geometrie všech účastníků.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToSolidDef">
-            <summary>Convert to SolidDef json</summary>
+            <summary>Převede geometrii na SolidDef json</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
             <summary>Promítne kolekci bodů na tuto geometrii podél určeného směru.
             Vrací ploché pole výsledné geometrie.</summary>
-            <param name="points">Points to project.</param>
-            <param name="projectionDirection">Projection direction.</param>
-            <returns>Flat array of resulting Geometry.</returns>
+            <param name="points">Body k promítnutí</param>
+            <param name="projectionDirection">Směr promítání</param>
+            <returns>Ploché pole výsledné geometrie</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>Úhel ve stupních, o který se šroubovice otočí přes svoji délku</summary>
@@ -1540,11 +1539,11 @@
             <search>origin,helixstart</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Helix. The helix always rotates clockwise about the supplied
-            axis direction. If viewing along the axis direction, the viewer will see
-            the point turning clockwise around the axis as it moves along the curve
-            in the direction of increasing parameter. Pitch is Distance the helix
-            moves in the axis direction per turn. This can be positive or negative.</summary>
+            <summary>Vytvoří šroubovici. Šroubovice se vždy otáčí ve směru hodinových ručiček okolo zadaného 
+            směru osy. Při prohlížení podél směru osy se v prohlížeči 
+             zobrazí bod otáčející se ve směru pohybu hodinových ručiček kolem osy, protože se pohybuje po křivce ve směru vzrůstajícího
+             parametru. Rozteč je vzdálenost, kterou šroubovice
+              urazí ve směru osy za jedno otočení. Tato hodnota může být kladná nebo záporná.</summary>
             <param name="axisPoint">Bod osy</param>
             <param name="axisDirection">Směrový vektor osy</param>
             <param name="startPoint">Počáteční bod šroubovice</param>
@@ -1603,16 +1602,16 @@
             <search>line,approximate,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByTangency(Autodesk.DesignScript.Geometry.Curve,System.Double)">
-            <summary>Create a Line tangent to the input Curve, positioned at the parameter
-            Point of the input Curve.</summary>
+            <summary>Vytvoří tečnu na vstupní křivku, umístěnou na bod parametru
+             vstupní křivky.</summary>
             <param name="curve">Základní oblouk pro tečnu</param>
             <param name="parameter">Hodnota parametru</param>
             <returns>Tečna</returns>
             <search>tangentline,tangentto,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Create a straight Line starting at start Point, extending in Vector
-            direction by specified length.</summary>
+            <summary>Vytvoří přímou čáru od počátečního bodu, přičemž ji prodlouží ve směru 
+            vektoru podle zadané délky.</summary>
             <param name="startPoint">Počáteční bod čáry</param>
             <param name="direction">Směrový vektor</param>
             <param name="length">Délka čáry</param>
@@ -1648,7 +1647,7 @@
             <returns>Síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToJson">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
+            <summary>Převede síť na objekt JSON naformátovaný pomocí schématu dynamo.geometry:mesh-1.0.0.</summary>
             <returns>Výsledný řetězec JSON</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.FaceIndices">
@@ -1718,23 +1717,23 @@
             <returns name="mesh">síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.BooleanIntersection(Autodesk.DesignScript.Geometry.Mesh)">
-            <summary>Returns a new mesh consisting of the intersection between the tool
-            mesh and the original mesh.</summary>
+            <summary>Vrátí novou síť skládající se z průsečíku mezi sítí
+            nástroje a původní sítí.</summary>
             <param name="tool"/>
             <returns name="mesh">síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Repair">
-            <summary>Returns a new Mesh with the following defects repaired:
-            Small components: if the Mesh contains very small, disconnected
-            segments, relative to the overall Mesh size, they will be
-            discarded.
-            Holes: holes in the mesh are filled in
-            Non-manifold regions: if a vertex is connected to more than
-            two *boundary* edges, or an edge is connected to more than
-            two triangles then the vertex / edge is non-manifold. The
-            mesh toolkit will remove geometry until the mesh is manifold
-            This method tries to preserve as much of the original mesh as
-            possible, as opposed to MakeWatertight, which resamples the Mesh</summary>
+            <summary>Vrátí novou síť s opravenými následujícími vadami:
+            Malé komponenty: pokud síť obsahuje velmi malé odpojené
+                segmenty vzhledem k celkové velikosti sítě, budou
+                odstraněny.
+            Otvory: otvory v síti jsou vyplněny.
+            Nerozložené oblasti: pokud je vrchol připojen k více než
+                dvěma *okrajovým* hranám nebo je hrana připojena k více než
+                dvěma trojúhelníkům, pak je vrchol / hrana nerozložená. Sada
+                nástrojů pro sítě bude odebírat geometrii, dokud nebude síť rozložená
+           Tato metoda se snaží zachovat co nejvíce z původní sítě 
+            na rozdíl od metody MakeWatertight, která síť převzorkuje</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.CloseCracks">
             <summary>Odebere vnitřní hranice sítě. Vnitřní hranice nastane,
@@ -1742,11 +1741,11 @@
             skupiny trojúhelníků pro poklici a hrnec.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeWatertight">
-            <summary>Returns a new Mesh that is watertight and 3D printable. As a result of
-            making a Mesh watertight, self-intersections, overlaps, and non-manifold
-            geometry is removed from the mesh.
-            The Mesh is filled with a bunch of tiny boxes, and a new
-            mesh is created around this.</summary>
+            <summary>Vrátí novou síť, která je vodotěsná a lze ji vytisknout na 3D tiskárně. V důsledku
+            vytvoření vodotěsné sítě budou průsečíky sebe sama, přesahy a nerozložená
+             geometrie odebrány ze sítě.
+             Síť je naplněna spoustou malých krychlí a kolem 
+            tohoto se vytvoří nová síť.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeHollow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
             <summary>Vrátí novou síť, která byla vyhloubena pro 3D tisk.</summary>
@@ -1772,13 +1771,13 @@
             <returns name="mesh">Redukovaná síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Remesh">
-            <summary>Returns a new Mesh distributing triangles more evenly over the whole of the selection
-            regardless of any change in triangle normals across the given selection.</summary>
+            <summary>Vrátí novou síť s rovnoměrnějším rozmístěním trojúhelníků po celém výběru 
+            bez ohledu na jakoukoli změnu normál trojúhelníků v rámci daného výběru.</summary>
             <returns name="mesh">síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Smooth(System.Double)">
-            <summary>Returns a new smooth Mesh. Smoothing type by default is
-            cotangent which smooths without spreading the vertices.</summary>
+            <summary>Vrátí novou vyhlazenou síť. Typ vyhlazení je ve výchozím nastavení 
+            kotangentoida, která vyhlazuje bez rozšíření vrcholů.</summary>
             <param name="scale">Nastaví „prostorové měřítko“ vyhlazení. Nižší hodnoty znamenají více
             místní vyhlazení a obvykle vedou k méně „vyhlazeně“ vypadajícím výsledkům (0,1 – 64,0)</param>
             <returns name="mesh">Vyhlazená síť</returns>
@@ -1787,8 +1786,8 @@
             <summary>Vytvoří přesný geometrický rovinný řez, který odstraní části sítě
             ležící na straně roviny ve směru normály roviny.</summary>
             <param name="plane">Nastavená rovina, která se použije k řezu</param>
-            <param name="makeSolid">Attempt to create a minimal fill using the fewest
-            number of triangles.</param>
+            <param name="makeSolid">Pokusí se o vytvoření minimální výplně pomocí nejmenšího 
+            počtu trojúhelníků.</param>
             <returns name="mesh">síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Intersect(Autodesk.DesignScript.Geometry.Plane)">
@@ -1804,13 +1803,13 @@
             <summary>Vytvoří odraz sítě přes vstupní rovinu</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotate the Mesh around the input axis by the given angle.</summary>
+            <summary>Otočí síť kolem vstupní osy o zadaný úhel.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double)">
             <summary>Změní měřítko sítě o vstupní hodnotu</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double,System.Double,System.Double)">
-            <summary>Scale Mesh non-uniformly by scale factors</summary>
+            <summary>Změní měřítko sítě nerovnoměrně podle faktorů měřítka.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(Autodesk.DesignScript.Geometry.Vector)">
             <summary>Posune síť ve směru vstupního vektoru o délku vektoru.</summary>
@@ -1838,12 +1837,12 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>Vytvoří novou síť ze zadaných bodů a indexů. Body by se neměly 
+            překrývat. Indexy by měly být množinami tří celých čísel 
+            určujících tři umístění v poli bodů
+            pomocí tří bodů trojúhelníku</summary>
             <param name="points">Seznam bodů</param>
-            <param name="indices">Flat list of point indices</param>
+            <param name="indices">Plochý seznam indexů bodů</param>
             <returns>Síť</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
@@ -1867,13 +1866,13 @@
             Rozlišení sítě je určeno přesností rendrování aplikace Dynamo</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied vertices and indices. Vertices should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the vertices array
-            of the three points of a triangle</summary>
+            <summary>Vytvoří novou síť ze zadaných vrcholů a indexů. Vrcholy by se neměly 
+            překrývat. Indexy by měly být množinami tří celých čísel
+            označujících tři umístění v poli vrcholů
+            pomocí tří bodů trojúhelníku</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
-            <summary>Create a mesh plane based on the given inputs.</summary>
+            <summary>Vytvoří rovinu sítě pomocí daných vstupů.</summary>
             <param name="origin"/>
             <param name="xWidth"/>
             <param name="yWidth"/>
@@ -1936,7 +1935,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
             <summary>Skutečně periodické řídicí body periodického objektu NurbsCurve.
             Poznámka: Tato operace funguje pouze u periodických křivek a nezdaří se, pokud křivka není periodická.</summary>
-            <returns>Periodic control points of a NURBS curve</returns>
+            <returns>Periodické řídicí body křivky NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Uzly křivky. Za uzly se považuje řada hodnot parametru (hodnoty double), pomocí nichž se určí, kde a jak řídicí body ovlivní křivku.</summary>
@@ -1953,24 +1952,24 @@
             <search>ptweight</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Vytvoří objekt BSplineCurve pomocí explicitních řídicích bodů.
+             POZNÁMKA 1: Objekty BSplineCurves s hodnotou deg=1 mají přerušení G1, což může vést k problémům
+             s vysunutím, tažením a jinými operacemi. Neměly by se používat.
+            Místo nich použijte objekt PolyCurve.
+              POZNÁMKA 2: Pokud je oblouk periodický (uzavřený), pak první a poslední bod
+             MUSÍ být stejné.</summary>
             <param name="points">Body křivky nurbs</param>
             <returns>Křivka Nurbscurve vytvořená z bodů</returns>
             <search>nurbscurve,spline,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Vytvoří objekt BSplineCurve pomocí explicitních řídicích bodů.
+             POZNÁMKA 1: Objekty BSplineCurves s hodnotou deg=1 mají přerušení G1, což může vést k problémům
+             s vysunutím, tažením a jinými operacemi. Neměly by se používat.
+            Místo nich použijte objekt PolyCurve.
+              POZNÁMKA 2: Pokud je oblouk periodický (uzavřený), pak první a poslední bod
+             MUSÍ být stejné.</summary>
             <param name="points">Body křivky nurbs</param>
             <param name="degree">Stupeň křivky</param>
             <returns>Křivka Nurbscurve vytvořená z bodů</returns>
@@ -1978,12 +1977,12 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32,System.Boolean)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Vytvoří objekt BSplineCurve pomocí explicitních řídicích bodů.
+             POZNÁMKA 1: Objekty BSplineCurves s hodnotou deg=1 mají přerušení G1, což může vést k problémům
+             s vysunutím, tažením a jinými operacemi. Neměly by se používat.
+            Místo nich použijte objekt PolyCurve.
+              POZNÁMKA 2: Pokud je oblouk periodický (uzavřený), pak první a poslední bod
+             MUSÍ být stejné.</summary>
             <param name="points">Body křivky nurbs</param>
             <param name="degree">Stupeň křivky</param>
             <param name="closeCurve">Přepnout na uzavření křivky</param>
@@ -1992,19 +1991,19 @@
             <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double[],System.Double[],System.Int32)">
-            <summary>Create a BSplineCurve by from control vertices, weights, and knots.
-            FROM ASM DOCS:
-            Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum
-            B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: The knot vector should be a non-decreasing sequence. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows curves with G1 discontinuities to be
-            represented). Note that non-clamped knot vectors are supported, but will be
-            converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.
-            knot array: the array size must be num_control_points + degree + 1</summary>
+            <summary>Vytvoří objekt BSplineCurve z řídicích vrcholů, tloušťek a uzlů.
+            Z DOKUMENTŮ ASM:
+             Stupeň: měl by být větší než 1 (aproximace lineární po částech) a menší než 26 (maximální
+            stupeň na bázi B-spline podporovaný ASM).
+             Tloušťky čar: Všechny hodnoty tloušťky čar (pokud jsou zadány) by měly být zásadně kladné.
+             Tloušťka čar menší než 1e-11 bude zamítnuta a funkce se nezdaří.
+             Uzly: vektor uzlu by měl být nesestupná posloupnost.
+             Vnitřní různorodost
+             uzlů by neměla být větší než stupeň + 1 na začátku nebo na konci uzlu a
+             stupeň na vnitřním uzlu (to umožňuje reprezentaci oblouků s přerušeními G1).
+             Všimněte si, že nesvázané vektory jsou podporovány, ale budou převedeny na svázané, s odpovídajícími změnami použitými na data
+             řídicího bodu / tloušťky čar. Pole uzlu:
+              velikost pole musí být num_control_points + stupeň + 1</summary>
             <search>explicit,nurbscurve,spline,degree,spline byarray,lines</search>
             <weights>0.5,0.5,0.5,0.5,0.5,0.45</weights>
         </member>
@@ -2016,9 +2015,9 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>Create a BSplineCurve by interpolating between points.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Vytvoří objekt BSplineCurve pomocí interpolace mezi body.
+              POZNÁMKA 2: Pokud je křivka periodická (uzavřená), MUSÍ být první a
+             poslední bod stejné.</summary>
             <param name="points">Body křivky nurbs</param>
             <param name="closeCurve">Přepnout na uzavření křivky</param>
             <returns>Křivka Nurbscurve vytvořená z bodů</returns>
@@ -2084,9 +2083,9 @@
             <returns>Uzly V nurbs povrchu</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.</summary>
+            <summary>Vytvoří objekt NurbsSurface s určenými interpolovanými body a
+            stupni U a V. Výsledný povrch bude procházet
+            všemi body.</summary>
             <param name="points">Osnova bodů pro povrch nurbs</param>
             <param name="uDegree">Stupeň ve směru U</param>
             <param name="vDegree">Stupeň ve směru V</param>
@@ -2094,21 +2093,21 @@
             <search>fit,topoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.  The number of tangents must match the number of
-            points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.</summary>
+            <summary>Vytvoří objekt NurbsSurface s určenými interpolovanými body a
+            stupni U a V. Výsledný povrch bude procházet
+            všemi body.  Počet tečen musí odpovídat počtu
+            bodů v odpovídajícím směru. Výsledný povrch
+            bude stupně 3 ve směru U i V.</summary>
             <search>fit,topoints,totangents</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Double[],System.Double[],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface satisfying a collection of different surface characteristics.
-            This is the most advanced surface fitting method.  The resultant surface
-            will pass through all of the points.  The number of tangents must match
-            the number of points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.  The corner derivatives should be
-            second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],
-            [ lowU, highV ], [ highU, highV ].</summary>
+            <summary>Vytvoří objekt NurbsSurface vyhovující kolekci různých vlastností povrchu. 
+            Jedná se o nejpokročilejší způsob umístění povrchu. Výsledný povrch
+             bude procházet všemi body. Počet tečen musí odpovídat
+             počtu bodů v odpovídajícím směru. Výsledný povrch
+             bude stupně 3 ve směru U i V. Derivace roh
+            u by měly být druhého řádu (dP/dUdV) a měly by být uvedeny v tomto pořadí [lowU, lowV], [highU, lowV],
+            [lowU, highV], [highU, highV].</summary>
             <search>fit,topoints,totangents,fit corners,complex fit</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
@@ -2119,20 +2118,20 @@
             <returns>Povrch Nurbs vytvořený pomocí řídicích bodů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots(Autodesk.DesignScript.Geometry.Point[][],System.Double[][],System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified control vertices, knots, weights,
-            and U V degrees.
-            There are several restrictions on the data which, if
-            broken, will cause the function to fail and will throw an exception.
-            Degree: Both u- and v- degree should be &gt;= 1 (piecewise-linear spline)
-            and  less than 26 (the maximum B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: Both knot vectors should be non-decreasing sequences. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows surfaces with G1 discontinuities to
-            be represented). Note that non-clamped knot vectors are supported, but will
-            be converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.</summary>
+            <summary>Vytvoří objekt NurbsSurface pomocí zadaných řídicích vrcholů, uzlů, tloušťky čar
+            a stupňů U V.
+            Existuje několik omezení dat, které v případě porušení
+            způsobí selhání funkce a výskyt výjimky.
+            Stupeň: stupně U i V by měly být &gt;= 1 (interpolace lineární spline)
+             a menší než 26 (maximální stupeň založený na B-spline, který podporuje ASM).
+             Tloušťky čar: Všechny hodnoty tloušťky čar (pokud jsou zadány) by měly být zásadně kladné.
+             Tloušťka čáry menší než 1e-11 bude zamítnuta a funkce se nezdaří.
+              Uzly: oba uzlové vektory by měly být nesestupné posloupnosti. Vnitřní různorodost
+             uzlů by neměla být větší než stupeň + 1 na počátečním nebo koncovém uzlu a
+             stupeň na interním uzlu (to umožňuje reprezentaci povrchů
+             s přerušeními G1). Všimněte si, že jsou podporovány nesvázané vektory uzlů, ale takové budou
+             převedeny na svázané tím, že u nich budou provedeny změny použité v datech řídicího
+             bodu / tloušťky čar.</summary>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
@@ -2161,7 +2160,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices(System.Int32[])">
             <summary>Vrací počet vrcholů pro každý panel v seznamu indexů panelu.</summary>
-            <param name="panelIndices">List of panel indices to query number of vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Seznam indexů panelů použitý k dotazování na počet vrcholů. Výchozí hodnota null označuje všechny panely v povrchu.</param>
             <returns>počet vrcholů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetVertex(System.Int32)">
@@ -2182,17 +2181,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices(System.Int32[])">
             <summary>Vrací vrcholy pro každý panel v seznamu indexů panelů.</summary>
-            <param name="panelIndices">Panel index to query vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Index panelu používaný k dotazování na vrcholy. Výchozí hodnota null označuje všechny panely v povrchu.</param>
             <returns>Pole vrcholů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints(System.Int32[])">
             <summary>Vrací body pro každý panel v seznamu indexů panelu.</summary>
-            <param name="panelIndices">Panel indices to query points for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Indexy panelů používané k dotazování bodů. Výchozí hodnota null označuje všechny panely v povrchu.</param>
             <returns>Pole bodů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon(System.Int32[])">
             <summary>Vrací polygonální hranici pro každý panel v seznamu indexů panelů.</summary>
-            <param name="panelIndices">Panel indices used to construct Polygon. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Indexy panelů používané ke konstrukci polygonů. Výchozí hodnota null označuje všechny panely v povrchu.</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.SetTransform(System.Double,System.Double,System.Double,System.Double,Autodesk.DesignScript.Geometry.Point)">
@@ -2252,7 +2251,7 @@
             <search>panel, surface, split, diamond</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Int32,System.Double,System.Boolean,Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition)">
-            <summary>Panels the input surface in parallelograms tiled vertically and horizontally. Each parallelogram is a square with a shear applied along the V-axis or U-axis determined by the ‘alignWithUAxis’ input and a shear factor. By default the parallelograms are aligned with the V-axis</summary>
+            <summary>Vytvoří na vstupním povrchu panely ve tvaru rovnoběžníku uspořádané svisle a vodorovně. Každý rovnoběžník je čtverec zkosený podél osy V nebo osy U, který je určen vstupem „alignWithUAxis“ a koeficientem zkosení. Ve výchozím nastavení jsou rovnoběžníky zarovnány s osou V.</summary>
             <param name="surface">Vstupní povrch, který má být opatřen panely</param>
             <param name="numU">Počet vzorů ve směru U</param>
             <param name="numV">Počet vzorů ve směru V</param>
@@ -2318,14 +2317,14 @@
             <summary>Základ Y roviny</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">
-            <summary>Produces a new CoordinateSystem representing this plane. It is based on
-            the origin, and X and Y axis basis.</summary>
+            <summary>Vytvoří nový systém CoordinateSystem, který představuje tuto rovinu. Je založen na
+             počátku a osách X a Y.</summary>
             <returns/>
             <search>converttoCS,convert2cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.Offset(System.Double)">
-            <summary>Create a new Plane offset by this Plane in the normal direction by
-            the specified distance.</summary>
+            <summary>Vytvoří nové odsazení roviny podle této roviny v normálovém směru, a to
+             o zadanou vzdálenost.</summary>
             <search>alongnormal,moveplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -2336,10 +2335,10 @@
             <search>plane,tonormal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an "oriented" Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            to splitting, intersect, project, etc operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>Vytvoří „orientovanou“ rovinu umístěnou v počátku bodu s normálovým
+             vektorem, ale se specifickou orientací osy X. Toto nastavení nemá
+             žádný vliv na rozdělení, průsečíky, promítnutí a jiné podobné operace, pouze určuje
+             orientaci vstupního systému CoordinateSystem.</summary>
             <param name="origin">Bod počátku roviny</param>
             <param name="normal">Normálový směrový vektor</param>
             <param name="xAxis">Směrový vektor osy X</param>
@@ -2361,8 +2360,8 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Create the Plane containing the input Line and external Point. Point
-            cannot lie on the Line or in the Line axis.</summary>
+            <summary>Vytvoří rovinu obsahující vstupní čáru a externí bod. Bod
+             nemůže ležet na čáře ani na ose čáry.</summary>
             <param name="line">Čára použitá k určení roviny</param>
             <param name="point">Bod použitý k určení roviny</param>
             <returns>Rovina vytvořená z čáry a bodu</returns>
@@ -2493,10 +2492,9 @@
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more Polycurves by offsetting a planar polycurve by the given distance in a plane defined by the plane normal.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>Vytvoří jeden nebo více objektů PolyCurve odsazením rovinného objektu PolyCurve o zadanou vzdálenost v rovině definované normálou roviny. 
+            Vstupní argument „planeNormal“ má jako výchozí hodnotu normálu roviny obsahující křivku, je však možné určit explicitní normálu rovnoběžnou s původní normálou křivky za účelem lepšího řízení směru odsazení. Pokud je například požadován konzistentní směr odsazení u více křivek sdílejících stejnou rovinu, je možné pomocí hodnoty „planeNormal“ přepsat jednotlivé normály křivky a vynutit stejný směr odsazení u všech křivek.
+             Obrácení normály obrází směr odsazení.</summary>
             <param name="signedDistance">Kladná vzdálenost odsazení se použije ve směru vektorového součinu vektoru tečny objektu PolyCurve a normálového vektoru roviny, zatímco záporné odsazení se použije v opačném směru.</param>
             <param name="extendCircular">Pokud mezi odsazenými křivkami komponenty existují mezery, mohou být vyplněny buď kruhovými oblouky (hodnota true), které vytvoří vyhlazené rohy, nebo prodloužením (hodnota false) křivek odsazení.</param>
             <param name="planeNormal">Normála roviny křivky. Výchozí hodnotou je normála roviny vstupní křivky</param>
@@ -2510,7 +2508,7 @@
             <search>round,smooth,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.</summary>
+            <summary>Vytvoří jeden nebo více objektů PolyCurve seskupením spojených křivek.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
             <summary>Prodlouží objekt PolyCurve pomocí tečné elipsy.</summary>
@@ -2540,8 +2538,8 @@
             <returns>Odsazený objekt PolyCurve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>Heals a self-intersecting PolyCurve by returning a new one that isn't self-intersecting
-            if the overlapping segment length is less than or equal to trimLength.</summary>
+            <summary>Opraví objekt PolyCurve, který protíná sám sebe, vrácením nového objektu, který
+             neprotíná sám sebe, pokud je délka překrývajícího úseku menší nebo rovna hodnotě trimLength.</summary>
             <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
             <returns>Objekt PolyCurve, který neprotíná sebe sama a s ničím se nepřekrývá</returns>
         </member>
@@ -2568,9 +2566,9 @@
             <search>segments,joincurves</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Vytvoří jeden nebo více objektů PolyCurve seskupením spojených křivek.
+            Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.
+            Nízké hodnoty mohou být příliš omezující a bránit ve spojení křivek; vyšší hodnoty zase mohou způsobit, že krátké křivky budou sloučeny nežádoucím způsobem nebo se rozpadnou na jednotlivé body.</summary>
             <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <returns/>
@@ -2614,11 +2612,11 @@
             <summary>Vrací vlastní průsečíky mezi stranami mnohoúhelníku.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Returns whether an input point is contained within the polygon.
-            If the polygon is not planar then the point will be projected onto the
-            best-fit plane and the containment will be computed using the projection
-            of the polygon onto the best-fit plane.
-            This will return a failed status if the polygon self-intersects.</summary>
+            <summary>Vrátí hodnotu, která určuje, zda je v polygonu obsažen vstupní bod.
+             Pokud není polygon rovinný, bod se promítne na
+             přizpůsobenou rovinu a obsažení se vypočítá pomocí promítání
+             polygonu na přizpůsobenou rovinu.
+             Pokud polygon protíná sebe sama, tato možnost vrátí chybu.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>Sestavte křivku mnohoúhelníku propojením bodů.</summary>
@@ -2631,8 +2629,8 @@
             <search>subsurfaces,getsurfaces,explode</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Locate Surfaces by point. Takes first intersection in forward direction.
-            Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex</summary>
+            <summary>Vyhledá povrchy pomocí bodu. Využívá první průsečík v dopředném směru.
+             Vrací jeden povrch, pokud dochází k zásahu povrchu, dva povrchy, pokud dochází k zásahu hrany vnitřní části, a mnoho povrchů, pokud dochází k zásahu vrcholu.</summary>
             <search>surfacesatpoint,findsurfaces,extractsurfaces</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine(Autodesk.DesignScript.Geometry.Line)">
@@ -2722,16 +2720,16 @@
             <search>rectbypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the WCS origin in the WCS XY Plane, with
-            specified width (X Axis length), and length (Y Axis length).</summary>
+            <summary>Vytvoří obdélník vystředěný na počátek systému GSS v rovině XY systému GSS se
+             zadanou šířkou (délka osy X) a délkou (délka osy Y).</summary>
             <param name="width">Šířka obdélníku</param>
             <param name="length">Délka obdélníku</param>
             <returns>Obdélník vytvořený pomocí šířky a délky</returns>
             <search>rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at input Plane root, with input width
-            (Plane X axis length), and length (Plane Y axis length).</summary>
+            <summary>Vytvoří obdélník vystředěný na kořen vstupní roviny se vstupní
+             šířkou (délka osy X roviny) a délkou (délka osy Y roviny).</summary>
             <param name="plane">Rovina použitá k vystředění obdélníku</param>
             <param name="width">Šířka obdélníku</param>
             <param name="length">Délka obdélníku</param>
@@ -2739,9 +2737,9 @@
             <search>rectangle,rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the input origin in the CoordinateSystem
-            XY Plane, with specified width (X Axis length), and length
-            (Y Axis length).</summary>
+            <summary>Vytvoří obdélník vystředěný na vstupní počátek v rovině XY systému CoordinateSystem
+             se zadanou šířkou (délka osy X) a délkou
+            (délka osy Y).</summary>
             <param name="coordinateSystem">Souřadnicový systém obdélníku (střed obdélníku)</param>
             <param name="width">Šířka obdélníku</param>
             <param name="length">Délka obdélníku</param>
@@ -2773,12 +2771,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Získat skořepinu tělesa z ploch tohoto tělesa</summary>
             <param name="internalFaceThickness">Vzdálenost prodloužení skořepiny směrem dovnitř</param>
-            <param name="externalFaceThickness">Vzdálenost prodloužení skořepiny směrem ven</param>
+            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Solid in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>Promítne vstupní geometrii na toto těleso ve směru vstupního vektoru.
+            Tato metoda promítání aktuálně podporuje pouze body nebo křivky.</summary>
             <search>projectonto,projectonsolid,projecttosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
@@ -2810,17 +2808,17 @@
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Create a Solid by lofting between input cross section closed Curves,
-            with guide Curves to assist. Guide Curves must intersect all cross
-            section Curves.</summary>
+            <summary>Vytvoří těleso pomocí šablonování mezi uzavřenými křivkami vstupního příčného řezu,
+             a to s pomocí vodicí křivky. Vodicí křivka musí protínat všechny
+             křivky průřezů.</summary>
             <search>Brep,brep,guides,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Boolean)">
-            <summary>Create a Solid by lofting between input cross-sections comprising of closed PolyCurves.
-            This operation is optimized for sections composed of line segments exclusively,
-            with vertices following the same order.
-            The check and repair option guarantees the validity of the produced solid
-            when enabled, while disabling it should increase performance.</summary>
+            <summary>Vytvoří těleso pomocí šablonování mezi vstupními příčnými řezy uzavřenými křivkami PolyCurve.
+             Tato operace je optimalizována pro řezy složené výhradně
+             z úsečkových segmentů, přičemž vrcholy jsou ve stejném pořadí. 
+            Kontrola a oprava zaručují platnost vytvořeného tělesa,
+             pokud je možnost povolena, zatímco deaktivování by mělo zvýšit výkon.</summary>
             <search>Brep,brep,ruled,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
@@ -2843,9 +2841,9 @@
             <search>Brep,brep,sweep2,guides,sweepprofile</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Solid of revolution, sweeping the profile Curve around the
-            axis Ray formed by the origin and the axis Vector, from the start
-            angle in degrees to the sweep angle in degrees.</summary>
+            <summary>Vytvoří těleso rotace pomocí tažení křivky profilu kolem 
+            polopřímky tvořené počátkem a vektorem osy, a to z počátečního úhlu
+             ve stupních do úhlu tažení ve stupních.</summary>
             <param name="profile">Křivka profilu k rotaci</param>
             <param name="axisOrigin">Počátek osy rotace</param>
             <param name="axisDirection">Směr osy rotace</param>
@@ -2867,7 +2865,7 @@
             <summary>Vraťte poloměr koule.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
+            <summary>Vytvoří těleso koule vystředěné na vstupní bod se zadaným poloměrem.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -2899,8 +2897,8 @@
             <search>difference,trim,removefrom,cut</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>The boolean difference of this Surface and the union of input Surfaces.
-            This method might return a polySurface if the resulting boolean is non-manifold or multi-faced.</summary>
+            <summary>Logický rozdíl tohoto povrchu a sjednocení vstupních povrchů.
+            Tato metoda může vrátit objekt PolySurface v případě, že výsledný booleovský objekt je nerozložený nebo se skládá z více ploch.</summary>
             <param name="others">Další povrchy k odečtení</param>
             <returns>Výsledný booleovský povrch nebo objekt polySurface</returns>
             <search>subtract,differencemany,diffall,diff multi</search>
@@ -2911,16 +2909,16 @@
             <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves.
-            One of the loops needs to be the boundary loop of the input surface.
-            In addition, one or more inner loops need to be added for holes.</summary>
+            <summary>Ořízne povrch pomocí kolekce jednoho nebo více uzavřených objektů PolyCurve.
+           Jedna ze smyček musí být hraniční smyčka vstupního povrchu.
+           Navíc je nutné přidat jednu nebo více vnitřních smyček pro díry.</summary>
             <search>trim multiple,removeloops,cutloops</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves that must all lie on the surface within the specified tolerance.
-            If one or more holes need to be trimmed from the input surface, there must be one outer loop specified for the boundary of the surface and one inner loop for each hole.
-            If the region between the surface boundary and the hole(s) needs to be trimmed, only the loop for each hole should be provided.
-            For a periodic surface with no outer loop such as a spherical surface, the trimmed region can be controlled by reversing the direction of the loop curve.</summary>
+            <summary>Ořízne povrch pomocí kolekce jednoho nebo více uzavřených objektů PolyCurve, které musí všechny ležet na povrchu v rámci zadané tolerance.
+           Pokud je třeba jednu nebo více děr oříznout od vstupního povrchu, musí být pro každou díru určena jedna vnější smyčka pro hranici povrchu a jedna vnitřní smyčka.
+           Pokud je třeba oříznout oblast mezi hranicí povrchu a dírami, je nutné určit pouze smyčku pro každou díru.
+           U periodického povrchu bez vnější smyčky, například kulový povrch, je možné ovládat oříznutou oblast obrácením směru křivky smyčky.</summary>
             <param name="loops">Jeden nebo více uzavřených objektů PolyCurve, které mohou být na vstupu v libovolném pořadí. Tyto smyčky by se neměly vzájemně protínat.</param>
             <param name="tolerance">Tolerance použitá při rozhodování, zda jsou konce křivky totožné a zda jsou křivka a povrch totožné. Zadaná tolerance nemůže být menší než libovolná tolerance použitá při tvorbě vstupních objektů PolyCurve. Výchozí hodnota 0.0 znamená, že se použije největší tolerance z tolerancí použitých při tvorbě vstupních objektů PolyCurve.</param>
             <returns>Povrch oříznutý uzavřenými smyčkami.</returns>
@@ -2933,32 +2931,32 @@
             <search>perpendicular</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>Zobrazí reprezentaci NURBS povrchu. Tato metoda může v určitých případech
+             aproximovat povrch.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>Zobrazí reprezentaci NURBS povrchu. Tato metoda může v určitých případech
+             aproximovat povrch.</summary>
             <param name="limitSurface">Určuje, zda má být povrch před převodem obnoven do původního rozsahu parametrů. Příkladem toho, kdy je rozsah parametrů povrchu omezen, je operace oříznutí.</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>Gets a Nurbs representation of the Surface within a specified tolerance. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>Zobrazí reprezentaci NURBS povrchu s určenou tolerancí. Tato metoda může v určitých případech
+             aproximovat povrch.</summary>
             <param name="tolerance">Zadaná tolerance</param>
             <returns>Reprezentace povrchu pomocí nurbs povrchu</returns>
             <search>tonurbs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals on both sides of the Surface.</summary>
+            <summary>Zesillí plochu na těleso tím, že ji vysune ve směru normály povrchu
+             na obou stranách povrchu.</summary>
             <param name="thickness">Množství k zesílení</param>
             <returns>Zesílený povrch jako těleso</returns>
             <search>offset,tosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals. If both_sides parameter is true, surface is thickened
-            on both sides.</summary>
+            <summary>Zesiílí plochu na těleso tím, že ji vysune ve směru normál povrchu.
+             Pokud má parametr both_sides hodnotu true, povrch se zesílí
+             na obou stranách.</summary>
             <param name="thickness">Množství k zesílení</param>
             <param name="both_sides">Vrací hodnotu true pro zesílení na obou stranách, false pro zesílení na jedné straně</param>
             <returns>Zesílený povrch jako těleso</returns>
@@ -2970,8 +2968,8 @@
             <returns>Odsazený povrch</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>The returned coordination system use xAxis, yAxis and zAxis to represent the uDir, vDir and normal.
-            The length of xAxis, yAxis represents the curvatures.</summary>
+            <summary>Vrácený souřadnicový systému používá osy xAxis, yAxis a zAxis a pomocí nich reprezentuje uDir, vDir a normálu.
+             Délka os xAxis, yAxis představuje zakřivení.</summary>
             <param name="u">Komponenta U parametru</param>
             <param name="v">Komponenta V parametru</param>
             <returns>Souřadnicový systém založený na normále, směru U a směru V na pozici UV na povrchu</returns>
@@ -3029,32 +3027,32 @@
             <search>edges</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>Create a parameter line curve on the given surface.
-            Create a Curve that represents a u or v parameter line on the Surface. A
-            parameter line runs in the direction of increasing u or v parameter at a
-            constant opposite u or v parameter. The resulting Curve will match the
-            Surface parameterisation and its range will be bounded by the Surface
-            parameter range. The type of Curve returned will depend on the Surface
-            type.</summary>
+            <summary>Vytvoří křivku čáry parametru na zadaném povrchu.
+            Vytvoří křivku, která představuje čáru parametru U nebo V na povrchu.
+            Čára parametru vede ve směru vzrůstajícího parametru U nebo V v
+            konstantním protějším parametru U nebo V. Výsledná křivka bude odpovídat parametrizaci
+            povrchu a jeho rozsah bude ohraničen rozsahem parametru
+            povrchu. Vrácený typ křivky závisí na typu
+            povrchu.</summary>
             <param name="isoDirection">Pokud směr == 0, vytvoří čáru parametru U, pokud směr == 1, vytvoří čáru parametru V.</param>
             <param name="parameter"/>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>Returns a new Surface with the Normal flipped. Leaves this surface
-            unchanged.</summary>
+            <summary>Vrací nový povrch s převrácenými normálami. Tento povrch ponechá
+            beze změny.</summary>
             <returns>Povrch, který je stejný jako vstupní povrch, ale má obrácené normály</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
             <summary>Kombinuje tento povrch a vstupní povrch do objektu PolySurface.</summary>
             <search>topolysurface</search>
-            <summary>Kombinuje tento povrch a vstupní povrch do objektu PolySurface.</summary>
+            <summary>Kombinuje tento povrch a vstupní povrchy do objektu PolySurface.</summary>
             <search>join multiple,joinmany,joinall,topolysurface</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Surface in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>Promítne vstupní geometrii na tento povrch ve směru vstupního vektoru. 
+           Tato metoda promítání aktuálně podporuje pouze body nebo křivky.</summary>
             <search>projecttosurface,projectonto</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
@@ -3062,9 +3060,8 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Union a collection of surfaces into one surface.
-            This method might return a polySurface
-            if the resulting union is non-manifold or multi-faced.</summary>
+            <summary>Sjednocení kolekce povrchů do jednoho povrchu.
+           Tato metoda může vrátit objekt PolySurface v případě, že výsledné sjednocení je nerozložené nebo se skládá z více ploch.</summary>
             <param name="surfaces">Kolekce povrchů.</param>
             <returns>Sjednocení povrchů</returns>
             <search>merge,join,boolean,addition</search>
@@ -3076,15 +3073,15 @@
             <returns>Povrch vytvořený šablonováním</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>Create a Surface by lofting between input cross section Lines.  This is slightly faster
-            and produces a less smooth result than Surface.ByLoft.</summary>
+            <summary>Vytvoří povrch šablonováním mezi čarami vstupního příčného řezu.
+           To je poněkud rychlejší a vytváří méně hladký výsledek než operace Surface.ByLoft.</summary>
             <search>ruledsurface,lines</search>
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Loft a Surface through the cross sections with a specified guide curves
-            (aka a rails). Guide curves must intersect all of the cross section
-            curves.</summary>
+            <summary>Šablonuje povrch prostřednictvím průřezů s určenými vodicími křivkami
+           (neboli trajektoriemi). Vodicí křivka musí protínat všechny
+           křivky průřezů.</summary>
             <search>loftbyrails,loft rails,guides</search>
             <param name="crossSections">Křivky, kterými se má šablonovat</param>
             <param name="guideCurves">Křivky, kterými bude šablonování vedeno</param>
@@ -3108,8 +3105,8 @@
             <search>sweep,rail,guide,sweep1</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a Polygon Surface connecting input Points in a closed Polygon and
-            patching it.</summary>
+            <summary>Vytvoří povrch polygonu, který spojuje vstupní body v uzavřeném polygonu a
+           opravuje je.</summary>
             <param name="points">Seznam bodů obvodu</param>
             <returns>Povrch vytvořený z bodů obvodu</returns>
             <search>patch,surfacebypolygon</search>
@@ -3123,9 +3120,9 @@
             <search>sweep2,guides</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Surface by sweeping the profile Curve around the axis ray formed
-            by origin Point in the direction of the axis Vector, starting
-            at start_angle in degrees, sweeping sweep_angle in degrees.</summary>
+            <summary>Vytvoří povrch tažením křivky profilu kolem polopřímky vytvořené
+           pomocí bodu počátku ve směru vektoru osy, od objektu
+           start_angle ve stupních a dále tažením objektu sweep_angle ve stupních.</summary>
             <param name="profile">Křivka profilu k rotaci</param>
             <param name="axisOrigin">Počátek osy rotace</param>
             <param name="axisDirection">Směr osy rotace</param>
@@ -3135,8 +3132,8 @@
             <search>lathe</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Create a Surface by filling in the interior of a closed boundary
-            defined by input Curves.</summary>
+            <summary>Vytvoří povrch vyplněním vnitřní části uzavřené hranice
+           definované vstupními křivkami.</summary>
             <param name="closedCurve">Uzavřená křivka použitá jako hranice povrchu</param>
             <returns>Povrch vytvořený záplatou</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
@@ -3245,8 +3242,8 @@
             <search>tspline,symmetry,reflection,axial</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ByRadial(Autodesk.DesignScript.Geometry.Plane,System.Int32,System.Double)">
-            <summary>Create radial reflection for t-spline symmetry by given plane
-            with given segments count and given angle (in degrees) between each pair of segments.</summary>
+            <summary>Umožňuje vytvořit radiální odraz symetrie křivky t-spline podle dané roviny
+           s daným počtem segmentů a daným úhlem (ve stupních) mezi každým párem segmentů.</summary>
             <param name="plane">Rovina, jejíž normála je osa radiálního odrazu křivky t-spline. Uvedená v globálních souřadnicích</param>
             <param name="segmentsCount">Počet segmentů radiálního odrazu</param>
             <param name="segmentAngle">Úhel mezi každým párem segmentů radiální symetrie (ve stupních). Pokud je nastaven na hodnotu 0, je definován hodnotou (360 / segmentsCount).</param>
@@ -3334,7 +3331,7 @@
             <search>tspline,symmetry,reflections</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsInBoxMode">
-            <summary>Whether t-spline is in box or smooth mode</summary>
+            <summary>Vrací hodnotu True, pokud je daná křivka T-spline v režimu kvádru nebo režimu vyhlazení</summary>
             <search>tspline,boxmode,smooth</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsExtractable">
@@ -3342,7 +3339,7 @@
             <search>tspline,extractable</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsClosed">
-            <summary>Whether t-spline is closed</summary>
+            <summary>Vrací hodnotu True, pokud je daná křivka T-spline uzavřena</summary>
             <search>tspline,closed</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsWaterTight">
@@ -3355,8 +3352,8 @@
             <search>tspline,standard</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToBRep(System.Boolean)">
-            <summary>Convert TSpline surface to Solid or Surface depending on shape.
-            Note: There could be subtle unexpected changes in the resulting B-Rep if the input surface is created in a higher T-Splines version than the version loaded in Dynamo as in this case the surface will be downgraded to the Dynamo version.</summary>
+            <summary>Převede daný povrch T-spline na těleso nebo povrch podle tvaru.
+            Poznámka: Možná dojde k drobným neočekávaným změnám ve výsledném povrchu BRep, pokud je vstupní povrch vytvořen ve vyšší verzi T-spline, než je verze načtená v aplikaci Dynamo. V tomto případě bude kopie povrchu ponížena na verzi aplikace Dynamo a použije se při převodu.</summary>
             <param name="matchTopology">Určuje, zda by výsledné těleso mělo mít stejnou topologii jako vstupní povrch TSpline.</param>
             <returns>Entita topologie (těleso nebo povrch)</returns>
             <search>tspline,brep,solid,surface</search>
@@ -3417,7 +3414,7 @@
             <search>tspline,weld,coincident,vertex</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldEdges(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge})">
-            <summary>Umožňuje zrušit svary všech daných hran. Zruší svary každého vrcholu na všech hranách.</summary>
+            <summary>Umožňuje zrušit svary všech daných hran. Zruší svar každého vrcholu na všech hranách.</summary>
             <param name="edges">Sada hran, jejichž svary mají být zrušeny</param>
             <returns>Povrch TSpline s hranami se zrušenými svary</returns>
             <search>tspline,unweld,edge</search>
@@ -3429,7 +3426,7 @@
             <search>tspline,unweld,vertex</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
-            <summary>Create match with T-Spline and closed loop from curves</summary>
+            <summary>Umožňuje vytvořit porovnání T-spline s uzavřenou smyčkou z křivek</summary>
             <param name="tsEdges">Uzavřená smyčka hrany T-Spline, se kterou má být vytvořena shoda</param>
             <param name="curves">Uzavřená smyčka křivky, se kterou má být vytvořena shoda</param>
             <param name="continuity">Kontinuita geometrie, se kterou má být proveden pokus o shodu: G0, G1, G2</param>
@@ -3491,7 +3488,7 @@
             <param name="edges">Sada hran, které mají být vysunuty</param>
             <param name="direction">Vektor, podle kterého mají být přesunuty nové hrany</param>
             <param name="spans">Množství nových segmentů, které budou vytvořeny</param>
-            <returns>Křivka t-spline s vysunutými hranami</returns>
+            <returns>T-spline s vysunutými hranami</returns>
             <search>tspline,extrude,direction,vector,edge</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace},Autodesk.DesignScript.Geometry.Vector,System.Int32)">
@@ -3553,7 +3550,7 @@
             <param name="edges">Množina hran s otvorem uvnitř. Hrany musí být hraniční.</param>
             <param name="fillMethod">Metoda vyplnění otvoru: 0 – mozaika, 1 – polygony, 2 – sbalit, 3 – sbalit a svařit</param>
             <param name="keepSubdCreases">Zachovat vyostření úseků vstupní topologie</param>
-            <returns>TSpline surface with filled hole</returns>
+            <returns>Povrch TSpline s vyplněnou dírou</returns>
             <search>tspline,edge,fill,hole</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.AddReflections(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineReflection},System.Boolean,System.Double)">
@@ -3568,9 +3565,9 @@
             <returns>Povrch T-Spline s odebranými danými odrazy</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CompressIndexes">
-            <summary>Compress all topology on the surface and make the indices contiguous.
-            This function maintains the relative order of the indices.</summary>
-            <returns>TSpline with compressed indexes</returns>
+            <summary>Zkomprimuje celou topologii na vstupním povrchu a upraví indexy tak, aby byly souvislé.
+            Tato funkce zachová relativní pořadí indexů.</summary>
+            <returns>TSpline s komprimovanými indexy</returns>
             <search>tspline,index,compress</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SubdivideFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace},System.Boolean)">
@@ -3583,10 +3580,10 @@
             <search>tspline,subdivide,faces,simple</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Interpolate(System.Boolean)">
-            <summary>Forward interpolation moves control points to their parametric locations
-            on the surface. Reverse interpolation generates a point on the surface
-            for each original control point and moves this control point to its
-            corresponding surface point.</summary>
+            <summary>Interpolace vpřed přesune řídicí body na jejich parametrická umístění
+             na povrchu. Obrácená interpolace (reverse interpolation) vygeneruje bod na povrchu
+             pro každý původní řídicí bod a přesune tento řídicí bod na jeho
+             odpovídající bod na povrchu.</summary>
             <param name="reverse">Směr interpolace: vpřed v případě hodnoty false, v opačném případě obrácený</param>
             <returns>Interpolovaná křivka T-Spline v daném směru</returns>
             <search>tspline,interpolate,reverse</search>
@@ -3605,7 +3602,7 @@
             <summary>Umožňuje vyrovnat řídicí body daných vrcholů do jedné roviny.
             Tento příkaz vyžaduje zadání alespoň čtyř vrcholů.</summary>
             <param name="vertices">Seznam vrcholů</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>Povrch T-Spline se zploštělými vrcholy</returns>
             <search>tspline,flatten,vertices</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Plane)">
@@ -3614,11 +3611,11 @@
             Tento příkaz vyžaduje zadání alespoň čtyř vrcholů.</summary>
             <param name="vertices">Seznam vrcholů</param>
             <param name="parallelPlane">Rovina, na které budou umístěny s ní rovnoběžné vrcholy</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>Povrch T-Spline se zploštělými vrcholy</returns>
             <search>tspline,flatten,vertices,fitparallel</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace})">
-            <summary>Copy chosen faces to the new surface. New surface has no symmetry.</summary>
+            <summary>Zkopíruje vybrané plochy do nového povrchu T-spline. Nový povrch nemá symetrii.</summary>
             <param name="faces">Plochy, které mají být duplikovány</param>
             <returns>Povrch T-Spline pouze s vybranými plochami</returns>
             <search>tspline,face,duplicate</search>
@@ -3643,12 +3640,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.MoveVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Vector,System.Boolean)">
             <summary>Umožňuje přesunout dané vrcholy podél daného vektoru.</summary>
             <param name="vertices">Seznam vrcholů, které mají být přesunuty</param>
-            <param name="vector">Vector to move along</param>
-            <param name="onSurface">Flag, indicating whether to use surface or control points of vertices to move</param>
+            <param name="vector">Vektor pro presun</param>
+            <param name="onSurface">Příznak označující, zda k posunu použít body povrchu nebo řídicí body vrcholů</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Repair">
-            <summary>Attempts to repair the TsplineSurface.</summary>
+            <summary>Pokusí se o opravu objektu TsplineSurface.</summary>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
@@ -3665,10 +3662,10 @@
             <search>tspline,plane,origin,normal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create an "oriented" T-Spline Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            on splitting, intersect, project, etc. operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>Vytvoří „orientovanou“ rovinu T-spline umístěnou v počátečním bodu s normálou vektoru,            ale s určitou orientací osy X. 
+            Toto nemá vliv
+             na operace rozdělení, průniku, promítání apod., pouze to určuje
+             orientaci vstupního systému CoordinateSystem.</summary>
             <param name="origin">Kořenový bod roviny</param>
             <param name="normal">Normála roviny</param>
             <param name="xAxis">Osa X roviny</param>
@@ -3737,8 +3734,8 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderRadiusHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
             <summary>Umožňuje sestavit válec T-Spline definovaný nadřazeným systémem CoordinateSystem, poloměrem a výškou válce.</summary>
             <param name="cs">Střed a základna válce budou umístěny v rovině X-Y tohoto souřadnicového systému</param>
-            <param name="radius">Radius of cylinder</param>
-            <param name="height">Height of cylinder</param>
+            <param name="radius">Poloměr válce</param>
+            <param name="height">Výška válce</param>
             <param name="radiusSpans">Počet rozpětí v obvodu</param>
             <param name="heightSpans">Počet rozpětí ve výšce</param>
             <param name="symmetry">Možnosti symetrie povrchu T-Spline</param>
@@ -3759,11 +3756,11 @@
             <search>tspline,cylinder,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with given base radius at start Point, extending to an
-            apex at end Point.</summary>
+            <summary>Vytvoří povrch kuželu T-spline s daným poloměrem základny v počátečním bodu
+            s protažením do vrcholu v koncovém bodu.</summary>
             <param name="startPoint">Počáteční bod kužele</param>
             <param name="endPoint">Koncový bod kužele</param>
-            <param name="radius">Radius of base of a cone</param>
+            <param name="radius">Poloměr základny kužele</param>
             <param name="radiusSpans">Počet rozpětí v obvodu</param>
             <param name="heightSpans">Počet rozpětí ve výšce</param>
             <param name="symmetry">Možnosti symetrie povrchu T-Spline</param>
@@ -3772,8 +3769,8 @@
             <search>tspline,cone,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with axis from start Point to end Point, with given
-            radii at start and end. This object does not have an apex, and is in the shape of a frustum.</summary>
+            <summary>Vytvoří povrch kuželu T-spline pomocí osy z počátečního bodu ke koncovému bodu s danými poloměry na začátku a na konci.
+            Tento objekt nemá vrchol a má tvar komolého kuželu.</summary>
             <param name="startPoint">Počáteční bod kužele</param>
             <param name="endPoint">Koncový bod kužele</param>
             <param name="startRadius">Počáteční poloměr kužele</param>
@@ -3786,8 +3783,8 @@
             <search>tspline,cone,radii,points,truncated</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending in the direction of the Z-axis of the CoordinateSystem,
-            with a  circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>Vytvoří kužel T-spline pomocí základního bodu v počátku systému CoordinateSystem s protažením ve směru osy Z souřadnicového systému
+             s kruhovou základnou v rovině XY souřadnicového systému.</summary>
             <param name="cs">Střed a základna kužele budou umístěny v rovině X-Y tohoto souřadnicového systému</param>
             <param name="height">Výška kužele</param>
             <param name="radius">Poloměr kužele</param>
@@ -3799,9 +3796,8 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>Vytvoří kužel T-spline pomocí základního bodu v počátku systému CoordinateSystem s protažením ve směru osy Z souřadnicového systému
+             s kruhovou základnou v rovině XY souřadnicového systému.</summary>
             <param name="cs">Střed a základna kužele budou umístěny v rovině X-Y tohoto souřadnicového systému</param>
             <param name="height">Výška kužele</param>
             <param name="startRadius">Počáteční poloměr kužele</param>
@@ -3814,7 +3810,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
+            <summary>Vytvoří kouli T-spline vystředěnou na vstupní bod s daným poloměrem</summary>
             <param name="centerPoint">Střed koule</param>
             <param name="radius">Poloměr koule</param>
             <param name="radiusSpans">Počet radiálních rozpětí</param>
@@ -3857,7 +3853,7 @@
             <search>tspline,torus,radii,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCenterRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Torus with given center and radii, aligned with the default World XY plane</summary>
+            <summary>Vytvoří anuloid T-spline s daným středem a poloměry zarovnaný s výchozí globální rovinou XY</summary>
             <param name="center">Střed anuloidu</param>
             <param name="innerRadius">Vnitřní poloměr anuloidu</param>
             <param name="outerRadius">Vnější poloměr anuloidu</param>
@@ -3882,8 +3878,8 @@
             <search>tspline,box,cuboid,cube,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>Vytvoří kvádr T-spline vystředěný kolem vstupního bodu s danou šířkou, délkou
+             a výškou</summary>
             <param name="origin">Střed kvádru</param>
             <param name="width">Šířka kvádru</param>
             <param name="length">Délka kvádru</param>
@@ -3897,8 +3893,8 @@
             <search>tspline,box,cuboid,cube,size,center</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered and oriented to input CoordinateSystem, with
-            specified width, length, and height.</summary>
+            <summary>Vytvoří kvádr T-spline vystředěný a orientovaný na vstupní systém CoordinateSystem s 
+            danou šířkou, délkou a výškou</summary>
             <param name="cs">Rovina X-Y kvádru bude zarovnána s odpovídající osou X</param>
             <param name="width">Šířka kvádru</param>
             <param name="length">Délka kvádru</param>
@@ -3924,45 +3920,45 @@
             <search>tspline, box,cube,min,max,corner,point</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCoordinateSystemRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with center at CoordinateSystem origin
-            and given radius</summary>
+            <summary>Vytvoří čtyřbokou kouli T-spline vystředěnou v počátku systému CoordinateSystem
+             s daným poloměrem</summary>
             <param name="cs">Místní souřadnicový systém</param>
             <param name="radius">Poloměr čtyřúhelníkové koule</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">Počet rozpětí ve dvou rozměrech stran čtyřboké koule</param>
             <param name="symmetry">Možnosti symetrie povrchu T-Spline</param>
             <param name="inSmoothMode">Zobrazit povrch T-Spline v kvádrové nebo hladké vizualizaci</param>
             <returns>Čtyřúhelníková koule T-Spline</returns>
             <search>quadball,tspline,coordinate system,raduis</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCenterRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with given center and radius, aligned with
-            default World XY plane</summary>
+            <summary>Vytvoří čtyřbokou kouli T-spline s daným středem a poloměrem zarovnanou s
+             výchozí globální rovinou XY</summary>
             <param name="center">Střed čtyřúhelníkové koule</param>
             <param name="radius">Poloměr čtyřúhelníkové koule</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">Počet rozpětí ve dvou rozměrech stran čtyřboké koule</param>
             <param name="symmetry">Možnosti symetrie povrchu T-Spline</param>
             <param name="inSmoothMode">Zobrazit povrch T-Spline v kvádrové nebo hladké vizualizaci</param>
             <returns>Čtyřúhelníková koule T-Spline</returns>
             <search>quadball,tsplines,center,point,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceUniform(Autodesk.DesignScript.Geometry.NurbsSurface,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using uniform strategy.
-            Input NURBS surface is rebuilt with uniform knots placed at equal parametric or
-            arc length intervals depending on corresponding useArcLen flag, and approximated by
-            degree 3 NURBS surface. Output T-Spline is divided by given span counts
-            in u and v directions.</summary>
+            <summary>Sestaví povrch T-Spline z povrchu NURBS pomocí jednotné strategie. 
+            Vstupní povrch NURBS je znovu sestaven pomocí jednotných uzlů umístěných ve stejných parametrických intervalech nebo
+            intervalů délky oblouku podle odpovídajícího příznaku useArcLen a poté aproximován
+            povrchem NURBS stupně 3. Výstupní křivka T-Spline je rozdělena podle daného počtu rozpětí
+            ve směrech U a V.</summary>
             <param name="nurbsSurface">Vstupní povrch NURBS</param>
             <param name="uSpans">Požadovaný počet rozpětí ve směru U</param>
             <param name="vSpans">Požadovaný počet rozpětí ve směru V</param>
-            <param name="uUseArcLen">Whether to use arcLen or parametric subdivision in u parametric direction</param>
-            <param name="vUseArcLen">Whether to use arcLen or parametric subdivision in v parametric direction</param>
+            <param name="uUseArcLen">Zda použít délku oblouku nebo parametrický úsek v parametrickém směru U</param>
+            <param name="vUseArcLen">Zda použít délku oblouku nebo parametrický úsek v parametrickém směru V</param>
             <param name="inSmoothMode">Zobrazit povrch T-Spline v kvádrové nebo hladké vizualizaci</param>
             <search>nurbs surface,tspline,uniform</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceCurvature(Autodesk.DesignScript.Geometry.NurbsSurface,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using curvature subdivision strategy.
-            Input NURBS surface is rebuilt to degree 3. Output T-Spline has span counts and
-            positions in each direction detected automatically depending on curvature.</summary>
+            <summary>Sestaví povrch T-Spline z povrchu NURBS pomocí strategie úseku zakřivení.
+            Vstupní povrch NURBS je znovu sestaven na stupeň 3. Výstupní křivka T-Spline tak obsahuje počty a
+            polohy rozpětí v každém směru, které jsou detekovány automaticky podle daného zakřivení.</summary>
             <param name="nurbsSurface">Vstupní povrch NURBS</param>
             <param name="inSmoothMode">Zobrazit povrch T-Spline v kvádrové nebo hladké vizualizaci</param>
             <search>nurbs surface,tspline,curvature</search>
@@ -3984,7 +3980,7 @@
             <summary>Umožňuje sestavit křivku T-Spline tažením křivky průřezu podél trajektorie.</summary>
             <param name="profile">Křivka profilu</param>
             <param name="path">Křivka trajektorie</param>
-            <param name="parallel">Is spans should be parallel in path direction</param>
+            <param name="parallel">Rozpětí by měla být rovnoběžná ve směru trajektorie.</param>
             <param name="pathSpans">Počet rozpětí v trajektorii</param>
             <param name="profileSpans">Počet rozpětí v profilu. Definováno automaticky, pokud je hodnota 0 nebo menší.</param>
             <param name="pathUniform">Použít jednotnou strategii nebo strategii zakřivení pro rozmístění rozpětí podél trajektorie</param>
@@ -3993,9 +3989,9 @@
             <search>tspline,sweep,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double,System.Int32,System.Int32,System.Boolean,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Surface by sweeping the profile Curve around the axis formed
-            by the axis origin and axis direction, starting at start_angle in degrees,
-            and sweeping by sweep_angle in degrees.</summary>
+            <summary>Vytvoří povrch T-spline tažením křivky profilu kolem osy tvořené
+            počátkem osy a směrem osy, přičemž začíná na hodnotě start_angle ve stupních
+            a pokračuje tažením o hodnotu sweep_angle ve stupních.</summary>
             <param name="profile">Křivka profilu</param>
             <param name="axisOrigin">Střed otočení</param>
             <param name="axisDirection">Osa otočení</param>
@@ -4229,7 +4225,7 @@
             <param name="otherVector">Jiný vektor</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Determine whether two vectors are almost equal. A tolerance value of 1e-5 is used.</summary>
+            <summary>Určuje, zda jsou dva vektory téměř shodné. Kvůli správnému zpracování přesnosti je použita hodnota tolerance 1e-5.</summary>
             <returns>Vrací hodnotu true, pokud jsou vektory téměř stejné, jinak vrací hodnotu false.</returns>
             <param name="otherVector">Jiný vektor</param>
             <search>vector approximate,near,same</search>
@@ -4238,13 +4234,13 @@
             <summary>Transformovat tento vektor pomocí vstupní matice systému CoordinateSystem</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates a Vector around an axis by a specified number of
-            degrees</summary>
+            <summary>Otočí vektor kolem osy o zadaný počet
+             stupňů.</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates a vector around the Plane origin and normal by a specified
-            degree</summary>
+            <summary>Otočí vektor kolem počátku roviny a normály o zadaný
+             počet stupňů.</summary>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
@@ -4262,8 +4258,8 @@
             <search>rotation angle,</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Returns the angle between the two vectors in degrees from 0 to 360.
-            It uses axis of rotation to determine the direction of the angle.</summary>
+            <summary>Vrací úhel mezi dvěma vektory ve stupních od 0 do 360.
+            Prostřednictvím osy otáčení určuje směr úhlu.</summary>
             <param name="otherVector">Jiný vektor</param>
             <param name="rotationAxis">Osa rotace</param>
             <returns>Vrací úhel mezi zadanými vektory ve stupních od 0 do 360</returns>
@@ -4288,24 +4284,24 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>Vytvořit vektor pomocí dvou koncových bodů. Výsledkem je vektor z počátečního do koncového bodu</summary>
-            <param name="start">Start point of vector</param>
-            <param name="end">End point of vector</param>
-            <returns>Vector created from two points</returns>
+            <param name="start">Počáteční bod vektoru</param>
+            <param name="end">Koncový bod vektoru</param>
+            <returns>Vektor vytvořený ze dvou bodů</returns>
             <search>vector2</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.XAxis">
             <summary>Získat kanonický vektor osy X (1,0,0)</summary>
-            <returns>Canonical X axis vector (1,0,0)</returns>
+            <returns>Kanonický vektor osy X (1,0,0)</returns>
             <search>x, basis,right</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.YAxis">
             <summary>Získat kanonický vektor osy Y (0,1,0)</summary>
-            <returns>Canonical Y axis vector (0,1,0)</returns>
+            <returns>Kanonický vektor osy Y (0,1,0)</returns>
             <search>y, basis,forward</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ZAxis">
             <summary>Získat kanonický vektor osy Z (0,0,1)</summary>
-            <returns>Canonical Z axis vector (0,0,1)</returns>
+            <returns>Kanonický vektor osy Z (0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
@@ -4430,7 +4426,7 @@
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „{0} je menší než nula.“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda byla vyřazena a bude odebrána v budoucí verzi aplikace Dynamo.“. Místo ní se použijte uzel Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda byla vyřazena a bude odebrána v budoucí verzi aplikace Dynamo.“. Místo ní použijte uzel Mesh.ByPointsIndices (Point[] points, Indices : int[]).</summary>

@@ -2065,6 +2065,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Новая вкладка не добавляется, т. к. расширение уже присутствует на боковой панели расширений.</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>Невозможно загрузить {1}.
 Установка приведет к конфликту с одним или несколькими определениями узлов, которые уже существуют в загруженном в данный момент пакете {0}. 

@@ -278,7 +278,7 @@
         {
           "Id": "bf1841bc5eac4d4a8f754170a563bc26",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -297,7 +297,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -336,7 +336,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Logiczne I: zwraca wartość prawda (True), tylko jeśli wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
+      "Description": "Iloczyn logiczny: zwraca wartość prawda (True) pod warunkiem, że wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -375,7 +375,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Logiczne I: zwraca wartość prawda (True), tylko jeśli wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
+      "Description": "Iloczyn logiczny: zwraca wartość prawda (True) pod warunkiem, że wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -403,7 +403,7 @@
         {
           "Id": "0e781982b7d147a3aaa1825c4d75e5f3",
           "Name": "ignoreCase",
-          "Description": "Czy porównanie uwzględnia\n\nbool\nWartość domyślna: false",
+          "Description": "Czy porównanie uwzględnia wielkość liter?\n\nbool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -414,7 +414,7 @@
         {
           "Id": "95014187fcf34a88a915496f68f8c772",
           "Name": "bool",
-          "Description": "Czy ciąg zawiera podciąg",
+          "Description": "Czy ciąg zawiera podciąg?",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -423,7 +423,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Określa, czy dany ciąg zawiera dany podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Określa, czy dany ciąg zawiera określony podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -433,7 +433,7 @@
         {
           "Id": "a9ba12f2ed0e4187bf7463f36cd9c190",
           "Name": "x",
-          "Description": "Obiekt typu podstawowego do porównania (np. wartość logiczna, liczba całkowita, liczba typu double, ciąg itp.)\n\nvar[]..[]",
+          "Description": "Obiekt typu podstawowego do porównania (np. bool, int, double, string)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -442,7 +442,7 @@
         {
           "Id": "f55d31699404497d8f95ce20c6a8732c",
           "Name": "y",
-          "Description": "Obiekt typu podstawowego do porównania (np. wartość logiczna, liczba całkowita, liczba typu double, ciąg itp.)\n\nvar[]..[]",
+          "Description": "Obiekt typu podstawowego do porównania (np. bool, int, double, string)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -462,7 +462,7 @@
       ],
       "FunctionSignature": "==@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Sprawdza, czy x i y są równe\n\n== (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Sprawdza, czy wartości x i y są równe.\n\n== (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -472,7 +472,7 @@
         {
           "Id": "9f0c094fa6f6496cbc32b613fa6e1867",
           "Name": "list",
-          "Description": "Lista do filtrowania.\n\nvar[]..[]",
+          "Description": "Lista do filtrowania\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -481,7 +481,7 @@
         {
           "Id": "e8c1aa1b0180418ca927af60fa1535ae",
           "Name": "mask",
-          "Description": "Lista wartości logicznych reprezentujących maskę.\n\nvar[]..[]",
+          "Description": "Lista wartości logicznych reprezentujących maskę\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -492,7 +492,7 @@
         {
           "Id": "99a53962b867421796375dacfb3a1ade",
           "Name": "in",
-          "Description": "Elementy, których indeks maski ma wartość prawda.",
+          "Description": "Elementy, których indeks maski ma wartość prawda (True).",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -501,7 +501,7 @@
         {
           "Id": "837f23283e3640cba05e8e16dfbe25a4",
           "Name": "out",
-          "Description": "Elementy, których indeks maski ma wartość fałsz.",
+          "Description": "Elementy, których indeks maski ma wartość fałsz (False).",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -522,7 +522,7 @@
         {
           "Id": "9bdfa707caa845f6a0f22f097d83856e",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -541,7 +541,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -553,7 +553,7 @@
         {
           "Id": "4002cef3625c4961a2cf26707d3343e8",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -572,7 +572,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -648,7 +648,7 @@
         {
           "Id": "4e17b2eb16d4415e94bbc95e72612886",
           "Name": "ignoreCase",
-          "Description": "Czy porównanie uwzględnia\n\nbool\nWartość domyślna: false",
+          "Description": "Czy porównanie uwzględnia wielkość liter?\n\nbool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -659,7 +659,7 @@
         {
           "Id": "56c1d65d90934cb0b61984f2c80c4190",
           "Name": "bool",
-          "Description": "Czy ciąg zawiera podciąg",
+          "Description": "Czy ciąg zawiera podciąg?",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -668,7 +668,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Określa, czy dany ciąg zawiera dany podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Określa, czy dany ciąg zawiera określony podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -696,7 +696,7 @@
         {
           "Id": "cf0027f8931a4f40b83c57ba13385f1c",
           "Name": "ignoreCase",
-          "Description": "Czy porównanie uwzględnia\n\nbool\nWartość domyślna: false",
+          "Description": "Czy porównanie uwzględnia wielkość liter?\n\nbool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -707,7 +707,7 @@
         {
           "Id": "3e5c3683faf942e2add04fbde697bc07",
           "Name": "bool",
-          "Description": "Czy ciąg zawiera podciąg",
+          "Description": "Czy ciąg zawiera podciąg?",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -716,7 +716,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Określa, czy dany ciąg zawiera dany podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Określa, czy dany ciąg zawiera określony podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -755,7 +755,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Logiczne LUB: zwraca wartość prawda (True), jeśli któreś z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (Fałsz)."
+      "Description": "Suma logiczna: zwraca wartość prawda (True), jeśli dowolne z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (False)."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -794,7 +794,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Logiczne LUB: zwraca wartość prawda (True), jeśli któreś z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (Fałsz)."
+      "Description": "Suma logiczna: zwraca wartość prawda (True), jeśli dowolne z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (False)."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -930,7 +930,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
       "HintPath": null,
       "InputValue": "Nie wybrano pliku."
     },
@@ -1001,7 +1001,7 @@
         {
           "Id": "09b2644c499c4d64a8e9af376d1238d3",
           "Name": "list",
-          "Description": "Lista przestawionych list",
+          "Description": "Lista transponowanych list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1029,7 +1029,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
+      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
       "InputValue": false
     },
     {
@@ -1049,7 +1049,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
+      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
       "InputValue": true
     },
     {
@@ -1060,7 +1060,7 @@
         {
           "Id": "e0929515cbc94fdfaf8751dc4d0cea75",
           "Name": "string",
-          "Description": "Ciąg, w którym wszystkie litery mają zostać zmienione na wielkie\n\nstring",
+          "Description": "Ciąg, którego litery mają zostać zmienione na wielkie\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1071,7 +1071,7 @@
         {
           "Id": "1da284581cc545bdaf6c42831658f8a4",
           "Name": "string",
-          "Description": "Ciąg tekstowy złożony z wielkich liter",
+          "Description": "Ciąg złożony z wielkich liter",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1080,7 +1080,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToUpper@string",
       "Replication": "Auto",
-      "Description": "Zmienia wszystkie litery ciągu na wielkie.\n\nString.ToUpper (string: string): string"
+      "Description": "Konwertuje wszystkie litery ciągu na wielkie.\n\nString.ToUpper (string: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1229,7 +1229,7 @@
         {
           "Id": "8d9cdd9761c2455ea74f8061ae0a96f9",
           "Name": "lists",
-          "Description": "Lista list do przestawienia\n\nvar[]..[]",
+          "Description": "Lista list do transpozycji\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1240,7 +1240,7 @@
         {
           "Id": "70ebb90f33a847738ed2c96910772002",
           "Name": "lists",
-          "Description": "Lista przestawionych list",
+          "Description": "Lista transponowanych list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1249,7 +1249,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy wstawiane są wartości null, tak aby tablica zawsze była prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy są wstawiane wartości null, aby zawsze była ona prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1366,7 +1366,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
       "HintPath": null,
       "InputValue": "Nie wybrano pliku."
     },
@@ -1407,7 +1407,7 @@
         {
           "Id": "73916ba8dcf74938ab96d6cff7c58004",
           "Name": "groupedValues",
-          "Description": "Lista list podrzędnych z elementami zgrupowanymi według podobnych wartości",
+          "Description": "Wyświetla listy podrzędne z elementami zgrupowanymi według podobnych wartości.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1416,7 +1416,7 @@
         {
           "Id": "60c76b0a60df4263ae366caa0aae1d5f",
           "Name": "groupedIndices",
-          "Description": "lista list podrzędnych z oryginalnymi indeksami zgrupowanych wartości",
+          "Description": "Wyświetla listy podrzędne z oryginalnymi indeksami zgrupowanych wartości.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1445,7 +1445,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy numer.",
+      "Description": "Tworzy liczbę.",
       "InputValue": 0.0
     },
     {
@@ -1465,7 +1465,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
+      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
       "InputValue": false
     },
     {
@@ -1478,7 +1478,7 @@
         {
           "Id": "48b925d39611464ea10736c3e4ca361d",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1497,7 +1497,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1509,7 +1509,7 @@
         {
           "Id": "9d802168e4464ad2900708a2894e87cd",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1528,7 +1528,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1586,7 +1586,7 @@
         {
           "Id": "395b44ac4e8d49fb9f03b4d6b9cfd9e3",
           "Name": "amount",
-          "Description": "Warstwy zagnieżdżenia listy do usunięcia (-1 spowoduje usunięcie wszystkich zagnieżdżeń listy)\n\nint\nWartość domyślna: -1",
+          "Description": "Warstwy zagnieżdżenia list przeznaczone do usunięcia. Wartość –1 powoduje usunięcie wszystkich zagnieżdżeń list.\n\nint\nWartość domyślna: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1597,7 +1597,7 @@
         {
           "Id": "47c7f7350b7d49ce969dc2e316cfa582",
           "Name": "list",
-          "Description": "Spłaszczona lista według ilości",
+          "Description": "Spłaszczona lista według wartości amount (ilość)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1618,7 +1618,7 @@
         {
           "Id": "c0c2e580d77e4d04bd6b60346c80cd5a",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1637,7 +1637,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1792,7 +1792,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy wartości liczb całkowitych",
+      "Description": "Tworzy wartości będące liczbami całkowitymi (integer).",
       "InputValue": 1
     },
     {
@@ -1816,7 +1816,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy wartości liczb całkowitych",
+      "Description": "Tworzy wartości będące liczbami całkowitymi (integer).",
       "InputValue": 0
     },
     {
@@ -1838,7 +1838,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy ciąg znaków.",
+      "Description": "Tworzy ciąg.",
       "InputValue": "Arkusz eksportu"
     },
     {
@@ -1862,7 +1862,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy wartości liczb całkowitych",
+      "Description": "Tworzy wartości będące liczbami całkowitymi (integer).",
       "InputValue": 0
     },
     {
@@ -1875,7 +1875,7 @@
         {
           "Id": "7406c2a29cd04f73be24c91f7f272374",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1894,7 +1894,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła"
+      "Description": "Wizualizuje dane wyjściowe węzła."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1915,7 +1915,7 @@
         {
           "Id": "251861ad328c46d6bae45caa4de0376f",
           "Name": "string",
-          "Description": "Typ obiektu.",
+          "Description": "Typ obiektu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1924,7 +1924,7 @@
       ],
       "FunctionSignature": "DSCore.Object.Type@var",
       "Replication": "Auto",
-      "Description": "Zwraca typ obiektu w postaci ciągu.\n\nObject.Type (object: var): string"
+      "Description": "Zwraca typ obiektu w postaci ciągu (string).\n\nObject.Type (object: var): string"
     },
     {
       "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
@@ -1934,7 +1934,7 @@
         {
           "Id": "5ef499e8041342d48c3842d54a1dd0c1",
           "Name": "file|filePath",
-          "Description": "Ścieżka pliku lub obiekt pliku, z którego należy zaimportować plik .SAT.",
+          "Description": "Ścieżka pliku lub obiekt pliku, z którego należy zaimportować plik SAT.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1943,7 +1943,7 @@
         {
           "Id": "2722c854c9e347d29c7215f206ba6d51",
           "Name": "dynamoUnit",
-          "Description": "Długość jednostki forge, w razie pozostawienia wartości null geometria zostanie zaimportowana jako niemianowana.",
+          "Description": "Długość jednostki Forge. Jeśli zostanie pozostawiona jako wartość null, geometria zostanie zaimportowana bez jednostek.",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1962,7 +1962,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Importuje geometrię ze ścieżki pliku SAT. Ustaw wartość wejściową dynamoUnit, aby dopasować sposób interpretowania innych liczb w pliku dodatku Dynamo."
+      "Description": "Importuje geometrię ze ścieżki pliku SAT. Ustawiając wartość wejściową dynamoUnit, można dopasować sposób interpretowania innych liczb w pliku dodatku Dynamo."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -1981,7 +1981,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
       "HintPath": null,
       "InputValue": "Nie wybrano pliku."
     },
@@ -1993,7 +1993,7 @@
         {
           "Id": "7a1e8230e5fd4ee6a700d3b2a71c35e8",
           "Name": "path",
-          "Description": "Ścieżka do pliku w postaci ciągu.",
+          "Description": "Ścieżka do pliku w postaci ciągu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2012,7 +2012,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy obiekt pliku z określonej ścieżki"
+      "Description": "Tworzy obiekt pliku z określonej ścieżki."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2070,7 +2070,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
       "HintPath": null,
       "InputValue": "Nie wybrano pliku."
     },
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "Geometria",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2169,7 +2169,7 @@
         {
           "Id": "6aec60973d4745b782e055c82294aa25",
           "Name": "Plane",
-          "Description": "Płaszczyzna na płaszczyźnie XY świata",
+          "Description": "Płaszczyzna na płaszczyźnie XY świata.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2204,7 +2204,7 @@
         {
           "Id": "63762fa6b0004d5a9e43e5274a6d339a",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii.",
+          "Description": "Przychodzące obiekty geometrii",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2215,7 +2215,7 @@
         {
           "Id": "1c26aa9e782148f6a5b461c9aebb0bc6",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii.",
+          "Description": "Przychodzące obiekty geometrii",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2223,7 +2223,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wyświetla podgląd dynamiczny geometrii"
+      "Description": "Wyświetla dynamiczny podgląd geometrii."
     },
     {
       "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
@@ -2244,7 +2244,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wybierz typ jednostki"
+      "Description": "Wybiera typ jednostki."
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -2270,7 +2270,7 @@
         {
           "Id": "dedcf0734958458994d53ef030eec043",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii.",
+          "Description": "Przychodzące obiekty geometrii",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2281,7 +2281,7 @@
         {
           "Id": "2c6f0fd36a1e4e68af5a6e45e1ca9587",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii.",
+          "Description": "Przychodzące obiekty geometrii",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2289,7 +2289,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wyświetla podgląd dynamiczny geometrii"
+      "Description": "Wyświetla dynamiczny podgląd geometrii."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2299,7 +2299,7 @@
         {
           "Id": "506e8f12ee2c4e8a9aeea6f13e6ea749",
           "Name": "lists",
-          "Description": "Lista list do przestawienia\n\nvar[]..[]",
+          "Description": "Lista list do transpozycji\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2310,7 +2310,7 @@
         {
           "Id": "7d92eb30a7d849bfa8d607bb20f1e20a",
           "Name": "lists",
-          "Description": "Lista przestawionych list",
+          "Description": "Lista transponowanych list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2319,7 +2319,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy wstawiane są wartości null, tak aby tablica zawsze była prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy są wstawiane wartości null, aby zawsze była ona prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2404,7 +2404,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
       "HintPath": "",
       "InputValue": "Nie wybrano pliku."
     },
@@ -2427,7 +2427,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy ciąg znaków.",
+      "Description": "Tworzy ciąg.",
       "InputValue": "Arkusz1"
     },
     {
@@ -2447,7 +2447,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
+      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
       "InputValue": false
     }
   ],
@@ -3103,7 +3103,7 @@
       },
       {
         "Id": "c82103290124472eb7b8f24bfe9886f2",
-        "Name": "Oraz",
+        "Name": "I",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3113,7 +3113,7 @@
       },
       {
         "Id": "a8291326ebdb4701a4b1f3573737ffec",
-        "Name": "Oraz",
+        "Name": "I",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
