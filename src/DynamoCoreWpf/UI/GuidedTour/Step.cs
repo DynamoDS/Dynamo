@@ -16,7 +16,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.GuidedTour;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -57,73 +57,73 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// The step type will describe which type of window will be created after reading the json file, it can be  SURVEY, TOOLTIP, WELCOME, EXIT_TOUR
         /// </summary>
-        [JsonProperty("Type")]
+        [JsonPropertyName("Type")]
         public StepTypes StepType { get; set; }
 
         /// <summary>
         /// The step content will contain the title and the popup content (included formatted text)
         /// </summary>
-        [JsonProperty("StepContent")]
+        [JsonPropertyName("StepContent")]
         public Content StepContent { get; set; }
 
         /// <summary>
         /// There are some specific Steps that will contain extra content (like Survey.RatingTextTitle), then this list will store the information
         /// </summary>
-        [JsonProperty("ExtraContent")]
+        [JsonPropertyName("ExtraContent")]
         public List<ExtraContent> StepExtraContent { get; set; }
 
         /// <summary>
         /// Step name, it just represent a step identifier
         /// </summary>
-        [JsonProperty("Name")]
+        [JsonPropertyName("Name")]
         public string Name { get; set; }
 
         /// <summary>
         /// When the Step Width property is not provided the default value will be 480
         /// </summary>
-        [JsonProperty("Width")]
+        [JsonPropertyName("Width")]
         public double Width { get; set; } = 480;
 
         /// <summary>
         /// When the Step Height property is not provide the default value will be 190
         /// </summary>
-        [JsonProperty("Height")]
+        [JsonPropertyName("Height")]
         public double Height { get; set; } = 190;
 
         /// <summary>
         /// Represent a sequencial numeric value for each step, when is a multiflow guide this value can be repeated
         /// </summary>
-        [JsonProperty("Sequence")]
+        [JsonPropertyName("Sequence")]
         public int Sequence { get; set; } = 0;
 
         /// <summary>
         /// This property contains the Host information like the host popup element or the popup position
         /// </summary>
-        [JsonProperty("HostPopupInfo")]
+        [JsonPropertyName("HostPopupInfo")]
         public HostControlInfo HostPopupInfo { get; set; }
 
         /// <summary>
         /// This property will hold a list of UI Automation actions (information) that will be executed when the Next or Back button are pressed
         /// </summary>
-        [JsonProperty("UIAutomation")]
+        [JsonPropertyName("UIAutomation")]
         public List<StepUIAutomation> UIAutomation { get; set; }
 
         /// <summary>
         /// This property will hold information about the methods/actions that should be executed before showing a Popup(Step)
         /// </summary>
-        [JsonProperty("PreValidation")]
+        [JsonPropertyName("PreValidation")]
         internal PreValidation PreValidationInfo { get; set; }
 
         /// <summary>
         /// This property will show the library if It's set to true
         /// </summary>
-        [JsonProperty("ShowLibrary")]
+        [JsonPropertyName("ShowLibrary")]
         public bool ShowLibrary { get; set; }
 
         /// <summary>
-        /// This propertu will hold information about the exit guide modal 
+        /// This property will hold information about the exit guide modal 
         /// </summary>
-        [JsonProperty("ExitGuide")]
+        [JsonPropertyName("ExitGuide")]
         internal ExitGuide ExitGuide { get; set; }
 
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, BOTTOM_DOWN, NONE };
@@ -186,12 +186,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)
         /// By default the tooltip pointer will be pointing to the left and will be located at the top
         /// </summary>
-        [JsonProperty("TooltipPointerDirection")]
+        [JsonPropertyName("TooltipPointerDirection")]
         public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
         /// <summary>
         /// A vertical offfset to the pointer of the popups 
         /// </summary>
-        [JsonProperty("PointerVerticalOffset")]
+        [JsonPropertyName("PointerVerticalOffset")]
         public double PointerVerticalOffset { get; set; }        
         #endregion
 
@@ -868,13 +868,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Title of the Popup shown at the top-center
         /// </summary>
-        [JsonProperty("Title")]
+        [JsonPropertyName("Title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The content of the Popup using a specific format for showing text, hyperlinks,images, bullet points in a RichTextBox
         /// </summary>
-        [JsonProperty("FormattedText")]
+        [JsonPropertyName("FormattedText")]
         public string FormattedText
         {
             get
@@ -896,10 +896,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public class ExtraContent
     {
-        [JsonProperty("Property")]
+        [JsonPropertyName("Property")]
         public string Property { get; set; }
 
-        [JsonProperty("Value")]
+        [JsonPropertyName("Value")]
         public string Value { get; set; }
     }
 }
