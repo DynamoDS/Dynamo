@@ -8,14 +8,12 @@ namespace ProtoTest.TD.Associative
 {
     class Update : ProtoTestBase
     {
-        ProtoScript.Runners.DebugRunner fsr;
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
         public override void Setup()
         {
             base.Setup();
            
-            fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
             CLRModuleType.ClearTypes();
@@ -24,7 +22,6 @@ namespace ProtoTest.TD.Associative
         public override void TearDown()
         {
             base.TearDown();
-            fsr = null;
         }
 
         [Test]
