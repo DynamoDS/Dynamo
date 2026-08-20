@@ -1479,7 +1479,7 @@ namespace Dynamo.ViewModels
                 UpdateProxyPortsPosition();
                 RaisePropertyChanged(nameof(NodeContentCount));
             }
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             AddGroupToGroupCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged(nameof(IsExpanded));
             RedrawConnectors();
@@ -2024,7 +2024,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             this.AnnotationModel.UpdateGroupFrozenStatus();
         }
 
