@@ -60,6 +60,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
             {
                 undoRecorder.Undo();
+                UpdateHasUnsavedChangesFromSavedStateAffectingDepth();
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
                 // Request run for every undo action
@@ -72,6 +73,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
             {
                 undoRecorder.Redo();
+                UpdateHasUnsavedChangesFromSavedStateAffectingDepth();
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
                 // Request run for every redo action
@@ -83,6 +85,31 @@ namespace Dynamo.Graph.Workspaces
         {
             if (null != undoRecorder)
                 undoRecorder.Clear();
+
+            savedUndoDepth = 0;
+        }
+
+        /// <summary>
+        /// Marks this workspace as having no unsaved changes, and remembers the current
+        /// position in the undo history so that Undo/Redo back to this exact point can
+        /// correctly report the workspace as clean again, rather than leaving Undo unable
+        /// to ever clear the one-way dirty flag (DYN-10717).
+        /// </summary>
+        internal void MarkAsSaved()
+        {
+            // A save clears both undo-tracked and independently-flagged (administrative)
+            // dirty state. independentDirtyFlag must be reset explicitly here
+            independentDirtyFlag = false;
+            HasUnsavedChanges = false;
+            savedUndoDepth = undoRecorder?.SavedStateAffectingUndoDepth ?? 0;
+        }
+
+        private void UpdateHasUnsavedChangesFromSavedStateAffectingDepth()
+        {
+            // OR in independentDirtyFlag rather than overwriting: the undo stack being back
+            // at its saved position only means undo-tracked content is clean again
+            bool undoDepthIndicatesUnsaved = undoRecorder.SavedStateAffectingUndoDepth != savedUndoDepth;
+            HasUnsavedChanges = undoDepthIndicatesUnsaved || independentDirtyFlag;
         }
 
         // See RecordModelsForModification below for more details.
@@ -106,7 +133,12 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="models">The models to be recorded for undo.</param>
         /// <param name="recorder"></param>
-        internal static void RecordModelsForModification(List<ModelBase> models, UndoRedoRecorder recorder)
+        /// <param name="markAsModified">
+        /// Whether this recording represents a real content change that should mark the
+        /// workspace dirty. Pass false for recordings that exist purely to make an incidental
+        /// action (like a selection change) undoable (DYN-10717).
+        /// </param>
+        internal static void RecordModelsForModification(List<ModelBase> models, UndoRedoRecorder recorder, bool markAsModified = true)
         {
             if (null == recorder)
                 return;
@@ -116,7 +148,7 @@ namespace Dynamo.Graph.Workspaces
             using (recorder.BeginActionGroup())
             {
                 foreach (var model in models)
-                    recorder.RecordModificationForUndo(model);
+                    recorder.RecordModificationForUndo(model, markAsModified);
             }
         }
 
@@ -852,6 +884,15 @@ namespace Dynamo.Graph.Workspaces
         {
             RaisePropertyChanged("CanUndoRedoCommand");
         }
+
+        // Explicit implementation (rather than matching the public/implicit style of
+        // the other IUndoRedoRecorderClient members above) so this stays an internal
+        // implementation detail of the undo/dirty-flag wiring, not new public API.
+        void IUndoRedoRecorderClient.MarkAsModified()
+        {
+            HasUnsavedChanges = true;
+        }
+
         /// <summary>
         /// Returns model by GUID
         /// </summary>

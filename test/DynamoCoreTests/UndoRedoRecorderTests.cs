@@ -122,6 +122,8 @@ namespace Dynamo.Tests
 
         internal UndoRedoRecorder Recorder { get { return undoRecorder; } }
 
+        internal bool WasMarkedAsModified { get; private set; }
+
         #endregion
 
         #region IUndoRedoRecorderClient Members
@@ -157,7 +159,12 @@ namespace Dynamo.Tests
 
         public void UpdateUndoRedoStack()
         {
-            
+
+        }
+
+        public void MarkAsModified()
+        {
+            WasMarkedAsModified = true;
         }
 
         #endregion
@@ -189,6 +196,23 @@ namespace Dynamo.Tests
         {
             Assert.AreEqual(false, recorder.CanUndo);
             Assert.AreEqual(false, recorder.CanRedo);
+        }
+
+        /// <summary>
+        /// Regression test for DYN-10717: recording a modification (e.g. a node/note/group
+        /// drag or resize) must notify the client so it can mark itself dirty, since that
+        /// state would otherwise be silently unsavable once Save is gated on the dirty flag.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void TestRecordModificationForUndoMarksClientAsModified()
+        {
+            workspace.AddModel(new DummyModel(0, 10));
+            Assert.IsFalse(workspace.WasMarkedAsModified);
+
+            workspace.ModifyModel(0);
+
+            Assert.IsTrue(workspace.WasMarkedAsModified);
         }
 
         [Test]

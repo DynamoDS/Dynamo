@@ -2636,7 +2636,7 @@ namespace Dynamo.Models
 
                 if (string.IsNullOrEmpty(workspace.FileName))
                 {
-                    workspace.HasUnsavedChanges = true;
+                    workspace.MarkAsIndependentlyModified();
                 }
 
                 RunType runType = RunType.Manual;
@@ -2727,7 +2727,7 @@ namespace Dynamo.Models
 
             if (resolvedDummyNode)
             {
-                currentWorkspace.HasUnsavedChanges = false;
+                currentWorkspace.MarkAsSaved();
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
                 // the Dependency table is regenerated in the WorkspaceDependencyView extension.
                 currentWorkspace.OnDummyNodesReloaded();
@@ -3601,7 +3601,7 @@ namespace Dynamo.Models
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
-            CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.MarkAsSaved();
             CurrentWorkspace.Name = "";
 
             // Clear workspace metadata properties when creating new workspace

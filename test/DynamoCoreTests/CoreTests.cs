@@ -854,6 +854,111 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
+        /// <summary>
+        /// Regression test for DYN-10717: dragging/resizing a node, note, or group changes
+        /// what would be written to the saved file (X/Y/Width/Height), but previously never
+        /// marked the workspace dirty. RecordModelsForModification is the shared entry point
+        /// every drag-completion/resize code path funnels through (StateMachine's node drag,
+        /// AnnotationViewModel's group/note resize, etc.), so exercising it directly here
+        /// covers all of them without needing WPF-level drag simulation.
+        /// </summary>
+        [Test]
+        public void TestFileDirtyOnNodeModification()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+
+            // Passed as ModelBase[] (not List<ModelBase>) to unambiguously call the public
+            // RecordModelsForModification(IEnumerable<ModelBase>) overload, which opens its
+            // own action group -- the internal List<ModelBase> overload is an exact-type
+            // match that C# would otherwise prefer, and it assumes a group is already open.
+            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// Regression test for DYN-10717: undoing the single change made since the file was
+        /// opened/saved must clear HasUnsavedChanges again -- Undo previously never reset
+        /// this one-way flag at all, so Save stayed enabled forever after the first edit even
+        /// if the user undid it back to the exact saved state. Redoing that change should
+        /// mark it dirty again.
+        /// </summary>
+        [Test]
+        public void TestUndoRedoRestoresHasUnsavedChangesToSavedState()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            var newPosition = $"{node.X + 100};{node.Y}";
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, node.GUID, nameof(NodeModel.Position), newPosition));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            // Undo the only change made since open -- back to the saved state, so clean again.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            // Redo re-applies the change -- dirty again.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// Regression test for DYN-10717: undoing only one of two changes must not clear
+        /// HasUnsavedChanges, since the workspace is still not back at the exact undo-stack
+        /// depth it was at when last saved/opened.
+        /// </summary>
+        [Test]
+        public void TestUndoingOneOfTwoChangesStaysDirty()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Take(2).ToList();
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, nodes[0].GUID, nameof(NodeModel.Position), $"{nodes[0].X + 10};{nodes[0].Y}"));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, nodes[1].GUID, nameof(NodeModel.Position), $"{nodes[1].X + 10};{nodes[1].Y}"));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            // Undo only the second change -- still dirty, since we're not back at the saved depth.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// Regression test for a PR review comment on DYN-10717: HasUnsavedChanges can be set
+        /// directly by workspace-level/administrative code paths that never go through the
+        /// tagged undo-recording system (e.g. a unit-conversion node's selected units,
+        /// geometry scale factor, active linter, or custom graph metadata). Undoing an
+        /// unrelated, separately-tracked edit back to the exact saved undo-stack depth must
+        /// not silently wipe out that independent dirty signal.
+        /// </summary>
+        [Test]
+        public void TestIndependentDirtyFlagSurvivesUnrelatedUndo()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            // Simulate a workspace-level/administrative change that doesn't go through the
+            // tagged undo-recording system (e.g. LinterViewModel.ActiveLinter, GeometryScalingPopup).
+            CurrentDynamoModel.CurrentWorkspace.MarkAsIndependentlyModified();
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+
+            // Even though the tagged/tracked edit was fully undone (back to the saved
+            // undo-depth), the independent administrative dirty flag must keep the
+            // workspace marked unsaved.
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
         // SaveImage
 
         //[Test]
