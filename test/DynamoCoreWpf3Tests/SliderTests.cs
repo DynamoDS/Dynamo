@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using CoreNodeModels.Input;
+using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Models;
 using NUnit.Framework;
@@ -148,6 +149,80 @@ namespace DynamoCoreWpfTests
             //Recovers slider from xml
             slider.Deserialize(xmlElement, SaveContext.None);
             Assert.AreEqual(10, slider.Min);
+        }
+
+        [Test]
+        public void WhenValueTextIsDecimalThenInputIsRejectedAndValueUnchanged()
+        {
+            var slider = new IntegerSlider64Bit();
+            Assert.NotNull(slider);
+
+            var handled = slider.UpdateValue(new UpdateValueParams("ValueText", "3.5"));
+
+            Assert.IsFalse(handled);
+            Assert.AreEqual(1, slider.Value);
+            Assert.AreEqual(1, slider.Infos.Count);
+            Assert.IsTrue(slider.Infos.Any(i => i.Message.Equals(Resources.IntegerSliderNonIntegerInputMessage)));
+        }
+
+        [Test]
+        public void WhenValueTextIsNonNumericThenInputIsRejectedAndValueUnchanged()
+        {
+            var slider = new IntegerSlider64Bit();
+
+            var handled = slider.UpdateValue(new UpdateValueParams("ValueText", "abc"));
+
+            Assert.IsFalse(handled);
+            Assert.AreEqual(1, slider.Value);
+            Assert.IsTrue(slider.Infos.Any(i => i.Message.Equals(Resources.IntegerSliderNonIntegerInputMessage)));
+        }
+
+        [Test]
+        public void WhenValidIntegerFollowsRejectedInputThenInfoIsCleared()
+        {
+            var slider = new IntegerSlider64Bit();
+            slider.UpdateValue(new UpdateValueParams("ValueText", "3.5"));
+            Assert.AreEqual(1, slider.Infos.Count);
+
+            var handled = slider.UpdateValue(new UpdateValueParams("ValueText", "42"));
+
+            Assert.IsTrue(handled);
+            Assert.AreEqual(42, slider.Value);
+            Assert.AreEqual(0, slider.Infos.Count);
+        }
+
+        [Test]
+        public void WhenMinTextIsDecimalThenMinIsUnchanged()
+        {
+            var slider = new IntegerSlider64Bit();
+
+            var handled = slider.UpdateValue(new UpdateValueParams("MinText", "0.5"));
+
+            Assert.IsFalse(handled);
+            Assert.AreEqual(0, slider.Min);
+        }
+
+        [Test]
+        public void WhenMaxIsDecimalThenMaxIsUnchanged()
+        {
+            // "Max" (no "Text" suffix) is the property name sent by IntegerSliderSettingsControl.
+            var slider = new IntegerSlider64Bit();
+
+            var handled = slider.UpdateValue(new UpdateValueParams("Max", "100.5"));
+
+            Assert.IsFalse(handled);
+            Assert.AreEqual(100, slider.Max);
+        }
+
+        [Test]
+        public void WhenStepTextIsNonNumericThenStepIsUnchanged()
+        {
+            var slider = new IntegerSlider64Bit();
+
+            var handled = slider.UpdateValue(new UpdateValueParams("StepText", "one"));
+
+            Assert.IsFalse(handled);
+            Assert.AreEqual(1, slider.Step);
         }
     }
 }
