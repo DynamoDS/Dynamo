@@ -136,7 +136,7 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
-        private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> backupFilesDict = new();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         /// <summary>
@@ -386,7 +386,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The private collection of visible workspaces in Dynamo
         /// </summary>
-        private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
+        private readonly List<WorkspaceModel> _workspaces = new();
 
         /// <summary>
         ///     Returns collection of visible workspaces in Dynamo
@@ -711,7 +711,7 @@ namespace Dynamo.Models
             pathManager = CreatePathManager(config);
 
             // Ensure we have all directories in place.
-            var exceptions = new List<Exception>();
+            List<Exception> exceptions = [];
             pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
@@ -857,7 +857,7 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = [BuiltInPackagesToken, pathManager.UserDataDirectory];
 
             if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
@@ -892,7 +892,7 @@ namespace Dynamo.Models
                         if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
                         {
                             PreferenceSettings.PythonTemplateFilePath = templatePath;
-                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                            Logger.Log($"{Resources.PythonTemplateDefinedByHost} : {PreferenceSettings.PythonTemplateFilePath}");
                         }
 
                         // Otherwise fallback to the default
@@ -912,7 +912,7 @@ namespace Dynamo.Models
                 else
                 {
                     // A custom python template path already exists in the DynamoSettings.xml
-                    Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
+                    Logger.Log($"{Resources.PythonTemplateUserFile} : {PreferenceSettings.PythonTemplateFilePath}");
                 }
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
@@ -951,7 +951,7 @@ namespace Dynamo.Models
                 if (this.dynamoReady)
                 {
                     DynamoReadyExtensionHandler(new ReadyParams(this),
-                    new List<IExtension>() { extension });
+                    [extension]);
                 };
             };
 
@@ -983,8 +983,7 @@ namespace Dynamo.Models
             AddHomeWorkspace();
 
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            Logger.Log(string.Format("Dynamo -- Build {0}",
-                                        Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log($"Dynamo -- Build {Assembly.GetExecutingAssembly().GetName().Version}");
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
@@ -1059,7 +1058,7 @@ namespace Dynamo.Models
                     LuceneUtility.DisposeWriter();
             }
 
-            GraphChecksumDictionary = new Dictionary<string, List<string>>();
+            GraphChecksumDictionary = new();
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
 
@@ -1068,7 +1067,7 @@ namespace Dynamo.Models
             {
                 if (trustedLoc.StartsWith(programDataPath))
                 {
-                    Logger.Log(("An unsafe path has been detected in Trusted Locations: " + trustedLoc));
+                    Logger.Log($"An unsafe path has been detected in Trusted Locations: {trustedLoc}");
                 }
             }        
         }
@@ -1237,7 +1236,7 @@ namespace Dynamo.Models
             if (!string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) && File.Exists(pathManager.PythonTemplateFilePath))
             {
                 PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
-                Logger.Log(Resources.PythonTemplateAppData + " : " + PreferenceSettings.PythonTemplateFilePath);
+                Logger.Log($"{Resources.PythonTemplateAppData} : {PreferenceSettings.PythonTemplateFilePath}");
             }
 
             // Otherwise the OOTB hard-coded template is applied
@@ -1292,7 +1291,7 @@ namespace Dynamo.Models
 
         private IEnumerable<IExtension> LoadExtensions()
         {
-            var extensions = new List<IExtension>();
+            List<IExtension> extensions = [];
             foreach (var dir in pathManager.ExtensionsDirectories)
             {
                 extensions.AddRange(ExtensionManager.ExtensionLoader.LoadDirectory(dir));
@@ -1304,8 +1303,7 @@ namespace Dynamo.Models
         {
             ExtensionManager.Remove(ext);
 
-            var logSource = ext as ILogSource;
-            if (logSource != null)
+            if (ext is ILogSource logSource)
                 logSource.MessageLogged -= LogMessage;
         }
 
@@ -1337,7 +1335,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                logger.Log(ex.Message + " : " + ex.StackTrace);
+                logger.Log($"{ex.Message} : {ex.StackTrace}");
                 return;
             }
         }
@@ -1355,7 +1353,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                logger.Log(ex.Message + " : " + ex.StackTrace);
+                logger.Log($"{ex.Message} : {ex.StackTrace}");
                 return;
             }
 
@@ -1470,16 +1468,15 @@ namespace Dynamo.Models
         ///
         private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
         {
-            var updateTask = e.Task as UpdateGraphAsyncTask;
             switch (e.CurrentState)
             {
                 case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (updateTask != null)
+                    if (e.Task is UpdateGraphAsyncTask updateTask)
                         ExecutionEvents.OnGraphPreExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
                     break;
 
                 case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (updateTask != null)
+                    if (e.Task is UpdateGraphAsyncTask updateTask2)
                     {
                         // Record execution time for update graph task.
                         long start = e.Task.ExecutionStartTime.TickCount;
@@ -1489,10 +1486,10 @@ namespace Dynamo.Models
                         //don't attempt to send these events unless GA is active or ADP will actually record these events.
                         if (Logging.Analytics.ReportingAnalytics)
                         {
-                            if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
+                            if (updateTask2.ModifiedNodes != null && updateTask2.ModifiedNodes.Any())
                             {
                                 // Send analytics for each of modified nodes so they are counted individually
-                                foreach (var node in updateTask.ModifiedNodes)
+                                foreach (var node in updateTask2.ModifiedNodes)
                                 {
                                     // Tracking node execution as generic event
                                     // it is distinguished with the legacy aggregated performance event
@@ -1506,7 +1503,7 @@ namespace Dynamo.Models
 
                         Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
-                        ExecutionEvents.OnGraphPostExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
+                        ExecutionEvents.OnGraphPostExecution(new ExecutionSession(updateTask2, this, geometryFactoryPath));
                     }
                     break;
             }
@@ -1836,8 +1833,9 @@ namespace Dynamo.Models
                 return;
             }
 
-            var nodes = new List<TypeLoadData>();
-            Loader.LoadNodesFromAssembly(assem, Context, nodes, new List<TypeLoadData>());
+            List<TypeLoadData> nodes = [];
+            List<TypeLoadData> errors = [];
+            Loader.LoadNodesFromAssembly(assem, Context, nodes, errors);
 
             LoadNodeModels(nodes, true);
         }
@@ -2564,8 +2562,7 @@ namespace Dynamo.Models
             // The following logic to start periodic evaluation will need to be moved
             // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
             // as it causes an immediate crash due to the above ResetEngine call.
-            var hws = ws as HomeWorkspaceModel;
-            if (hws != null)
+            if (ws is HomeWorkspaceModel hws)
             {
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
@@ -2621,8 +2618,8 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = string.IsNullOrEmpty(filePath)? string.Empty : filePath;
-            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
+            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
 
@@ -2822,7 +2819,7 @@ namespace Dynamo.Models
                 // when the last auto-save operation happens. Now the IDs will be used to know
                 // whether some workspaces have already been backed up. If so, those workspaces won't be
                 // backed up again.
-                var tempDict = new Dictionary<Guid, string>(backupFilesDict);
+                Dictionary<Guid, string> tempDict = new(backupFilesDict);
                 backupFilesDict.Clear();
                 PreferenceSettings.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
@@ -2843,7 +2840,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
-                    Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
+                    Logger.Log($"{Resources.BackupSavedMsg}: {savePath}");
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
@@ -2934,7 +2931,7 @@ namespace Dynamo.Models
 
         internal void UngroupModel(List<ModelBase> modelsToUngroup)
         {
-            var emptyGroup = new List<ModelBase>();
+            List<ModelBase> emptyGroup = [];
             var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var model in modelsToUngroup)
             {
@@ -3013,7 +3010,7 @@ namespace Dynamo.Models
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
 
-            var modelsToModify = new List<ModelBase>();
+            List<ModelBase> modelsToModify = [];
             modelsToModify.AddRange(modelsToAdd);
             modelsToModify.Add(selectedGroup);
 
@@ -3241,15 +3238,17 @@ namespace Dynamo.Models
                 if (!(el is NodeModel))
                     continue;
 
-                var node = el as NodeModel;
-                var connectors =
-                    node.InPorts.Concat(node.OutPorts).SelectMany(port => port.Connectors)
-                        .Where(
-                            connector =>
-                                connector.End != null && connector.End.Owner.IsSelected
-                                    && !ClipBoard.Contains(connector));
+                if (el is NodeModel node)
+                {
+                    var connectors =
+                        node.InPorts.Concat(node.OutPorts).SelectMany(port => port.Connectors)
+                            .Where(
+                                connector =>
+                                    connector.End != null && connector.End.Owner.IsSelected
+                                        && !ClipBoard.Contains(connector));
 
-                ClipBoard.AddRange(connectors);
+                    ClipBoard.AddRange(connectors);
+                }
             }
 
             var connectorPins = ClipBoard
@@ -3301,11 +3300,11 @@ namespace Dynamo.Models
 
             //make a lookup table to store the guids of the
             //old models and the guids of their pasted versions
-            var modelLookup = new Dictionary<Guid, ModelBase>();
+            Dictionary<Guid, ModelBase> modelLookup = [];
 
             //make a list of all newly created models so that their
             //creations can be recorded in the undo recorder.
-            var createdModels = new List<ModelBase>();
+            List<ModelBase> createdModels = [];
 
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
@@ -3320,7 +3319,7 @@ namespace Dynamo.Models
             var xmlDoc = new XmlDocument();
 
             // Create the new NodeModel's
-            var newNodeModels = new List<NodeModel>();
+            List<NodeModel> newNodeModels = [];
             using (CurrentWorkspace.BeginDelayedGraphExecution())
             {
                 foreach (var node in nodes)
@@ -3355,7 +3354,7 @@ namespace Dynamo.Models
                 }
 
                 // Create the new NoteModel's
-                var newNoteModels = new List<NoteModel>();
+                List<NoteModel> newNoteModels = [];
                 foreach (var note in notes)
                 {
                     var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
@@ -3460,7 +3459,7 @@ namespace Dynamo.Models
                 //Grouping depends on the selected node models.
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
-                var newAnnotations = new List<AnnotationModel>();
+                List<AnnotationModel> newAnnotations = [];
                 foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups))
                 {
                     if (modelLookup.ContainsKey(annotation.GUID))
@@ -3522,9 +3521,9 @@ namespace Dynamo.Models
         private AnnotationModel CreateAnnotationModel(
             AnnotationModel model, Dictionary<Guid, ModelBase> modelLookup)
         {
-            var annotationNodeModel = new List<NodeModel>();
-            var annotationNoteModel = new List<NoteModel>();
-            var annotationAnnotationModels = new List<AnnotationModel>();
+            List<NodeModel> annotationNodeModel = [];
+            List<NoteModel> annotationNoteModel = [];
+            List<AnnotationModel> annotationAnnotationModels = [];
             // some models can be deleted after copying them,
             // so they need to be in pasted annotation as well
             var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
@@ -3577,8 +3576,7 @@ namespace Dynamo.Models
         /// <param name="parameters">The object to add to the selection.</param>
         public void AddToSelection(object parameters)
         {
-            var selectable = parameters as ISelectable;
-            if (selectable != null)
+            if (parameters is ISelectable selectable)
             {
                 DynamoSelection.Instance.Selection.AddUnique(selectable);
             }
@@ -3652,7 +3650,7 @@ namespace Dynamo.Models
                              where !displayString.Contains("GetType")
                              select string.IsNullOrEmpty(function.Namespace)
                                 ? ""
-                                : function.Namespace + "." + function.Signature + "\n"));
+                                : $"{function.Namespace}.{function.Signature}\n"));
 
             var sb = string.Join("\n", descriptions);
 
@@ -3948,7 +3946,7 @@ namespace Dynamo.Models
 
         private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
         {
-            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+            List<ConnectorModel> newConnectors = [];
 
             foreach (var connectorModel in connectors)
             {
@@ -3971,7 +3969,7 @@ namespace Dynamo.Models
 
         private List<NoteModel> GetInsertedNotes(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations)
         {
-            List<NoteModel> result = new List<NoteModel>();
+            List<NoteModel> result = [];
 
             foreach (var annotation in viewInfoAnnotations)
             {
@@ -3992,7 +3990,7 @@ namespace Dynamo.Models
 
         internal static void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
         {
-            var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            Dictionary<ModelBase, UndoRedoRecorder.UserAction> userActionDictionary = [];
             //Add models that were newly created
             foreach (var undoItem in undoItems)
             {
