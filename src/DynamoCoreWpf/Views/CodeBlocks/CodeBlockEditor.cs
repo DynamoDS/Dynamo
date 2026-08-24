@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
@@ -84,6 +85,17 @@ namespace Dynamo.UI.Controls
 
             WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
             stateMachine.OnStateChanged += OnEditorStateChanged;
+            nodeView.Unloaded += OnNodeViewUnloaded;
+        }
+
+        /// <summary>
+        /// Ensures graph shortcuts are restored if the editor is unloaded while still
+        /// in edit mode (e.g. node removal or workspace close). LostFocus may not commit
+        /// when <see cref="CodeCompletionEditor.IsDisposed"/> is already true.
+        /// </summary>
+        private void OnNodeViewUnloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
         }
 
         protected override void OnEscape()
@@ -116,6 +128,23 @@ namespace Dynamo.UI.Controls
         protected override void OnTextAreaGotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             stateMachine.Transit(EditorStateMachine.State.Editing);
+            // Ensure the flag is set even if the state machine was already Editing
+            // (e.g. keyboard focus returned after a modal dialog closed).
+            nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = true;
+        }
+
+        /// <summary>
+        /// Restores graph shortcuts when keyboard focus leaves the editor without a
+        /// normal TextArea LostFocus commit (e.g. opening then canceling File → New).
+        /// </summary>
+        protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnIsKeyboardFocusWithinChanged(e);
+
+            if (!IsKeyboardFocusWithin)
+            {
+                nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
+            }
         }
 
         private void OnEditorStateChanged(EditorStateMachine.State state)
