@@ -1549,11 +1549,11 @@ namespace Dynamo.Controls
                     break;
 
                 case "IsSetAsInput":
-                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.MarkAsIndependentlyModified();
                     break;
 
                 case "IsSetAsOutput":
-                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.MarkAsIndependentlyModified();
                     break;
             }
         }
