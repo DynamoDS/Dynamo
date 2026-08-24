@@ -1907,9 +1907,28 @@ namespace Dynamo.Models
                 }
             }
 
+            var persistedTemplatePath = PreferenceSettings.TemplateFilePath;
+            if (Core.PathManager.ShouldResetPersistedTemplatesPath(PreferenceSettings.TemplateFilePath, pathManager.DefaultTemplatesDirectory))
+            {
+                PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Log($"Configured template path {persistedTemplatePath} is not available; falling back to {PreferenceSettings.TemplateFilePath}");
+                }
+            }
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
             UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
+
+            if (!string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+            {
+                PreferenceSettings.AddTrustedLocation(PreferenceSettings.TemplateFilePath);
+            }
+
+            if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+            {
+                PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+            }
         }
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
         {
