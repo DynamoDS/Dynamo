@@ -216,9 +216,11 @@ namespace Dynamo.Wpf.Utilities
         /// wrong in DYN-10773 — a probe must not be the thing that changes the answer.
         /// </para>
         /// <para>
-        /// Mirrors the search DynamoMCP's own <c>ResolveWrapperLibrary</c> performs: the default
-        /// OS search order first, then the canonical ADP Desktop SDK install path. Only a miss on
-        /// every one of them is treated as definitive, because this verdict withholds a feature.
+        /// Covers the same locations DynamoMCP's own <c>ResolveWrapperLibrary</c> can reach: the
+        /// default OS search path and the canonical ADP Desktop SDK install directory. The order
+        /// they are visited in carries no meaning here — this only asks whether the file exists
+        /// anywhere reachable, not which copy would win. Only a miss on every one of them is
+        /// treated as definitive, because this verdict withholds a feature.
         /// </para>
         /// </summary>
         private static bool IsAdpWrapperResolvable()
@@ -229,19 +231,16 @@ namespace Dynamo.Wpf.Utilities
                 return true;
             }
 
+            // No guard around the probe itself: Path.Join does not throw (unlike Path.Combine,
+            // which rejects a null segment) and File.Exists is documented to return false rather
+            // than throw for a malformed, too-long or unreadable path. A bad PATH entry therefore
+            // just fails to match instead of derailing the sweep.
             foreach (var directory in WrapperSearchDirectories())
             {
-                try
+                if (!string.IsNullOrWhiteSpace(directory) &&
+                    File.Exists(Path.Join(directory, AdpWrapperModuleName)))
                 {
-                    if (!string.IsNullOrWhiteSpace(directory) &&
-                        File.Exists(Path.Combine(directory, AdpWrapperModuleName)))
-                    {
-                        return true;
-                    }
-                }
-                catch (ArgumentException)
-                {
-                    // A malformed PATH entry is not evidence of anything; skip it.
+                    return true;
                 }
             }
 
@@ -271,7 +270,7 @@ namespace Dynamo.Wpf.Utilities
             var commonFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
             if (!string.IsNullOrEmpty(commonFiles))
             {
-                yield return Path.Combine(commonFiles, "Autodesk", "AdpDesktopSDK", "bin");
+                yield return Path.Join(commonFiles, "Autodesk", "AdpDesktopSDK", "bin");
             }
 
             var path = Environment.GetEnvironmentVariable("PATH");
