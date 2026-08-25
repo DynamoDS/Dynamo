@@ -2065,7 +2065,7 @@
     <value>添加了新选项卡，因为该扩展已经显示在扩展侧栏上。</value>
   </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
-    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+    <value>不提供软件包/扩展{0}因为此过程中的 Autodesk Identity （IDSDK） 无法验证 MCP 令牌（{1} 不会导出{2}）;HTTP 401 会拒绝每个请求。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>无法加载 {1}。

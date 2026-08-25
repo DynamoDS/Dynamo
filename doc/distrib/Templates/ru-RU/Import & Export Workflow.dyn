@@ -492,7 +492,7 @@
         {
           "Id": "99a53962b867421796375dacfb3a1ade",
           "Name": "in",
-          "Description": "Элементы, индекс маски которых имеет значение «истина».",
+          "Description": "Элементы, индекс маски которых имеет значение True.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -501,7 +501,7 @@
         {
           "Id": "837f23283e3640cba05e8e16dfbe25a4",
           "Name": "out",
-          "Description": "Элементы, индекс маски которых имеет значение «ложь».",
+          "Description": "Элементы, индекс маски которых имеет значение False.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -813,7 +813,7 @@
         {
           "Id": "d99904888cfc459d9725f505a7537049",
           "Name": "index",
-          "Description": "Индекс элемента для включения в выборку.\n\nint",
+          "Description": "Индекс элемента, который требуется извлечь.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -833,7 +833,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Получение элемента из данного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Получение элемента из заданного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -852,7 +852,7 @@
         {
           "Id": "3e5cdd4efdf44da5846d2c82354bb85c",
           "Name": "index",
-          "Description": "Индекс элемента для включения в выборку.\n\nint",
+          "Description": "Индекс элемента, который требуется извлечь.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -872,7 +872,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Получение элемента из данного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Получение элемента из заданного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -891,7 +891,7 @@
         {
           "Id": "f6f7799d785d4aacac1c7c1b195709bf",
           "Name": "index",
-          "Description": "Индекс элемента для включения в выборку.\n\nint",
+          "Description": "Индекс элемента, который требуется извлечь.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -911,7 +911,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Получение элемента из данного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Получение элемента из заданного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -1080,7 +1080,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToUpper@string",
       "Replication": "Auto",
-      "Description": "Преобразование символов данной строки в символы верхнего регистра.\n\nString.ToUpper (string: string): string"
+      "Description": "Преобразование символов данной строки в верхний регистр.\n\nString.ToUpper (string: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1120,7 +1120,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Возможность непосредственной разработки кода DesignScript",
-      "Code": "// one output list\n[\"GA\",\"DET\",\"STRUCT\"];"
+      "Code": "// один выходной список\n[\"GA\",\"DET\",\"STRUCT\"];"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1249,7 +1249,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Замена строк и столбцов в списке списков. Если некоторые строки короче других, то в итоговый массив в качестве заполнителей вставляются нулевые значения, благодаря чему он всегда остается прямоугольным.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Замена строк и столбцов в списке списков. Если некоторые строки короче других, то в итоговый массив в качестве заполнителей вставляются значения NULL, благодаря чему он всегда остается прямоугольным.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1268,7 +1268,7 @@
         {
           "Id": "fd2ce9598e104bfca2400ca5597d740f",
           "Name": "index",
-          "Description": "Индекс элемента для включения в выборку.\n\nint",
+          "Description": "Индекс элемента, который требуется извлечь.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1288,7 +1288,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Получение элемента из данного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Получение элемента из заданного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1547,7 +1547,7 @@
         {
           "Id": "682d990a82f140439cdfbae90eaa2e24",
           "Name": "index",
-          "Description": "Индекс элемента для включения в выборку.\n\nint",
+          "Description": "Индекс элемента, который требуется извлечь.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1567,7 +1567,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Получение элемента из данного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Получение элемента из заданного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1586,7 +1586,7 @@
         {
           "Id": "395b44ac4e8d49fb9f03b4d6b9cfd9e3",
           "Name": "amount",
-          "Description": "Слои в списке, которые требуется исключить (–1 приведет к удалению всех вложенных в список слоев)\n\nint\nЗначение по умолчанию: -1",
+          "Description": "Слои в списке, которые требуется исключить (-1 приведет к удалению всех вложенных в список слоев)\n\nint\nЗначение по умолчанию: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1606,7 +1606,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Выравнивание вложенного перечня списков по определенному количественному значению.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Выравнивание вложенного списка списков по определенному количественному значению.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -2051,7 +2051,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ExportToSAT@Autodesk.DesignScript.Geometry.Geometry[],string",
       "Replication": "Auto",
-      "Description": "Exports a list of specified geometry to the given SAT file path\n\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
+      "Description": "Экспорт списка выбранной геометрии по указанному пути к файлу SAT\n\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "Геометрия",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2186,7 +2186,7 @@
       "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
-        "Name": "562efd61-5d0f-4710-896a-83c836535c64 Preview",
+        "Name": "562efd61-5d0f-4710-896a-83c836535c64 Предварительный просмотр",
         "EyeX": -25.794347763061523,
         "EyeY": 33.5272102355957,
         "EyeZ": 92.50603485107422,
@@ -2252,7 +2252,7 @@
       "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
-        "Name": "b2660d4f-8bd1-434d-8203-108456c7840c Preview",
+        "Name": "b2660d4f-8bd1-434d-8203-108456c7840c Предварительный просмотр",
         "EyeX": -14.631115913391113,
         "EyeY": 21.433727264404297,
         "EyeZ": 38.550392150878906,
@@ -2319,7 +2319,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Замена строк и столбцов в списке списков. Если некоторые строки короче других, то в итоговый массив в качестве заполнителей вставляются нулевые значения, благодаря чему он всегда остается прямоугольным.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Замена строк и столбцов в списке списков. Если некоторые строки короче других, то в итоговый массив в качестве заполнителей вставляются значения NULL, благодаря чему он всегда остается прямоугольным.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -6184,7 +6184,7 @@
       },
       {
         "Id": "6df0f9e569ad4b44acd9139afc1aff4a",
-        "Title": "DYNAMO VERSION\n_____________________________________________________ \n\n4.2.0\n",
+        "Title": "ВЕРСИЯ DYNAMO\n_____________________________________________________ \n\n4.2.0\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6576,7 +6576,7 @@
       },
       {
         "Id": "562eb0dc7ea54317bebd0ed83d0b4f07",
-        "Title": "Click Browse and select your own CSV (.csv) file before running this graph",
+        "Title": "Нажмите «Обзор» и выберите собственный файл CSV перед запуском этого графа",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6603,7 +6603,7 @@
       },
       {
         "Id": "38b94337c8ea409792674c13e4114cff",
-        "Title": "Click Browse and select your own SAT (.sat) file before running this graph",
+        "Title": "Нажмите «Обзор» и выберите собственный файл SAT перед запуском этого графа",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6657,7 +6657,7 @@
       },
       {
         "Id": "52526b296d7749a39a9f8cde50769836",
-        "Title": "Click Browse and select your own Excel (.xlsx) file before running this graph",
+        "Title": "Нажмите «Обзор» и выберите собственный файл Excel (XLSX) перед запуском этого графа",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
