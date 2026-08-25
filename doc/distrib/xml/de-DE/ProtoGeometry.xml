@@ -2779,7 +2779,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Ruft die Hülle eines Volumenkörpers aus dessen Flächen ab.</summary>
             <param name="internalFaceThickness">Entfernung zum Verlängern der Hülle nach innen</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">Entfernung zum Verlängern der Hülle nach außen</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">

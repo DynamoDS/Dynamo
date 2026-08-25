@@ -2066,7 +2066,7 @@
     <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
   </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
-    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+    <value>このプロセスの Autodesk Identity (IDSDK)は MCP トークンを検証できない({1} が {2} を書き出さない)ため、パッケージ/拡張機能 {0} は提供されません。すべての要求は HTTP 401 で拒否されます。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} をロードできません。
