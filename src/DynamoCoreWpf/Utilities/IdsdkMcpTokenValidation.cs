@@ -251,38 +251,30 @@ namespace Dynamo.Wpf.Utilities
         /// <summary>
         /// Directories a base-name DLL load would search, in roughly the order Windows uses,
         /// plus the ADP Desktop SDK's canonical install location.
+        /// <para>
+        /// The individual environment lookups are deliberately left unguarded. This iterator runs
+        /// inside <see cref="Probe"/>'s <c>try</c>, so anything that throws here surfaces as
+        /// <see cref="McpTokenValidationAvailability.Unknown"/> and fails open. Catching locally
+        /// would be worse than useless: the sweep would carry on with a silently truncated search
+        /// path and could then report the wrapper "absent", withholding a feature on the strength
+        /// of a search that never actually ran.
+        /// </para>
         /// </summary>
         private static IEnumerable<string> WrapperSearchDirectories()
         {
             yield return AppContext.BaseDirectory;
             yield return AppDomain.CurrentDomain.BaseDirectory;
-
-            string systemDirectory = null;
-            try { systemDirectory = Environment.SystemDirectory; } catch (Exception) { }
-            if (systemDirectory != null)
-            {
-                yield return systemDirectory;
-            }
+            yield return Environment.SystemDirectory;
 
             // C:\Program Files\Common Files\Autodesk\AdpDesktopSDK\bin — not on the default DLL
             // search order, which is why DynamoMCP installs a resolver to reach it explicitly.
-            string adpPath = null;
-            try
+            var commonFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
+            if (!string.IsNullOrEmpty(commonFiles))
             {
-                var commonFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
-                if (!string.IsNullOrEmpty(commonFiles))
-                {
-                    adpPath = Path.Combine(commonFiles, "Autodesk", "AdpDesktopSDK", "bin");
-                }
-            }
-            catch (Exception) { }
-            if (adpPath != null)
-            {
-                yield return adpPath;
+                yield return Path.Combine(commonFiles, "Autodesk", "AdpDesktopSDK", "bin");
             }
 
-            string path = null;
-            try { path = Environment.GetEnvironmentVariable("PATH"); } catch (Exception) { }
+            var path = Environment.GetEnvironmentVariable("PATH");
             if (!string.IsNullOrEmpty(path))
             {
                 foreach (var entry in path.Split(Path.PathSeparator))
