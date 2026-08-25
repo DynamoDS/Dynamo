@@ -2066,7 +2066,7 @@ Czy chcesz zainstalować najnowszą aktualizację dodatku Dynamo?</value>
     <value>Nie zostanie dodana nowa karta, ponieważ to rozszerzenie już występuje na pasku bocznym rozszerzeń.</value>
   </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
-    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+    <value>Pakiet/rozszerzenie {0} nie jest oferowane, ponieważ pakiet Autodesk Identity (IDSDK) w tym procesie nie może sprawdzić poprawności tokenów MCP (biblioteka {1} nie eksportuje elementu {2}); każde żądanie zostanie odrzucone z kodem błędu HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>Nie można wczytać {1}.

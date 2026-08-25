@@ -2777,7 +2777,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Uzyskaj powłokę bryły z powierzchni tej bryły</summary>
             <param name="internalFaceThickness">Odległość do wydłużenia skorupy do wewnątrz</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">Odległość do wydłużenia skorupy na zewnątrz</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">

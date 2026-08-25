@@ -1120,7 +1120,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Возможность непосредственной разработки кода DesignScript",
-      "Code": "// one output list\n[\"GA\",\"DET\",\"STRUCT\"];"
+      "Code": "// один выходной список\n[\"GA\",\"DET\",\"STRUCT\"];"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2051,7 +2051,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ExportToSAT@Autodesk.DesignScript.Geometry.Geometry[],string",
       "Replication": "Auto",
-      "Description": "Exports a list of specified geometry to the given SAT file path\n\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
+      "Description": "Экспорт списка выбранной геометрии по указанному пути к файлу SAT\n\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -2186,7 +2186,7 @@
       "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
-        "Name": "562efd61-5d0f-4710-896a-83c836535c64 Preview",
+        "Name": "562efd61-5d0f-4710-896a-83c836535c64 Предварительный просмотр",
         "EyeX": -25.794347763061523,
         "EyeY": 33.5272102355957,
         "EyeZ": 92.50603485107422,
@@ -2252,7 +2252,7 @@
       "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
-        "Name": "b2660d4f-8bd1-434d-8203-108456c7840c Preview",
+        "Name": "b2660d4f-8bd1-434d-8203-108456c7840c Предварительный просмотр",
         "EyeX": -14.631115913391113,
         "EyeY": 21.433727264404297,
         "EyeZ": 38.550392150878906,
@@ -6184,7 +6184,7 @@
       },
       {
         "Id": "6df0f9e569ad4b44acd9139afc1aff4a",
-        "Title": "DYNAMO VERSION\n_____________________________________________________ \n\n4.2.0\n",
+        "Title": "ВЕРСИЯ DYNAMO\n_____________________________________________________ \n\n4.2.0\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6576,7 +6576,7 @@
       },
       {
         "Id": "562eb0dc7ea54317bebd0ed83d0b4f07",
-        "Title": "Click Browse and select your own CSV (.csv) file before running this graph",
+        "Title": "Нажмите «Обзор» и выберите собственный файл CSV перед запуском этого графа",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6603,7 +6603,7 @@
       },
       {
         "Id": "38b94337c8ea409792674c13e4114cff",
-        "Title": "Click Browse and select your own SAT (.sat) file before running this graph",
+        "Title": "Нажмите «Обзор» и выберите собственный файл SAT перед запуском этого графа",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6657,7 +6657,7 @@
       },
       {
         "Id": "52526b296d7749a39a9f8cde50769836",
-        "Title": "Click Browse and select your own Excel (.xlsx) file before running this graph",
+        "Title": "Нажмите «Обзор» и выберите собственный файл Excel (XLSX) перед запуском этого графа",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

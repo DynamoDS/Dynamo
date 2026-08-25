@@ -2777,7 +2777,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>이 솔리드의 면에서 솔리드 쉘 가져오기</summary>
             <param name="internalFaceThickness">쉘 안쪽으로 확장할 거리</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">쉘을 바깥쪽으로 확장할 거리</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">

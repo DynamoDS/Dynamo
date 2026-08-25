@@ -2773,7 +2773,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>從這個實體的面取得實體薄殼</summary>
             <param name="internalFaceThickness">向內延伸薄殼的距離</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">薄殼向外延伸的距離</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">

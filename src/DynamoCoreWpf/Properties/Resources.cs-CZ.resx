@@ -2065,7 +2065,7 @@ Chcete nainstalovat nejnovější aktualizaci aplikace Dynamo?</value>
     <value>Nebyla přidána žádná nová karta, protože rozšíření se již nachází na bočním panelu rozšíření.</value>
   </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
-    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+    <value>Balíček/rozšíření {0} není nabízeno, protože služba Autodesk Identity (IDSDK) v tomto procesu nemůže ověřit tokeny MCP ({1} neexportuje {2}). Každý požadavek by byl odmítnut pomocí HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} nelze načíst.

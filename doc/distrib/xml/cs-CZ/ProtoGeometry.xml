@@ -2771,7 +2771,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Získat skořepinu tělesa z ploch tohoto tělesa</summary>
             <param name="internalFaceThickness">Vzdálenost prodloužení skořepiny směrem dovnitř</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">Vzdálenost prodloužení skořepiny směrem ven</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
