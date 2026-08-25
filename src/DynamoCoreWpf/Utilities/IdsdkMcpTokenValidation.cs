@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Dynamo.Wpf.Utilities
@@ -235,16 +236,12 @@ namespace Dynamo.Wpf.Utilities
             // which rejects a null segment) and File.Exists is documented to return false rather
             // than throw for a malformed, too-long or unreadable path. A bad PATH entry therefore
             // just fails to match instead of derailing the sweep.
-            foreach (var directory in WrapperSearchDirectories())
-            {
-                if (!string.IsNullOrWhiteSpace(directory) &&
-                    File.Exists(Path.Join(directory, AdpWrapperModuleName)))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            //
+            // Where/Any both stream, so this still stops at the first hit rather than materialising
+            // the whole search path.
+            return WrapperSearchDirectories()
+                .Where(directory => !string.IsNullOrWhiteSpace(directory))
+                .Any(directory => File.Exists(Path.Join(directory, AdpWrapperModuleName)));
         }
 
         /// <summary>
