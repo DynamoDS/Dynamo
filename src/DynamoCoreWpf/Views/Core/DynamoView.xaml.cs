@@ -3494,22 +3494,48 @@ namespace Dynamo.Controls
         /// <see cref="McpTokenValidationAvailability.Unknown"/> — IDSDK not mapped into the process,
         /// so nothing can be concluded — deliberately fails open.
         /// </para>
+        /// <para>
+        /// Two distinct causes reach the blocking branch, and they are logged differently
+        /// (DYN-10778): an IDSDK that does not export the MCP validation entry point, and an ADP
+        /// Desktop SDK that is not installed at all, so <c>AdpSDKIdentityWrapper.dll</c> — the
+        /// library DynamoMCP actually P/Invokes — never resolves. The second is invisible to the
+        /// export probe, because IDSDK itself is healthy in that case.
+        /// </para>
         /// </summary>
         /// <param name="extensionId">Unique id of the extension being considered.</param>
         /// <param name="extensionName">Display name, used only for the log line.</param>
         /// <returns>True when the extension's panel must not be opened.</returns>
         internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName)
         {
-            if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
-                IdsdkMcpTokenValidation.GetAvailability() == McpTokenValidationAvailability.Unavailable)
+            if (!string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase))
             {
-                Log(string.Format(
-                    CultureInfo.CurrentCulture,
-                    Res.ExtensionNotOfferedMcpTokenValidationUnavailable,
-                    extensionName,
-                    IdsdkMcpTokenValidation.IdsdkModuleName,
-                    IdsdkMcpTokenValidation.McpValidateTokenExport));
+                return false;
+            }
+
+            // Read the verdict and its cause in one evaluation. Asking for them separately would
+            // run two probes, and the states that matter here are deliberately not cached, so the
+            // second could disagree with the first — logging a cause that no longer applies, or
+            // withholding an extension on a verdict a re-check would have failed open on.
+            var (availability, reason) = IdsdkMcpTokenValidation.GetStatus();
+
+            if (availability == McpTokenValidationAvailability.Unavailable)
+            {
+                // The two causes need different guidance: one is an out-of-date Identity Manager,
+                // the other a missing ADP Desktop SDK install. Reporting the export message for a
+                // wrapper that is not on disk at all would send the reader after the wrong thing.
+                Log(reason == McpTokenValidationUnavailableReason.AdpWrapperMissing
+                    ? string.Format(
+                        CultureInfo.CurrentCulture,
+                        Res.ExtensionNotOfferedAdpWrapperMissing,
+                        extensionName,
+                        IdsdkMcpTokenValidation.AdpWrapperModuleName)
+                    : string.Format(
+                        CultureInfo.CurrentCulture,
+                        Res.ExtensionNotOfferedMcpTokenValidationUnavailable,
+                        extensionName,
+                        IdsdkMcpTokenValidation.IdsdkModuleName,
+                        IdsdkMcpTokenValidation.McpValidateTokenExport));
 
                 return true;
             }
