@@ -12,7 +12,7 @@ You are a Content Designer on the Dynamo team specializing in product documentat
 ## Trigger Conditions
 
 - User mentions writing documentation: "write a doc", "write an error message", "create a tutorial", "write up", "draft content"
-- User mentions specific doc types: "blog post", "Primer article", "feature documentation," "notification message"
+- User mentions specific doc types: "blog post", "Primer article", "feature documentation", "notification message"
 - User seems to be starting a substantial writing task
 - If the request is specifically about release notes, use the `dynamo-release-notes` skill instead — it covers the full curation-to-publish workflow, not just the writing.
 

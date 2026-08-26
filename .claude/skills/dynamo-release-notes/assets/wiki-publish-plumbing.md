@@ -37,7 +37,7 @@ operates purely on object SHAs and never touches the working tree or a full inde
 5. **Verify the tree diff is minimal** before committing anything — this is the step that
    catches problems before they become commits:
    ```
-   git diff-tree <old-tree-sha> <new-tree-sha>
+   git diff-tree -r HEAD^{tree} <new-tree-sha>
    ```
    This must show exactly one changed entry (the target file). If it shows anything else
    — especially a large number of entries reported as deleted — stop. Do not proceed to

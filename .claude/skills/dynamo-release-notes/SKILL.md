@@ -1,10 +1,6 @@
 ---
 name: dynamo-release-notes
-description: Curate, sweep, draft, cross-check, and publish the "### {version}" section
-of the Dynamo GitHub wiki Release-Notes page, starting from the raw
-ReleaseNotes_{X.Y.Z}.md generator dump. Use when compiling release notes for a Dynamo
-release, deciding which PRs belong in a release's notes, or inserting/updating content
-on the Release-Notes wiki page (https://github.com/DynamoDS/Dynamo/wiki/Release-Notes).
+description: Curate, sweep, draft, cross-check, and publish the "### {version}" section of the Dynamo GitHub wiki Release-Notes page, starting from the raw ReleaseNotes_{X.Y.Z}.md generator dump. Use when compiling release notes for a Dynamo release, deciding which PRs belong in a release's notes, or inserting/updating content on the Release-Notes wiki page (https://github.com/DynamoDS/Dynamo/wiki/Release-Notes).
 ---
 
 # Dynamo Release Notes
@@ -89,10 +85,12 @@ fresh fetch of the page.
    [wiki-publish-plumbing.md](./assets/wiki-publish-plumbing.md) exactly. The wiki repo
    contains a Windows-invalid filename that breaks any git operation touching the full
    index or working tree — normal clone/checkout/add/reset will fail or, worse, silently
-   stage the entire wiki as deleted. Run `git status` immediately before creating the
-   commit and confirm it shows only the intended single-file change. **Ask the requester
-   to explicitly confirm before pushing** — a wiki push has no PR or review gate and is
-   immediately live and public.
+   stage the entire wiki as deleted. The plumbing recipe never touches the index or
+   working tree, so run `git status` immediately before `commit-tree` and confirm it
+   shows a clean, empty status (no staged/unstaged changes at all) — anything else means
+   the index got populated and you should stop and re-derive the tree diff. **Ask the
+   requester to explicitly confirm before pushing** — a wiki push has no PR or review
+   gate and is immediately live and public.
 9. **Verify post-push.** Re-fetch the raw page and diff it against the pre-push version;
    confirm only the intended lines changed anywhere on the page.
 10. **Retro.** Ask the requester whether anything about this run should change the skill
