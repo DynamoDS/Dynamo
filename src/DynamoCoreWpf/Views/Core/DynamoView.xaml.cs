@@ -3507,14 +3507,24 @@ namespace Dynamo.Controls
         /// <returns>True when the extension's panel must not be opened.</returns>
         internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName)
         {
-            if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
-                IdsdkMcpTokenValidation.GetAvailability() == McpTokenValidationAvailability.Unavailable)
+            if (!string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            // Read the verdict and its cause in one evaluation. Asking for them separately would
+            // run two probes, and the states that matter here are deliberately not cached, so the
+            // second could disagree with the first — logging a cause that no longer applies, or
+            // withholding an extension on a verdict a re-check would have failed open on.
+            var (availability, reason) = IdsdkMcpTokenValidation.GetStatus();
+
+            if (availability == McpTokenValidationAvailability.Unavailable)
             {
                 // The two causes need different guidance: one is an out-of-date Identity Manager,
                 // the other a missing ADP Desktop SDK install. Reporting the export message for a
                 // wrapper that is not on disk at all would send the reader after the wrong thing.
-                Log(IdsdkMcpTokenValidation.GetUnavailableReason() == McpTokenValidationUnavailableReason.AdpWrapperMissing
+                Log(reason == McpTokenValidationUnavailableReason.AdpWrapperMissing
                     ? string.Format(
                         CultureInfo.CurrentCulture,
                         Res.ExtensionNotOfferedAdpWrapperMissing,

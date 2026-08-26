@@ -157,14 +157,14 @@ namespace DynamoCoreWpfTests
                 McpTokenValidationUnavailableReason.AdpWrapperMissing);
 
             Assert.AreEqual(McpTokenValidationUnavailableReason.AdpWrapperMissing,
-                IdsdkMcpTokenValidation.GetUnavailableReason());
+                IdsdkMcpTokenValidation.GetStatus().Reason);
 
             IdsdkMcpTokenValidation.SetAvailabilityForTesting(
                 McpTokenValidationAvailability.Unavailable,
                 McpTokenValidationUnavailableReason.IdsdkExportMissing);
 
             Assert.AreEqual(McpTokenValidationUnavailableReason.IdsdkExportMissing,
-                IdsdkMcpTokenValidation.GetUnavailableReason());
+                IdsdkMcpTokenValidation.GetStatus().Reason);
         }
 
         [Test]
@@ -177,14 +177,51 @@ namespace DynamoCoreWpfTests
                 McpTokenValidationUnavailableReason.AdpWrapperMissing);
 
             Assert.AreEqual(McpTokenValidationUnavailableReason.None,
-                IdsdkMcpTokenValidation.GetUnavailableReason());
+                IdsdkMcpTokenValidation.GetStatus().Reason);
 
             IdsdkMcpTokenValidation.SetAvailabilityForTesting(
                 McpTokenValidationAvailability.Unknown,
                 McpTokenValidationUnavailableReason.AdpWrapperMissing);
 
             Assert.AreEqual(McpTokenValidationUnavailableReason.None,
-                IdsdkMcpTokenValidation.GetUnavailableReason());
+                IdsdkMcpTokenValidation.GetStatus().Reason);
+        }
+
+        [Test]
+        public void GetStatusReturnsAVerdictAndItsCauseFromASingleEvaluation()
+        {
+            // Reading availability and reason through separate calls would be two evaluations, and
+            // AdpWrapperMissing / Unknown are deliberately not cached — so the second could re-probe
+            // and disagree with the first, logging a cause that no longer applies or withholding an
+            // extension on a verdict a re-check would have failed open on. GetStatus must therefore
+            // always hand back a self-consistent pair: a reason implies Unavailable, and every other
+            // availability implies None.
+            foreach (var availability in new[]
+                     {
+                         McpTokenValidationAvailability.Available,
+                         McpTokenValidationAvailability.Unavailable,
+                         McpTokenValidationAvailability.Unknown,
+                     })
+            {
+                IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                    availability,
+                    McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+                var status = IdsdkMcpTokenValidation.GetStatus();
+
+                Assert.AreEqual(availability, status.Availability);
+
+                if (availability == McpTokenValidationAvailability.Unavailable)
+                {
+                    Assert.AreNotEqual(McpTokenValidationUnavailableReason.None, status.Reason,
+                        "An Unavailable verdict must carry the cause that produced it.");
+                }
+                else
+                {
+                    Assert.AreEqual(McpTokenValidationUnavailableReason.None, status.Reason,
+                        "A reason must never accompany anything other than Unavailable.");
+                }
+            }
         }
 
         [Test]

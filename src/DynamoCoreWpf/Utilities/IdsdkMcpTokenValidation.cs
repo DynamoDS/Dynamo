@@ -118,11 +118,24 @@ namespace Dynamo.Wpf.Utilities
         internal static McpTokenValidationAvailability GetAvailability() => Evaluate().Availability;
 
         /// <summary>
-        /// Why validation is unavailable, for the caller's log message.
-        /// <see cref="McpTokenValidationUnavailableReason.None"/> when validation is available
-        /// or availability could not be determined.
+        /// Availability and, when unavailable, why — read together in a single evaluation.
+        /// <para>
+        /// Callers that need both must use this rather than pairing <see cref="GetAvailability"/>
+        /// with a separate reason lookup. Two calls are two evaluations, and the two outcomes that
+        /// are deliberately not cached — <see cref="McpTokenValidationUnavailableReason.AdpWrapperMissing"/>
+        /// and <see cref="McpTokenValidationAvailability.Unknown"/> — re-probe every time. Those are
+        /// precisely the states a caller needs the reason for, so a split read can pair an
+        /// <c>Unavailable</c> verdict with a reason from a later probe that no longer agrees: the
+        /// wrong cause gets logged, or worse, an extension is withheld on a verdict a concurrent
+        /// re-check would have called <c>Unknown</c> and failed open on.
+        /// </para>
+        /// <para>
+        /// <see cref="McpTokenValidationUnavailableReason.None"/> when validation is available or
+        /// availability could not be determined.
+        /// </para>
         /// </summary>
-        internal static McpTokenValidationUnavailableReason GetUnavailableReason() => Evaluate().Reason;
+        internal static (McpTokenValidationAvailability Availability, McpTokenValidationUnavailableReason Reason) GetStatus()
+            => Evaluate();
 
         private static (McpTokenValidationAvailability Availability, McpTokenValidationUnavailableReason Reason) Evaluate()
         {
