@@ -2771,7 +2771,7 @@ un objeto LibG.</summary>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Obtiene un vaciado de sólido a partir de las caras de este sólido.</summary>
             <param name="internalFaceThickness">Distancia que se debe extender la funda hacia el interior</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">Distancia que se debe extender la funda hacia el exterior</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">

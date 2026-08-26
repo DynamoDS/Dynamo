@@ -2772,7 +2772,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Restituisce un involucro solido dalle facce del solido corrente</summary>
             <param name="internalFaceThickness">Distanza in base alla quale estendere la shell verso l'interno</param>
-            <param name="externalFaceThickness">Distance to extend the shell outwards</param>
+            <param name="externalFaceThickness">Distanza in base alla quale estendere l'involucro verso l'esterno</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">

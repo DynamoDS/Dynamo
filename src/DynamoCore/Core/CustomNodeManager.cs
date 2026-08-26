@@ -984,7 +984,7 @@ namespace Dynamo.Core
                     newWorkspace.Category = workspaceInfo.Category;
                     // Mark the custom node workspace as having no changes - when we set the category on the above line
                     // this marks the workspace as changed.
-                    newWorkspace.HasUnsavedChanges = false;
+                    newWorkspace.MarkAsSaved();
                 }
             }
 
@@ -1549,7 +1549,7 @@ namespace Dynamo.Core
                         IsVisibleInDynamoLibrary = true
                     });
 
-                newWorkspace.HasUnsavedChanges = true;
+                newWorkspace.MarkAsIndependentlyModified();
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 
