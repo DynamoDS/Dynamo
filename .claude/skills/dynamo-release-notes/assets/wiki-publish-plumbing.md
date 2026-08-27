@@ -18,9 +18,17 @@ operates purely on object SHAs and never touches the working tree or a full inde
    ```
    git clone --no-checkout https://github.com/DynamoDS/Dynamo.wiki.git
    ```
-2. **Extract just the target file** from the current tip, without touching anything else:
+2. **Extract just the target file** from the current tip, without touching anything else.
+   PowerShell's `>` redirect writes a UTF-8 BOM and converts LF to CRLF, which changes the
+   blob even on a no-op edit — use `cmd /c` to get a raw byte-for-byte redirect instead:
    ```
-   git show HEAD:Release-Notes.md > Release-Notes.md
+   cmd /c "git show HEAD:Release-Notes.md > Release-Notes.md"
+   ```
+   Verify the extraction was lossless before editing — the working-tree file's hash must
+   match the blob already in the tree:
+   ```
+   git hash-object Release-Notes.md
+   git rev-parse HEAD:Release-Notes.md
    ```
 3. **Edit the extracted file** with your normal editor/tooling, then create a new blob
    for it:
@@ -28,11 +36,12 @@ operates purely on object SHAs and never touches the working tree or a full inde
    git hash-object -w Release-Notes.md
    ```
 4. **Build a new tree** with only that one entry changed — list the current tree, swap in
-   the new blob SHA for the target path, and feed the result to `mktree`:
+   the new blob SHA for the target path, and feed the result to `mktree`. PowerShell 7
+   treats `<` as a reserved operator, so redirect through `cmd /c` on both ends:
    ```
-   git ls-tree HEAD > tree.txt
+   cmd /c "git ls-tree HEAD > tree.txt"
    # edit tree.txt: replace the old blob SHA for Release-Notes.md with the new one
-   git mktree < tree.txt
+   cmd /c "git mktree < tree.txt"
    ```
 5. **Verify the tree diff is minimal** before committing anything — this is the step that
    catches problems before they become commits:
@@ -51,9 +60,10 @@ operates purely on object SHAs and never touches the working tree or a full inde
    git push origin <new-commit-sha>:refs/heads/master
    ```
 8. **Verify live.** Fetch the raw page after the push and diff it against the pre-push
-   content to confirm only the intended lines changed:
+   content to confirm only the intended lines changed. Use `curl.exe`, not the `curl`
+   alias for `Invoke-WebRequest` that PowerShell defines by default:
    ```
-   curl -s https://raw.githubusercontent.com/wiki/DynamoDS/Dynamo/Release-Notes.md
+   curl.exe -s https://raw.githubusercontent.com/wiki/DynamoDS/Dynamo/Release-Notes.md
    ```
 
 ## The `--no-checkout` index gotcha — read this before improvising
@@ -73,11 +83,12 @@ whole-index operation works on this repo on Windows at all. The plumbing recipe 
 the only path that avoids this class of failure entirely, because it never populates or
 relies on the index.
 
-**Always run `git status` immediately before the `commit-tree` step**, even when
-following this recipe exactly. If it shows anything other than a clean, empty status (no
-staged/unstaged changes reported at all — the plumbing recipe never touches the index or
-working tree state git status reports on), stop and re-derive the tree diff before
-proceeding.
+Don't use `git status` as a safety check before `commit-tree`. Because `--no-checkout`
+leaves the index empty, `git status` reports the *entire wiki* as staged-deleted from the
+moment of clone onward — that's expected, not a signal something went wrong, and it never
+goes away no matter how carefully you follow the plumbing recipe. The real check is step
+5's `git diff-tree -r HEAD^{tree} <new-tree-sha>`: it must report exactly one changed
+entry before you proceed to `commit-tree`.
 
 ## Confirm before pushing
 

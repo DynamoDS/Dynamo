@@ -16,8 +16,8 @@ description: Curate, sweep, draft, cross-check, and publish the "### {version}" 
 ## When not to use
 
 - Writing or polishing release-notes *prose in isolation*, with the PR list already
-  decided and no publishing step involved — use `dynamo-content-designer` and its
-  [style guide](./assets/style-guide.md) directly.
+  decided and no publishing step involved — see the [style guide](./assets/style-guide.md)
+  directly.
 - Any other content type (node descriptions, UI strings, blog posts, tutorials) — those
   stay with `dynamo-content-designer`.
 
@@ -86,10 +86,9 @@ fresh fetch of the page.
    contains a Windows-invalid filename that breaks any git operation touching the full
    index or working tree — normal clone/checkout/add/reset will fail or, worse, silently
    stage the entire wiki as deleted. The plumbing recipe never touches the index or
-   working tree, so run `git status` immediately before `commit-tree` and confirm it
-   shows a clean, empty status (no staged/unstaged changes at all) — anything else means
-   the index got populated and you should stop and re-derive the tree diff. **Ask the
-   requester to explicitly confirm before pushing** — a wiki push has no PR or review
+   working tree, so the real safety check is the `diff-tree` comparison in step 5 above —
+   confirm it reports exactly one changed entry before proceeding to `commit-tree`. **Ask
+   the requester to explicitly confirm before pushing** — a wiki push has no PR or review
    gate and is immediately live and public.
 9. **Verify post-push.** Re-fetch the raw page and diff it against the pre-push version;
    confirm only the intended lines changed anywhere on the page.
@@ -101,8 +100,9 @@ fresh fetch of the page.
 ## Boundaries
 
 - ✅ **Always**: run the full curate → sweep → flag → cross-check → validate pipeline
-  before drafting is considered final; run `git status` before any commit-equivalent step
-  in a wiki clone; re-verify the page after every push.
+  before drafting is considered final; confirm the `diff-tree` check shows exactly one
+  changed entry before any commit-equivalent step in a wiki clone; re-verify the page
+  after every push.
 - ⚠️ **Ask first**: any PR whose inclusion/exclusion/category isn't clear-cut (flag,
   don't guess); crediting or omitting an external contributor when authorship is
   ambiguous; pushing the finalized section to the live wiki.
