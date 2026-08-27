@@ -2866,7 +2866,6 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
                 var hasSaved = false;
                 if (IsPathInTemplateDirectoryTree(path, Model.PathManager.TemplatesDirectory))
                 {
@@ -2876,6 +2875,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
+                    Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
                     hasSaved = CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
                 }
 
