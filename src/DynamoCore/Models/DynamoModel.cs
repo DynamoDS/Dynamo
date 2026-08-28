@@ -1891,6 +1891,10 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+
+            // Capture before locale swap so reset logs/saves compare against the value from DynamoSettings.xml.
+            var persistedTemplatePath = PreferenceSettings.TemplateFilePath;
+
             var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
 
             //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
@@ -1907,7 +1911,6 @@ namespace Dynamo.Models
                 }
             }
 
-            var persistedTemplatePath = PreferenceSettings.TemplateFilePath;
             if (Core.PathManager.ShouldResetPersistedTemplatesPath(PreferenceSettings.TemplateFilePath, pathManager.DefaultTemplatesDirectory))
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
