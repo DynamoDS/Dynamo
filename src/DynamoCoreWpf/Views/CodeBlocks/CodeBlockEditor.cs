@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -19,6 +19,11 @@ namespace Dynamo.UI.Controls
         }
 
         private State state;
+
+        /// <summary>
+        /// Current editor state.
+        /// </summary>
+        internal State CurrentState => state;
 
         /// <summary>
         /// Event handler for editor state changed.
@@ -89,13 +94,18 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// Ensures graph shortcuts are restored if the editor is unloaded while still
+        /// Ensures graph shortcuts are restored if this editor is unloaded while still
         /// in edit mode (e.g. node removal or workspace close). LostFocus may not commit
         /// when <see cref="CodeCompletionEditor.IsDisposed"/> is already true.
+        /// Only clears the shared flag when this editor was the active one, so unloading
+        /// another Code Block does not re-enable shortcuts mid-edit.
         /// </summary>
         private void OnNodeViewUnloaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
+            if (stateMachine.CurrentState == EditorStateMachine.State.Editing)
+            {
+                nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
+            }
         }
 
         protected override void OnEscape()
@@ -134,17 +144,15 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// Restores graph shortcuts when keyboard focus leaves the editor without a
-        /// normal TextArea LostFocus commit (e.g. opening then canceling File → New).
+        /// Keeps the shared edit flag in sync with keyboard focus. Clears it when focus
+        /// leaves (e.g. dialog or AA assistant chat) and sets it again when focus returns,
+        /// including cases where TextArea GotFocus does not fire reliably.
         /// </summary>
         protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnIsKeyboardFocusWithinChanged(e);
 
-            if (!IsKeyboardFocusWithin)
-            {
-                nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
-            }
+            nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = IsKeyboardFocusWithin;
         }
 
         private void OnEditorStateChanged(EditorStateMachine.State state)
