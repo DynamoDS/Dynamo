@@ -63,7 +63,7 @@ namespace Dynamo.LintingViewExtension
 
                 if (viewLoadedParams.CurrentWorkspaceModel is HomeWorkspaceModel currentWorkspace)
                 {
-                    currentWorkspace.HasUnsavedChanges = true;
+                    currentWorkspace.MarkAsIndependentlyModified();
                 }
             }
         }

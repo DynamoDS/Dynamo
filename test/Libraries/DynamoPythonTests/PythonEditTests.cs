@@ -1000,5 +1000,172 @@ OUT = {modName}.value";
             Assert.AreEqual("stringOutput", copiedNode.OutPorts[0].Name);
             Assert.AreEqual("stringOutputTip", copiedNode.OutPorts[0].ToolTip);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonInputPortUnmodifiedThenHasCustomInputPortPropertiesIsFalse()
+        {
+            // Arrange: a PythonNode with TWO default input ports. The second port is essential:
+            // with a single port, index 0 and InPorts.Count - 1 are the same value, so nothing
+            // would catch the index being mis-threaded into GetInputName/GetInputTooltip.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.HandleModelEvent("AddInPort", 0, null);
+
+            // Act & Assert: nothing would be lost by removing either port, so neither reports custom properties.
+            Assert.AreEqual(2, pythonNode.InPorts.Count);
+            Assert.IsFalse(pythonNode.HasCustomInputPortProperties(0));
+            Assert.IsFalse(pythonNode.HasCustomInputPortProperties(1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonInputPortRenamedThenHasCustomInputPortPropertiesIsTrue()
+        {
+            // Arrange: a PythonNode with two default input ports.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.HandleModelEvent("AddInPort", 0, null);
+
+            // Act: rename only the last port, as the Rename Port dialog does.
+            pythonNode.InPorts[1].Name = "myInput";
+
+            // Assert: the renamed port reports custom properties, the untouched one does not.
+            Assert.IsTrue(pythonNode.HasCustomInputPortProperties(1));
+            Assert.IsFalse(pythonNode.HasCustomInputPortProperties(0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonInputPortTooltipEditedThenHasCustomInputPortPropertiesIsTrue()
+        {
+            // Arrange: a PythonNode with a single default input port.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+
+            // Act: edit only the description, leaving the default port name in place.
+            pythonNode.InPorts[0].ToolTip = "my description";
+
+            // Assert: a customized description alone is enough to count as custom properties.
+            Assert.IsTrue(pythonNode.HasCustomInputPortProperties(0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonInputPortRenamedByCaseOnlyThenHasCustomInputPortPropertiesIsTrue()
+        {
+            // Arrange: a PythonNode with a single default input port named "IN[0]".
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+
+            // Act: change only the casing of the default port name.
+            pythonNode.InPorts[0].Name = "in[0]";
+
+            // Assert: the name comparison is deliberately case-sensitive. "in[0]" is a name the
+            // user typed and would lose on removal, so a case-only rename is still a customization.
+            Assert.IsTrue(pythonNode.HasCustomInputPortProperties(0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonInputPortTooltipEditedByCaseOnlyThenHasCustomInputPortPropertiesIsTrue()
+        {
+            // Arrange: a PythonNode with a single default input port tooltipped "Input #0".
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+
+            // Act: change only the casing of the default description.
+            pythonNode.InPorts[0].ToolTip = "input #0";
+
+            // Assert: the tooltip comparison is case-sensitive for the same reason as the name.
+            // Pinned separately so weakening either comparison alone fails a test.
+            Assert.IsTrue(pythonNode.HasCustomInputPortProperties(0));
+        }
+
+        // A freshly created PythonNode has exactly one input port, so the only valid index is 0.
+        // -1 and 1 are the boundaries either side of that range and pin the comparison operators:
+        // weakening >= to > would let index 1 through to InPorts[1]. -5 and 6 sit well outside and
+        // pin the guard to the whole invalid range, so narrowing it to equality checks is caught.
+        // Parameterized rather than four asserts in one test so a failure names the offending index.
+        [TestCase(-5)]
+        [TestCase(-1)]
+        [TestCase(1)]
+        [TestCase(6)]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonInputPortIndexOutOfRangeThenHasCustomInputPortPropertiesIsFalse(int index)
+        {
+            // Arrange: a PythonNode with a single default input port.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            Assert.AreEqual(1, pythonNode.InPorts.Count,
+                "The test indices assume a single default input port.");
+
+            // Act & Assert: out-of-range indices report false rather than throwing.
+            Assert.IsFalse(pythonNode.HasCustomInputPortProperties(index));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenPythonNodeHasNoInputPortsThenHasCustomInputPortPropertiesIsFalse()
+        {
+            // Arrange: a PythonNode whose only input port has been removed.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.HandleModelEvent("RemoveInPort", 0, null);
+            Assert.AreEqual(0, pythonNode.InPorts.Count);
+
+            // Act & Assert: with no ports left there is nothing to remove and nothing to lose.
+            Assert.IsFalse(pythonNode.HasCustomInputPortProperties(pythonNode.InPorts.Count - 1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenUnmodifiedPortRoundTrippedThenHasCustomInputPortPropertiesIsFalse()
+        {
+            // Arrange: a PythonNode with a default input port. Guards the reopened-graph case,
+            // where serialized default names and tooltips must still read as non-custom.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+
+            // Act: round-trip through save serialization.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Save);
+            var restoredNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Save, ViewModel.CurrentSpace.ElementResolver) as PythonNode;
+
+            // Assert: the restored default port is still not customized.
+            Assert.IsNotNull(restoredNode);
+            Assert.IsFalse(restoredNode.HasCustomInputPortProperties(0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void WhenRenamedPortRoundTrippedThenHasCustomInputPortPropertiesIsTrue()
+        {
+            // Arrange: a PythonNode with a renamed and re-described input port.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.InPorts[0].Name = "savedInput";
+            pythonNode.InPorts[0].ToolTip = "savedInputTip";
+
+            // Act: round-trip through save serialization.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Save);
+            var restoredNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Save, ViewModel.CurrentSpace.ElementResolver) as PythonNode;
+
+            // Assert: the customization survives the round-trip and is still detected.
+            Assert.IsNotNull(restoredNode);
+            Assert.IsTrue(restoredNode.HasCustomInputPortProperties(0));
+        }
     }
 }

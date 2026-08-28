@@ -2065,6 +2065,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>このプロセスの Autodesk Identity (IDSDK)は MCP トークンを検証できない({1} が {2} を書き出さない)ため、パッケージ/拡張機能 {0} は提供されません。すべての要求は HTTP 401 で拒否されます。</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} をロードできません。
 これをインストールすると、現在ロードされている {0} に既に存在する 1 つまたは複数のノードの定義と競合します。 

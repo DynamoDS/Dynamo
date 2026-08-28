@@ -1319,14 +1319,18 @@ namespace Dynamo.ViewModels
 
             var model = DynamoViewModel.Model;
 
-            // Create and add code node block
+            // Create the code block node
             var newNode = new CodeBlockNodeModel(model.LibraryServices);
             var cmd = new DynamoModel.CreateNodeCommand(newNode, position.X, position.Y, false, true);
             DynamoViewModel.ExecuteCommand(cmd);
 
-            var updated = annotation.Nodes.ToList();
-            updated.Add(newNode);
-            annotation.Nodes = updated;
+            // Only add the node to the annotation when the annotation is expanded
+            if (annotation.IsExpanded)
+            {
+                var updated = annotation.Nodes.ToList();
+                updated.Add(newNode);
+                annotation.Nodes = updated;
+            }
         }
 
         private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)

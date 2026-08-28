@@ -243,19 +243,19 @@
             <summary>Punto massimo</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem">
-            <summary>The CoordinateSystem of the BoundingBox.
-            For an axis-aligned box, the CS is oriented along with the X, Y, Z axes and is located at the center of the box.
-            For a non-aligned box, the CS can have an arbitrary orientation and is centered at the center of the box.</summary>
+            <summary>CoordinateSystem di BoundingBox.
+            Per un riquadro allineato all'asse, il sistema di coordinate viene orientato lungo agli assi X, Y e Z e si trova al centro del riquadro.
+            Per un riquadro non allineato, il sistema di coordinate può avere un orientamento arbitrario ed è centrato al centro del riquadro.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersection(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Get the intersection of two BoundingBoxes.
-            Note: This does not work for non-axis-aligned boxes as those intersections might not result in a box. Intersect their corresponding cuboids instead.</summary>
+            <summary>Ottiene l'intersezione di due BoundingBox.
+            Nota: questa operazione non funziona per i riquadri non allineati all'asse, poiché tali intersezioni potrebbero non produrre un riquadro. Interseca invece i cuboidi corrispondenti.</summary>
             <param name="other">Altro riquadro di delimitazione da intersecare</param>
             <returns>Riquadro di delimitazione ottenuto dall'intersezione di riquadri di delimitazione</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersects(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Determine whether two BoundingBoxes intersect.
-            Note: This works only if both bounding boxes have the same alignment (transform). In such cases, test the intersection between their corresponding cuboids.</summary>
+            <summary>Determina se due BoundingBox si intersecano.
+            Nota: questa operazione funziona solo se entrambi i riquadri di delimitazione hanno lo stesso allineamento (trasformazione). In questi casi, verificare l'intersezione tra i cuboidi corrispondenti.</summary>
             <param name="other">Altro riquadro di delimitazione</param>
             <returns>Lascia intersecare i riquadri di delimitazione</returns>
             <search>get overlap</search>
@@ -293,13 +293,13 @@
             <returns>Riquadro di delimitazione orientato attorno alle geometrie di input.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometry, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>Crea un BoundingBox non allineato all'asse attorno alla geometria di input, orientato
+            lungo gli assi X, Y e Z del CoordinateSystem.</summary>
             <search>bounding,bound</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometries, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>Crea un BoundingBox non allineato all'asse attorno alle geometrie di input, orientato
+            lungo gli assi X, Y e Z del CoordinateSystem.</summary>
             <search>bounding,bound,multiple,boundall</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
@@ -307,11 +307,11 @@
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box),
-            to maximum coordinates (upper-right-front corner of the box). CoordinateSystem
-            is the transform FROM the coordinate space of the box TO the model space.
-            This method is designed to match Revit's API, allowing you to extract out the parameters
-            from a Revit BoundingBox without any conversions.</summary>
+            <summary>Crea un BoundingBox dalle coordinate minime (angolo sinistro inferiore posteriore del riquadro),
+            alle coordinate massime (angolo destro superiore anteriore del riquadro). Il CoordinateSystem,
+            è la trasformazione DALLO spazio delle coordinate del riquadro ALLO spazio modello.
+            Questo metodo è progettato per essere compatibile con l'API di Revit, consentendo di estrarre i parametri,
+            da un BoundingBox di Revit senza alcuna conversione.</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
@@ -321,8 +321,8 @@
             <summary>Restituisce il raggio del cerchio.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Creates a Circle with input center Point and radius in the world XY
-            plane, with world Z as normal.</summary>
+            <summary>Crea un cerchio con un punto centrale di input e un raggio nel piano XY
+            globale, con l'asse Z globale come normale.</summary>
             <param name="centerPoint">Punto centrale del cerchio</param>
             <param name="radius">Raggio</param>
             <returns>Cerchio creato con punto centrale e raggio</returns>
@@ -337,8 +337,8 @@
             <search>circle,alignedcircle</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Create a Circle centered at the input Plane origin (root), lying in
-            the input Plane, with given radius.</summary>
+            <summary>Crea un cerchio con centro nell'origine del piano di input (radice), posto
+            sul piano di input, con il raggio specificato.</summary>
             <param name="plane">Radice del piano utilizzato per centrare il cerchio</param>
             <param name="radius">Raggio</param>
             <returns>Cerchio creato con piano e raggio</returns>
@@ -431,31 +431,31 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Cone with given base radius at start Point, extending to a
-            apex at end Point.</summary>
+            <summary>Crea un cono con il raggio base specificato in corrispondenza del punto iniziale che si estende
+            fino all'apice del punto finale.</summary>
             <search>cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Cone with axis from start Point to end Point, with given
-            radiuses at start and end. This object does not have an apex, and
-            can be thought of as a trimmed Cone.</summary>
+            <summary>Crea un cono il cui asse va dal punto iniziale al punto finale, provvisto
+            di un raggio iniziale e un raggio finale. Questo oggetto non dispone di un vertice e
+            può essere considerato come un tronco di cono.</summary>
             <search>trimmed cone,cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>Crea un cono con il punto base in corrispondenza dell'origine di CoordinateSystem. Il cono si estende
+            per la lunghezza specificata nella direzione dell'asse Z di CoordinateSystem, mentre la
+            base circolare si trova nel piano XY di CoordinateSystem.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>Crea un cono con il punto base in corrispondenza dell'origine di CoordinateSystem. Il cono si estende
+            per la lunghezza specificata nella direzione dell'asse Z di CoordinateSystem, mentre la
+            base circolare si trova nel piano XY di CoordinateSystem.</summary>
             <search>cone,cone by height,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
-            <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
-            <param name="matrix">4x4 transformation matrix</param>
-            <returns>CoordinateSystem from the matrix</returns>
+            <summary>Crea un CoordinateSystem da una matrice 4x4. Questo metodo è obsoleto; preferire altri costruttori, ove possibile.</summary>
+            <param name="matrix">Matrice di trasformazione 4x4</param>
+            <returns>CoordinateSystem derivante dalla matrice</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.FromJson(System.String)">
             <summary>Analizzare la stringa JSON in entrata formattata con lo schema autodesk.matem:matrix44d-1.0.0.</summary>
@@ -491,13 +491,13 @@
             <summary>Restituisce l'asse Z del CoordinateSystem.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
-            <summary>Returns the length of the X axis vector from the coordinate system.</summary>
+            <summary>Restituisce la lunghezza del vettore dell'asse X del sistema di coordinate.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor">
-            <summary>Returns the length of the Y axis vector from the coordinate system.</summary>
+            <summary>Restituisce la lunghezza del vettore dell'asse Y del sistema di coordinate.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
-            <summary>Returns the length of the Z axis vector from the coordinate system.</summary>
+            <summary>Restituisce la lunghezza del vettore dell'asse Z del sistema di coordinate.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane">
             <summary>Restituisce il piano sul quale giacciono gli assi X e Y, con la radice in corrispondenza dell'origine degli assi.</summary>
@@ -510,17 +510,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
             <summary>Ottiene l'inverso del CoordinateSystem corrente. Se si applica questo CoordinateSystem ad un elemento di geometria, l'originale viene invertito.</summary>
-            <returns>Returns inverted coordinate system from the input</returns>
+            <returns>Restituisce il sistema di coordinate invertito rispetto a quello di input.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem after this one - Result = this * other.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>Applica l'argomento CoordinateSystem dopo l'argomento corrente - Risultato = argomento corrente * altro argomento.</summary>
+            <param name="other">Altro sistema di coordinate</param>
+            <returns>Nuovo sistema di coordinate derivante dalla moltiplicazione</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem before this one - Result = other * this.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>Applica l'argomento CoordinateSystem prima dell'argomento corrente - Risultato = altro argomento * argomento corrente.</summary>
+            <param name="other">Altro sistema di coordinate</param>
+            <returns>Nuovo sistema di coordinate derivante dalla moltiplicazione</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor">
             <summary>Restituisce un vettore contenente i fattori di scala X, Y e Z</summary>
@@ -529,7 +529,8 @@
             <summary>Determina se due sistemi di coordinate sono uguali</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(System.Double,System.Double,System.Double)">
-            <summary>Applica la traslazione alla geometria data in base ai valori di spostamento nelle direzioni X, Y e Z definiti nel sistema di coordinate globali (WCS).</summary>
+            <summary>Applica la traslazione a qualsiasi geometria data in base ai valori di spostamento specificati nelle direzioni X, Y
+            e Z definiti rispettivamente nel sistema WCS.</summary>
             <param name="xTranslation">Spostamento lungo l'asse X.</param>
             <param name="yTranslation">Spostamento lungo l'asse Y.</param>
             <param name="zTranslation">Spostamento lungo l'asse Z.</param>
@@ -541,10 +542,10 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>Applica la traslazione a qualsiasi tipo di geometria, con la distanza e la direzione
+            specificate.</summary>
             <param name="direction">Direzione di spostamento.</param>
-            <param name="distance">Distanza di spostamento lungo la direzione data.</param>
+            <param name="distance">Distanza di spostamento lungo la direzione specificata.</param>
             <returns>Geometria trasformata.</returns>
             <search>move,along vector,distance</search>
         </member>
@@ -554,31 +555,31 @@
             <returns>Sistema di coordinate trasformato</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>Restituisce questa geometria con la sua posizione espressa rispetto a
+            targetCoordinateSystem, posizionata nel frame di sourceCoordinateSystem.
+            La posizione locale del risultato all’interno di sourceCoordinateSystem
+             corrisponde alla posizione locale dell'input all'interno di targetCoordinateSystem.
+            Per ottenere le coordinate di una geometria nello spazio globale all'interno di un dato sistema di
+            coordinate, passare CoordinateSystem.Identity come sourceCoordinateSystem
+            e il sistema di coordinate specificato come targetCoordinateSystem.
+            Le coordinate della geometria risultante saranno uguali alle coordinate dell'input
+            rispetto a quel frame di destinazione.</summary>
+            <param name="targetCoordinateSystem">CoordinateSystem rispetto al quale esprimere la geometria.</param>
+            <param name="sourceCoordinateSystem">CoordinateSystem in cui è attualmente espressa la geometria.
+            Passare CoordinateSystem.Identity() per lavorare nello spazio globale.</param>
             <returns>Geometria trasformata.</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>Ruota un oggetto attorno ad un'origine e ad un asse in base ad un grado
+            specificato.</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>Ruota un oggetto attorno all'origine del piano e alla normale in base ad un grado
+            specificato.</summary>
+            <param name="basePlane">Piano di riferimento attorno al quale ruotare</param>
+            <param name="degrees">Angolo di rotazione in gradi</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
@@ -594,15 +595,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>Applica la scala in modo uniforme attorno ad un dato punto, utilizzando come valori scalari due punti di selezione.</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>Applica la scala in modo non uniforme in una quota, tramite una base e 2 punti di selezione. L'asse di scala è definito dalla linea tra la base e tale punto.</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>Applica la scala in due quote, tramite una base e 2 punti di selezione. I due punti di selezione vengono proiettati sul piano della base, al fine di determinare i fattori della seconda scala.</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -610,8 +611,8 @@
             <search>reflect,flip over</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
-            <summary>Creates a CoordinateSystem as the World Coordinate System: origin at
-            0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1</summary>
+            <summary>Crea un CoordinateSystem come sistema di coordinate globali: origine
+            0, 0, 0; asse X 1, 0, 0; asse Y 0, 1, 0; asse Z 0, 0, 1.</summary>
             <search>zero,wcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double)">
@@ -625,50 +626,50 @@
             <summary>Crea un CoordinateSystem con origine nel punto di input. Gli assi X e Y sono impostati come assi WCS X e Y.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>Create a CoordinateSystem with origin equal to input Plane origin, and
-            X and Y axes lying in the Plane, aligned with Plane X and Y axes.</summary>
+            <summary>Crea un CoordinateSystem con origine coincidente con quella del piano di input.
+            Gli assi X e Y si trovano sul piano e sono allineati con gli assi X e Y del piano stesso.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis.
-            Input Vectors are normalized before creating the CoordinateSystem.</summary>
+            <summary>Crea un CoordinateSystem in corrispondenza dell'origine con gli assi X e Y.
+            I vettori di input vengono normalizzati prima della creazione del CoordinateSystem.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis, with Z
-            axis ignored completely. Input Vectors are normalized before creating
-            the CoordinateSystem.</summary>
+            <summary>Crea un CoordinateSystem in corrispondenza dell'origine con gli assi X e Y. L'asse Z
+            viene ignorato completamente. I vettori di input vengono normalizzati prima della creazione
+            del CoordinateSystem.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified cylindrical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>Crea un CoordinateSystem in corrispondenza dei parametri di coordinata cilindrica specificati, rispetto al sistema di coordinate specificato.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>Crea un CoordinateSystem in corrispondenza dei parametri di coordinata sferica specificati, rispetto al sistema di coordinate specificato.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
-            <summary>Returns length distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>Restituisce la distanza della lunghezza.
+            Nota: restituisce le quote di input del cuboide e NON le 
+            quote dello spazio globale effettivo. In altri termini, se si crea una larghezza
+            del cuboide (asse X) pari a 10 e la si trasforma in un CoordinateSystem
+            con un fattore di scala pari a 2 per l'asse X, il valore della larghezza resterà 10. ASM non consente
+            l'estrazione dei vertici di un corpo in alcun ordine prevedibile, pertanto
+            è impossibile determinare le quote dopo una trasformazione.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Width">
-            <summary>Returns width distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>Restituisce la distanza della larghezza.
+            Nota: restituisce le quote di input del cuboide e NON
+            le quote nello spazio globale effettivo. In altri termini, se si crea una larghezza
+            del cuboide (asse X) pari a 10 e la si trasforma in un CoordinateSystem con
+            un fattore di scala pari a 2 per l'asse X, il valore della larghezza resterà 10. ASM non consente
+            l'estrazione dei vertici di un corpo in alcun ordine prevedibile, pertanto
+            è impossibile determinare le quote dopo una trasformazione.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
-            <summary>Returns height distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>Restituisce la distanza dell'altezza.
+            Nota: restituisce le quote di input del cuboide e NON le
+            quote nello spazio globale effettivo. In altri termini, se si crea una larghezza
+            del cuboide (asse X) pari a 10 e la si trasforma in un CoordinateSystem con
+            un fattore di scala pari a 2 per l'asse X, il valore della larghezza resterà 10. ASM non consente
+            l'estrazione dei vertici di un corpo in alcun ordine prevedibile, pertanto
+            è impossibile determinare le quote dopo una trasformazione.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(System.Double,System.Double,System.Double)">
             <summary>Crea un cuboide con centro nell'origine del sistema di coordinate globali (WCS), con la larghezza, lunghezza e altezza specificate.</summary>
@@ -679,8 +680,8 @@
             <search>box,cube,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double)">
-            <summary>Create a Cuboid centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>Crea un cuboide con centro nel punto di input e con la larghezza, la lunghezza
+            e l'altezza specificate.</summary>
             <param name="origin">Punto di origine</param>
             <param name="width">Larghezza del cuboide</param>
             <param name="length">Lunghezza del cuboide</param>
@@ -746,16 +747,16 @@
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>Get a Vector perpendicular to the curve at a specified parameter between StartParameter() and EndParameter()
-            The curve must be planar. The resulting normal will be consistent across the entire curvature of the curve.</summary>
+            <summary>Ottiene un vettore perpendicolare alla curva in corrispondenza di un parametro specificato tra StartParameter() ed EndParameter().
+            La curva deve essere piana. La normale risultante sarà coerente nell'intera curvatura della curva.</summary>
             <param name="param">Il parametro in base al quale valutare</param>
             <param name="side">Se l'opzione 'side' è impostata su False, la normale punterà al lato destro della curva (spostandosi dal punto iniziale al punto finale della curva). Se l'opzione 'side' è True, la normale punterà al lato sinistro della curva.</param>
             <returns>Un vettore perpendicolare alla curva in corrispondenza del parametro</returns>
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal,
-            the YAxis is aligned with the curve tangent at this point, and the ZAxis is aligned with the up-vector or binormal at this point</summary>
+            <summary>Ottieni un CoordinateSystem con origine nel punto corrispondente al parametro specificato. L'asse X viene allineato con la normale della curva,
+            l'asse Y con la curva tangente in corrispondenza di tale punto e l'asse Z sul vettore di direzione verso l'alto o binormale su tale punto.</summary>
             <param name="param">Il parametro in base al quale valutare</param>
             <returns>CoordinateSystem in corrispondenza del parametro della curva</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
@@ -767,9 +768,9 @@
             <search>frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>Returns a Plane whose normal aligns with the tangent of the Curve.
-            Parameters are adjusted such that 0 is always the start Point
-            and 1 is always the end Point.</summary>
+            <summary>Restituisce un piano la cui normale è allineata con la tangente della curva..
+            I parametri vengono regolati in modo che 0 sia sempre il punto iniziale
+            e 1 sia sempre il punto finale.</summary>
             <search>planeoncurve,planecurve,tangentplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
@@ -779,14 +780,14 @@
             <search>pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>Returns points spaced equally along the curve length
-            based on the input number of divisions</summary>
+            <summary>Restituisce i punti distanziati in modo uniforme lungo la lunghezza della curva
+            in base al numero di divisioni di input.</summary>
             <param name="divisions">Numero di divisioni</param>
             <returns>Punti distanziati in modo uniforme lungo la curva</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>Returns points spaced along curve at equal chord length
-            based on the input number of divisions</summary>
+            <summary>Restituisce i punti distanziati lungo la curva in corrispondenza dell'uguale lunghezza dell'asta
+            in base al numero di divisioni di input.</summary>
             <param name="divisions">Numero di divisioni</param>
             <returns>Elenco di punti sulla curva</returns>
         </member>
@@ -799,8 +800,8 @@
             <search>measure from,measure to,parameteratdist</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Returns points spaced equally along the curve at given segment length
-            from the given point</summary>
+            <summary>Restituisce i punti distanziati in modo uniforme lungo la curva in corrispondenza della lunghezza del segmento specificata
+            dal punto specificato.</summary>
             <param name="point">Il punto di riferimento da cui eseguire la misurazione</param>
             <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
             <returns>Elenco di punti sulla curva, incluso il punto specificato e lungo la direzione della curva.</returns>
@@ -812,16 +813,16 @@
             <returns>Elenco di punti sulla curva, incluso il punto specificato e lungo la direzione della curva.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>Returns a CoordinateSystem at specified distance from Curve start Point.
-            Y Axis lies tangent to the Curve, X Axis is the curvature.</summary>
+            <summary>Restituisce un CoordinateSystem alla distanza specificata dal punto iniziale della curva.
+            L'asse Y risulta tangente alla curva, l'asse X è la curvatura.</summary>
             <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
             <returns>CoordinateSystem sulla curva</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>Returns a Plane at the specified distance along the Curve from the
-            start Point. The normal of the Plane aligns with the tangent of the
-            Curve.</summary>
+            <summary>Restituisce un piano alla distanza specificata dal punto iniziale
+            della curva. La normale al piano è allineata alla tangente della
+            curva.</summary>
             <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
             <returns>Piano sulla curva</returns>
             <search>planeoncurve,planecurve,tangentplane</search>
@@ -864,8 +865,8 @@
             <search>measure,distance,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Get the parameter at a given point along the curve. If the point is not on the curve then ParameterAtPoint will still return a value
-            which will correspond to a nearby point on the curve, but the point is not in general the closest point.</summary>
+            <summary>Ottiene il parametro in corrispondenza di un dato punto lungo la curva. Se il punto non si trova sulla curva, ParameterAtPoint restituirà ancora un valore
+            che corrisponderà ad un punto vicino sulla curva, ma il punto non è in generale il punto più vicino.</summary>
             <param name="point">Un punto su o in prossimità della curva</param>
             <returns>Il parametro sulla curva per il punto specificato.</returns>
             <search>projectpoint,closestparam,curveparam</search>
@@ -963,10 +964,10 @@
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more curves by offsetting a planar curve by the given distance in a plane defined by the plane normal. If there are gaps between the offset component curves then, they are filled by extending the offset curves.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>Crea una o più curve eseguendo l'offset di una curva piana in base alla distanza specificata in un piano definito dalla normale al piano. Se sono presenti spazi tra le curve del componente di offset, vengono riempiti estendendo le curve di offset.
+            Per default, l'argomento di input "planeNormal" è impostato sulla normale al piano contenente la curva, ma è possibile fornire una normale esplicita parallela alla normale alla curva originale per controllare meglio la direzione dell'offset.
+            Ad esempio, se è richiesta una direzione di offset uniforme per più curve che condividono lo stesso piano, l'argomento "planeNormal" può essere utilizzato per sostituire le normali alle singole curve e forzare l'offset di tutte le curve nella stessa direzione.
+            Invertendo la normale, si inverte la direzione dell'offset.</summary>
             <param name="signedDistance">Una distanza di offset positiva si applica nella direzione del prodotto vettoriale tra la tangente alla curva e il vettore normale al piano, mentre un offset negativo si applica nella direzione opposta.</param>
             <param name="planeNormal">La normale al piano della curva. L'impostazione di default è la normale al piano della curva di input</param>
             <returns>Una o più curve di offset</returns>
@@ -1149,19 +1150,19 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CurveGeometry">
             <summary>Curva sottostante che definisce lo spigolo</summary>
-            <returns>Curve representation of edge</returns>
+            <returns>Rappresentazione della curva del bordo</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.AdjacentFaces">
             <summary>Facce adiacenti a questo spigolo</summary>
-            <returns>Adjacent faces of edge</returns>
+            <returns>Facce adiacenti del bordo</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.StartVertex">
             <summary>Vertice dal quale inizia questo spigolo</summary>
-            <returns>Start vertex of edge</returns>
+            <returns>Vertice iniziale del bordo</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.EndVertex">
             <summary>Vertice nel quale termina questo spigolo</summary>
-            <returns>End vertex of edge</returns>
+            <returns>Vertice finale del bordo</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>I CoEdge associati a questo spigolo</summary>
@@ -1177,8 +1178,8 @@
             <summary>Asse minore dell'ellisse. È l'asse più corto. La lunghezza del vettore è il raggio minore.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create an Ellipse centered at input Point, aligned with WCS XY Plane,
-            with specified X and Y axis radii.</summary>
+            <summary>Crea un'ellisse centrata nel punto di input, allineata con il piano XY del sistema WCS,
+            con i raggi degli assi X e Y specificati.</summary>
             <param name="origin">Punto di origine dell'ellisse</param>
             <param name="xAxisRadius">Raggio asse X</param>
             <param name="yAxisRadius">Raggio asse Y</param>
@@ -1186,8 +1187,8 @@
             <search>ellipse</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an Ellipse centered at input Point, with two specified axes.
-            Axes should be be at 90 degrees to each other.</summary>
+            <summary>Crea un'ellisse centrata nel punto di input, con i due assi specificati.
+            Gli assi devono essere perpendicolari tra loro.</summary>
             <param name="origin">Punto di origine dell'ellisse</param>
             <param name="xAxisRadius">Raggio asse X</param>
             <param name="yAxisRadius">Raggio asse Y</param>
@@ -1195,9 +1196,9 @@
             <search>ellipsebylengths,ellipsebyvectors</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input CoordinateSystem,
-            with a x_radius radius in the CS X direction, and y_radius radius in the
-            CS Y direction.</summary>
+            <summary>Crea un'ellisse centrata e allineata con il CoordinateSystem di input,
+            con un raggio x_radius nella direzione X del sistema di coordinate e un raggio y_radius nella
+            direzione Y del sistema di coordinate.</summary>
             <param name="origin">Sistema di coordinate di origine dell'ellisse</param>
             <param name="xAxisRadius">Raggio asse X</param>
             <param name="yAxisRadius">Raggio asse Y</param>
@@ -1205,9 +1206,9 @@
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input Plane, with a x_radius
-            radius in the Plane X axis direction, and y_radius radius in the
-            Plane Y axis direction.</summary>
+            <summary>Crea un'ellisse centrata e allineata con il piano di input, con un raggio
+            x_radius nella direzione dell'asse X del piano e un raggio y_radius nella
+            direzione dell'asse Y del piano.</summary>
             <param name="plane">Piano in cui viene disegnato l'arco di ellisse</param>
             <param name="xAxisRadius">Raggio asse X</param>
             <param name="yAxisRadius">Raggio asse Y</param>
@@ -1331,44 +1332,44 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>Applica la traslazione a qualsiasi tipo di geometria, con la distanza e la direzione
+            specificate.</summary>
             <param name="direction">Direzione di spostamento.</param>
             <param name="distance">Distanza di spostamento lungo la direzione data.</param>
             <returns>Geometria trasformata.</returns>
             <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Trasforma l'oggetto in base alla matrice del CoordinateSystem di input.</summary>
+            <summary>Trasforma l'oggetto in base alla matrice di CoordinateSystem di input.</summary>
             <param name="coordinateSystem">Sistema di coordinate di input</param>
             <returns>Sistema di coordinate trasformato</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>Restituisce questa geometria con la sua posizione espressa rispetto a
+            targetCoordinateSystem, posizionata nel frame di sourceCoordinateSystem.
+            La posizione locale del risultato all’interno di sourceCoordinateSystem
+             corrisponde alla posizione locale dell'input all'interno di targetCoordinateSystem.
+            Per ottenere le coordinate di una geometria nello spazio globale all'interno di un dato sistema di
+            coordinate, passare CoordinateSystem.Identity come sourceCoordinateSystem
+            e il sistema di coordinate specificato come targetCoordinateSystem.
+            Le coordinate della geometria risultante saranno uguali alle coordinate dell'input
+            rispetto a quel frame di destinazione.</summary>
+            <param name="targetCoordinateSystem">CoordinateSystem rispetto al quale esprimere la geometria.</param>
+            <param name="sourceCoordinateSystem">CoordinateSystem in cui è attualmente espressa la geometria.
+            Passare CoordinateSystem.Identity() per lavorare nello spazio globale.</param>
             <returns>Geometria trasformata.</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>Ruota un oggetto attorno ad un'origine e ad un asse in base ad un grado
+            specificato.</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>Ruota un oggetto attorno all'origine del piano e alla normale in base ad un grado
+            specificato.</summary>
+            <param name="basePlane">Piano di riferimento attorno al quale ruotare</param>
+            <param name="degrees">Angolo di rotazione in gradi</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -1388,15 +1389,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>Applica la scala in modo uniforme attorno ad un dato punto, utilizzando come valori scalari due punti di selezione.</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>Applica la scala in modo non uniforme in una quota, tramite una base e 2 punti di selezione. L'asse di scala è definito dalla linea tra la base e tale punto.</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>Applica la scala in due quote, tramite una base e 2 punti di selezione. I due punti di selezione vengono proiettati sul piano della base, al fine di determinare i fattori della seconda scala.</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
@@ -1500,7 +1501,7 @@
             <notranslation>true</notranslation>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
-            <summary>The CoordinateSystem that this Geometry is defined in</summary>
+            <summary>CoordinateSystem in cui è definita questa geometria.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Determina se un altro oggetto di geometria interseca l'oggetto corrente</summary>
@@ -1512,14 +1513,14 @@
             <summary>Ottiene la geometria di intersezione per l'oggetto corrente e una raccolta di altre geometrie. Rileva la geometria comune a tutti i membri.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToSolidDef">
-            <summary>Convert to SolidDef json</summary>
+            <summary>Converte in JSON SolidDef.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
             <summary>Proietta una raccolta di punti su questa geometria lungo la direzione specificata.
             Restituisce una matrice non strutturata della geometria risultante.</summary>
-            <param name="points">Points to project.</param>
-            <param name="projectionDirection">Projection direction.</param>
-            <returns>Flat array of resulting Geometry.</returns>
+            <param name="points">Punti da proiettare.</param>
+            <param name="projectionDirection">Direzione di proiezione</param>
+            <returns>Matrice di flag non strutturata della geometria risultante.</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>Angolo in gradi per il quale l'elica ruota nel senso della lunghezza</summary>
@@ -1538,11 +1539,11 @@
             <search>origin,helixstart</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Helix. The helix always rotates clockwise about the supplied
-            axis direction. If viewing along the axis direction, the viewer will see
-            the point turning clockwise around the axis as it moves along the curve
-            in the direction of increasing parameter. Pitch is Distance the helix
-            moves in the axis direction per turn. This can be positive or negative.</summary>
+            <summary>Crea un'elica. L'elica ruota sempre in senso orario attorno alla direzione dell'asse
+            fornito. Se si guarda lungo la direzione dell'asse, si vedrà
+            il punto che ruota in senso orario attorno all'asse, mentre si sposta lungo la curva
+            nella direzione del parametro di incremento. Il passo è la distanza di spostamento dell'elica
+            nella direzione dell'asse ad ogni rotazione. Questo valore può essere positivo o negativo.</summary>
             <param name="axisPoint">Punto asse</param>
             <param name="axisDirection">Vettore direzione asse</param>
             <param name="startPoint">Punto iniziale elica</param>
@@ -1601,16 +1602,16 @@
             <search>line,approximate,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByTangency(Autodesk.DesignScript.Geometry.Curve,System.Double)">
-            <summary>Create a Line tangent to the input Curve, positioned at the parameter
-            Point of the input Curve.</summary>
+            <summary>Crea una linea tangente alla curva di input, posizionata nel punto
+            della curva corrispondente al parametro.</summary>
             <param name="curve">Curva di base per la linea tangente</param>
             <param name="parameter">Valore parametro</param>
             <returns>Linea tangente</returns>
             <search>tangentline,tangentto,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Create a straight Line starting at start Point, extending in Vector
-            direction by specified length.</summary>
+            <summary>Crea una linea retta a partire dal punto iniziale, che si estende nella direzione
+            del vettore per la lunghezza specificata.</summary>
             <param name="startPoint">Punto iniziale linea</param>
             <param name="direction">Vettore direzione</param>
             <param name="length">Lunghezza della linea</param>
@@ -1646,7 +1647,7 @@
             <returns>Retino</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToJson">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
+            <summary>Converte la mesh in un oggetto JSON formattato con lo schema dynamo.geometry:mesh-1.0.0.</summary>
             <returns>Stringa JSON risultante</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.FaceIndices">
@@ -1716,23 +1717,23 @@
             <returns name="mesh">mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.BooleanIntersection(Autodesk.DesignScript.Geometry.Mesh)">
-            <summary>Returns a new mesh consisting of the intersection between the tool
-            mesh and the original mesh.</summary>
+            <summary>Restituisce una nuova mesh costituita dall'intersezione tra la mesh
+            dello strumento e la mesh originale.</summary>
             <param name="tool"/>
             <returns name="mesh">mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Repair">
-            <summary>Returns a new Mesh with the following defects repaired:
-            Small components: if the Mesh contains very small, disconnected
-            segments, relative to the overall Mesh size, they will be
-            discarded.
-            Holes: holes in the mesh are filled in
-            Non-manifold regions: if a vertex is connected to more than
-            two *boundary* edges, or an edge is connected to more than
-            two triangles then the vertex / edge is non-manifold. The
-            mesh toolkit will remove geometry until the mesh is manifold
-            This method tries to preserve as much of the original mesh as
-            possible, as opposed to MakeWatertight, which resamples the Mesh</summary>
+            <summary>Restituisce una nuova mesh con i seguenti difetti riparati:
+            Piccoli componenti: se la mesh contiene segmenti
+            molto piccoli e scollegati, rispetto alla quota complessiva della mesh, questi verranno
+            ignorati.
+            Fori: i fori nella mesh vengono riempiti.
+            Regioni non manifold: se un vertice è collegato a più di
+            due bordi di *contorno*, o un bordo è collegato a più di
+            due triangoli, il vertice/bordo non è manifold. Il
+            toolkit della mesh rimuoverà la geometria fino a quando la mesh non sarà manifold.
+            Questo metodo tenta di preservare la maggior parte possibile della mesh 
+            originale, al contrario di MakeWatertight, che ricampiona la mesh.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.CloseCracks">
             <summary>Rimuove i contorni interni di una mesh. Si ha un contorno interno
@@ -1740,11 +1741,11 @@
             di triangoli separati per il coperchio di una pentola e il corpo della pentola.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeWatertight">
-            <summary>Returns a new Mesh that is watertight and 3D printable. As a result of
-            making a Mesh watertight, self-intersections, overlaps, and non-manifold
-            geometry is removed from the mesh.
-            The Mesh is filled with a bunch of tiny boxes, and a new
-            mesh is created around this.</summary>
+            <summary>Restituisce una nuova mesh a tenuta ermetica e stampabile in 3D. Per
+            rendere ermetica una mesh, vengono rimosse dalla mesh autointersezioni, sovrapposizioni e 
+            geometria non manifold. 
+            La mesh viene riempita con tanti piccoli riquadri e viene creata 
+            una nuova mesh attorno ad essi.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeHollow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
             <summary>Restituisce una nuova mesh che è stata svuotata per la stampa 3D.</summary>
@@ -1770,13 +1771,13 @@
             <returns name="mesh">Mesh ridotta</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Remesh">
-            <summary>Returns a new Mesh distributing triangles more evenly over the whole of the selection
-            regardless of any change in triangle normals across the given selection.</summary>
+            <summary>Restituisce una nuova mesh distribuendo i triangoli in modo più uniforme su tutta la selezione 
+            indipendentemente da qualsiasi modifica nelle normali dei triangoli nella selezione specificata.</summary>
             <returns name="mesh">mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Smooth(System.Double)">
-            <summary>Returns a new smooth Mesh. Smoothing type by default is
-            cotangent which smooths without spreading the vertices.</summary>
+            <summary>Restituisce una nuova mesh levigata. Per default, il tipo di levigatura è 
+            cotangente, che leviga senza arrivare ai vertici.</summary>
             <param name="scale">Imposta la "scala spaziale" della levigatura. Valori più bassi producono una maggiore
             levigatura locale e in genere si ottiene un risultato meno "omogeneo" (0,1-64,0).</param>
             <returns name="mesh">Mesh levigata</returns>
@@ -1785,8 +1786,8 @@
             <summary>Crea un taglio piano geometrico preciso che rimuova parti della mesh
             che si trovano sul lato del piano in direzione della normale del piano.</summary>
             <param name="plane">Piano impostato da utilizzare per il taglio</param>
-            <param name="makeSolid">Attempt to create a minimal fill using the fewest
-            number of triangles.</param>
+            <param name="makeSolid">Tentare di creare un riempimento minimo utilizzando il minor 
+            numero di triangoli.</param>
             <returns name="mesh">mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Intersect(Autodesk.DesignScript.Geometry.Plane)">
@@ -1802,13 +1803,13 @@
             <summary>Riflette la mesh sul piano di input.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotate the Mesh around the input axis by the given angle.</summary>
+            <summary>Ruota la mesh attorno all'asse di input in base all'angolo specificato.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double)">
             <summary>Mette in scala la mesh in base al valore di input.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double,System.Double,System.Double)">
-            <summary>Scale Mesh non-uniformly by scale factors</summary>
+            <summary>Mette in scala la mesh in modo non uniforme in base a fattori di scala.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(Autodesk.DesignScript.Geometry.Vector)">
             <summary>Trasla una mesh nella direzione del vettore di input per la lunghezza del vettore.</summary>
@@ -1836,13 +1837,13 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>Crea una nuova mesh dai punti e dagli indici forniti. I punti non devono 
+            sovrapporsi. Gli indici devono essere insiemi di tre numeri interi 
+            che indicano le tre posizioni nella matrice di punti
+            dei tre punti di un triangolo.</summary>
             <param name="points">Elenco di punti</param>
-            <param name="indices">Flat list of point indices</param>
-            <returns>Retino</returns>
+            <param name="indices">Elenco non strutturato di indici dei punti</param>
+            <returns>Mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Importa un file, analizzandolo in una serie di mesh.
@@ -1865,13 +1866,13 @@
             La risoluzione della mesh è determinata dalla precisione di rendering di Dynamo</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied vertices and indices. Vertices should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the vertices array
-            of the three points of a triangle</summary>
+            <summary>Crea una nuova mesh dai vertici e dagli indici forniti. I vertici non devono 
+            sovrapporsi. Gli indici devono essere insiemi di tre numeri interi 
+            che indicano le tre posizioni nella matrice dei vertici
+            dei tre punti di un triangolo.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
-            <summary>Create a mesh plane based on the given inputs.</summary>
+            <summary>Crea un piano mesh in base agli input specificati.</summary>
             <param name="origin"/>
             <param name="xWidth"/>
             <param name="yWidth"/>
@@ -1934,7 +1935,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
             <summary>I punti di controllo effettivamente periodici di una NurbsCurve periodica.
             Nota: questa operazione funziona solo per le curve periodiche e non avrà esito positivo se la curva non è periodica.</summary>
-            <returns>Periodic control points of a NURBS curve</returns>
+            <returns>Punti di controllo periodici di una curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>I nodi della curva. I nodi sono una serie di valori dei parametri (double) utilizzati per determinare dove e come i punti di controllo influiscono sulla curva.</summary>
@@ -1951,24 +1952,24 @@
             <search>ptweight</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Crea una BSplineCurve mediante punti di controllo espliciti.
+            NOTA 1: le BSplineCurve con deg=1 hanno discontinuità G1 che danno causano problemi
+            per l'estrusione, l'estrusione su percorso e altre operazioni. È consigliabile evitarle ed utilizzare
+           una PolyCurve.
+            NOTA 2: se la curva è periodica (chiusa), il primo e l'ultimo
+            punto DEVONO coincidere.</summary>
             <param name="points">Punti per curva NURBS</param>
             <returns>NurbsCurve creata da punti</returns>
             <search>nurbscurve,spline,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Crea una BSplineCurve mediante punti di controllo espliciti.
+            NOTA 1: le BSplineCurve con deg=1 hanno discontinuità G1 che danno causano problemi
+            per l'estrusione, l'estrusione su percorso e altre operazioni. È consigliabile evitarle ed utilizzare
+           una PolyCurve.
+            NOTA 2: se la curva è periodica (chiusa), il primo e l'ultimo
+            punto DEVONO coincidere.</summary>
             <param name="points">Punti per curva NURBS</param>
             <param name="degree">Grado della curva</param>
             <returns>NurbsCurve creata da punti</returns>
@@ -1976,12 +1977,12 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32,System.Boolean)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Crea una BSplineCurve mediante punti di controllo espliciti.
+            NOTA 1: le BSplineCurve con deg=1 hanno discontinuità G1 che danno causano problemi
+            per l'estrusione, l'estrusione su percorso e altre operazioni. È consigliabile evitarle ed utilizzare
+           una PolyCurve.
+            NOTA 2: se la curva è periodica (chiusa), il primo e l'ultimo
+            punto DEVONO coincidere.</summary>
             <param name="points">Punti per curva NURBS</param>
             <param name="degree">Grado della curva</param>
             <param name="closeCurve">Attiva/Disattiva per chiudere la curva</param>
@@ -1990,19 +1991,19 @@
             <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double[],System.Double[],System.Int32)">
-            <summary>Create a BSplineCurve by from control vertices, weights, and knots.
-            FROM ASM DOCS:
-            Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum
-            B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: The knot vector should be a non-decreasing sequence. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows curves with G1 discontinuities to be
-            represented). Note that non-clamped knot vectors are supported, but will be
-            converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.
-            knot array: the array size must be num_control_points + degree + 1</summary>
+            <summary>Crea una BSplineCurve da vertici di controllo, pesi e nodi.
+            DAI DOCUMENTI ASM:
+            Grado: deve essere maggiore di 1 (spline lineare a tratti) e minore di 26 (il grado base
+            di B-spline massimo supportato da ASM).
+            Pesi: tutti i valori di peso (se forniti) devono essere rigorosamente positivi.
+            I pesi minori di 1e-11 verranno rifiutati e la funzione restituirà un errore.
+            Nodi: il vettore nodo deve essere una sequenza non decrescente. La molteplicità
+            dei nodi interni non può essere maggiore del grado + 1 nel nodo iniziale/finale
+            e del grado in un nodo interno (ciò consente la rappresentazione di curve con
+            discontinuità G1). Si noti che i vettori nodo non bloccati sono supportati, ma verranno
+            convertiti in vettori bloccati e le modifiche corrispondenti verranno applicate ai
+            dati del punto di controllo/peso.
+            Matrice nodi: le dimensioni della matrice devono essere num_control_points + grado + 1.</summary>
             <search>explicit,nurbscurve,spline,degree,spline byarray,lines</search>
             <weights>0.5,0.5,0.5,0.5,0.5,0.45</weights>
         </member>
@@ -2014,9 +2015,9 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>Create a BSplineCurve by interpolating between points.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>Crea una BSplineCurve tramite interpolazione tra i punti.
+            NOTA 2: se la curva è periodica (chiusa), il primo e l'ultimo
+            punto DEVONO coincidere.</summary>
             <param name="points">Punti per curva NURBS</param>
             <param name="closeCurve">Attiva/Disattiva per chiudere la curva</param>
             <returns>NurbsCurve creata da punti</returns>
@@ -2082,9 +2083,9 @@
             <returns>Nodi V della superficie NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.</summary>
+            <summary>Crea una NurbsSurface con i punti interpolati e
+            i gradi U e V specificati. La superficie risultante passerà attraverso tutti
+            i punti.</summary>
             <param name="points">Griglia di punti per la superficie NURBS</param>
             <param name="uDegree">Grado nella direzione u</param>
             <param name="vDegree">Grado nella direzione v</param>
@@ -2092,20 +2093,20 @@
             <search>fit,topoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.  The number of tangents must match the number of
-            points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.</summary>
+            <summary>Crea una NurbsSurface con i punti interpolati e
+            i gradi U e V specificati. La superficie risultante passerà attraverso tutti
+            i punti. Il numero di tangenti deve corrispondere al numero di
+            punti nella direzione corrispondente. La superficie risultante
+            sarà di grado 3 in entrambe le direzioni U e V.</summary>
             <search>fit,topoints,totangents</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Double[],System.Double[],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface satisfying a collection of different surface characteristics.
-            This is the most advanced surface fitting method.  The resultant surface
-            will pass through all of the points.  The number of tangents must match
-            the number of points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.  The corner derivatives should be
-            second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],
+            <summary>Crea una NurbsSurface che soddisfa una raccolta di caratteristiche di superficie diverse.
+            È il metodo più avanzato per l'adattamento di superfici. La superficie risultante
+            passa attraverso tutti i punti. Il numero di tangenti deve corrispondere
+            al numero di punti nella direzione corrispondente. La superficie risultante
+            sarà di grado 3 in entrambe le direzioni U e V. Le derivate degli angoli dovrebbero essere
+            di secondo ordine (dP/dUdV) e fornite nel seguente ordine [ lowU, lowV ], [ highU, lowV ],
             [ lowU, highV ], [ highU, highV ].</summary>
             <search>fit,topoints,totangents,fit corners,complex fit</search>
         </member>
@@ -2117,20 +2118,20 @@
             <returns>Superficie NURBS creata da punti di controllo</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots(Autodesk.DesignScript.Geometry.Point[][],System.Double[][],System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified control vertices, knots, weights,
-            and U V degrees.
-            There are several restrictions on the data which, if
-            broken, will cause the function to fail and will throw an exception.
-            Degree: Both u- and v- degree should be &gt;= 1 (piecewise-linear spline)
-            and  less than 26 (the maximum B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: Both knot vectors should be non-decreasing sequences. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows surfaces with G1 discontinuities to
-            be represented). Note that non-clamped knot vectors are supported, but will
-            be converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.</summary>
+            <summary>Crea una NurbsSurface con vertici di controllo, nodi, pesi
+            e gradi U e V specificati.
+            Esistono diverse restrizioni sui dati che, se
+            non rispettate, causeranno la mancata esecuzione della funzione e genereranno un'eccezione.
+            Grado: sia il grado U che V dovrebbero essere &gt;= 1 (spline lineare a tratti)
+            e minori di 26 (il grado massimo della base B-spline supportato da ASM).
+            Pesi: tutti i valori dei pesi (se forniti) dovrebbero essere rigorosamente positivi.
+            I pesi minori di 1e-11 verranno rifiutati e la funzione avrà esito negativo.
+            Nodi: entrambi i vettori nodo dovrebbero essere sequenze non decrescenti. La molteplicità
+            dei nodi interni non dovrebbe essere maggiore del grado + 1 nel nodo iniziale/finale e
+            al grado in un nodo interno (ciò consente la rappresentazione di superfici con
+            discontinuità G1). Si noti che i vettori nodo non bloccati sono supportati, ma verranno 
+            convertiti in vettori bloccati e le modifiche corrispondenti verranno applicate ai
+            dati del punto del controllo/peso.</summary>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
@@ -2159,7 +2160,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices(System.Int32[])">
             <summary>Restituisce il numero di vertici per ciascun pannello nell'elenco degli indici dei pannelli.</summary>
-            <param name="panelIndices">List of panel indices to query number of vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Elenco degli indici dei pannelli utilizzati per eseguire query sul numero di vertici. Il valore di default null indica tutti i pannelli della superficie.</param>
             <returns>numero di vertici</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetVertex(System.Int32)">
@@ -2180,17 +2181,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices(System.Int32[])">
             <summary>Restituisce i vertici per ciascun pannello nell'elenco degli indici dei pannelli.</summary>
-            <param name="panelIndices">Panel index to query vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Indici dei pannelli utilizzati per eseguire query sui vertici. Il valore di default null indica tutti i pannelli della superficie.</param>
             <returns>Serie di vertici</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints(System.Int32[])">
             <summary>Restituisce i punti per ciascun pannello nell'elenco di indici dei pannelli.</summary>
-            <param name="panelIndices">Panel indices to query points for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Indici dei pannelli utilizzati per eseguire query sui punti. Il valore di default null indica tutti i pannelli della superficie.</param>
             <returns>Serie di punti</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon(System.Int32[])">
             <summary>Restituisce il contorno poligonale per ciascun pannello nell'elenco degli indici dei pannelli.</summary>
-            <param name="panelIndices">Panel indices used to construct Polygon. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">Indici dei pannelli utilizzati per costruire il poligono. Il valore di default null indica tutti i pannelli della superficie.</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.SetTransform(System.Double,System.Double,System.Double,System.Double,Autodesk.DesignScript.Geometry.Point)">
@@ -2250,7 +2251,7 @@
             <search>panel, surface, split, diamond</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Int32,System.Double,System.Boolean,Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition)">
-            <summary>Panels the input surface in parallelograms tiled vertically and horizontally. Each parallelogram is a square with a shear applied along the V-axis or U-axis determined by the ‘alignWithUAxis’ input and a shear factor. By default the parallelograms are aligned with the V-axis</summary>
+            <summary>Dispone in pannelli la superficie di input in parallelogrammi affiancati verticalmente e orizzontalmente. Ogni parallelogramma è un quadrato con un taglio applicato lungo l'asse V o l'asse U determinato dall'input ‘alignWithUAxis’ e da un fattore di taglio. Per default, i parallelogrammi sono allineati con l'asse V.</summary>
             <param name="surface">Superficie di input da disporre in pannelli</param>
             <param name="numU">Numero di motivi nella direzione U</param>
             <param name="numV">Numero di motivi nella direzione V</param>
@@ -2316,14 +2317,14 @@
             <summary>Base Y del piano</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">
-            <summary>Produces a new CoordinateSystem representing this plane. It is based on
-            the origin, and X and Y axis basis.</summary>
+            <summary>Crea un nuovo CoordinateSystem che rappresenta questo piano. È basato
+            sull'origine e sulla base costituita dagli assi X e Y.</summary>
             <returns/>
             <search>converttoCS,convert2cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.Offset(System.Double)">
-            <summary>Create a new Plane offset by this Plane in the normal direction by
-            the specified distance.</summary>
+            <summary>Crea un nuovo piano di offset rispetto al piano corrente, nella direzione normale e con
+            la distanza specificata.</summary>
             <search>alongnormal,moveplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -2334,17 +2335,17 @@
             <search>plane,tonormal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an "oriented" Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            to splitting, intersect, project, etc operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>Crea un piano "orientato" posizionato nell'origine del punto con il vettore
+            normale, ma con un orientamento specifico dell'asse X. Ciò non ha effetto
+            sulle operazioni di suddivisione, intersezione, proiezione e così via, ma semplicemente specifica
+            l'orientamento del CoordinateSystem di input.</summary>
             <param name="origin">Punto di origine del piano</param>
             <param name="normal">Vettore direzione normale</param>
             <param name="xAxis">Vettore direzione asse X</param>
             <returns>Piano da normale e asse X di origine</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginXAxisYAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Gli assi X e Y si trovano sul piano. L'asse Z è il prodotto vettoriale dei due vettori.</summary>
+            <summary>Gli assi X e Y si trovano sul piano. L'asse Z è il prodotto cartesiano dei due vettori.</summary>
             <param name="origin">Punto di origine del piano</param>
             <param name="xAxis">Vettore direzione asse X del piano</param>
             <param name="yAxis">Vettore direzione asse Y del piano</param>
@@ -2359,8 +2360,8 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Create the Plane containing the input Line and external Point. Point
-            cannot lie on the Line or in the Line axis.</summary>
+            <summary>Crea un piano contenente la linea di input e il punto esterno. Il punto
+            non può trovarsi sulla linea o sull'asse della linea.</summary>
             <param name="line">Linea utilizzata per determinare il piano</param>
             <param name="point">Punto utilizzato per determinare il piano</param>
             <returns>Piano creato da linea e punto</returns>
@@ -2491,10 +2492,10 @@
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more Polycurves by offsetting a planar polycurve by the given distance in a plane defined by the plane normal.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>Crea una o più PolyCurve eseguendo l'offset di una PolyCurve piana in base alla distanza specificata in un piano definito dalla normale al piano.
+            Per default, l'argomento di input "planeNormal" è impostato sulla normale al piano contenente la curva, ma è possibile fornire una normale esplicita parallela alla normale alla curva originale per controllare meglio la direzione dell'offset.
+            Ad esempio, se è necessaria una direzione di offset uniforme per più curve che condividono lo stesso piano, "planeNormal" può essere utilizzato per sostituire le normali alle singole curve e forzare l'offset di tutte le curve nella stessa direzione.
+            Invertendo la normale, si inverte la direzione dell'offset.</summary>
             <param name="signedDistance">Una distanza di offset positiva si applica nella direzione del prodotto vettoriale tra la tangente alla PolyCurve e il vettore normale al piano, mentre un offset negativo si applica nella direzione opposta.</param>
             <param name="extendCircular">Se sono presenti spazi tra le curve del componente di offset, a seconda delle impostazioni di chiusura dello spazio, possono essere riempiti da archi circolari (valore True) per fornire angoli levigati o estendendo (valore False) le curve di offset.</param>
             <param name="planeNormal">La normale al piano della curva. L'impostazione di default è la normale al piano della curva di input</param>
@@ -2508,7 +2509,7 @@
             <search>round,smooth,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.</summary>
+            <summary>Crea una o più PolyCurve raggruppando le curve connesse.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
             <summary>Estende la PolyCurve in base all'ellisse tangente</summary>
@@ -2538,8 +2539,8 @@
             <returns>PolyCurve con offset</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>Heals a self-intersecting PolyCurve by returning a new one that isn't self-intersecting
-            if the overlapping segment length is less than or equal to trimLength.</summary>
+            <summary>Corregge una PolyCurve autointersecante restituendone una nuova che non è autointersecante
+            se la lunghezza del segmento sovrapposto è minore di o uguale a trimLength.</summary>
             <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
             <returns>PolyCurve non autointersecante e non sovrapposta</returns>
         </member>
@@ -2548,7 +2549,7 @@
             La direzione di PolyCurve si basa sulla prima curva nella matrice di input.
             Scegliere la tolleranza di unione preferita compresa tra le unità 1e-6 e 1e-3.
             Valori più bassi potrebbero essere troppo rigidi e impedire l'unione di curve che dovrebbero essere collegate; valori più alti potrebbero causare l'unione involontaria di curve corte o la loro compressione in punti degenerati.</summary>
-            <param name="curves">Le curve da unire in PolyCurve</param>
+            <param name="curves">Curve da unire in PolyCurve</param>
             <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
             <returns>PolyCurve create da curve unite</returns>
             <search>segments,joincurves</search>
@@ -2558,7 +2559,7 @@
             La direzione di PolyCurve si basa sulla prima curva nella matrice di input.
             Scegliere la tolleranza di unione preferita compresa tra le unità 1e-6 e 1e-3.
             Valori più bassi potrebbero essere troppo rigidi e impedire l'unione di curve che dovrebbero essere collegate; valori più alti potrebbero causare l'unione involontaria di curve corte o la loro compressione in punti degenerati.</summary>
-            <param name="curves">Le curve da unire in PolyCurve</param>
+            <param name="curves">Curve da unire in PolyCurve</param>
             <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
             <param name="trimCurves">Impostare su True se le curve di input si intersecano/si sovrappongono e i relativi segmenti finali devono essere tagliati prima della creazione di PolyCurve. L'opzione è impostata su False per default.</param>
             <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
@@ -2566,9 +2567,9 @@
             <search>segments,joincurves</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Crea una o più PolyCurve raggruppando le curve connesse.
+            Scegliere una tolleranza di unione preferita tra le unità 1e-6 e 1e-3.
+            Valori più bassi potrebbero essere troppo rigidi e impedire l'unione di curve che dovrebbero essere collegate; valori più alti potrebbero causare l'unione involontaria di curve corte o la loro compressione in punti degenerati.</summary>
             <param name="curves">Curve da raggruppare per creare una o più PolyCurve</param>
             <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
             <returns/>
@@ -2612,11 +2613,11 @@
             <summary>Restituisce le autointersezioni tra i lati del poligono.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Returns whether an input point is contained within the polygon.
-            If the polygon is not planar then the point will be projected onto the
-            best-fit plane and the containment will be computed using the projection
-            of the polygon onto the best-fit plane.
-            This will return a failed status if the polygon self-intersects.</summary>
+            <summary>Restituisce il valore che specifica se un punto di input è contenuto all'interno del poligono.
+            Se il poligono non è piano, il punto verrà proiettato sul.
+            piano di adattamento e il contenimento verrà calcolato utilizzando la proiezione.
+            del poligono sul piano di adattamento.
+            Se il poligono si autointerseca, verrà restituito uno stato non riuscito.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>Crea una curva poligonale mediante la connessione di punti.</summary>
@@ -2629,8 +2630,8 @@
             <search>subsurfaces,getsurfaces,explode</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Locate Surfaces by point. Takes first intersection in forward direction.
-            Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex</summary>
+            <summary>Individua superfici mediante un punto. Considera la prima intersezione in direzione avanti.
+            Restituisce una superficie se incontra l'interno di una superficie, due superfici se incontra l'interno di un bordo e molte superfici se incontra un vertice.</summary>
             <search>surfacesatpoint,findsurfaces,extractsurfaces</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine(Autodesk.DesignScript.Geometry.Line)">
@@ -2720,16 +2721,16 @@
             <search>rectbypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the WCS origin in the WCS XY Plane, with
-            specified width (X Axis length), and length (Y Axis length).</summary>
+            <summary>Crea un rettangolo centrato nell'origine del sistema WCS nel piano XY del sistema WCS, con
+            la larghezza (lunghezza dell'asse X) e la lunghezza (lunghezza dell'asse Y) specificate.</summary>
             <param name="width">Larghezza del rettangolo</param>
             <param name="length">Lunghezza del rettangolo</param>
             <returns>Rettangolo creato da larghezza e lunghezza</returns>
             <search>rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at input Plane root, with input width
-            (Plane X axis length), and length (Plane Y axis length).</summary>
+            <summary>Crea un rettangolo centrato nel piano di input (radice), con la larghezza
+            (lunghezza dell'asse X del piano) e la lunghezza (lunghezza dell'asse Y del piano) di input.</summary>
             <param name="plane">Piano utilizzato per centrare il rettangolo</param>
             <param name="width">Larghezza del rettangolo</param>
             <param name="length">Lunghezza del rettangolo</param>
@@ -2737,9 +2738,9 @@
             <search>rectangle,rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the input origin in the CoordinateSystem
-            XY Plane, with specified width (X Axis length), and length
-            (Y Axis length).</summary>
+            <summary>Crea un rettangolo centrato nell'origine di input del piano XY
+            del CoordinateSystem, con la larghezza (lunghezza dell'asse X) e la lunghezza
+            (lunghezza dell'asse Y) specificate.</summary>
             <param name="coordinateSystem">Sistema di coordinate del rettangolo (centro del rettangolo)</param>
             <param name="width">Larghezza del rettangolo</param>
             <param name="length">Lunghezza del rettangolo</param>
@@ -2771,12 +2772,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>Restituisce un involucro solido dalle facce del solido corrente</summary>
             <param name="internalFaceThickness">Distanza in base alla quale estendere la shell verso l'interno</param>
-            <param name="externalFaceThickness">Distanza in base alla quale estendere la shell verso l'esterno</param>
+            <param name="externalFaceThickness">Distanza in base alla quale estendere l'involucro verso l'esterno</param>
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Solid in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>Proietta la geometria di input su questo solido nella direzione del vettore di input.
+            Attualmente questo metodo di proiezione supporta solo punti o curve.</summary>
             <search>projectonto,projectonsolid,projecttosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
@@ -2808,17 +2809,17 @@
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Create a Solid by lofting between input cross section closed Curves,
-            with guide Curves to assist. Guide Curves must intersect all cross
-            section Curves.</summary>
+            <summary>Crea un solido eseguendo il loft tra curve chiuse di sezione trasversale di input,
+            con l'ausilio di curve guida. Le curve guida devono intersecare tutte le curve
+            di sezione trasversale.</summary>
             <search>Brep,brep,guides,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Boolean)">
-            <summary>Create a Solid by lofting between input cross-sections comprising of closed PolyCurves.
-            This operation is optimized for sections composed of line segments exclusively,
-            with vertices following the same order.
-            The check and repair option guarantees the validity of the produced solid
-            when enabled, while disabling it should increase performance.</summary>
+            <summary>Crea un solido eseguendo il loft tra sezioni trasversali composte da PolyCurve chiuse.
+            Questa operazione è ottimizzata per sezioni composte esclusivamente da segmenti di linea,
+            con vertici che seguono lo stesso ordine.
+            L'opzione di controllo e correzione garantisce la validità del solido prodotto
+            quando è attivata, mentre quando è disattivata dovrebbe aumentare le prestazioni.</summary>
             <search>Brep,brep,ruled,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
@@ -2841,9 +2842,9 @@
             <search>Brep,brep,sweep2,guides,sweepprofile</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Solid of revolution, sweeping the profile Curve around the
-            axis Ray formed by the origin and the axis Vector, from the start
-            angle in degrees to the sweep angle in degrees.</summary>
+            <summary>Crea un solido di rivoluzione eseguendo l'estrusione su percorso della curva di profilo attorno al
+            raggio dell'asse formato dall'origine e dal vettore dell'asse, dall'angolo
+            iniziale in gradi all'angolo di estrusione su percorso in gradi.</summary>
             <param name="profile">Curva di profilo di cui eseguire la rivoluzione</param>
             <param name="axisOrigin">Origine asse di rivoluzione</param>
             <param name="axisDirection">Direzione asse di rivoluzione</param>
@@ -2865,7 +2866,7 @@
             <summary>Restituisce il raggio della sfera.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
+            <summary>Crea una sfera solida centrata nel punto di input, con il raggio specificato.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -2897,8 +2898,8 @@
             <search>difference,trim,removefrom,cut</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>The boolean difference of this Surface and the union of input Surfaces.
-            This method might return a polySurface if the resulting boolean is non-manifold or multi-faced.</summary>
+            <summary>Differenza booleana di questa superficie e l'unione delle superfici di input.
+            Questo metodo potrebbe restituire una PolySurface se il valore booleano risultante è non manifold o a più facce.</summary>
             <param name="others">Altre superfici da sottrarre</param>
             <returns>Superficie booleana o polySurface risultante</returns>
             <search>subtract,differencemany,diffall,diff multi</search>
@@ -2909,16 +2910,16 @@
             <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves.
-            One of the loops needs to be the boundary loop of the input surface.
-            In addition, one or more inner loops need to be added for holes.</summary>
+            <summary>Taglia la superficie con una raccolta di una o più PolyCurve chiuse.
+            Uno dei perimetri chiusi deve essere il perimetro chiuso di contorno della superficie di input.
+            È inoltre necessario aggiungere uno o più perimetri chiusi interni per i fori.</summary>
             <search>trim multiple,removeloops,cutloops</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves that must all lie on the surface within the specified tolerance.
-            If one or more holes need to be trimmed from the input surface, there must be one outer loop specified for the boundary of the surface and one inner loop for each hole.
-            If the region between the surface boundary and the hole(s) needs to be trimmed, only the loop for each hole should be provided.
-            For a periodic surface with no outer loop such as a spherical surface, the trimmed region can be controlled by reversing the direction of the loop curve.</summary>
+            <summary>Taglia la superficie con una raccolta di una o più PolyCurve chiuse che devono trovarsi tutte sulla superficie entro la tolleranza specificata.
+            Se uno o più fori devono essere tagliati dalla superficie di input, deve essere specificato un perimetro chiuso esterno per il contorno della superficie e un perimetro chiuso interno per ogni foro.
+            Se la regione tra il contorno della superficie e i fori deve essere tagliata, deve essere fornito solo il perimetro chiuso per ogni foro.
+            Per una superficie periodica senza perimetro chiuso esterno, ad esempio una superficie sferica, la regione tagliata può essere controllata invertendo la direzione della curva del perimetro chiuso.</summary>
             <param name="loops">Una o più PolyCurve chiuse che possono essere in qualsiasi ordine nell'input. Questi perimetri chiusi non devono intersecarsi.</param>
             <param name="tolerance">Tolleranza utilizzata per stabilire se le estremità della curva sono coincidenti e se una curva e una superficie sono coincidenti. La tolleranza fornita non può essere inferiore ad alcuna delle tolleranze utilizzate nella creazione delle PolyCurve di input. Il valore di default 0.0 indica che verrà utilizzata la tolleranza più grande usata nella creazione delle PolyCurve di input.</param>
             <returns>Superficie tagliata da perimetri chiusi.</returns>
@@ -2931,32 +2932,32 @@
             <search>perpendicular</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>Ottiene una rappresentazione NURBS della superficie. In determinate circostanze,
+            questo metodo potrebbe fornire un'approssimazione della superficie.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>Ottiene una rappresentazione NURBS della superficie. In determinate circostanze,
+            questo metodo potrebbe fornire un'approssimazione della superficie.</summary>
             <param name="limitSurface">Determina se la superficie deve essere ripristinata al relativo intervallo di parametri originale prima della conversione. Un esempio di quando l'intervallo di parametri di una superficie è limitato è dopo un'operazione di taglio.</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>Gets a Nurbs representation of the Surface within a specified tolerance. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>Ottiene una rappresentazione NURBS della superficie entro una tolleranza specificata. In determinate circostanze
+            questo metodo potrebbe fornire un'approssimazione della superficie.</summary>
             <param name="tolerance">Tolleranza specificata</param>
             <returns>Rappresentazione della superficie NURBS</returns>
             <search>tonurbs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals on both sides of the Surface.</summary>
+            <summary>Ispessisce una superficie e crea un solido. L'estrusione avviene nella direzione delle normali
+            della superficie su entrambi i lati della superficie.</summary>
             <param name="thickness">Valore di ispessimento</param>
             <returns>Superficie ispessita come solido</returns>
             <search>offset,tosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals. If both_sides parameter is true, surface is thickened
-            on both sides.</summary>
+            <summary>Ispessisce una superficie e crea un solido. L'estrusione avviene nella direzione delle normali
+            della superficie. Se il parametro both_sides è true, la superficie viene ispessita
+            su entrambi i lati.</summary>
             <param name="thickness">Valore di ispessimento</param>
             <param name="both_sides">True per ispessire su entrambi i lati, false per ispessire su un lato</param>
             <returns>Superficie ispessita come solido</returns>
@@ -2968,8 +2969,8 @@
             <returns>Superficie con offset</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>The returned coordination system use xAxis, yAxis and zAxis to represent the uDir, vDir and normal.
-            The length of xAxis, yAxis represents the curvatures.</summary>
+            <summary>Il sistema di coordinate restituito utilizza xAxis, yAxis e zAxis per rappresentare uDir, vDir e la normale..
+            La lunghezza di xAxis, yAxis rappresenta le curvature.</summary>
             <param name="u">Componente U del parametro</param>
             <param name="v">Componente V del parametro</param>
             <returns>Sistema di coordinate basato su normale, direzione U e direzione V nella posizione UV sulla superficie</returns>
@@ -3027,32 +3028,32 @@
             <search>edges</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>Create a parameter line curve on the given surface.
-            Create a Curve that represents a u or v parameter line on the Surface. A
-            parameter line runs in the direction of increasing u or v parameter at a
-            constant opposite u or v parameter. The resulting Curve will match the
-            Surface parameterisation and its range will be bounded by the Surface
-            parameter range. The type of Curve returned will depend on the Surface
-            type.</summary>
+            <summary>Crea una curva da una linea di parametro sulla superficie specificata.
+            Crea una curva che rappresenta una linea di parametro U o V sulla superficie. Una
+            linea di parametro procede nella direzione di incremento di un parametro U o V in corrispondenza di una
+            costante opposta al parametro U o V. La curva risultante corrisponderà alla
+            parametrizzazione della superficie e il suo intervallo sarà delimitato dall'intervallo
+            del parametro Surface. Il tipo di curva restituito dipenderà dal tipo di
+            superficie.</summary>
             <param name="isoDirection">Se direzione == 0, crea una linea di parametro U, se direzione == 1, crea una linea di parametro V.</param>
             <param name="parameter"/>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>Returns a new Surface with the Normal flipped. Leaves this surface
-            unchanged.</summary>
+            <summary>Restituisce una nuova superficie con la normale invertita. La superficie resta
+            invariata.</summary>
             <returns>Superficie, che è uguale alla superficie di input ma con normali invertite</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Combina la superficie corrente e la superficie di input in una PolySurface</summary>
+            <summary>Combina la superficie corrente e la superficie di input in una PolySurface.</summary>
             <search>topolysurface</search>
-            <summary>Combina la superficie corrente e le superfici di input in una PolySurface</summary>
+            <summary>Combina la superficie corrente e le superfici di input in una PolySurface.</summary>
             <search>join multiple,joinmany,joinall,topolysurface</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Surface in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>Proietta la geometria di input su questa superficie nella direzione del vettore di input
+            Attualmente questo metodo di proiezione supporta solo punti o curve.</summary>
             <search>projecttosurface,projectonto</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
@@ -3060,9 +3061,9 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Union a collection of surfaces into one surface.
-            This method might return a polySurface
-            if the resulting union is non-manifold or multi-faced.</summary>
+            <summary>Unione di una raccolta di superfici in un'unica superficie.
+            Questo metodo potrebbe restituire una PolySurface
+            se l'unione risultante è non manifold o a più facce.</summary>
             <param name="surfaces">Raccolta di superfici.</param>
             <returns>Unione di superfici</returns>
             <search>merge,join,boolean,addition</search>
@@ -3074,15 +3075,15 @@
             <returns>Superficie creata mediante loft</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>Create a Surface by lofting between input cross section Lines.  This is slightly faster
-            and produces a less smooth result than Surface.ByLoft.</summary>
+            <summary>Crea una superficie eseguendo il loft tra linee di sezione trasversale di input. Questo metodo è leggermente più veloce
+            e produce un risultato meno uniforme rispetto a Surface.ByLoft.</summary>
             <search>ruledsurface,lines</search>
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Loft a Surface through the cross sections with a specified guide curves
-            (aka a rails). Guide curves must intersect all of the cross section
-            curves.</summary>
+            <summary>Esegue il loft di una superficie mediante le sezioni trasversali con le curve guida specificate
+            (note anche come guide). Le curve guida devono intersecare tutte le curve di sezione
+            trasversale.</summary>
             <search>loftbyrails,loft rails,guides</search>
             <param name="crossSections">Curve in cui eseguire il loft</param>
             <param name="guideCurves">Curve in cui guidare il loft</param>
@@ -3106,8 +3107,8 @@
             <search>sweep,rail,guide,sweep1</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a Polygon Surface connecting input Points in a closed Polygon and
-            patching it.</summary>
+            <summary>Crea una superficie poligonale connettendo punti di input in un poligono chiuso e
+            aggiungendo una superficie chiusa.</summary>
             <param name="points">Elenco di punti del perimetro</param>
             <returns>Superficie creata da punti del perimetro</returns>
             <search>patch,surfacebypolygon</search>
@@ -3121,9 +3122,9 @@
             <search>sweep2,guides</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Surface by sweeping the profile Curve around the axis ray formed
-            by origin Point in the direction of the axis Vector, starting
-            at start_angle in degrees, sweeping sweep_angle in degrees.</summary>
+            <summary>Crea una superficie eseguendo l'estrusione su percorso della curva di profilo attorno al raggio dell'asse formato
+            dal punto di origine nella direzione del vettore dell'asse, a partire 
+            da start_angle in gradi, eseguendo l'estrusione su percorso di sweep_angle in gradi.</summary>
             <param name="profile">Curva di profilo di cui eseguire la rivoluzione</param>
             <param name="axisOrigin">Origine asse di rivoluzione</param>
             <param name="axisDirection">Direzione asse di rivoluzione</param>
@@ -3133,8 +3134,8 @@
             <search>lathe</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Create a Surface by filling in the interior of a closed boundary
-            defined by input Curves.</summary>
+            <summary>Crea una superficie riempiendo l'interno di un contorno chiuso
+            definito dalle curve di input.</summary>
             <param name="closedCurve">Curva chiusa utilizzata come contorno della superficie</param>
             <returns>Superficie creata da patch</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
@@ -3243,8 +3244,8 @@
             <search>tspline,symmetry,reflection,axial</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ByRadial(Autodesk.DesignScript.Geometry.Plane,System.Int32,System.Double)">
-            <summary>Create radial reflection for t-spline symmetry by given plane
-            with given segments count and given angle (in degrees) between each pair of segments.</summary>
+            <summary>Creare un riflesso radiale della simmetria della T-Spline in base al piano specificato,
+            con il numero di segmenti e l' angolo (in gradi) specificati tra ogni coppia di segmenti.</summary>
             <param name="plane">Piano la cui normale è l'asse del riflesso radiale della T-Spline, espresso in coordinate reali</param>
             <param name="segmentsCount">Numero di segmenti di riflesso radiale</param>
             <param name="segmentAngle">Angolo tra ciascuna coppia di segmenti di simmetria radiale (in gradi). Se è impostato su 0 è definito da (360/n. segmenti)</param>
@@ -3332,7 +3333,7 @@
             <search>tspline,symmetry,reflections</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsInBoxMode">
-            <summary>Whether t-spline is in box or smooth mode</summary>
+            <summary>Indica se T-Spline è in modalità riquadro o levigata.</summary>
             <search>tspline,boxmode,smooth</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsExtractable">
@@ -3340,7 +3341,7 @@
             <search>tspline,extractable</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsClosed">
-            <summary>Whether t-spline is closed</summary>
+            <summary>Indica se T-Spline è chiusa.</summary>
             <search>tspline,closed</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsWaterTight">
@@ -3353,8 +3354,8 @@
             <search>tspline,standard</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToBRep(System.Boolean)">
-            <summary>Convert TSpline surface to Solid or Surface depending on shape.
-            Note: There could be subtle unexpected changes in the resulting B-Rep if the input surface is created in a higher T-Splines version than the version loaded in Dynamo as in this case the surface will be downgraded to the Dynamo version.</summary>
+            <summary>Converte la superficie T-Spline in solido o superficie, a seconda della forma.
+            Nota: potrebbero essere presenti sottili modifiche impreviste nella BRep risultante se la superficie di input è stata creata con una versione di T-Spline successiva rispetto a quella caricata in Dynamo. In questo caso, la superficie verrà sottoposta a downgrade alla versione di Dynamo.</summary>
             <param name="matchTopology">Determina se il corpo risultante deve avere la stessa topologia della superficie T-Spline in input.</param>
             <returns>Entità topologia (solido o superficie)</returns>
             <search>tspline,brep,solid,surface</search>
@@ -3415,19 +3416,19 @@
             <search>tspline,weld,coincident,vertex</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldEdges(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge})">
-            <summary>Annullare la saldatura di tutti i bordi specificati, verrà annullata la saldatura di ogni vertice su tutti i bordi.</summary>
+            <summary>Annulla la saldatura di tutti i bordi specificati. Verrà annullata la saldatura di ogni vertice su tutti i bordi.</summary>
             <param name="edges">Un gruppo di spigoli per cui annullare la saldatura</param>
             <returns>Superficie T-Spline con bordi non saldati</returns>
             <search>tspline,unweld,edge</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex})">
-            <summary>Annullare la saldatura di tutti i vertici specificati. Verrà annullata la saldatura di tutti i bordi su ogni vertice.</summary>
+            <summary>Annulla la saldatura di tutti i vertici specificati. Verrà annullata la saldatura di tutti i bordi su ogni vertice.</summary>
             <param name="vertices">Un insieme di vertici per cui annullare la saldatura</param>
             <returns>Superficie T-Spline con vertici non saldati</returns>
             <search>tspline,unweld,vertex</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
-            <summary>Create match with T-Spline and closed loop from curves</summary>
+            <summary>Crea una corrispondenza con una T-Spline e un perimetro chiuso di curve.</summary>
             <param name="tsEdges">Perimetro bordo T-Spline chiuso con cui creare una corrispondenza</param>
             <param name="curves">Perimetro curva chiuso con cui creare una corrispondenza</param>
             <param name="continuity">Continuità della geometria per cui si sta tentando di eseguire la corrispondenza: G0, G1, G2</param>
@@ -3551,7 +3552,7 @@
             <param name="edges">Gruppo di bordi con foro interno. I bordi devono essere di tipo bordo.</param>
             <param name="fillMethod">Metodo per il riempimento dei fori: 0 - tassellazione, 1 - poligoni, 2 - comprimi, 3 - comprimi e salda</param>
             <param name="keepSubdCreases">Mantenere le triangolazioni secondarie della topologia di input</param>
-            <returns>TSpline surface with filled hole</returns>
+            <returns>Superficie T-Spline con foro riempito</returns>
             <search>tspline,edge,fill,hole</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.AddReflections(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineReflection},System.Boolean,System.Double)">
@@ -3566,9 +3567,9 @@
             <returns>La superficie T-Spline con dati riflessi è stata rimossa</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CompressIndexes">
-            <summary>Compress all topology on the surface and make the indices contiguous.
-            This function maintains the relative order of the indices.</summary>
-            <returns>TSpline with compressed indexes</returns>
+            <summary>Comprime tutta la topologia su una superficie e fa in modo che gli indici siano contigui.
+            Questa funzione mantiene l'ordine relativo degli indici.</summary>
+            <returns>T-Spline con indici compressi</returns>
             <search>tspline,index,compress</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SubdivideFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace},System.Boolean)">
@@ -3581,10 +3582,10 @@
             <search>tspline,subdivide,faces,simple</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Interpolate(System.Boolean)">
-            <summary>Forward interpolation moves control points to their parametric locations
-            on the surface. Reverse interpolation generates a point on the surface
-            for each original control point and moves this control point to its
-            corresponding surface point.</summary>
+            <summary>L'interpolazione in avanti sposta i punti di controllo sulle posizioni dei parametri
+            sulla superficie. L'interpolazione inversa genera un punto sulla superficie
+            di ciascun punto di controllo originale e lo sposta nel
+            punto corrispondente della superficie.</summary>
             <param name="reverse">Direzione di interpolazione: in avanti se è False, inversa in caso contrario</param>
             <returns>T-Spline interpolata nella direzione indicata</returns>
             <search>tspline,interpolate,reverse</search>
@@ -3603,7 +3604,7 @@
             <summary>Riduce i punti di controllo di vertici su un singolo piano.
             Questo comando richiede un input di almeno quattro vertici</summary>
             <param name="vertices">Elenco dei vertici</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>Superficie T-Spline con vertici livellati</returns>
             <search>tspline,flatten,vertices</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Plane)">
@@ -3612,11 +3613,11 @@
             Questo comando richiede un input di almeno quattro vertici</summary>
             <param name="vertices">Elenco dei vertici</param>
             <param name="parallelPlane">Piano parallelamente al quale devono essere adattati i vertici</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>Superficie T-Spline con vertici livellati</returns>
             <search>tspline,flatten,vertices,fitparallel</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace})">
-            <summary>Copy chosen faces to the new surface. New surface has no symmetry.</summary>
+            <summary>Copia le facce scelte nella nuova superficie. La nuova superficie non presenta simmetria.</summary>
             <param name="faces">Facce da duplicare</param>
             <returns>Superficie T-Spline con solo facce selezionate</returns>
             <search>tspline,face,duplicate</search>
@@ -3641,12 +3642,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.MoveVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Vector,System.Boolean)">
             <summary>Spostare vertici specificati lungo un vettore specificato</summary>
             <param name="vertices">Elenco dei vertici da spostare</param>
-            <param name="vector">Vector to move along</param>
-            <param name="onSurface">Flag, indicating whether to use surface or control points of vertices to move</param>
+            <param name="vector">Vettore lungo cui effettuare lo spostamento</param>
+            <param name="onSurface">Flag che indica se utilizzare la superficie o i punti di controllo dei vertici da spostare</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Repair">
-            <summary>Attempts to repair the TsplineSurface.</summary>
+            <summary>Tenta di riparare TsplineSurface.</summary>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
@@ -3663,10 +3664,10 @@
             <search>tspline,plane,origin,normal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create an "oriented" T-Spline Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            on splitting, intersect, project, etc. operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>Crea un piano T-Spline "orientato", posizionato in corrispondenza del punto di origine con il vettore
+            normale, ma con un orientamento specifico dell'asse X. Ciò non influisce
+            sulle operazioni di divisione, intersezione, proiezione e così via; specifica solo
+            l'orientamento del CoordinateSystem di input.</summary>
             <param name="origin">Punto di origine del piano</param>
             <param name="normal">Normale del piano</param>
             <param name="xAxis">Asse X del piano</param>
@@ -3680,7 +3681,7 @@
             <search>tspline,plane,origin,normal,axis</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginXAxisYAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Gli assi X e Y si trovano sul piano. L'asse Z è il prodotto vettoriale dei due vettori.</summary>
+            <summary>Gli assi X e Y si trovano sul piano. L'asse Z è il prodotto cartesiano dei due vettori.</summary>
             <param name="origin">Punto di origine del piano</param>
             <param name="xAxis">Asse X del piano</param>
             <param name="yAxis">Asse Y del piano</param>
@@ -3735,8 +3736,8 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderRadiusHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
             <summary>Costruire un cilindro T-Spline definito in base ad un CoordinateSystem principale, raggio e altezza del cilindro</summary>
             <param name="cs">Il centro e la base del cilindro verranno adattati al piano X-Y del sistema di coordinate</param>
-            <param name="radius">Radius of cylinder</param>
-            <param name="height">Height of cylinder</param>
+            <param name="radius">Raggio del cilindro</param>
+            <param name="height">Altezza del cilindro</param>
             <param name="radiusSpans">Numero di campate nella circonferenza</param>
             <param name="heightSpans">Numero di campate in altezza</param>
             <param name="symmetry">Opzioni di simmetria di una superficie T-Spline</param>
@@ -3757,11 +3758,11 @@
             <search>tspline,cylinder,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with given base radius at start Point, extending to an
-            apex at end Point.</summary>
+            <summary>Crea un cono T-Spline con il raggio di base specificato in corrispondenza del punto iniziale
+            che si estende fino all'apice del punto finale.</summary>
             <param name="startPoint">Punto iniziale di un cono</param>
             <param name="endPoint">Punto finale di un cono</param>
-            <param name="radius">Radius of base of a cone</param>
+            <param name="radius">Raggio della base di un cono</param>
             <param name="radiusSpans">Numero di campate nella circonferenza</param>
             <param name="heightSpans">Numero di campate in altezza</param>
             <param name="symmetry">Opzioni di simmetria di una superficie T-Spline</param>
@@ -3770,8 +3771,8 @@
             <search>tspline,cone,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with axis from start Point to end Point, with given
-            radii at start and end. This object does not have an apex, and is in the shape of a frustum.</summary>
+            <summary>Crea un cono T-Spline con asse dal punto iniziale al punto finale, con i raggi
+            specificati in corrispondenza di inizio e fine. Questo oggetto non dispone di un apice e presenta la forma di un tronco di solido.</summary>
             <param name="startPoint">Punto iniziale di un cono</param>
             <param name="endPoint">Punto finale di un cono</param>
             <param name="startRadius">Raggio iniziale di un cono</param>
@@ -3784,8 +3785,8 @@
             <search>tspline,cone,radii,points,truncated</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending in the direction of the Z-axis of the CoordinateSystem,
-            with a  circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>Crea un cono T-Spline con un punto base in corrispondenza dell'origine di CoordinateSystem, che si estende nella direzione dell'asse Z di CoordinateSystem,
+             con base circolare sul piano XY di CoordinateSystem.</summary>
             <param name="cs">Il centro e la base del cono verranno adattati al piano X-Y di questo sistema di coordinate</param>
             <param name="height">Altezza di un cono</param>
             <param name="radius">Raggio di un cono</param>
@@ -3797,10 +3798,10 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
-            <param name="cs">Il centro e la base del cono verranno adattati al piano X-Y di questo sistema di coordinate</param>
+            <summary>Crea un cono T-Spline con un punto base in corrispondenza dell'origine di CoordinateSystem, che si estende
+            per la lunghezza specificata nella direzione dell'asse Z di CoordinateSystem, mentre la
+            base circolare si trova nel piano XY di CoordinateSystem.</summary>
+            <param name="cs">Il centro e la base del cono verranno adattati al piano X-Y di questo sistema di coordinate.</param>
             <param name="height">Altezza di un cono</param>
             <param name="startRadius">Raggio iniziale di un cono</param>
             <param name="endRadius">Raggio finale di un cono</param>
@@ -3812,7 +3813,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
+            <summary>Crea una sfera T-Spline centrata nel punto di input, con il dato specificato.</summary>
             <param name="centerPoint">Centro di una sfera</param>
             <param name="radius">Raggio di una sfera</param>
             <param name="radiusSpans">Numero di campate radiali</param>
@@ -3855,7 +3856,7 @@
             <search>tspline,torus,radii,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCenterRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Torus with given center and radii, aligned with the default World XY plane</summary>
+            <summary>Crea un toro T-Spline con il centro e i raggi specificati, allineato con il piano XY globale di default.</summary>
             <param name="center">Centro del toro</param>
             <param name="innerRadius">Raggio interno di un toro</param>
             <param name="outerRadius">Raggio esterno di un toro</param>
@@ -3880,8 +3881,8 @@
             <search>tspline,box,cuboid,cube,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>Crea un riquadro T-Spline centrato in un punto di input, con una larghezza, una lunghezza
+            e un'altezza specificate.</summary>
             <param name="origin">Centro di un riquadro</param>
             <param name="width">Larghezza di un riquadro</param>
             <param name="length">Lunghezza di un riquadro</param>
@@ -3895,8 +3896,8 @@
             <search>tspline,box,cuboid,cube,size,center</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered and oriented to input CoordinateSystem, with
-            specified width, length, and height.</summary>
+            <summary>Creare un riquadro T-Spline centrato e orientato in base al CoordinateSystem di input, con
+            una larghezza, una lunghezza e un'altezza specificate.</summary>
             <param name="cs">Il piano X-Y del riquadro verrà allineato con il piano X corrispondente</param>
             <param name="width">Larghezza di un riquadro</param>
             <param name="length">Lunghezza di un riquadro</param>
@@ -3922,45 +3923,45 @@
             <search>tspline, box,cube,min,max,corner,point</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCoordinateSystemRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with center at CoordinateSystem origin
-            and given radius</summary>
+            <summary>Creare un quadball T-Spline centrato sull'origine di CoordinateSystem
+            e con il raggio specificato.</summary>
             <param name="cs">Sistema di coordinate locale</param>
             <param name="radius">Raggio del quadball</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">Numero di campate in due quote dei lati del quadball</param>
             <param name="symmetry">Opzioni di simmetria di una superficie T-Spline</param>
             <param name="inSmoothMode">Mostra superficie T-Spline nel riquadro o nella visualizzazione uniforme</param>
             <returns>Quadball T-Spline</returns>
             <search>quadball,tspline,coordinate system,raduis</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCenterRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with given center and radius, aligned with
-            default World XY plane</summary>
+            <summary>Creare un quadball T-Spline con il centro e un raggio specificati, allineato con
+            il piano XY globale di default.</summary>
             <param name="center">Punto centrale del quadball</param>
             <param name="radius">Raggio del quadball</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">Numero di campate in due quote dei lati del quadball</param>
             <param name="symmetry">Opzioni di simmetria di una superficie T-Spline</param>
             <param name="inSmoothMode">Mostra superficie T-Spline nel riquadro o nella visualizzazione uniforme</param>
             <returns>Quadball T-Spline</returns>
             <search>quadball,tsplines,center,point,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceUniform(Autodesk.DesignScript.Geometry.NurbsSurface,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using uniform strategy.
-            Input NURBS surface is rebuilt with uniform knots placed at equal parametric or
-            arc length intervals depending on corresponding useArcLen flag, and approximated by
-            degree 3 NURBS surface. Output T-Spline is divided by given span counts
-            in u and v directions.</summary>
+            <summary>Costruisce una superficie T-Spline da una superficie NURBS utilizzando una strategia uniforme.
+            La superficie di input NURBS viene ricreata con nodi uniformi posizionati a intervalli
+            parametrici o di lunghezza d'arco uguali in base al flag useArcLen corrispondente e
+            arrotondati in base alla superficie NURBS di grado 3. La T-Spline di output viene suddivisa per i 
+            numeri di campate specificati nelle direzioni U e V.</summary>
             <param name="nurbsSurface">Superficie NURBS di input</param>
             <param name="uSpans">Numero di campate richieste nella direzione U</param>
             <param name="vSpans">Numero di campate richieste nella direzione V</param>
-            <param name="uUseArcLen">Whether to use arcLen or parametric subdivision in u parametric direction</param>
-            <param name="vUseArcLen">Whether to use arcLen or parametric subdivision in v parametric direction</param>
+            <param name="uUseArcLen">Indica se utilizzare arcLen o la suddivisione parametrica nella direzione parametrica U.</param>
+            <param name="vUseArcLen">Indica se si desidera utilizzare arcLen o la suddivisione parametrica nella direzione parametrica V.</param>
             <param name="inSmoothMode">Mostra superficie T-Spline nel riquadro o nella visualizzazione uniforme</param>
             <search>nurbs surface,tspline,uniform</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceCurvature(Autodesk.DesignScript.Geometry.NurbsSurface,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using curvature subdivision strategy.
-            Input NURBS surface is rebuilt to degree 3. Output T-Spline has span counts and
-            positions in each direction detected automatically depending on curvature.</summary>
+            <summary>Costruisce una superficie T-Spline da una superficie NURBS utilizzando una strategia di suddivisione della curvatura.
+            La superficie di input NURBS viene ricreata al grado 3. La T-Spline di output contiene numeri di campate e
+            posizioni in ogni direzione rilevata automaticamente a seconda della curvatura.</summary>
             <param name="nurbsSurface">Superficie NURBS di input</param>
             <param name="inSmoothMode">Mostra superficie T-Spline nel riquadro o nella visualizzazione uniforme</param>
             <search>nurbs surface,tspline,curvature</search>
@@ -3982,7 +3983,7 @@
             <summary>Costruire una T-Spline eseguendo lo sweep di una curva di sezione trasversale lungo una traiettoria.</summary>
             <param name="profile">Curva di profilo</param>
             <param name="path">Traiettoria della curva</param>
-            <param name="parallel">Is spans should be parallel in path direction</param>
+            <param name="parallel">Le campate Is dovrebbero essere parallele nella direzione della traiettoria.</param>
             <param name="pathSpans">Numero di campate nella traiettoria</param>
             <param name="profileSpans">Numero di campate nel profilo. Definito automaticamente se 0 o valore inferiore</param>
             <param name="pathUniform">Utilizzare la strategia uniforme o la curvatura per la distribuzione delle campate lungo il percorso</param>
@@ -3991,9 +3992,9 @@
             <search>tspline,sweep,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double,System.Int32,System.Int32,System.Boolean,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Surface by sweeping the profile Curve around the axis formed
-            by the axis origin and axis direction, starting at start_angle in degrees,
-            and sweeping by sweep_angle in degrees.</summary>
+            <summary>Crea una superficie T-Spline mediante l'estrusione su percorso della curva di profilo attorno all'asse formato
+            dall'origine e dalla direzione dell'asse, partendo da start_angle in gradi
+            ed eseguendo poi l'estrusione su percorso in base a sweep_angle in gradi.</summary>
             <param name="profile">Curva di profilo</param>
             <param name="axisOrigin">Centro di rotazione</param>
             <param name="axisDirection">Asse di rotazione</param>
@@ -4227,7 +4228,7 @@
             <param name="otherVector">Altro vettore</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Determine whether two vectors are almost equal. A tolerance value of 1e-5 is used.</summary>
+            <summary>Determina se due vettori sono quasi uguali. Viene utilizzato un valore di tolleranza di 1e-5.</summary>
             <returns>Restituisce true se i vettori sono quasi uguali; false in caso contrario.</returns>
             <param name="otherVector">Altro vettore</param>
             <search>vector approximate,near,same</search>
@@ -4236,13 +4237,13 @@
             <summary>Trasforma il vettore corrente mediante una matrice CoordinateSystem di input.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates a Vector around an axis by a specified number of
-            degrees</summary>
+            <summary>Ruota un vettore attorno ad un asse in base ad un numero specificato di
+            gradi.</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates a vector around the Plane origin and normal by a specified
-            degree</summary>
+            <summary>Ruota un vettore intorno all'origine del piano e alla normale in base ad un grado
+            specificato.</summary>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
@@ -4260,8 +4261,8 @@
             <search>rotation angle,</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Returns the angle between the two vectors in degrees from 0 to 360.
-            It uses axis of rotation to determine the direction of the angle.</summary>
+            <summary>Restituisce l'angolo tra i due vettori in gradi da 0 a 360.
+            Utilizza l'asse di rotazione per determinare la direzione dell'angolo.</summary>
             <param name="otherVector">Altro vettore</param>
             <param name="rotationAxis">Asse di rotazione</param>
             <returns>Restituisce l'angolo tra i vettori forniti in gradi compresi tra 0 e 360</returns>
@@ -4286,24 +4287,24 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>Definisce un vettore a partire da due estremità. Il risultato è un vettore che va dal punto iniziale al punto finale.</summary>
-            <param name="start">Start point of vector</param>
-            <param name="end">End point of vector</param>
-            <returns>Vector created from two points</returns>
+            <param name="start">Punto iniziale del vettore</param>
+            <param name="end">Punto finale del vettore</param>
+            <returns>Vettore creato da due punti</returns>
             <search>vector2</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.XAxis">
             <summary>Ottiene il vettore asse X canonico (1,0,0)</summary>
-            <returns>Canonical X axis vector (1,0,0)</returns>
+            <returns>Vettore asse X canonico (1,0,0)</returns>
             <search>x, basis,right</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.YAxis">
             <summary>Ottiene il vettore asse Y canonico (0,1,0)</summary>
-            <returns>Canonical Y axis vector (0,1,0)</returns>
+            <returns>Vettore asse Y canonico (0,1,0)</returns>
             <search>y, basis,forward</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ZAxis">
             <summary>Ottiene il vettore asse Z canonico (0,0,1)</summary>
-            <returns>Canonical Z axis vector (0,0,1)</returns>
+            <returns>Vettore asse Z canonico (0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
@@ -4427,7 +4428,7 @@
             <summary>Cerca una stringa localizzata simile a L'elemento {0} è minore di zero.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare Mesh.ByPointsIndices (Point[] points, Indices : int[]).</summary>
