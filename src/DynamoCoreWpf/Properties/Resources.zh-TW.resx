@@ -2064,6 +2064,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>未加入新頁籤，因為該延伸已經位於延伸側邊列中。</value>
   </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Package/Extension {0} not offered because the Autodesk ADP Desktop SDK is not installed ({1} could not be found), so MCP tokens cannot be validated; every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
     <value>未提供套件/延伸 {0}，因為此程序中的 Autodesk Identity (IDSDK) 無法驗證 MCP 權杖 ({1} 沒有匯出 {2})；每個請求都會被拒絕並出現 HTTP 401。</value>
   </data>

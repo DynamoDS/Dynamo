@@ -2065,6 +2065,9 @@ Möchten Sie das neueste Update für Dynamo installieren?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Es wurde keine neue Registerkarte hinzugefügt, da die Erweiterung bereits auf der Erweiterungsseitenleiste vorhanden ist.</value>
   </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Package/Extension {0} not offered because the Autodesk ADP Desktop SDK is not installed ({1} could not be found), so MCP tokens cannot be validated; every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
     <value>Paket/Erweiterung {0} nicht angeboten, da Autodesk Identity (IDSDK) MCP-Token in diesem Prozess nicht validieren kann ({1} exportiert keine {2}); jede Anforderung mit HTTP 401 würde abgelehnt werden.</value>
   </data>

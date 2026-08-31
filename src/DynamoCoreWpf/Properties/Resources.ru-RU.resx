@@ -2065,6 +2065,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Новая вкладка не добавляется, т. к. расширение уже присутствует на боковой панели расширений.</value>
   </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Package/Extension {0} not offered because the Autodesk ADP Desktop SDK is not installed ({1} could not be found), so MCP tokens cannot be validated; every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
     <value>Пакет/расширение {0} не предоставляется, так как Autodesk Identity (IDSDK) в этом процессе не может проверить маркеры MCP ({1} не экспортирует {2}); каждый запрос будет отклонен с кодом HTTP 401.</value>
   </data>
