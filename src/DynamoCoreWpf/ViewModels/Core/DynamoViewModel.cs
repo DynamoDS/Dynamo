@@ -2870,6 +2870,7 @@ namespace Dynamo.ViewModels
                 if (IsPathInTemplateDirectoryTree(path, Model.PathManager.TemplatesDirectory))
                 {
                     // Give user notifications
+                    Model.Logger.Log(string.Format("{0}: {1}", path, WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg));
                     DynamoMessageBox.Show(Owner, WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
