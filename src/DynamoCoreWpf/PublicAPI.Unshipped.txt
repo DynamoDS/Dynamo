@@ -1,4 +1,5 @@
 Dynamo.Wpf.Extensions.ViewLoadedParams.IsIDSDKInitialized.get -> bool
+static Dynamo.Wpf.Properties.Resources.ExtensionNotOfferedAdpWrapperMissing.get -> string
 static Dynamo.Wpf.Properties.Resources.ExtensionNotOfferedMcpTokenValidationUnavailable.get -> string
 Dynamo.Controls.NetworkStatusIconConverter
 Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -23,6 +24,8 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstal
 Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
+Dynamo.ViewModels.DynamoViewModel.CanSaveWorkspace.get -> bool
+Dynamo.ViewModels.DynamoViewModel.CanSaveWorkspaceAs.get -> bool
 Dynamo.ViewModels.DynamoViewModel.NoNetworkMode.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
@@ -55,6 +58,7 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.UI.Controls.CodeBlockEditor.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
+override Dynamo.UI.Controls.CodeBlockEditor.OnIsKeyboardFocusWithinChanged(System.Windows.DependencyPropertyChangedEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnSelectionChanged(System.Windows.Controls.SelectionChangedEventArgs e) -> void
 static Dynamo.PackageManager.UI.PackageManagerTabControl.GetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element) -> bool
 static Dynamo.PackageManager.UI.PackageManagerTabControl.SetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element, bool value) -> void

@@ -2065,6 +2065,9 @@ Para instalar la actualización más reciente, hay que cerrar Dynamo y todas las
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>No se ha añadido ninguna ficha nueva, ya que la extensión ya está presente en la barra lateral de extensiones.</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>El paquete o la extensión {0} no se ofrecen porque Autodesk Identity (IDSDK) no puede validar tokens MCP en este proceso ({1} no exporta {2}). Toda solicitud se rechazaría y mostraría el error HTTP 401.</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} no se puede cargar.
 Su instalación entrará en conflicto con una o varias definiciones de nodo que ya existen en {0}, que ya se ha cargado. 

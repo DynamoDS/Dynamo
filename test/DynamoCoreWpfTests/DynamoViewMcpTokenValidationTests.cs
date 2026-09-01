@@ -129,6 +129,116 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WhenAdpWrapperIsMissingThenAutodeskAssistantExtensionIsDisabled()
+        {
+            // DYN-10778 AC 6. The export probe cannot see this case: IDSDK itself is healthy and
+            // exports idsdk_mcp_validate_token, but the ADP Desktop SDK is not installed, so
+            // AdpSDKIdentityWrapper.dll — the library DynamoMCP actually P/Invokes — never
+            // resolves and every MCP call is rejected with HTTP 401 regardless.
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                McpTokenValidationAvailability.Unavailable,
+                McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+            var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
+                DynamoView.AutodeskAssistantExtensionId,
+                "Autodesk Assistant");
+
+            Assert.IsTrue(shouldDisable);
+        }
+
+        [Test]
+        public void WhenAdpWrapperIsMissingThenTheReasonIsReportedSeparately()
+        {
+            // The two causes need different guidance — an out-of-date Identity Manager versus a
+            // missing ADP Desktop SDK install. Collapsing them would send whoever reads the log
+            // after the wrong thing.
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                McpTokenValidationAvailability.Unavailable,
+                McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+            Assert.AreEqual(McpTokenValidationUnavailableReason.AdpWrapperMissing,
+                IdsdkMcpTokenValidation.GetStatus().Reason);
+
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                McpTokenValidationAvailability.Unavailable,
+                McpTokenValidationUnavailableReason.IdsdkExportMissing);
+
+            Assert.AreEqual(McpTokenValidationUnavailableReason.IdsdkExportMissing,
+                IdsdkMcpTokenValidation.GetStatus().Reason);
+        }
+
+        [Test]
+        public void WhenValidationIsAvailableOrUnknownThenNoUnavailableReasonIsReported()
+        {
+            // A reason only means something alongside Unavailable. Leaking a stale one would let
+            // a caller log "ADP SDK missing" for a process where validation works.
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                McpTokenValidationAvailability.Available,
+                McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+            Assert.AreEqual(McpTokenValidationUnavailableReason.None,
+                IdsdkMcpTokenValidation.GetStatus().Reason);
+
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                McpTokenValidationAvailability.Unknown,
+                McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+            Assert.AreEqual(McpTokenValidationUnavailableReason.None,
+                IdsdkMcpTokenValidation.GetStatus().Reason);
+        }
+
+        [Test]
+        public void GetStatusReturnsAVerdictAndItsCauseFromASingleEvaluation()
+        {
+            // Reading availability and reason through separate calls would be two evaluations, and
+            // AdpWrapperMissing / Unknown are deliberately not cached — so the second could re-probe
+            // and disagree with the first, logging a cause that no longer applies or withholding an
+            // extension on a verdict a re-check would have failed open on. GetStatus must therefore
+            // always hand back a self-consistent pair: a reason implies Unavailable, and every other
+            // availability implies None.
+            foreach (var availability in new[]
+                     {
+                         McpTokenValidationAvailability.Available,
+                         McpTokenValidationAvailability.Unavailable,
+                         McpTokenValidationAvailability.Unknown,
+                     })
+            {
+                IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                    availability,
+                    McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+                var status = IdsdkMcpTokenValidation.GetStatus();
+
+                Assert.AreEqual(availability, status.Availability);
+
+                if (availability == McpTokenValidationAvailability.Unavailable)
+                {
+                    Assert.AreNotEqual(McpTokenValidationUnavailableReason.None, status.Reason,
+                        "An Unavailable verdict must carry the cause that produced it.");
+                }
+                else
+                {
+                    Assert.AreEqual(McpTokenValidationUnavailableReason.None, status.Reason,
+                        "A reason must never accompany anything other than Unavailable.");
+                }
+            }
+        }
+
+        [Test]
+        public void WhenAdpWrapperIsMissingThenUnrelatedExtensionIsNotDisabled()
+        {
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(
+                McpTokenValidationAvailability.Unavailable,
+                McpTokenValidationUnavailableReason.AdpWrapperMissing);
+
+            var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
+                UnrelatedExtensionId,
+                "Some Other Extension");
+
+            Assert.IsFalse(shouldDisable);
+        }
+
+        [Test]
         public void WhenTestOverrideIsChangedThenTheCachedResultDoesNotShadowIt()
         {
             // Guards the seam itself. GetAvailability() caches a definitive answer, so a stale cache

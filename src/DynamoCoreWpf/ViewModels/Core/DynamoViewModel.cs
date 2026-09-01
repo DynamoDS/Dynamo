@@ -72,6 +72,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
+        private WorkspaceModel saveCommandsTrackedWorkspace;
         private PreferencesViewModel preferencesViewModel;
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
@@ -428,6 +429,8 @@ namespace Dynamo.ViewModels
 
                 if(ShowInsertDialogAndInsertResultCommand != null)
                     ShowInsertDialogAndInsertResultCommand.RaiseCanExecuteChanged();
+
+                NotifySaveCommandsChanged();
             }
         }
 
@@ -578,6 +581,29 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
+
+        private bool isCodeBlockEditorActive;
+
+        /// <summary>
+        /// True while a code block node's text editor has focus.
+        /// Used to disable graph keyboard shortcuts that should not run during editing.
+        /// </summary>
+        internal bool IsCodeBlockEditorActive
+        {
+            get { return isCodeBlockEditorActive; }
+            set
+            {
+                if (isCodeBlockEditorActive == value) return;
+                isCodeBlockEditorActive = value;
+                GraphAutoLayoutCommand?.RaiseCanExecuteChanged();
+                BackgroundPreviewViewModel?.TogglePanCommand?.RaiseCanExecuteChanged();
+                BackgroundPreviewViewModel?.ToggleCanNavigateBackgroundCommand?.RaiseCanExecuteChanged();
+                PanCommand?.RaiseCanExecuteChanged();
+                ZoomInCommand?.RaiseCanExecuteChanged();
+                ZoomOutCommand?.RaiseCanExecuteChanged();
+                FitViewCommand?.RaiseCanExecuteChanged();
+            }
+        }
 
         public ConnectorType ConnectorType
         {
@@ -898,6 +924,9 @@ namespace Dynamo.ViewModels
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeModelBackupFileSaveEvent();
+            TrackWorkspaceForSaveCommands(model.CurrentWorkspace);
+            GuideFlowEvents.GuidedTourStart += OnGuidedTourStateChanged;
+            GuideFlowEvents.GuidedTourFinish += OnGuidedTourStateChanged;
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
@@ -1304,6 +1333,34 @@ namespace Dynamo.ViewModels
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
+            TrackWorkspaceForSaveCommands(null);
+            GuideFlowEvents.GuidedTourStart -= OnGuidedTourStateChanged;
+            GuideFlowEvents.GuidedTourFinish -= OnGuidedTourStateChanged;
+        }
+
+        /// <summary>
+        /// Keeps the Save command's CanExecute in sync with the current workspace's dirty
+        /// flag: unsubscribes from the previously tracked workspace and subscribes to the
+        /// new one, then re-evaluates CanExecute immediately (the new workspace may already
+        /// differ in HasUnsavedChanges from the old one).
+        /// </summary>
+        private void TrackWorkspaceForSaveCommands(WorkspaceModel workspace)
+        {
+            if (saveCommandsTrackedWorkspace != null)
+                saveCommandsTrackedWorkspace.PropertyChanged -= SaveCommandsTrackedWorkspace_PropertyChanged;
+
+            saveCommandsTrackedWorkspace = workspace;
+
+            if (saveCommandsTrackedWorkspace != null)
+                saveCommandsTrackedWorkspace.PropertyChanged += SaveCommandsTrackedWorkspace_PropertyChanged;
+
+            NotifySaveCommandsChanged();
+        }
+
+        private void SaveCommandsTrackedWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(WorkspaceModel.HasUnsavedChanges))
+                NotifySaveCommandsChanged();
         }
 
         private void SubscribeDispatcherHandlers()
@@ -1482,6 +1539,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("ViewingHomespace");
                     if (this.PublishCurrentWorkspaceCommand != null)
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    TrackWorkspaceForSaveCommands(model.CurrentWorkspace);
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
@@ -2808,7 +2866,6 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
                 var hasSaved = false;
                 if (IsPathInTemplateDirectoryTree(path, Model.PathManager.TemplatesDirectory))
                 {
@@ -2818,6 +2875,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
+                    Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
                     hasSaved = CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
                 }
 
@@ -3245,9 +3303,52 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// "Save" is only meaningful when there is something new to persist, so it is also
+        /// gated on the current workspace's dirty flag (unlike "Save As", which can always
+        /// save a copy regardless of whether anything changed).
+        /// </summary>
         internal bool CanShowSaveDialogIfNeededAndSaveResultCommand(object parameter)
         {
-            return true;
+            return !GuideFlowEvents.IsAnyGuideActive && !ShowStartPage && (Model.CurrentWorkspace?.HasUnsavedChanges ?? false);
+        }
+
+        /// <summary>
+        /// Whether the current workspace can be saved via the "Save" menu item, hotkey, and
+        /// toolbar button. Bound directly (rather than relying solely on the command's
+        /// CanExecute-driven IsEnabled coercion) because WPF's MenuItem does not reliably
+        /// coerce IsEnabled when the very first CanExecute evaluation is false.
+        /// </summary>
+        public bool CanSaveWorkspace => CanShowSaveDialogIfNeededAndSaveResultCommand(null);
+
+        /// <summary>
+        /// Whether the current workspace can be saved via the "Save As" menu item and hotkey.
+        /// Bound directly for the same reason as <see cref="CanSaveWorkspace"/>.
+        /// </summary>
+        public bool CanSaveWorkspaceAs => CanShowSaveDialogAndSaveResult(null);
+
+        /// <summary>
+        /// Keeps the Save/Save As commands (menu items, shortcut bar, and Ctrl+S/Ctrl+Shift+S)
+        /// in sync with the guided tour state. Unlike ShowStartPage, this is not tied to
+        /// workspace-creation flows, so it can safely gate CanExecute without resurrecting
+        /// DYN-10717 (Save/Save As stuck disabled on a fresh workspace).
+        /// </summary>
+        private void OnGuidedTourStateChanged(GuidedTourStateEventArgs args)
+        {
+            NotifySaveCommandsChanged();
+        }
+
+        /// <summary>
+        /// Raises change notifications for the Save/Save As commands and their bound
+        /// CanSaveWorkspace(As) properties, keeping the menu items, hotkeys, and toolbar
+        /// button in sync.
+        /// </summary>
+        private void NotifySaveCommandsChanged()
+        {
+            ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
+            ShowSaveDialogAndSaveResultCommand?.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(CanSaveWorkspace));
+            RaisePropertyChanged(nameof(CanSaveWorkspaceAs));
         }
 
         public void ShowSaveDialogAndSaveResult(object parameter)
@@ -3371,7 +3472,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
         {
-            return true;
+            return !GuideFlowEvents.IsAnyGuideActive && !ShowStartPage;
         }
 
         public void ToggleFullscreenWatchShowing(object parameter)
@@ -3454,7 +3555,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanDoGraphAutoLayout(object parameter)
         {
-            return true;
+            return !IsCodeBlockEditorActive;
         }
 
         /// <summary>
@@ -3966,7 +4067,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPan(object parameter)
         {
-            return true;
+            return !IsCodeBlockEditorActive;
         }
 
         internal void ZoomIn(object parameter)
@@ -4008,7 +4109,7 @@ namespace Dynamo.ViewModels
 
         private bool CanZoomIn(object parameter)
         {
-            return CurrentSpaceViewModel.CanZoomIn;
+            return !IsCodeBlockEditorActive && CurrentSpaceViewModel.CanZoomIn;
         }
 
         private void ZoomOut(object parameter)
@@ -4027,7 +4128,7 @@ namespace Dynamo.ViewModels
 
         private bool CanZoomOut(object parameter)
         {
-            return CurrentSpaceViewModel.CanZoomOut;
+            return !IsCodeBlockEditorActive && CurrentSpaceViewModel.CanZoomOut;
         }
 
         private void FitView(object parameter)
@@ -4049,7 +4150,7 @@ namespace Dynamo.ViewModels
 
         private bool CanFitView(object parameter)
         {
-            return true;
+            return !IsCodeBlockEditorActive;
         }
 
         private static void LoadLibraryEvents_LoadLibraryFailure(string failureMessage, string messageBoxTitle)

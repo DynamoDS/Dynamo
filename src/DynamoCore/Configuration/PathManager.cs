@@ -958,6 +958,13 @@ namespace Dynamo.Core
             commonDataDir = GetCommonDataFolder();
 
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
+
+            // Seed the active templates directory with the default so it is never null.
+            // A preferred location supplied later through UpdatePreferenceItemPath may be
+            // rejected (unwritable %ProgramData%, unavailable network share, invalid path),
+            // and callers must still get a usable path rather than null. See DYN-10661.
+            templatesDirectory = defaultTemplatesDirectory;
+
             rootDirectories = new List<string> { userDataDir };
 
             nodeDirectories = new HashSet<string>

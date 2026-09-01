@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Dynamo.Wpf.Utilities
@@ -16,8 +19,9 @@ namespace Dynamo.Wpf.Utilities
         Available,
 
         /// <summary>
-        /// AdskIdentitySDK.dll is mapped into this process but does not export the MCP
-        /// validation entry point. Every MCP tool call will be rejected with HTTP 401.
+        /// Bearer-token validation cannot run in this process. Every MCP tool call will be
+        /// rejected with HTTP 401. See <see cref="McpTokenValidationUnavailableReason"/> for
+        /// which of the two causes applies.
         /// </summary>
         Unavailable,
 
@@ -26,6 +30,30 @@ namespace Dynamo.Wpf.Utilities
         /// determined. Callers must treat this as "don't know", never as a failure.
         /// </summary>
         Unknown
+    }
+
+    /// <summary>
+    /// Why MCP bearer-token validation is unavailable. The two causes are independent and
+    /// produce different guidance, so they are reported separately rather than collapsed
+    /// into a single message that would be wrong for one of them.
+    /// </summary>
+    internal enum McpTokenValidationUnavailableReason
+    {
+        /// <summary>Validation is available, or availability could not be determined.</summary>
+        None,
+
+        /// <summary>
+        /// AdskIdentitySDK.dll is mapped but does not export the MCP validation entry point.
+        /// The DYN-10773 cause: an IDSDK build predating the MCP validation API.
+        /// </summary>
+        IdsdkExportMissing,
+
+        /// <summary>
+        /// AdpSDKIdentityWrapper.dll cannot be found at all, so the ADP Desktop SDK is not
+        /// installed. DynamoMCP P/Invokes that wrapper directly; without it Tier 3 validation
+        /// never runs, whatever state IDSDK itself is in.
+        /// </summary>
+        AdpWrapperMissing
     }
 
     /// <summary>
@@ -48,11 +76,23 @@ namespace Dynamo.Wpf.Utilities
     /// A higher version number does not imply a superset of the API surface, so only the
     /// presence of the export is a sound signal (DYN-10773).
     /// </para>
+    /// <para>
+    /// The export check alone has a blind spot, which is what DYN-10778 adds the wrapper check
+    /// for: if the ADP Desktop SDK is not installed, <c>AdpSDKIdentityWrapper.dll</c> never
+    /// resolves and validation is dead — but IDSDK itself is perfectly healthy and exports the
+    /// entry point, so the export probe reports <see cref="McpTokenValidationAvailability.Available"/>.
+    /// </para>
     /// </summary>
     internal static class IdsdkMcpTokenValidation
     {
         /// <summary>Base name of the native Autodesk Identity library.</summary>
         internal const string IdsdkModuleName = "AdskIdentitySDK.dll";
+
+        /// <summary>
+        /// The ADP Desktop SDK wrapper DynamoMCP P/Invokes to reach IDSDK. Ships with the ADP
+        /// Desktop SDK, not with Dynamo.
+        /// </summary>
+        internal const string AdpWrapperModuleName = "AdpSDKIdentityWrapper.dll";
 
         /// <summary>
         /// The IDSDK export DynamoMCP's Tier 3 validation ultimately depends on. Introduced in
@@ -62,37 +102,69 @@ namespace Dynamo.Wpf.Utilities
 
         private static readonly object syncRoot = new object();
 
-        // Only a definitive result is cached. Unknown means AdskIdentitySDK.dll was not mapped
-        // yet, which can change later in the session, so it must stay re-probeable.
-        private static McpTokenValidationAvailability? cachedAvailability;
+        // Only a permanently-definitive result is cached. Unknown means AdskIdentitySDK.dll was
+        // not mapped yet, and AdpWrapperMissing means a file was not on disk yet — both can
+        // change later in the session, so they must stay re-probeable.
+        private static (McpTokenValidationAvailability Availability, McpTokenValidationUnavailableReason Reason)? cachedResult;
 
         private static McpTokenValidationAvailability? testOverride;
+        private static McpTokenValidationUnavailableReason testOverrideReason;
 
         /// <summary>
         /// Returns whether IDSDK in this process can service an MCP token validation call.
-        /// Cheap and safe to call repeatedly; a definitive answer is computed once and cached.
+        /// Cheap and safe to call repeatedly; a permanently-definitive answer is computed once
+        /// and cached.
         /// </summary>
-        internal static McpTokenValidationAvailability GetAvailability()
+        internal static McpTokenValidationAvailability GetAvailability() => Evaluate().Availability;
+
+        /// <summary>
+        /// Availability and, when unavailable, why — read together in a single evaluation.
+        /// <para>
+        /// Callers that need both must use this rather than pairing <see cref="GetAvailability"/>
+        /// with a separate reason lookup. Two calls are two evaluations, and the two outcomes that
+        /// are deliberately not cached — <see cref="McpTokenValidationUnavailableReason.AdpWrapperMissing"/>
+        /// and <see cref="McpTokenValidationAvailability.Unknown"/> — re-probe every time. Those are
+        /// precisely the states a caller needs the reason for, so a split read can pair an
+        /// <c>Unavailable</c> verdict with a reason from a later probe that no longer agrees: the
+        /// wrong cause gets logged, or worse, an extension is withheld on a verdict a concurrent
+        /// re-check would have called <c>Unknown</c> and failed open on.
+        /// </para>
+        /// <para>
+        /// <see cref="McpTokenValidationUnavailableReason.None"/> when validation is available or
+        /// availability could not be determined.
+        /// </para>
+        /// </summary>
+        internal static (McpTokenValidationAvailability Availability, McpTokenValidationUnavailableReason Reason) GetStatus()
+            => Evaluate();
+
+        private static (McpTokenValidationAvailability Availability, McpTokenValidationUnavailableReason Reason) Evaluate()
         {
             lock (syncRoot)
             {
                 if (testOverride.HasValue)
                 {
-                    return testOverride.Value;
+                    return (testOverride.Value,
+                        testOverride.Value == McpTokenValidationAvailability.Unavailable
+                            ? testOverrideReason
+                            : McpTokenValidationUnavailableReason.None);
                 }
 
-                if (cachedAvailability.HasValue)
+                if (cachedResult.HasValue)
                 {
-                    return cachedAvailability.Value;
+                    return cachedResult.Value;
                 }
 
-                var availability = Probe();
-                if (availability != McpTokenValidationAvailability.Unknown)
+                var result = Probe();
+
+                // A missing DLL can be installed, and an unmapped IDSDK can be mapped, without
+                // restarting Dynamo. Only "mapped but no export" is settled for the session.
+                if (result.Reason == McpTokenValidationUnavailableReason.IdsdkExportMissing ||
+                    result.Availability == McpTokenValidationAvailability.Available)
                 {
-                    cachedAvailability = availability;
+                    cachedResult = result;
                 }
 
-                return availability;
+                return result;
             }
         }
 
@@ -102,35 +174,122 @@ namespace Dynamo.Wpf.Utilities
         /// so a test cannot be contaminated by an earlier one.
         /// </summary>
         /// <param name="availability">Value to report, or <c>null</c> to resume real probing.</param>
-        internal static void SetAvailabilityForTesting(McpTokenValidationAvailability? availability)
+        /// <param name="reason">Reason to report alongside
+        /// <see cref="McpTokenValidationAvailability.Unavailable"/>; ignored otherwise.</param>
+        internal static void SetAvailabilityForTesting(
+            McpTokenValidationAvailability? availability,
+            McpTokenValidationUnavailableReason reason = McpTokenValidationUnavailableReason.IdsdkExportMissing)
         {
             lock (syncRoot)
             {
                 testOverride = availability;
-                cachedAvailability = null;
+                testOverrideReason = reason;
+                cachedResult = null;
             }
         }
 
-        private static McpTokenValidationAvailability Probe()
+        private static (McpTokenValidationAvailability Availability, McpTokenValidationUnavailableReason Reason) Probe()
         {
             try
             {
+                // Checked first, and independently of IDSDK's own state: DynamoMCP P/Invokes the
+                // wrapper, so if the wrapper cannot be found nothing downstream matters. This is
+                // the failure mode the export check alone cannot see — IDSDK is healthy and
+                // exports the entry point, but there is no wrapper to reach it through.
+                if (!IsAdpWrapperResolvable())
+                {
+                    return (McpTokenValidationAvailability.Unavailable,
+                        McpTokenValidationUnavailableReason.AdpWrapperMissing);
+                }
+
                 var module = GetModuleHandle(IdsdkModuleName);
                 if (module == IntPtr.Zero)
                 {
                     // Nothing has mapped IDSDK yet (no auth provider, or a host that never
                     // initializes it). We cannot tell, so we must not block anything.
-                    return McpTokenValidationAvailability.Unknown;
+                    return (McpTokenValidationAvailability.Unknown,
+                        McpTokenValidationUnavailableReason.None);
                 }
 
                 return GetProcAddress(module, McpValidateTokenExport) != IntPtr.Zero
-                    ? McpTokenValidationAvailability.Available
-                    : McpTokenValidationAvailability.Unavailable;
+                    ? (McpTokenValidationAvailability.Available, McpTokenValidationUnavailableReason.None)
+                    : (McpTokenValidationAvailability.Unavailable, McpTokenValidationUnavailableReason.IdsdkExportMissing);
             }
             catch (Exception)
             {
                 // A probe that cannot run is not evidence that validation is broken.
-                return McpTokenValidationAvailability.Unknown;
+                return (McpTokenValidationAvailability.Unknown, McpTokenValidationUnavailableReason.None);
+            }
+        }
+
+        /// <summary>
+        /// Whether <c>AdpSDKIdentityWrapper.dll</c> could be loaded if something asked for it.
+        /// <para>
+        /// Deliberately looks the DLL up rather than loading it. Loading would map a new module
+        /// into the process purely to run a diagnostic, and load order is exactly what went
+        /// wrong in DYN-10773 — a probe must not be the thing that changes the answer.
+        /// </para>
+        /// <para>
+        /// Covers the same locations DynamoMCP's own <c>ResolveWrapperLibrary</c> can reach: the
+        /// default OS search path and the canonical ADP Desktop SDK install directory. The order
+        /// they are visited in carries no meaning here — this only asks whether the file exists
+        /// anywhere reachable, not which copy would win. Only a miss on every one of them is
+        /// treated as definitive, because this verdict withholds a feature.
+        /// </para>
+        /// </summary>
+        private static bool IsAdpWrapperResolvable()
+        {
+            // Already mapped — e.g. Autodesk Assistant is up and the ADP SDK pulled it in.
+            if (GetModuleHandle(AdpWrapperModuleName) != IntPtr.Zero)
+            {
+                return true;
+            }
+
+            // No guard around the probe itself: Path.Join does not throw (unlike Path.Combine,
+            // which rejects a null segment) and File.Exists is documented to return false rather
+            // than throw for a malformed, too-long or unreadable path. A bad PATH entry therefore
+            // just fails to match instead of derailing the sweep.
+            //
+            // Where/Any both stream, so this still stops at the first hit rather than materialising
+            // the whole search path.
+            return WrapperSearchDirectories()
+                .Where(directory => !string.IsNullOrWhiteSpace(directory))
+                .Any(directory => File.Exists(Path.Join(directory, AdpWrapperModuleName)));
+        }
+
+        /// <summary>
+        /// Directories a base-name DLL load would search, in roughly the order Windows uses,
+        /// plus the ADP Desktop SDK's canonical install location.
+        /// <para>
+        /// The individual environment lookups are deliberately left unguarded. This iterator runs
+        /// inside <see cref="Probe"/>'s <c>try</c>, so anything that throws here surfaces as
+        /// <see cref="McpTokenValidationAvailability.Unknown"/> and fails open. Catching locally
+        /// would be worse than useless: the sweep would carry on with a silently truncated search
+        /// path and could then report the wrapper "absent", withholding a feature on the strength
+        /// of a search that never actually ran.
+        /// </para>
+        /// </summary>
+        private static IEnumerable<string> WrapperSearchDirectories()
+        {
+            yield return AppContext.BaseDirectory;
+            yield return AppDomain.CurrentDomain.BaseDirectory;
+            yield return Environment.SystemDirectory;
+
+            // C:\Program Files\Common Files\Autodesk\AdpDesktopSDK\bin — not on the default DLL
+            // search order, which is why DynamoMCP installs a resolver to reach it explicitly.
+            var commonFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
+            if (!string.IsNullOrEmpty(commonFiles))
+            {
+                yield return Path.Join(commonFiles, "Autodesk", "AdpDesktopSDK", "bin");
+            }
+
+            var path = Environment.GetEnvironmentVariable("PATH");
+            if (!string.IsNullOrEmpty(path))
+            {
+                foreach (var entry in path.Split(Path.PathSeparator))
+                {
+                    yield return entry.Trim();
+                }
             }
         }
 

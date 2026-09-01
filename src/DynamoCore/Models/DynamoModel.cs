@@ -1921,16 +1921,25 @@ namespace Dynamo.Models
             }
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
-            UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
-
-            if (!string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+            if (!UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath))
             {
-                PreferenceSettings.AddTrustedLocation(PreferenceSettings.TemplateFilePath);
+                // The preferred templates location could not be used, so the default stays
+                // in effect. This previously failed silently and only surfaced downstream as
+                // a null templates directory. See DYN-10661.
+                Logger?.Log("Could not use templates location '" + PreferenceSettings.TemplateFilePath +
+                    "'. Falling back to '" + pathManager.TemplatesDirectory + "'.", LogLevel.File);
             }
-
-            if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+                if (!string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+                {
+                    PreferenceSettings.AddTrustedLocation(PreferenceSettings.TemplateFilePath);
+                }
+
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+                }
             }
         }
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
@@ -2658,7 +2667,7 @@ namespace Dynamo.Models
 
                 if (string.IsNullOrEmpty(workspace.FileName))
                 {
-                    workspace.HasUnsavedChanges = true;
+                    workspace.MarkAsIndependentlyModified();
                 }
 
                 RunType runType = RunType.Manual;
@@ -2749,7 +2758,7 @@ namespace Dynamo.Models
 
             if (resolvedDummyNode)
             {
-                currentWorkspace.HasUnsavedChanges = false;
+                currentWorkspace.MarkAsSaved();
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
                 // the Dependency table is regenerated in the WorkspaceDependencyView extension.
                 currentWorkspace.OnDummyNodesReloaded();
@@ -3623,7 +3632,7 @@ namespace Dynamo.Models
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
-            CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.MarkAsSaved();
             CurrentWorkspace.Name = "";
 
             // Clear workspace metadata properties when creating new workspace

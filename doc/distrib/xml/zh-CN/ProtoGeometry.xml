@@ -244,19 +244,19 @@
             <summary>最大点</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem">
-            <summary>The CoordinateSystem of the BoundingBox.
-            For an axis-aligned box, the CS is oriented along with the X, Y, Z axes and is located at the center of the box.
-            For a non-aligned box, the CS can have an arbitrary orientation and is centered at the center of the box.</summary>
+            <summary>边界框的坐标系。
+            对于轴对齐框，坐标系沿 X、Y、Z 轴定向，并位于框的中心。
+            对于未对齐框，坐标系可以有任意方向，并以框的中心为中心。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersection(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Get the intersection of two BoundingBoxes.
-            Note: This does not work for non-axis-aligned boxes as those intersections might not result in a box. Intersect their corresponding cuboids instead.</summary>
+            <summary>获取两个边界框的交点。
+            注意: 这不适用于非轴对齐框，因为这些交点可能不会生成框。请改为与其对应的长方体相交。</summary>
             <param name="other">要相交的其他边界框</param>
             <returns>基于边界框的相交获得的边界框</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersects(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>Determine whether two BoundingBoxes intersect.
-            Note: This works only if both bounding boxes have the same alignment (transform). In such cases, test the intersection between their corresponding cuboids.</summary>
+            <summary>确定两个边界框是否相交。
+            注意: 仅当两个边界框有相同的对齐(变换)时，此选项才起作用。在这种情况下，请测试其对应长方体之间的交点。</summary>
             <param name="other">其他边界框</param>
             <returns>边界框是否相交</returns>
             <search>get overlap</search>
@@ -294,13 +294,13 @@
             <returns>围绕输入几何图形的定向边界框。</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometry, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>通过 CoordinateSystem X、Y 和 Z 轴定向，
+            围绕输入几何图形创建不与轴对齐的 BoundingBox。</summary>
             <search>bounding,bound</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Create a non-axis-aligned BoundingBox around input Geometries, oriented
-            in the X, Y, and Z axis of the CoordinateSystem.</summary>
+            <summary>通过 CoordinateSystem X、Y 和 Z 轴定向，
+            围绕多个输入几何图形创建不与轴对齐的 BoundingBox。</summary>
             <search>bounding,bound,multiple,boundall</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
@@ -308,11 +308,11 @@
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box),
-            to maximum coordinates (upper-right-front corner of the box). CoordinateSystem
-            is the transform FROM the coordinate space of the box TO the model space.
-            This method is designed to match Revit's API, allowing you to extract out the parameters
-            from a Revit BoundingBox without any conversions.</summary>
+            <summary>从最小坐标(框后部左下角)到
+            最大坐标(框前部右上角)构造 BoundingBox。
+            坐标系是从框坐标空间到模型空间的变换坐标系。
+            该方法旨在与 Revit 的 API 匹配，
+            从而能够从 Revit BoundingBox 提取参数而不用进行任何转换。</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
@@ -322,8 +322,8 @@
             <summary>返回圆的半径。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Creates a Circle with input center Point and radius in the world XY
-            plane, with world Z as normal.</summary>
+            <summary>以世界坐标系 Z 轴为法线通过在世界坐标系 XY
+            平面输入圆心和半径创建圆。</summary>
             <param name="centerPoint">圆的圆心</param>
             <param name="radius">半径</param>
             <returns>使用圆心和半径创建的圆</returns>
@@ -338,8 +338,8 @@
             <search>circle,alignedcircle</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Create a Circle centered at the input Plane origin (root), lying in
-            the input Plane, with given radius.</summary>
+            <summary>在输入平面内以输入平面原点为圆心
+            按给定半径创建圆。</summary>
             <param name="plane">用于使圆居中的平面原点</param>
             <param name="radius">半径</param>
             <returns>使用平面和半径创建的圆</returns>
@@ -432,31 +432,31 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Cone with given base radius at start Point, extending to a
-            apex at end Point.</summary>
+            <summary>在起点以指定底面半径创建圆锥体，
+            延伸到位于终点的顶点。</summary>
             <search>cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Cone with axis from start Point to end Point, with given
-            radiuses at start and end. This object does not have an apex, and
-            can be thought of as a trimmed Cone.</summary>
+            <summary>给定起点和终点半径，
+            从起点到终点通过轴创建圆锥。
+            该对象没有顶点，可看作是修剪后的圆锥体。</summary>
             <search>trimmed cone,cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>以基准点为 CoordinateSystem 原点创建圆锥体，
+            在坐标系 Z 轴方向延伸长度量，
+            圆形底部在坐标系 XY 平面内。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>以基准点为 CoordinateSystem 原点创建圆锥体，
+            在坐标系 Z 轴方向延伸长度量，
+            圆形底部在坐标系 XY 平面内。</summary>
             <search>cone,cone by height,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
-            <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
-            <param name="matrix">4x4 transformation matrix</param>
-            <returns>CoordinateSystem from the matrix</returns>
+            <summary>从 4x4 矩阵创建 CoordinateSystem。此方法已弃用；尽可能首选其他构造函数。</summary>
+            <param name="matrix">4x4 变换矩阵</param>
+            <returns>矩阵中的 CoordinateSystem</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.FromJson(System.String)">
             <summary>解析使用 autodesk.math:matrix44d-1.0.0 模式格式化的传入 JSON 字符串。</summary>
@@ -492,13 +492,13 @@
             <summary>返回 CoordinateSystem 的 Z 轴。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
-            <summary>Returns the length of the X axis vector from the coordinate system.</summary>
+            <summary>从坐标系返回 X 轴向量的长度。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor">
-            <summary>Returns the length of the Y axis vector from the coordinate system.</summary>
+            <summary>从坐标系返回 Y 轴向量的长度。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
-            <summary>Returns the length of the Z axis vector from the coordinate system.</summary>
+            <summary>从坐标系返回 Z 轴向量的长度。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane">
             <summary>返回 X 和 Y 轴所在的平面，根位于原点处。</summary>
@@ -511,17 +511,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
             <summary>获取该 CoordinateSystem 的逆变换 - 将该 CoordinateSystem 应用于一个几何图形以逆变换回原坐标系。</summary>
-            <returns>Returns inverted coordinate system from the input</returns>
+            <returns>从输入返回反转的坐标系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem after this one - Result = this * other.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>在该坐标系之后应用 CoordinateSystem - 结果 = 该坐标系 * 其他坐标系。</summary>
+            <param name="other">其他坐标系</param>
+            <returns>相乘新坐标系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Apply the argument CoordinateSystem before this one - Result = other * this.</summary>
-            <param name="other">Other coordinate system</param>
-            <returns>New coordinate system from multiplication</returns>
+            <summary>在该坐标系之前应用 CoordinateSystem - 结果 = 其他坐标系 * 该坐标系。</summary>
+            <param name="other">其他坐标系</param>
+            <returns>相乘新坐标系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor">
             <summary>返回一个包含 X、Y 和 Z 缩放系数的向量</summary>
@@ -543,8 +543,8 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>将任意几何图形类型按给定距离朝给定方向
+            平移。</summary>
             <param name="direction">位移方向。</param>
             <param name="distance">沿给定方向的位移距离。</param>
             <returns>已变换的几何图形。</returns>
@@ -556,31 +556,31 @@
             <returns>转换的坐标系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>返回此几何图形，其位置以相对于 targetCoordinateSystem 的形式表示，
+            并放置在 sourceCoordinateSystem 的框架中。
+             sourceCoordinateSystem 中结果的局部位置与 targetCoordinateSystem 中
+            输入的局部位置相匹配。
+            要在给定的坐标系中获得几何图形在世界空间中的坐标，
+            请将 CoordinateSystem.Identity 作为 sourceCoordinateSystem 传入，
+            并将给定的坐标系作为 targetCoordinateSystem 传入。
+            由此得到的几何图形坐标将等于输入
+            相对于该目标框架的坐标。</summary>
+            <param name="targetCoordinateSystem">表示相对于几何图形的 CoordinateSystem。</param>
+            <param name="sourceCoordinateSystem">当前表示几何图形的 CoordinateSystem。
+            传递 CoordinateSystem.Identity() 以在世界空间中工作。</param>
             <returns>已变换的几何图形。</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>绕原点和轴将对象旋转
+            指定度数</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>绕平面原点和法线将对象旋转指定
+            度数</summary>
+            <param name="basePlane">要绕其旋转的参照平面</param>
+            <param name="degrees">旋转角度(以度为单位)</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
@@ -596,15 +596,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>使用两个拾取点作为缩放因子，绕给定点均匀缩放</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>由基准点和两个拾取点确定的一维非均匀缩放。缩放轴由基点与起始点之间的线定义。</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>由基准点和两个拾取点确定的二维缩放，两个拾取点投影到基准平面以确定二维缩放系数</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -612,8 +612,8 @@
             <search>reflect,flip over</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
-            <summary>Creates a CoordinateSystem as the World Coordinate System: origin at
-            0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1</summary>
+            <summary>将 CoordinateSystem 创建为世界坐标系: 原点位于
+            0, 0, 0；X 轴位于 1, 0, 0；Y 轴位于0, 1, 0；Z 轴位于 0, 0, 1</summary>
             <search>zero,wcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double)">
@@ -630,50 +630,50 @@
             设置为 WCS 的 X 和 Y 轴。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>Create a CoordinateSystem with origin equal to input Plane origin, and
-            X and Y axes lying in the Plane, aligned with Plane X and Y axes.</summary>
+            <summary>创建 CoordinateSystem，使其原点为输入平面的原点，
+            X 和 Y 轴位于该平面中，与 X 和 Y 轴平面对齐。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis.
-            Input Vectors are normalized before creating the CoordinateSystem.</summary>
+            <summary>通过 X 和 Y 轴在原点处创建 CoordinateSystem。
+            在创建此 CoordinateSystem 之前先将输入向量规范化。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create a CoordinateSystem at the origin with X and Y axis, with Z
-            axis ignored completely. Input Vectors are normalized before creating
-            the CoordinateSystem.</summary>
+            <summary>通过 X 和 Y 轴在原点处创建 CoordinateSystem，Z
+            轴完全忽略。在创建此 CoordinateSystem 之前先将输入向量
+           规范化。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified cylindrical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>在指定柱面坐标参数处相对于指定坐标系创建 CoordinateSystem。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
+            <summary>在指定球面坐标参数处相对于指定坐标系创建 CoordinateSystem。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
-            <summary>Returns length distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>返回长度距离。
+            注意: 这样将返回立方体的输入维数，
+            而不是实际世界空间维数。
+            换言之，如果创建宽度(X 轴)为 10 的长方体，
+            并将其变换到 X 轴缩放 2 倍的坐标系，宽度将仍为 10。
+            ASM 不允许以任何可预测阶数提取实体的顶点，
+            因此无法确定变换之后的维数。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Width">
-            <summary>Returns width distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>返回宽度距离。
+           注意: 这样将返回立方体的输入维数，
+            而不是实际世界空间维数。
+            换言之，如果创建宽度(X 轴)为 10 的长方体，
+            并将其变换到 X 轴缩放 2 倍的坐标系，宽度将仍为 10。
+            ASM 不允许以任何可预测阶数提取实体的顶点，
+            因此无法确定变换之后的维数。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
-            <summary>Returns height distance.
-            Note: This return the input dimensions of the Cuboid, NOT the
-            actual world space dimensions. In other words, if you create a Cuboid
-            width (X-axis) length 10, and transform it to a CoordinateSystem with
-            2 times scaling in X, the width will still be 10. ASM does not allow you
-            to extract the Vertices of a body in any predictable order, so it
-            impossible to determine the dimensions after a transform.</summary>
+            <summary>返回高度距离。
+            注意: 这样将返回立方体的输入维数，
+            而不是实际世界空间维数。
+            换言之，如果创建宽度 (X 轴)为 10 的长方体，
+            并将其变换到 X 轴缩放 2 倍的坐标系，宽度将仍为 10。
+            ASM 不允许以任何可预测阶数提取实体的顶点，
+            因此无法确定变换之后的维数。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(System.Double,System.Double,System.Double)">
             <summary>以 WCS 原点为中心使用宽度、长度和高度创建立方体。</summary>
@@ -684,8 +684,8 @@
             <search>box,cube,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double)">
-            <summary>Create a Cuboid centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>以输入点为中心使用特定宽度、长度和
+            高度创建立方体。</summary>
             <param name="origin">原点</param>
             <param name="width">长方体的宽度</param>
             <param name="length">长方体的长度</param>
@@ -751,16 +751,16 @@
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>Get a Vector perpendicular to the curve at a specified parameter between StartParameter() and EndParameter()
-            The curve must be planar. The resulting normal will be consistent across the entire curvature of the curve.</summary>
+            <summary>按 StartParameter() 和 EndParameter() 之间的指定参数获取垂直于曲线的向量。
+            曲线必须是平面的。生成的法线将在曲线的整个曲率上保持一致。</summary>
             <param name="param">要计算的位置的参数</param>
             <param name="side">如果“side”设置为 false，则法线将指向曲线的右侧(从曲线的起点移动到曲线的终点)。如果“side”设置为 true，则法线将指向曲线的左侧。</param>
             <returns>在参数处垂直于曲线的向量</returns>
             <search>normaloncurve,curvenorm</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal,
-            the YAxis is aligned with the curve tangent at this point, and the ZAxis is aligned with the up-vector or binormal at this point</summary>
+            <summary>获取以给定参数处的点为原点的 CoordinateSystem。XAxis 与曲线法线对齐，
+            YAxis 与该点处的曲线切线对齐，而 ZAxis 与该点处的向上向量或次发现对齐</summary>
             <param name="param">要计算的位置的参数</param>
             <returns>曲线参数处的坐标系</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
@@ -772,9 +772,9 @@
             <search>frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>Returns a Plane whose normal aligns with the tangent of the Curve.
-            Parameters are adjusted such that 0 is always the start Point
-            and 1 is always the end Point.</summary>
+            <summary>返回一个平面，其法线与曲线切线对齐。
+            调整参数以使 0 始终为起点
+            以及 1 始终为终点。</summary>
             <search>planeoncurve,planecurve,tangentplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
@@ -784,14 +784,14 @@
             <search>pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>Returns points spaced equally along the curve length
-            based on the input number of divisions</summary>
+            <summary>返回基于输入的分段数沿曲线长度
+            均匀分布的点</summary>
             <param name="divisions">分割数</param>
             <returns>沿曲线长度均匀分布的点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>Returns points spaced along curve at equal chord length
-            based on the input number of divisions</summary>
+            <summary>返回基于输入的分段数沿曲线
+           以相等弧长分布的点</summary>
             <param name="divisions">分割数</param>
             <returns>曲线上点的列表</returns>
         </member>
@@ -804,8 +804,8 @@
             <search>measure from,measure to,parameteratdist</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Returns points spaced equally along the curve at given segment length
-            from the given point</summary>
+            <summary>返回从给定点开始以给定线段长度
+            沿曲线等距分布的点</summary>
             <param name="point">参照点(测量起点)</param>
             <param name="segmentLength">沿曲线要计算的距离</param>
             <returns>曲线上的点列表，包括给定点和沿曲线方向的点。</returns>
@@ -817,16 +817,16 @@
             <returns>曲线上的点列表，包括给定点和沿曲线方向的点。</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>Returns a CoordinateSystem at specified distance from Curve start Point.
-            Y Axis lies tangent to the Curve, X Axis is the curvature.</summary>
+            <summary>返回与曲线起点相距指定距离的 CoordinateSystem。
+            Y 轴与曲线相切，X 轴为曲率。</summary>
             <param name="segmentLength">沿曲线要计算的距离</param>
             <returns>曲线上的 CoordinateSystem</returns>
             <search>coordoncurve,curvecoord,derivatives</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>Returns a Plane at the specified distance along the Curve from the
-            start Point. The normal of the Plane aligns with the tangent of the
-            Curve.</summary>
+            <summary>返回沿曲线距起点
+            指定距离的平面。
+            平面法线与曲线切线对齐。</summary>
             <param name="segmentLength">沿曲线要计算的距离</param>
             <returns>曲线上的面</returns>
             <search>planeoncurve,planecurve,tangentplane</search>
@@ -869,8 +869,8 @@
             <search>measure,distance,arclength</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Get the parameter at a given point along the curve. If the point is not on the curve then ParameterAtPoint will still return a value
-            which will correspond to a nearby point on the curve, but the point is not in general the closest point.</summary>
+            <summary>获取曲线上给定点处的参数。如果该点不在曲线上，则 ParameterAtPoint 仍会返回一个值，
+            该值将与曲线上的邻近点相对应，但该点通常不是最近点。</summary>
             <param name="point">曲线上或曲线附近的点</param>
             <returns>曲线上给定点的参数。</returns>
             <search>projectpoint,closestparam,curveparam</search>
@@ -968,10 +968,10 @@
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more curves by offsetting a planar curve by the given distance in a plane defined by the plane normal. If there are gaps between the offset component curves then, they are filled by extending the offset curves.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>通过在由平面法线定义的平面中将平面曲线偏移给定距离来创建一条或多条曲线。如果偏移分量曲线之间存在间隙，则通过延伸偏移曲线来填充它们。
+            “planeNormal”输入参数默认为包含曲线的平面的法线，但可以提供平行于原始曲线法线的显式法线以更好地控制偏移的方向。
+           例如，如果共享同一平面的多条曲线需要一致的偏移方向，则“planeNormal”可用于替代各个曲线法线并强制所有曲线在同一方向上偏移。
+            反转法线会反转偏移的方向。</summary>
             <param name="signedDistance">正偏移距离适用于曲线切线和平面法向量之间的叉积方向，而负偏移则适用于相反方向。</param>
             <param name="planeNormal">曲线的平面法线。默认为输入曲线的平面法线</param>
             <returns>一条或多条偏移曲线</returns>
@@ -1154,19 +1154,19 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CurveGeometry">
             <summary>构成边的基本曲线</summary>
-            <returns>Curve representation of edge</returns>
+            <returns>边的曲线表示</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.AdjacentFaces">
             <summary>与该边相邻的面</summary>
-            <returns>Adjacent faces of edge</returns>
+            <returns>边的相邻面</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.StartVertex">
             <summary>该边起点处的顶点</summary>
-            <returns>Start vertex of edge</returns>
+            <returns>边的起始顶点</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.EndVertex">
             <summary>该边终点处的顶点</summary>
-            <returns>End vertex of edge</returns>
+            <returns>边的结束顶点</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>与此边关联的 CoEdge</summary>
@@ -1182,8 +1182,8 @@
             <summary>椭圆的短轴。这是较短的轴。向量的长度是短半径。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create an Ellipse centered at input Point, aligned with WCS XY Plane,
-            with specified X and Y axis radii.</summary>
+            <summary>对齐 WCS XY 平面以输入点为中心
+            按指定 X 和 Y 轴半径创建椭圆。</summary>
             <param name="origin">椭圆的原点</param>
             <param name="xAxisRadius">X 轴半径</param>
             <param name="yAxisRadius">Y 轴半径</param>
@@ -1191,8 +1191,8 @@
             <search>ellipse</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an Ellipse centered at input Point, with two specified axes.
-            Axes should be be at 90 degrees to each other.</summary>
+            <summary>以输入点为中心通过两个指定轴创建椭圆。
+            两轴应相互垂直。</summary>
             <param name="origin">椭圆的原点</param>
             <param name="xAxisRadius">X 轴半径</param>
             <param name="yAxisRadius">Y 轴半径</param>
@@ -1200,9 +1200,9 @@
             <search>ellipsebylengths,ellipsebyvectors</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input CoordinateSystem,
-            with a x_radius radius in the CS X direction, and y_radius radius in the
-            CS Y direction.</summary>
+            <summary>对中并对齐输入 CoordinateSystem 按 CS X 轴方向的
+           x_radius 半径和 CS Y 轴方向的 y_radius 半径
+            创建椭圆。</summary>
             <param name="origin">椭圆的原点坐标系</param>
             <param name="xAxisRadius">X 轴半径</param>
             <param name="yAxisRadius">Y 轴半径</param>
@@ -1210,9 +1210,9 @@
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create an Ellipse centered and aligned with input Plane, with a x_radius
-            radius in the Plane X axis direction, and y_radius radius in the
-            Plane Y axis direction.</summary>
+            <summary>对中并对齐输入坐标系按平面 X 轴方向的 x_radius 半径
+           和平面 Y 轴方向的 y_radius 半径
+            创建椭圆。</summary>
             <param name="plane">绘制椭圆弧的平面</param>
             <param name="xAxisRadius">X 轴半径</param>
             <param name="yAxisRadius">Y 轴半径</param>
@@ -1337,8 +1337,8 @@
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Translates any geometry type by the given distance in the given
-            direction.</summary>
+            <summary>将任意几何图形类型按给定距离朝给定方向
+            平移。</summary>
             <param name="direction">位移方向。</param>
             <param name="distance">沿给定方向的位移距离。</param>
             <returns>已变换的几何图形。</returns>
@@ -1350,31 +1350,31 @@
             <returns>转换的坐标系</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>Returns this geometry with its position expressed relative to the
-            targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem.
-            The local position of the result within the sourceCoordinateSystem
-            matches the local position of the input within the targetCoordinateSystem.
-            To obtain the coordinates of a geometry in world-space within a given coordinate
-            system, pass CoordinateSystem.Identity as the sourceCoordinateSystem
-            and the given CS as the targetCoordinateSystem.
-            The resulting geometry coordinates will equal the coordinates of the input
-            relative to that target frame.</summary>
-            <param name="targetCoordinateSystem">The CoordinateSystem to express the geometry relative to.</param>
-            <param name="sourceCoordinateSystem">The CoordinateSystem the geometry is currently expressed in.
-            Pass CoordinateSystem.Identity() to work in world space.</param>
+            <summary>返回此几何图形，其位置以相对于 targetCoordinateSystem 的形式表示，
+            并放置在 sourceCoordinateSystem 的框架中。
+             sourceCoordinateSystem 中结果的局部位置与 targetCoordinateSystem 中
+            输入的局部位置相匹配。
+            要在给定的坐标系中获得几何图形在世界空间中的坐标，
+            请将 CoordinateSystem.Identity 作为 sourceCoordinateSystem 传入，
+            并将给定的坐标系作为 targetCoordinateSystem 传入。
+            由此得到的几何图形坐标将等于输入
+            相对于该目标框架的坐标。</summary>
+            <param name="targetCoordinateSystem">表示相对于几何图形的 CoordinateSystem。</param>
+            <param name="sourceCoordinateSystem">当前表示几何图形的 CoordinateSystem。
+            传递 CoordinateSystem.Identity() 以在世界空间中工作。</param>
             <returns>已变换的几何图形。</returns>
             <search>from,to, local coordinates</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates an object around an origin and an axis by a specified
-            degree</summary>
+            <summary>绕原点和轴将对象旋转
+            指定度数</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates an object around the Plane origin and normal by a specified
-            degree</summary>
-            <param name="basePlane">Reference Plane to rotate around</param>
-            <param name="degrees">Rotation angle in degrees</param>
+            <summary>绕平面原点和法线将对象旋转指定
+            度数</summary>
+            <param name="basePlane">要绕其旋转的参照平面</param>
+            <param name="degrees">旋转角度(以度为单位)</param>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
@@ -1394,15 +1394,15 @@
             <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale uniformly around a given point,  using two pick points as scalars</summary>
+            <summary>使用两个拾取点作为缩放因子，绕给定点均匀缩放</summary>
             <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale non-uniformly in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and from point.</summary>
+            <summary>由基准点和两个拾取点确定的一维非均匀缩放。缩放轴由基点与起始点之间的线定义。</summary>
             <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
+            <summary>由基准点和两个拾取点确定的二维缩放，两个拾取点投影到基准平面以确定二维缩放系数</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
@@ -1507,7 +1507,7 @@
             <notranslation>true</notranslation>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
-            <summary>The CoordinateSystem that this Geometry is defined in</summary>
+            <summary>在其中定义此几何图形的 CoordinateSystem</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>确定另一几何对象是否与该几何对象相交</summary>
@@ -1519,14 +1519,14 @@
             <summary>获取该对象几何图形与其他几何图形集的交点。查找所有参与者的共同几何图形。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToSolidDef">
-            <summary>Convert to SolidDef json</summary>
+            <summary>转化为实体定义 JSON</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
             <summary>沿指定方向将点集合投影到此几何图形上。
             返回生成的几何图形的平面阵列。</summary>
-            <param name="points">Points to project.</param>
-            <param name="projectionDirection">Projection direction.</param>
-            <returns>Flat array of resulting Geometry.</returns>
+            <param name="points">指向项目。</param>
+            <param name="projectionDirection">投影方向。</param>
+            <returns>生成的几何图形的平面数组。</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>螺旋线展开长度所经过的以度为单位的角度</summary>
@@ -1545,11 +1545,11 @@
             <search>origin,helixstart</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>Create a Helix. The helix always rotates clockwise about the supplied
-            axis direction. If viewing along the axis direction, the viewer will see
-            the point turning clockwise around the axis as it moves along the curve
-            in the direction of increasing parameter. Pitch is Distance the helix
-            moves in the axis direction per turn. This can be positive or negative.</summary>
+            <summary>创建螺旋线。螺旋线始终相对所提供的轴方向
+            顺时针旋转。如果沿轴方向查看，
+            会看到在点沿曲线朝参数不断增加的方向
+            移动时会绕轴顺时针旋转。
+            螺距为螺旋线每转一圈的轴向移动距离，可以是正值或负值。</summary>
             <param name="axisPoint">轴点</param>
             <param name="axisDirection">轴方向向量</param>
             <param name="startPoint">螺旋起点</param>
@@ -1608,16 +1608,16 @@
             <search>line,approximate,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByTangency(Autodesk.DesignScript.Geometry.Curve,System.Double)">
-            <summary>Create a Line tangent to the input Curve, positioned at the parameter
-            Point of the input Curve.</summary>
+            <summary>创建与输入曲线相切的直线，
+            定位于输入曲线的参数点处。</summary>
             <param name="curve">切线的基准曲线</param>
             <param name="parameter">参数值</param>
             <returns>切线</returns>
             <search>tangentline,tangentto,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Create a straight Line starting at start Point, extending in Vector
-            direction by specified length.</summary>
+            <summary>从起点开始创建直线，
+            朝向量方向延伸指定长度。</summary>
             <param name="startPoint">线起点</param>
             <param name="direction">方向向量</param>
             <param name="length">线的长度</param>
@@ -1653,7 +1653,7 @@
             <returns>网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToJson">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
+            <summary>将网格转换为使用 dynamo.geometry:mesh-1.0.0 模式格式化的 JSON 对象。</summary>
             <returns>生成的 JSON 字符串</returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.FaceIndices">
@@ -1723,23 +1723,24 @@
             <returns name="mesh">网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.BooleanIntersection(Autodesk.DesignScript.Geometry.Mesh)">
-            <summary>Returns a new mesh consisting of the intersection between the tool
-            mesh and the original mesh.</summary>
+            <summary>返回包含工具网格和原始网格之间交点的
+            新网格。</summary>
             <param name="tool"/>
             <returns name="mesh">网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Repair">
-            <summary>Returns a new Mesh with the following defects repaired:
-            Small components: if the Mesh contains very small, disconnected
-            segments, relative to the overall Mesh size, they will be
-            discarded.
-            Holes: holes in the mesh are filled in
-            Non-manifold regions: if a vertex is connected to more than
-            two *boundary* edges, or an edge is connected to more than
-            two triangles then the vertex / edge is non-manifold. The
-            mesh toolkit will remove geometry until the mesh is manifold
-            This method tries to preserve as much of the original mesh as
-            possible, as opposed to MakeWatertight, which resamples the Mesh</summary>
+            <summary>返回修复以下缺陷的新网格:
+            小型零部件: 如果网格包含相对于整体网格大小非常小的断开连接的
+            分段，它们将被
+            丢弃。
+            孔: 填充网格中的孔
+            非流形区域: 如果顶点连接到
+            两条以上的*边界*边，或一条边连接到
+            两个以上的三角形，则顶点/边是非流形的。
+            网格工具套件将移除几何图形，直到网格变成流形网格
+            
+此方法尝试保留尽可能多的原始网格
+            而不是 MakeWatertight，后者会对网格进行重采样</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.CloseCracks">
             <summary>删除网格的内部边界。当存在重合的顶点时，出现内部边界，
@@ -1747,11 +1748,11 @@
             三角形组。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeWatertight">
-            <summary>Returns a new Mesh that is watertight and 3D printable. As a result of
-            making a Mesh watertight, self-intersections, overlaps, and non-manifold
-            geometry is removed from the mesh.
-            The Mesh is filled with a bunch of tiny boxes, and a new
-            mesh is created around this.</summary>
+            <summary>返回无间隙且可三维打印的新网格。由于
+            使网格无间隙、自相交、重叠和非流形，将从网格中删除几何图形。
+            网格中充满了一堆小长方体，
+            并围绕它创建一个新的
+            网格。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeHollow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
             <summary>返回已为三维打印而挖空的新网格。</summary>
@@ -1777,13 +1778,13 @@
             <returns name="mesh">减少的网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Remesh">
-            <summary>Returns a new Mesh distributing triangles more evenly over the whole of the selection
-            regardless of any change in triangle normals across the given selection.</summary>
+            <summary>返回新网格，在整个选择中更均匀地分布三角形
+            而不管给定选择中的三角形法线是否有任何变化。</summary>
             <returns name="mesh">网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Smooth(System.Double)">
-            <summary>Returns a new smooth Mesh. Smoothing type by default is
-            cotangent which smooths without spreading the vertices.</summary>
+            <summary>返回新的平滑网格。默认情况下的平滑类型为
+            Cotangent，它平滑而不扩散顶点。</summary>
             <param name="scale">设置平滑的 "空间比例"。值越小，产生的局部平滑越多，
             通常会导致外观结果不太“平滑”(0.1 - 64.0)</param>
             <returns name="mesh">平滑网格</returns>
@@ -1792,8 +1793,8 @@
             <summary>创建精确的几何平面剪切，这将删除位于平面法线方向的平面一侧的
             部分网格。</summary>
             <param name="plane">设置用于剪切的平面</param>
-            <param name="makeSolid">Attempt to create a minimal fill using the fewest
-            number of triangles.</param>
+            <param name="makeSolid">尝试使用最少的三角形数量
+            创建最小填充。</param>
             <returns name="mesh">网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Intersect(Autodesk.DesignScript.Geometry.Plane)">
@@ -1809,13 +1810,13 @@
             <summary>跨输入平面反射网格</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotate the Mesh around the input axis by the given angle.</summary>
+            <summary>按给定度数绕输入轴旋转网格。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double)">
             <summary>按输入量缩放网格</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Scale(System.Double,System.Double,System.Double)">
-            <summary>Scale Mesh non-uniformly by scale factors</summary>
+            <summary>按比例因子非均匀地缩放网格</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(Autodesk.DesignScript.Geometry.Vector)">
             <summary>在输入向量方向上按向量的长度平移网格</summary>
@@ -1843,12 +1844,12 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>从提供的点和索引创建新网格。点应该
+            不重叠。索引应为三个整数的集合，
+            指示三角形三个点的
+            点阵列中的三个位置</summary>
             <param name="points">点列表</param>
-            <param name="indices">Flat list of point indices</param>
+            <param name="indices">点索引的平面列表</param>
             <returns>网格</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
@@ -1872,13 +1873,13 @@
             网格的分辨率由 Dynamo 渲染精度确定</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied vertices and indices. Vertices should
-            not overlap. Indices should be sets of three integers
-            indicating the three locations in the vertices array
-            of the three points of a triangle</summary>
+            <summary>从提供的顶点和索引创建新网格。顶点应
+            不重叠。索引应为三个整数的集合，
+            它指示三角形的三个点的顶点阵列中
+            的三个位置</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
-            <summary>Create a mesh plane based on the given inputs.</summary>
+            <summary>根据给定输入创建网格平面。</summary>
             <param name="origin"/>
             <param name="xWidth"/>
             <param name="yWidth"/>
@@ -1941,7 +1942,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
             <summary>周期性 NurbsCurve 真正的周期性控制点。
             注意: 此操作仅适用于周期性曲线，如果曲线不是周期性的，此操作将失败。</summary>
-            <returns>Periodic control points of a NURBS curve</returns>
+            <returns>NURBS 曲线的周期性控制点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>曲线的节点。节点是一系列参数值(双精度值)，用于确定控制点影响曲线的位置和方式。</summary>
@@ -1958,24 +1959,24 @@
             <search>ptweight</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>通过使用明确的控制点创建 BSplineCurve。
+            注意 1: 阶数为 1 的 BSplineCurve 具有 G1 不连续性，这会导致拉伸、扫掠和其他操作问题。
+            这应该尽可能避免。
+            使用 PolyCurve 替代。
+            注意 2: 如果曲线具有周期性(闭合)，
+            则第一个点和最后一个点必须相同。</summary>
             <param name="points">NURBS 曲线的点</param>
             <returns>基于点创建的 NURBS 曲线</returns>
             <search>nurbscurve,spline,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>通过使用明确的控制点创建 BSplineCurve。
+            注意 1: 阶数为 1 的 BSplineCurve 具有 G1 不连续性，这会导致拉伸、扫掠和其他操作问题。
+            这应该尽可能避免。
+            使用 PolyCurve 替代。
+            注意 2: 如果曲线具有周期性(闭合)，
+            则第一个点和最后一个点必须相同。</summary>
             <param name="points">NURBS 曲线的点</param>
             <param name="degree">曲线的阶数</param>
             <returns>基于点创建的 NURBS 曲线</returns>
@@ -1983,12 +1984,12 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32,System.Boolean)">
-            <summary>Create a BSplineCurve by using explicit control points.
-            NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems
-            for extrusion, sweep, and other operations. They should be avoided. Use
-            a PolyCurve instead.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>通过使用明确的控制点创建 BSplineCurve。
+            注意 1: 阶数为 1 的 BSplineCurve 具有 G1 不连续性，这会导致拉伸、扫掠和其他操作问题。
+            这应该尽可能避免。
+            使用 PolyCurve 替代。
+            注意 2: 如果曲线具有周期性(闭合)，
+            则第一个点和最后一个点必须相同。</summary>
             <param name="points">NURBS 曲线的点</param>
             <param name="degree">曲线的阶数</param>
             <param name="closeCurve">切换为闭合曲线</param>
@@ -1997,19 +1998,19 @@
             <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double[],System.Double[],System.Int32)">
-            <summary>Create a BSplineCurve by from control vertices, weights, and knots.
-            FROM ASM DOCS:
-            Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum
-            B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: The knot vector should be a non-decreasing sequence. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows curves with G1 discontinuities to be
-            represented). Note that non-clamped knot vectors are supported, but will be
-            converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.
-            knot array: the array size must be num_control_points + degree + 1</summary>
+            <summary>由控制点、权重和节点创建 BSplineCurve。
+            从 ASM 文档: 阶数:
+            应大于 1 (分段线性样条曲线)且小于 26 (ASM 支持的最大
+            B 样条曲线基础次数)。
+            权重: 所有权重值(若提供)应仅限于正值。
+            权重小于 1e-11 将被拒绝，该函数将失效。
+            节点: 节点向量应为非递减序列。
+            内部节点多重性不应大于起点/终点节点处的
+            次数 + 1 和内部节点处的次数
+            (这样才能表示具有 G1 不连续性的曲面)。
+            请注意，非固定边界节点向量均受支持，但将被转换为“固定边界”节点，
+            相应更改应用到控制点/权重数据。
+           节点数组: 数组大小必须为控制点数 + 阶数 + 1</summary>
             <search>explicit,nurbscurve,spline,degree,spline byarray,lines</search>
             <weights>0.5,0.5,0.5,0.5,0.5,0.45</weights>
         </member>
@@ -2021,9 +2022,9 @@
             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>Create a BSplineCurve by interpolating between points.
-            NOTE 2: If the curve is periodic (closed), then the first and last
-            points MUST be the same.</summary>
+            <summary>通过在各点之间插值创建 BSplineCurve。
+            注意 2: 如果曲线具有周期性(闭合)，
+            则第一个点和最后一个点必须相同。</summary>
             <param name="points">NURBS 曲线的点</param>
             <param name="closeCurve">切换为闭合曲线</param>
             <returns>基于点创建的 NURBS 曲线</returns>
@@ -2089,9 +2090,9 @@
             <returns>曲面的 NURBS V 向节点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.</summary>
+            <summary>创建具有指定插入点以及
+            U 和 V 阶数的 NurbsSurface。生成的曲面
+            将通过所有的点。</summary>
             <param name="points">NURBS 曲面的点网格</param>
             <param name="uDegree">U 方向的阶数</param>
             <param name="vDegree">V 方向的阶数</param>
@@ -2099,21 +2100,21 @@
             <search>fit,topoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface with specified interpolated points and
-            U and V degrees.  The resultant surface will pass through all
-            of the points.  The number of tangents must match the number of
-            points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.</summary>
+            <summary>创建具有指定插入点以及
+            U 和 V 阶数的 NurbsSurface。
+            生成的曲面将通过所有的点。
+            切线的数量必须与相应方向点的数量匹配。
+            在 U 和 V 方向生成的曲面均为 3 阶。</summary>
             <search>fit,topoints,totangents</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Double[],System.Double[],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Creates a NurbsSurface satisfying a collection of different surface characteristics.
-            This is the most advanced surface fitting method.  The resultant surface
-            will pass through all of the points.  The number of tangents must match
-            the number of points in the corresponding direction.  The resultant surface
-            will be degree 3 in both the U and V direction.  The corner derivatives should be
-            second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],
-            [ lowU, highV ], [ highU, highV ].</summary>
+            <summary>创建满足一组不同曲面特性条件的 NurbsSurface。
+            这是最高级曲面拟合方式。生成的曲面将通过所有的点。
+            切线的数量必须与相应方向点的数量匹配。
+            在 U 和 V 方向生成的曲面均为 3 阶。
+            角导数应为二阶(dP / dUdV)，
+            并应在该阶 [lowU、lowV]、[highU、lowV]、[lowU、highV]、
+            [highU、highV] 提供。</summary>
             <search>fit,topoints,totangents,fit corners,complex fit</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
@@ -2124,20 +2125,20 @@
             <returns>由控制点创建的 NURBS 曲面</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots(Autodesk.DesignScript.Geometry.Point[][],System.Double[][],System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>Creates a NurbsSurface with specified control vertices, knots, weights,
-            and U V degrees.
-            There are several restrictions on the data which, if
-            broken, will cause the function to fail and will throw an exception.
-            Degree: Both u- and v- degree should be &gt;= 1 (piecewise-linear spline)
-            and  less than 26 (the maximum B-spline basis degree supported by ASM).
-            Weights: All weight values (if supplied) should be strictly positive.
-            Weights smaller than 1e-11 will be rejected and the function will fail.
-            Knots: Both knot vectors should be non-decreasing sequences. Interior knot
-            multiplicity should be no larger than degree + 1 at the start/end knot and
-            degree at an internal knot (this allows surfaces with G1 discontinuities to
-            be represented). Note that non-clamped knot vectors are supported, but will
-            be converted to clamped ones, with the corresponding changes applied to the
-            control point/weight data.</summary>
+            <summary>创建具有指定控制顶点、节点、权重
+            和 U V 阶数的 NurbsSurface。
+            对数据有若干限制，
+            如果超出限制，将导致该函数失效并引发异常。
+            次数: U- 和 V- 阶数应 &gt; = 1 (分段线性样条曲线)
+            且小于 26 (ASM 支持的最大 B 样条曲线基础次数)。
+            权重: 所有权重值(若提供)应仅限于正值。
+            权重小于 1e-11 将被拒绝，该函数将失效。
+            节点: 两个节点向量应为非递减序列。
+            内部节点多重性不应大于起点/终点节点处的次数 + 1 和内部节点处的次数
+            (这样才能表示具有 G1 不连续性的曲面)。
+            请注意，非固定边界节点向量均受支持，
+            但将被转换为“固定边界”节点，
+            相应更改应用到控制点/权重数据。</summary>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
@@ -2166,7 +2167,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices(System.Int32[])">
             <summary>返回面板索引列表中每个面板的顶点数。</summary>
-            <param name="panelIndices">List of panel indices to query number of vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">用于查询顶点数的面板索引列表。默认值 null 表示曲面中的所有面板。</param>
             <returns>顶点数</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetVertex(System.Int32)">
@@ -2187,17 +2188,17 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices(System.Int32[])">
             <summary>返回面板索引列表中每个面板的顶点。</summary>
-            <param name="panelIndices">Panel index to query vertices for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">用于查询顶点的面板索引。默认值 null 表示曲面中的所有面板。</param>
             <returns>顶点阵列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints(System.Int32[])">
             <summary>返回面板索引列表中每个面板的点。</summary>
-            <param name="panelIndices">Panel indices to query points for. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">用于查询点的面板索引。默认值 null 表示曲面中的所有面板。</param>
             <returns>点阵列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon(System.Int32[])">
             <summary>返回面板索引列表中每个面板的多边形边界。</summary>
-            <param name="panelIndices">Panel indices used to construct Polygon. The default value of null indicates all panels in the surface.</param>
+            <param name="panelIndices">用于构造多边形的面板索引。默认值 null 表示曲面中的所有面板。</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.SetTransform(System.Double,System.Double,System.Double,System.Double,Autodesk.DesignScript.Geometry.Point)">
@@ -2257,7 +2258,7 @@
             <search>panel, surface, split, diamond</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Int32,System.Double,System.Boolean,Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition)">
-            <summary>Panels the input surface in parallelograms tiled vertically and horizontally. Each parallelogram is a square with a shear applied along the V-axis or U-axis determined by the ‘alignWithUAxis’ input and a shear factor. By default the parallelograms are aligned with the V-axis</summary>
+            <summary>以垂直和水平平铺的平行四边形镶嵌输入曲面。每个平行四边形都是一个正方形，其沿 V 轴或 U 轴应用的剪切由“alignWithUAxis”输入和剪切系数确定。默认情况下，平行四边形与 V 轴对齐</summary>
             <param name="surface">要镶嵌的输入曲面</param>
             <param name="numU">U 方向上的图案数量</param>
             <param name="numV">V 方向上的图案数量</param>
@@ -2323,14 +2324,14 @@
             <summary>平面的 Y 基准</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">
-            <summary>Produces a new CoordinateSystem representing this plane. It is based on
-            the origin, and X and Y axis basis.</summary>
+            <summary>生成表示该平面的新 CoordinateSystem。
+            它基于原点以及 X 和 Y 轴基准。</summary>
             <returns/>
             <search>converttoCS,convert2cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.Offset(System.Double)">
-            <summary>Create a new Plane offset by this Plane in the normal direction by
-            the specified distance.</summary>
+            <summary>通过在法线方向按指定距离偏移
+            该平面来创建新平面。</summary>
             <search>alongnormal,moveplane</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -2341,10 +2342,10 @@
             <search>plane,tonormal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create an "oriented" Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            to splitting, intersect, project, etc operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>创建“定向”平面，定位于原点及向量
+            法线，但使用特定 X 轴方向。
+            这不会影响拆分、相交和投影等操作，
+            它仅指定输入坐标系的方向。</summary>
             <param name="origin">平面的原点</param>
             <param name="normal">法线方向向量</param>
             <param name="xAxis">X 轴方向向量</param>
@@ -2366,8 +2367,8 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Create the Plane containing the input Line and external Point. Point
-            cannot lie on the Line or in the Line axis.</summary>
+            <summary>创建包含输入线和外部点的平面，
+            点不能位于此输入线或输入线轴线上。</summary>
             <param name="line">用于确定平面的线</param>
             <param name="point">用于确定平面的点</param>
             <returns>基于线和点创建的平面</returns>
@@ -2498,10 +2499,10 @@
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Create one or more Polycurves by offsetting a planar polycurve by the given distance in a plane defined by the plane normal.
-            The "planeNormal" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset.
-            For example, if a consistent offset direction is required for multiple curves sharing the same plane, the "planeNormal" can be used to override individual curve normals and force all curves to be offset in the same direction.
-            Reversing the normal reverses the direction of the offset.</summary>
+            <summary>通过在由平面法线定义的平面中将平面曲线偏移给定距离来创建一条或多条复合线。
+            “planeNormal”输入参数默认为包含曲线的平面的法线，但可以提供平行于原始曲线法线的显式法线以更好地控制偏移的方向。
+            例如，如果共享同一平面的多条曲线需要一致的偏移方向，则“planeNormal”可用于替代各个曲线法线并强制所有曲线在同一方向上偏移。
+            反转法线会反转偏移的方向。</summary>
             <param name="signedDistance">正偏移距离适用于复合线切线和平面法向量之间的叉积方向，而负偏移则适用于相反方向。</param>
             <param name="extendCircular">如果偏移分量曲线之间存在间隙，则根据间隙闭合设置，可以通过圆弧(true 值)填充它们以提供平滑角点，也可以通过延伸(false 值)偏移曲线来填充它们。</param>
             <param name="planeNormal">曲线的平面法线。默认为输入曲线的平面法线</param>
@@ -2515,7 +2516,7 @@
             <search>round,smooth,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.</summary>
+            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
             <summary>通过切线椭圆延伸复合线</summary>
@@ -2545,8 +2546,8 @@
             <returns>偏移的复合线</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>Heals a self-intersecting PolyCurve by returning a new one that isn't self-intersecting
-            if the overlapping segment length is less than or equal to trimLength.</summary>
+            <summary>如果重叠段长度小于或等于 trimLength，
+            则会通过返回非自相交的新复合线来修复自相交的复合线。</summary>
             <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
             <returns>非自相交、非重叠复合线</returns>
         </member>
@@ -2573,9 +2574,9 @@
             <search>segments,joincurves</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。
+            选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。
+            较低的值可能过于严格，会阻止本应连接的曲线相互连接；而较高的值则可能导致短曲线被无意中合并或折叠为退化点。</summary>
             <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <returns/>
@@ -2619,11 +2620,11 @@
             <summary>返回多边形各边的自交点。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Returns whether an input point is contained within the polygon.
-            If the polygon is not planar then the point will be projected onto the
-            best-fit plane and the containment will be computed using the projection
-            of the polygon onto the best-fit plane.
-            This will return a failed status if the polygon self-intersects.</summary>
+            <summary>返回输入点是否包含在多边形内。
+            如果多边形不是平面的，
+            则该点将被投影到最佳拟合平面，
+            并通过将多边形投影到最佳拟合平面来计算包含。
+            如果多边形自相交，则此操作将返回失败状态。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>通过连接点构造多边曲线。</summary>
@@ -2636,8 +2637,8 @@
             <search>subsurfaces,getsurfaces,explode</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Locate Surfaces by point. Takes first intersection in forward direction.
-            Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex</summary>
+            <summary>按点查找曲面。获取前进方向的第一个交点。如果点击曲面内部，
+            则返回一个曲面；如果点击边内部，则返回两个曲面；如果点击顶点，则返回多个曲面</summary>
             <search>surfacesatpoint,findsurfaces,extractsurfaces</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine(Autodesk.DesignScript.Geometry.Line)">
@@ -2727,16 +2728,16 @@
             <search>rectbypoints</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the WCS origin in the WCS XY Plane, with
-            specified width (X Axis length), and length (Y Axis length).</summary>
+            <summary>在 WCS 的 XY 平面上以 WCS 原点为中心按指定宽度
+            (X 轴长度)和长度(Y 轴长度)创建矩形。</summary>
             <param name="width">矩形的宽度</param>
             <param name="length">矩形的长度</param>
             <returns>由宽度和长度创建的矩形</returns>
             <search>rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at input Plane root, with input width
-            (Plane X axis length), and length (Plane Y axis length).</summary>
+            <summary>以输入平面原点为中心按输入宽度
+            (平面 X 轴长度)和长度(平面 Y 轴长度)创建矩形。</summary>
             <param name="plane">用于使矩形居中的平面</param>
             <param name="width">矩形的宽度</param>
             <param name="length">矩形的长度</param>
@@ -2744,9 +2745,9 @@
             <search>rectangle,rectbylengths</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>Create a Rectangle centered at the input origin in the CoordinateSystem
-            XY Plane, with specified width (X Axis length), and length
-            (Y Axis length).</summary>
+            <summary>以 CoordinateSystem XY 平面上的输入原点为中心按指定宽度
+            (X 轴长度)和长度
+            (Y 轴长度)创建矩形。</summary>
             <param name="coordinateSystem">矩形的坐标系(矩形中心)</param>
             <param name="width">矩形的宽度</param>
             <param name="length">矩形的长度</param>
@@ -2782,8 +2783,8 @@
             <search>extract shell, offset and extract</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Solid in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>按输入向量方向将输入几何图形投射到该实体上。
+            !!该投射方法当前仅支持点或曲线!!</summary>
             <search>projectonto,projectonsolid,projecttosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
@@ -2815,17 +2816,17 @@
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Create a Solid by lofting between input cross section closed Curves,
-            with guide Curves to assist. Guide Curves must intersect all cross
-            section Curves.</summary>
+            <summary>以导向曲线为辅助，通过在输入
+            横截面闭合曲线之间放样来创建实体。
+            导向曲线必须与所有横截面曲线相交。</summary>
             <search>Brep,brep,guides,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Boolean)">
-            <summary>Create a Solid by lofting between input cross-sections comprising of closed PolyCurves.
-            This operation is optimized for sections composed of line segments exclusively,
-            with vertices following the same order.
-            The check and repair option guarantees the validity of the produced solid
-            when enabled, while disabling it should increase performance.</summary>
+            <summary>通过在由闭合 PolyCurve 构成的输入横截面之间放样来创建实体。
+            此操作已针对由直线段构成的截面进行了完全优化，
+            其中顶点遵循相同顺序。
+            启用此选项后，检查和修复选项会保证所生成实体的有效性，
+            而禁用该选项会提高性能。</summary>
             <search>Brep,brep,ruled,loft</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
@@ -2848,9 +2849,9 @@
             <search>Brep,brep,sweep2,guides,sweepprofile</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Solid of revolution, sweeping the profile Curve around the
-            axis Ray formed by the origin and the axis Vector, from the start
-            angle in degrees to the sweep angle in degrees.</summary>
+            <summary>绕由原点和轴向量形成的轴射线扫掠轮廓曲线，
+            从起点角(度)到掠角(度)，
+            创建旋转实体。</summary>
             <param name="profile">要旋转的轮廓曲线</param>
             <param name="axisOrigin">旋转轴原点</param>
             <param name="axisDirection">旋转轴方向</param>
@@ -2872,7 +2873,7 @@
             <summary>返回球体半径。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
+            <summary>以输入点为球心按给定半径创建实心球体。</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -2904,8 +2905,8 @@
             <search>difference,trim,removefrom,cut</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>The boolean difference of this Surface and the union of input Surfaces.
-            This method might return a polySurface if the resulting boolean is non-manifold or multi-faced.</summary>
+            <summary>此曲面的布尔差集和输入曲面的并集。
+            如果生成的布尔为非流形或多面，则此方法可能会返回一个多重曲面。</summary>
             <param name="others">要减去的其他曲面</param>
             <returns>生成的布尔曲面或多重曲面</returns>
             <search>subtract,differencemany,diffall,diff multi</search>
@@ -2916,16 +2917,16 @@
             <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves.
-            One of the loops needs to be the boundary loop of the input surface.
-            In addition, one or more inner loops need to be added for holes.</summary>
+            <summary>使用一个或多个闭合复合线集修剪曲面。
+            其中一个回路需要是输入曲面的边界回路。
+            此外，还需要为孔添加一个或多个内回路。</summary>
             <search>trim multiple,removeloops,cutloops</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>Trims the surface with a collection of one or more closed PolyCurves that must all lie on the surface within the specified tolerance.
-            If one or more holes need to be trimmed from the input surface, there must be one outer loop specified for the boundary of the surface and one inner loop for each hole.
-            If the region between the surface boundary and the hole(s) needs to be trimmed, only the loop for each hole should be provided.
-            For a periodic surface with no outer loop such as a spherical surface, the trimmed region can be controlled by reversing the direction of the loop curve.</summary>
+            <summary>使用一个或多个闭合的复合线集修剪曲面，这些复合线必须全部位于指定公差内的曲面上。
+            如果需要从输入曲面修剪一个或多个孔，则必须为曲面边界指定一个外回路，为每个孔指定一个内回路。
+            如果需要修剪曲面边界和孔之间的区域，则应仅提供每个孔的回路。
+           对于没有外回路的周期曲面(例如，球形曲面)，则可以通过反转回路曲线的方向来控制修剪区域。</summary>
             <param name="loops">一个或多个闭合复合线，可以按任意顺序输入。这些回路不应彼此相交。</param>
             <param name="tolerance">确定曲线端点是否重合以及曲线和曲面是否重合时使用的公差。提供的公差不能小于创建输入复合线时使用的任何公差。默认值 0.0 表示将使用创建输入复合线时使用的最大公差。</param>
             <returns>由闭合回路修剪的曲面。</returns>
@@ -2938,32 +2939,32 @@
             <search>perpendicular</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>获取曲面的 NURBS 表示。
+            在某些情况该方法可粗略逼近曲面。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>Gets a Nurbs representation of the Surface. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>获取曲面的 NURBS 表示。
+            在某些情况该方法可粗略逼近曲面。</summary>
             <param name="limitSurface">确定在转换之前是否应将曲面恢复到其原始参数范围。例如，在执行“修剪”操作之后，曲面的参数范围受限制。</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>Gets a Nurbs representation of the Surface within a specified tolerance. This method may approximate
-            Surface in certain circumstances.</summary>
+            <summary>在指定公差范围内获取曲面的 NURBS 表示。
+            在某些情况该方法可粗略逼近曲面。</summary>
             <param name="tolerance">指定的公差</param>
             <returns>曲面的 NURBS 曲面表示</returns>
             <search>tonurbs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals on both sides of the Surface.</summary>
+            <summary>加厚曲面到实体，
+            朝曲面法线方向在曲面两侧进行拉伸。</summary>
             <param name="thickness">加厚量</param>
             <returns>加厚曲面作为实体</returns>
             <search>offset,tosolid</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>Thicken Surface into a Solid, extruding in the direction of Surface
-            normals. If both_sides parameter is true, surface is thickened
-            on both sides.</summary>
+            <summary>加厚曲面到实体，朝曲面法线方向拉伸。
+            如果 both_sides (两侧)参数为“True”，
+            则在两侧加厚曲面。</summary>
             <param name="thickness">加厚量</param>
             <param name="both_sides">为 true 时，两侧加厚；为 false 时，一侧加厚</param>
             <returns>加厚曲面作为实体</returns>
@@ -2975,8 +2976,8 @@
             <returns>偏移的曲面</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>The returned coordination system use xAxis, yAxis and zAxis to represent the uDir, vDir and normal.
-            The length of xAxis, yAxis represents the curvatures.</summary>
+            <summary>返回的坐标系统使用 xAxis、yAxis 和 zAxis 表示 uDir、vDir 和法线。
+            xAxis 和 yAxis 长度表示曲率。</summary>
             <param name="u">参数的 U 分量</param>
             <param name="v">参数的 V 分量</param>
             <returns>基于曲面上 UV 位置处的法线、U 方向和 V 方向的坐标系</returns>
@@ -3034,21 +3035,21 @@
             <search>edges</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>Create a parameter line curve on the given surface.
-            Create a Curve that represents a u or v parameter line on the Surface. A
-            parameter line runs in the direction of increasing u or v parameter at a
-            constant opposite u or v parameter. The resulting Curve will match the
-            Surface parameterisation and its range will be bounded by the Surface
-            parameter range. The type of Curve returned will depend on the Surface
-            type.</summary>
+            <summary>在给定曲面上创建参数线曲线。
+            创建一条表示曲面上 U 或 V 参数线的曲线。
+            参数线以恒定相反的 U 或 V 参数朝 U 或 V 参数
+            不断增加的方向延伸。
+            所生成的曲线将与曲面参数匹配，
+            其范围将由曲面参数范围限制。
+            返回的曲线类型将取决于曲面类型。</summary>
             <param name="isoDirection">若方向 == 0，则创建 U 参数线，若方向 == 1，则创建 V 参数线。</param>
             <param name="parameter"/>
             <search>lines</search>
             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>Returns a new Surface with the Normal flipped. Leaves this surface
-            unchanged.</summary>
+            <summary>返回法线翻转的新曲面。
+           保留该曲面不变。</summary>
             <returns>与输入曲面相同但法线翻转的曲面</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
@@ -3058,8 +3059,8 @@
             <search>join multiple,joinmany,joinall,topolysurface</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects the input Geometry onto this Surface in the input Vector direction.
-            !!This projection method currently supports only points or curves!!</summary>
+            <summary>按输入向量方向将输入几何图形投射到该曲面上。
+            !!该投射方法当前仅支持点或曲线!!</summary>
             <search>projecttosurface,projectonto</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
@@ -3067,9 +3068,9 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Union a collection of surfaces into one surface.
-            This method might return a polySurface
-            if the resulting union is non-manifold or multi-faced.</summary>
+            <summary>将一组曲面合成为一个曲面。
+            如果生成的并集为非流形或多面，
+            则此方法可能会返回一个多重曲面。</summary>
             <param name="surfaces">一组曲面。</param>
             <returns>曲面并集</returns>
             <search>merge,join,boolean,addition</search>
@@ -3081,15 +3082,15 @@
             <returns>由放样创建的曲面</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>Create a Surface by lofting between input cross section Lines.  This is slightly faster
-            and produces a less smooth result than Surface.ByLoft.</summary>
+            <summary>通过在输入横截面直线之间放样来创建实体。
+            这比 Surface。ByLoft 速度稍快，但生成的结果较不平滑。</summary>
             <search>ruledsurface,lines</search>
             <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Loft a Surface through the cross sections with a specified guide curves
-            (aka a rails). Guide curves must intersect all of the cross section
-            curves.</summary>
+            <summary>使用多条指定导向曲线
+            (也称为轨线)通过横截面放样曲面。
+            各导向曲线必须与所有横截面曲线相交。</summary>
             <search>loftbyrails,loft rails,guides</search>
             <param name="crossSections">要通过其放样的曲线</param>
             <param name="guideCurves">要通过其引导放样的曲线</param>
@@ -3113,8 +3114,8 @@
             <search>sweep,rail,guide,sweep1</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Create a Polygon Surface connecting input Points in a closed Polygon and
-            patching it.</summary>
+            <summary>创建多边形曲面，连接闭合多边形内的
+            输入点并修补。</summary>
             <param name="points">周界点列表</param>
             <returns>基于周界点创建的曲面</returns>
             <search>patch,surfacebypolygon</search>
@@ -3128,9 +3129,9 @@
             <search>sweep2,guides</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Create a Surface by sweeping the profile Curve around the axis ray formed
-            by origin Point in the direction of the axis Vector, starting
-            at start_angle in degrees, sweeping sweep_angle in degrees.</summary>
+            <summary>绕由原点形成的轴向量方向的轴射线扫掠轮廓曲线，
+            从起点角(度)起，扫掠掠角(度)，
+            创建曲面。</summary>
             <param name="profile">要旋转的轮廓曲线</param>
             <param name="axisOrigin">旋转轴原点</param>
             <param name="axisDirection">旋转轴方向</param>
@@ -3140,8 +3141,8 @@
             <search>lathe</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Create a Surface by filling in the interior of a closed boundary
-            defined by input Curves.</summary>
+            <summary>通过在由输入曲线确定的闭合边界内
+            填充来创建曲面。</summary>
             <param name="closedCurve">用作曲面边界的闭合曲线</param>
             <returns>由面片创建的曲面</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
@@ -3250,8 +3251,8 @@
             <search>tspline,symmetry,reflection,axial</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ByRadial(Autodesk.DesignScript.Geometry.Plane,System.Int32,System.Double)">
-            <summary>Create radial reflection for t-spline symmetry by given plane
-            with given segments count and given angle (in degrees) between each pair of segments.</summary>
+            <summary>使用给定线段数和每对线段之间的给定角度(度)
+            通过给定平面创建 T 样条曲线对称的径向反射。</summary>
             <param name="plane">法线为 T 样条曲线径向反射的轴的平面。在世界坐标中给定</param>
             <param name="segmentsCount">径向反射的分段数</param>
             <param name="segmentAngle">径向对称的每对线段之间的角度(度)。若将其设置为 0，则该角度由 (360 / segmentsCount) 确定</param>
@@ -3339,7 +3340,7 @@
             <search>tspline,symmetry,reflections</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsInBoxMode">
-            <summary>Whether t-spline is in box or smooth mode</summary>
+            <summary>T 样条曲线是处于长方体模式还是平滑模式</summary>
             <search>tspline,boxmode,smooth</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsExtractable">
@@ -3347,7 +3348,7 @@
             <search>tspline,extractable</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsClosed">
-            <summary>Whether t-spline is closed</summary>
+            <summary>T 样条曲线是否处于闭合状态</summary>
             <search>tspline,closed</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsWaterTight">
@@ -3360,8 +3361,8 @@
             <search>tspline,standard</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToBRep(System.Boolean)">
-            <summary>Convert TSpline surface to Solid or Surface depending on shape.
-            Note: There could be subtle unexpected changes in the resulting B-Rep if the input surface is created in a higher T-Splines version than the version loaded in Dynamo as in this case the surface will be downgraded to the Dynamo version.</summary>
+            <summary>根据形状，将 T 样条曲线曲面转换为实体或曲面。
+            注意: 如果创建输入曲面所用的 T 样条曲线版本高于 Dynamo 中加载的版本，则生成的边界表示可能会略有意外变化；因为在这种情况下，相应曲面的副本会降级到 Dynamo 版本。</summary>
             <param name="matchTopology">确定生成的实体是否应具有与输入 T 样条曲线曲面相同的拓扑。</param>
             <returns>拓扑实体(实体或曲面)</returns>
             <search>tspline,brep,solid,surface</search>
@@ -3434,7 +3435,7 @@
             <search>tspline,unweld,vertex</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
-            <summary>Create match with T-Spline and closed loop from curves</summary>
+            <summary>创建与 T 样条曲线和曲线闭合环的匹配</summary>
             <param name="tsEdges">要创建匹配的 T 样条曲线边闭合环</param>
             <param name="curves">要创建匹配的曲线闭合环</param>
             <param name="continuity">要尝试匹配的几何连续性: G0、G1、G2</param>
@@ -3558,7 +3559,7 @@
             <param name="edges">带内孔的边集。各边必须为边界。</param>
             <param name="fillMethod">孔的填充方法：0 - 细分、1 - n 边形，2 - 收拢，3 - 折叠和焊接</param>
             <param name="keepSubdCreases">保留输入拓扑的细分折痕</param>
-            <returns>TSpline surface with filled hole</returns>
+            <returns>包含填充孔的 T 样条曲线曲面</returns>
             <search>tspline,edge,fill,hole</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.AddReflections(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineReflection},System.Boolean,System.Double)">
@@ -3573,9 +3574,9 @@
             <returns>给定反射已删除的 T 样条曲线曲面</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CompressIndexes">
-            <summary>Compress all topology on the surface and make the indices contiguous.
-            This function maintains the relative order of the indices.</summary>
-            <returns>TSpline with compressed indexes</returns>
+            <summary>压缩曲面上的所有拓扑并使索引连续。
+            此功能将保持索引的相对顺序。</summary>
+            <returns>具有压缩索引的 T 样条曲线</returns>
             <search>tspline,index,compress</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SubdivideFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace},System.Boolean)">
@@ -3588,10 +3589,10 @@
             <search>tspline,subdivide,faces,simple</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Interpolate(System.Boolean)">
-            <summary>Forward interpolation moves control points to their parametric locations
-            on the surface. Reverse interpolation generates a point on the surface
-            for each original control point and moves this control point to its
-            corresponding surface point.</summary>
+            <summary>前向插值将控制点移动到曲面上
+            其参数化位置。反转插值为每个原始控制点
+            在曲面上生成一个点，然后将该控制点
+            移动到其相应的曲面点。</summary>
             <param name="reverse">插值方向: 若为 False 则向前，否则就反转</param>
             <returns>以给定方向插入的 T 样条曲线</returns>
             <search>tspline,interpolate,reverse</search>
@@ -3610,7 +3611,7 @@
             <summary>将给定顶点的控制点展平到单个平面。
             此命令要求输入至少四个顶点</summary>
             <param name="vertices">顶点列表</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>顶点已展平的 T 样条曲线曲面</returns>
             <search>tspline,flatten,vertices</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Plane)">
@@ -3619,11 +3620,11 @@
             此命令要求输入至少四个顶点</summary>
             <param name="vertices">顶点列表</param>
             <param name="parallelPlane">用于拟合顶点的平面，平行于</param>
-            <returns>T-Spline Surface with flattened vertices</returns>
+            <returns>顶点已展平的 T 样条曲线曲面</returns>
             <search>tspline,flatten,vertices,fitparallel</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineFace})">
-            <summary>Copy chosen faces to the new surface. New surface has no symmetry.</summary>
+            <summary>将选定面复制到新曲面。新曲面不对称。</summary>
             <param name="faces">要复制的面</param>
             <returns>仅包含选定面的 T 样条曲线曲面</returns>
             <search>tspline,face,duplicate</search>
@@ -3648,12 +3649,12 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.MoveVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex},Autodesk.DesignScript.Geometry.Vector,System.Boolean)">
             <summary>沿给定向量移动给定顶点</summary>
             <param name="vertices">要移动的顶点列表</param>
-            <param name="vector">Vector to move along</param>
-            <param name="onSurface">Flag, indicating whether to use surface or control points of vertices to move</param>
+            <param name="vector">移动所沿的向量</param>
+            <param name="onSurface">标志，指示使用曲面还是顶点控制点进行移动</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Repair">
-            <summary>Attempts to repair the TsplineSurface.</summary>
+            <summary>尝试修复 TsplineSurface。</summary>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
@@ -3670,10 +3671,10 @@
             <search>tspline,plane,origin,normal</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create an "oriented" T-Spline Plane, positioned at Point origin with Vector
-            normal, but with a specific X axis orientation. This has no impact
-            on splitting, intersect, project, etc. operations, it only specifies
-            the orientation of the input CoordinateSystem.</summary>
+            <summary>创建“定向”T 样条曲线平面，定位于原点及
+            向量法线，但使用特定 X 轴方向。
+            这不会影响拆分、相交和投影等操作，
+            它仅指定输入坐标系的方向。</summary>
             <param name="origin">平面的根点</param>
             <param name="normal">平面的法线</param>
             <param name="xAxis">平面的 X 轴</param>
@@ -3743,7 +3744,7 @@
             <summary>由父 CoordinateSystem、半径和圆柱体高度构造 T 样条曲线圆柱体</summary>
             <param name="cs">圆柱体中心和底部将位于该坐标系的 X-Y 平面</param>
             <param name="radius">圆柱体半径</param>
-            <param name="height">Height of cylinder</param>
+            <param name="height">圆柱体高度</param>
             <param name="radiusSpans">周长方向跨距数</param>
             <param name="heightSpans">高度方向跨距数</param>
             <param name="symmetry">T 样条曲线曲面的对称选项</param>
@@ -3764,11 +3765,11 @@
             <search>tspline,cylinder,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with given base radius at start Point, extending to an
-            apex at end Point.</summary>
+            <summary>在起点以给定底面半径创建 T 样条曲线圆锥体，
+            延伸到位于终点的顶点。</summary>
             <param name="startPoint">圆锥体起点</param>
             <param name="endPoint">圆锥体终点</param>
-            <param name="radius">Radius of base of a cone</param>
+            <param name="radius">圆锥体底部半径</param>
             <param name="radiusSpans">周长方向跨距数</param>
             <param name="heightSpans">高度方向跨距数</param>
             <param name="symmetry">T 样条曲线曲面的对称选项</param>
@@ -3777,8 +3778,8 @@
             <search>tspline,cone,radius,points</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with axis from start Point to end Point, with given
-            radii at start and end. This object does not have an apex, and is in the shape of a frustum.</summary>
+            <summary>按起点和终点处的给定半径，创建包含从起点到终点轴的 T 样条曲线圆锥体。
+            该对象没有顶点，形状为截头锥体。</summary>
             <param name="startPoint">圆锥体起点</param>
             <param name="endPoint">圆锥体终点</param>
             <param name="startRadius">圆锥体起点半径</param>
@@ -3791,8 +3792,8 @@
             <search>tspline,cone,radii,points,truncated</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending in the direction of the Z-axis of the CoordinateSystem,
-            with a  circular base in the CoordinateSystem XY Plane.</summary>
+            <summary>以坐标系原点为基准点创建 T 样条曲线圆锥体，在坐标系的 Z 轴方向上延伸，
+             圆形底部在坐标系 XY 平面内。</summary>
             <param name="cs">圆锥体中心和底部将位于该坐标系的 X-Y 平面</param>
             <param name="height">圆锥体高度</param>
             <param name="radius">圆锥体半径</param>
@@ -3804,9 +3805,9 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Cone with base Point at CoordinateSystem origin, extending
-            in the CoordinateSystem Z axis deriction length amount, with a
-            circular bases in the CoordinateSystem XY Plane.</summary>
+            <summary>以坐标系原点为基准点创建 T 样条曲线圆锥体，
+             在坐标系的 Z 轴方向上延伸，
+             其圆形底部在坐标系 XY 平面内。</summary>
             <param name="cs">圆锥体中心和底部将位于该坐标系的 X-Y 平面</param>
             <param name="height">圆锥体高度</param>
             <param name="startRadius">圆锥体起点半径</param>
@@ -3819,7 +3820,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
+            <summary>以输入点为球心按给定半径创建 T 样条曲线球体。</summary>
             <param name="centerPoint">球体中心</param>
             <param name="radius">球体半径</param>
             <param name="radiusSpans">径向跨距数</param>
@@ -3862,7 +3863,7 @@
             <search>tspline,torus,radii,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCenterRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Torus with given center and radii, aligned with the default World XY plane</summary>
+            <summary>以给定圆心和半径创建 T 样条曲线圆环体，并使其与默认世界 XY 平面对齐</summary>
             <param name="center">圆环体中心</param>
             <param name="innerRadius">圆环体内半径</param>
             <param name="outerRadius">圆环体外半径</param>
@@ -3887,8 +3888,8 @@
             <search>tspline,box,cuboid,cube,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered at input Point, with specified width, length,
-            and height.</summary>
+            <summary>以输入点为中心使用指定宽度、长度和高度
+            创建 T 样条曲线长方体。</summary>
             <param name="origin">长方体中心</param>
             <param name="width">长方体宽度</param>
             <param name="length">长方体长度</param>
@@ -3902,8 +3903,8 @@
             <search>tspline,box,cuboid,cube,size,center</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Box centered and oriented to input CoordinateSystem, with
-            specified width, length, and height.</summary>
+            <summary>以输入坐标系为中心和导向使用指定宽度、长度和高度
+            创建 T 样条曲线长方体</summary>
             <param name="cs">长方体的 X-Y 平面将与相应 X 轴对齐</param>
             <param name="width">长方体宽度</param>
             <param name="length">长方体长度</param>
@@ -3929,45 +3930,45 @@
             <search>tspline, box,cube,min,max,corner,point</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCoordinateSystemRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with center at CoordinateSystem origin
-            and given radius</summary>
+            <summary>以坐标系原点为球心使用给定半径
+            创建 T 样条曲线四分球</summary>
             <param name="cs">局部坐标系</param>
             <param name="radius">四分球半径</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">四分球各边两个维度的跨距数</param>
             <param name="symmetry">T 样条曲线曲面的对称选项</param>
             <param name="inSmoothMode">以方框还是平滑可视化显示 T 样条曲线曲面</param>
             <returns>T 样条曲线四分球</returns>
             <search>quadball,tspline,coordinate system,raduis</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCenterRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Splines Quadball with given center and radius, aligned with
-            default World XY plane</summary>
+            <summary>以给定圆心和半径创建 T 样条曲线四分球，
+            并使其与默认世界 XY 平面对齐</summary>
             <param name="center">四分球中心点</param>
             <param name="radius">四分球半径</param>
-            <param name="spans">Spans number in two dimensions of the sides of the Quadball</param>
+            <param name="spans">四分球各边两个维度的跨距数</param>
             <param name="symmetry">T 样条曲线曲面的对称选项</param>
             <param name="inSmoothMode">以方框还是平滑可视化显示 T 样条曲线曲面</param>
             <returns>T 样条曲线四分球</returns>
             <search>quadball,tsplines,center,point,radius</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceUniform(Autodesk.DesignScript.Geometry.NurbsSurface,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using uniform strategy.
-            Input NURBS surface is rebuilt with uniform knots placed at equal parametric or
-            arc length intervals depending on corresponding useArcLen flag, and approximated by
-            degree 3 NURBS surface. Output T-Spline is divided by given span counts
-            in u and v directions.</summary>
+            <summary>使用均匀策略由 NURBS 曲面构造 T 样条曲线曲面。
+            输入 NURBS 曲面将通过相同参数化或圆弧长度间隔
+            放置的均匀节点重新构建，具体取决于相应 useArcLen 标志，
+            并通过 3 阶 NURBS 曲面靠近。输出 T 样条曲线被 U 方向
+            和 V 方向给定的跨距数分割。</summary>
             <param name="nurbsSurface">输入 NURBS 曲面</param>
             <param name="uSpans">U 方向所需的跨距数</param>
             <param name="vSpans">V 方向所需的跨距数</param>
-            <param name="uUseArcLen">Whether to use arcLen or parametric subdivision in u parametric direction</param>
-            <param name="vUseArcLen">Whether to use arcLen or parametric subdivision in v parametric direction</param>
+            <param name="uUseArcLen">在 U 参数化方向是使用圆弧长度还是参数化细分</param>
+            <param name="vUseArcLen">在 V 参数化方向是使用圆弧长度还是参数化细分</param>
             <param name="inSmoothMode">以方框还是平滑可视化显示 T 样条曲线曲面</param>
             <search>nurbs surface,tspline,uniform</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceCurvature(Autodesk.DesignScript.Geometry.NurbsSurface,System.Boolean)">
-            <summary>Construct T-Spline surface from NURBS Surface using curvature subdivision strategy.
-            Input NURBS surface is rebuilt to degree 3. Output T-Spline has span counts and
-            positions in each direction detected automatically depending on curvature.</summary>
+            <summary>使用曲率细分策略从 NURBS 曲面构造 T 样条曲线曲面。
+            输入 NURBS 曲面将重新构建为 3 阶。输出 T 样条曲线在自动检测到的每个方向都有跨度数和
+            位置，具体取决于曲率。</summary>
             <param name="nurbsSurface">输入 NURBS 曲面</param>
             <param name="inSmoothMode">以方框还是平滑可视化显示 T 样条曲线曲面</param>
             <search>nurbs surface,tspline,curvature</search>
@@ -3989,7 +3990,7 @@
             <summary>通过沿路径扫掠横截面曲线构造 T 样条曲线。</summary>
             <param name="profile">轮廓曲线</param>
             <param name="path">路径曲线</param>
-            <param name="parallel">Is spans should be parallel in path direction</param>
+            <param name="parallel">跨距应与路径方向平行</param>
             <param name="pathSpans">路径方向跨距数</param>
             <param name="profileSpans">轮廓方向跨距数。若为 0 个或更少则自动定义</param>
             <param name="pathUniform">将统一或曲率策略用于沿路径的跨距分布</param>
@@ -3998,9 +3999,9 @@
             <search>tspline,sweep,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double,System.Int32,System.Int32,System.Boolean,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Surface by sweeping the profile Curve around the axis formed
-            by the axis origin and axis direction, starting at start_angle in degrees,
-            and sweeping by sweep_angle in degrees.</summary>
+            <summary>绕由轴原点和轴方向形成的轴扫掠轮廓曲线，
+            从起点角(度)起，扫掠掠角(度)，
+            从而创建 T 样条曲线曲面。</summary>
             <param name="profile">轮廓曲线</param>
             <param name="axisOrigin">旋转中心</param>
             <param name="axisDirection">旋转轴</param>
@@ -4234,7 +4235,7 @@
             <param name="otherVector">其他向量</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Determine whether two vectors are almost equal. A tolerance value of 1e-5 is used.</summary>
+            <summary>确定两个向量是否几乎相等。使用 1e-5 的公差值。</summary>
             <returns>如果向量几乎相等，则返回 True；否则返回 False。</returns>
             <param name="otherVector">其他向量</param>
             <search>vector approximate,near,same</search>
@@ -4243,13 +4244,13 @@
             <summary>通过输入 CoordinateSystem 矩阵变换该向量。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Rotates a Vector around an axis by a specified number of
-            degrees</summary>
+            <summary>绕轴按指定度数
+            旋转向量</summary>
             <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>Rotates a vector around the Plane origin and normal by a specified
-            degree</summary>
+            <summary>绕平面原点和法线按指定度数
+            旋转向量</summary>
             <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
@@ -4267,8 +4268,8 @@
             <search>rotation angle,</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Returns the angle between the two vectors in degrees from 0 to 360.
-            It uses axis of rotation to determine the direction of the angle.</summary>
+            <summary>返回两个向量之间的角度(以度为单位，从 0 到 360)。
+            它使用旋转轴来确定角度方向。</summary>
             <param name="otherVector">其他向量</param>
             <param name="rotationAxis">旋转轴</param>
             <returns>返回提供的向量之间的角度(以度为单位，范围从 0 到 360)</returns>
@@ -4293,24 +4294,24 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>由两个终点形成一个向量。结果是一个从起点到终点的向量。</summary>
-            <param name="start">Start point of vector</param>
-            <param name="end">End point of vector</param>
-            <returns>Vector created from two points</returns>
+            <param name="start">向量的起点</param>
+            <param name="end">向量的终点</param>
+            <returns>由两点创建的向量</returns>
             <search>vector2</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.XAxis">
             <summary>获取规范 X 轴向量 (1,0,0)</summary>
-            <returns>Canonical X axis vector (1,0,0)</returns>
+            <returns>规范 X 轴向量(1,0,0)</returns>
             <search>x, basis,right</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.YAxis">
             <summary>获取规范 Y 轴向量 (0,1,0)</summary>
-            <returns>Canonical Y axis vector (0,1,0)</returns>
+            <returns>规范 Y 轴向量(0,1,0)</returns>
             <search>y, basis,forward</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ZAxis">
             <summary>获取规范 Z 轴向量 (0,0,1)</summary>
-            <returns>Canonical Z axis vector (0,0,1)</returns>
+            <returns>规范 Z 轴向量(0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
@@ -4435,7 +4436,7 @@
             <summary>查找类似“{0} 小于零”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。”的本地化字符串。请改用“Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])”。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。”的本地化字符串。请改用“Mesh.ByPointsIndices (Point[] points, Indices : int[])”。</summary>
