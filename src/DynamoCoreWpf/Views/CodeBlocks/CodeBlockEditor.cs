@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
@@ -18,6 +19,11 @@ namespace Dynamo.UI.Controls
         }
 
         private State state;
+
+        /// <summary>
+        /// Current editor state.
+        /// </summary>
+        internal State CurrentState => state;
 
         /// <summary>
         /// Event handler for editor state changed.
@@ -84,6 +90,22 @@ namespace Dynamo.UI.Controls
 
             WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
             stateMachine.OnStateChanged += OnEditorStateChanged;
+            nodeView.Unloaded += OnNodeViewUnloaded;
+        }
+
+        /// <summary>
+        /// Ensures graph shortcuts are restored if this editor is unloaded while still
+        /// in edit mode (e.g. node removal or workspace close). LostFocus may not commit
+        /// when <see cref="CodeCompletionEditor.IsDisposed"/> is already true.
+        /// Only clears the shared flag when this editor was the active one, so unloading
+        /// another Code Block does not re-enable shortcuts mid-edit.
+        /// </summary>
+        private void OnNodeViewUnloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (stateMachine.CurrentState == EditorStateMachine.State.Editing)
+            {
+                nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
+            }
         }
 
         protected override void OnEscape()
@@ -116,6 +138,21 @@ namespace Dynamo.UI.Controls
         protected override void OnTextAreaGotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             stateMachine.Transit(EditorStateMachine.State.Editing);
+            // Ensure the flag is set even if the state machine was already Editing
+            // (e.g. keyboard focus returned after a modal dialog closed).
+            nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = true;
+        }
+
+        /// <summary>
+        /// Keeps the shared edit flag in sync with keyboard focus. Clears it when focus
+        /// leaves (e.g. dialog or AA assistant chat) and sets it again when focus returns,
+        /// including cases where TextArea GotFocus does not fire reliably.
+        /// </summary>
+        protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnIsKeyboardFocusWithinChanged(e);
+
+            nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = IsKeyboardFocusWithin;
         }
 
         private void OnEditorStateChanged(EditorStateMachine.State state)
