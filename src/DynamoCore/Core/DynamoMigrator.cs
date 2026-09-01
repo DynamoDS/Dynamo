@@ -175,6 +175,13 @@ namespace Dynamo.Core
             // Also exclude SelectedPackagePathForInstall or it may point to previous 
             // Dynamo version folders. When set to string.empty or null - will default to UserDataFolder.
             PreferenceSettings.SelectedPackagePathForInstall = string.Empty;
+            // TemplateFilePath is install-rooted; reset so the current install's shipped templates are used.
+            // A user-chosen custom folder that still contains .dyn files is kept.
+            if (!PathManager.IsValidTemplatesDirectory(PreferenceSettings.TemplateFilePath) ||
+                PathManager.IsInstallRootedTemplatesDirectory(PreferenceSettings.TemplateFilePath))
+            {
+                PreferenceSettings.TemplateFilePath = string.Empty;
+            }
             PreferenceSettings.IronPythonResolveTargetVersion = currentVersionTempPrefs.IronPythonResolveTargetVersion;
 
             return this;

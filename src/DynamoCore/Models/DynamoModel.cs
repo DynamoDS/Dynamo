@@ -1891,6 +1891,10 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+
+            // Capture before locale swap so reset logs/saves compare against the value from DynamoSettings.xml.
+            var persistedTemplatePath = PreferenceSettings.TemplateFilePath;
+
             var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
 
             //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
@@ -1907,6 +1911,14 @@ namespace Dynamo.Models
                 }
             }
 
+            if (Core.PathManager.ShouldResetPersistedTemplatesPath(PreferenceSettings.TemplateFilePath, pathManager.DefaultTemplatesDirectory))
+            {
+                PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Log($"Configured template path {persistedTemplatePath} is not available; falling back to {PreferenceSettings.TemplateFilePath}");
+                }
+            }
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
             if (!UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath))
@@ -1916,6 +1928,18 @@ namespace Dynamo.Models
                 // a null templates directory. See DYN-10661.
                 Logger?.Log("Could not use templates location '" + PreferenceSettings.TemplateFilePath +
                     "'. Falling back to '" + pathManager.TemplatesDirectory + "'.", LogLevel.File);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+                {
+                    PreferenceSettings.AddTrustedLocation(PreferenceSettings.TemplateFilePath);
+                }
+
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+                }
             }
         }
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)

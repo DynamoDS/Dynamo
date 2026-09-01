@@ -754,20 +754,109 @@ namespace Dynamo.Core
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
+        /// <summary>
+        /// Returns true when the directory exists and contains at least one .dyn file.
+        /// </summary>
+        /// <param name="directoryPath">The template directory path to validate.</param>
+        internal static bool IsValidTemplatesDirectory(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
+                return false;
+
+            try
+            {
+                return Directory.EnumerateFiles(directoryPath, "*.dyn").Any();
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// True when the path looks like a Dynamo install's shipped templates folder
+        /// (…/templates/&lt;locale&gt;). User-chosen custom folders do not match this shape.
+        /// </summary>
+        internal static bool IsInstallRootedTemplatesDirectory(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+                return false;
+
+            try
+            {
+                var trimmed = directoryPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var locale = Path.GetFileName(trimmed);
+                if (!Configurations.SupportedLocaleDic.Values.Contains(locale))
+                    return false;
+
+                var templatesFolderName = Path.GetFileName(Path.GetDirectoryName(trimmed));
+                return string.Equals(templatesFolderName, Configurations.TemplatesAsString, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// True when a persisted template path should be replaced with the current install default.
+        /// Missing/empty folders and previous-install templates\&lt;locale&gt; paths are stale;
+        /// a user-chosen folder that still contains .dyn files is not.
+        /// </summary>
+        internal static bool ShouldResetPersistedTemplatesPath(string persistedPath, string currentDefaultPath)
+        {
+            if (string.IsNullOrEmpty(persistedPath))
+                return true;
+
+            if (!IsValidTemplatesDirectory(persistedPath))
+                return true;
+
+            if (!IsInstallRootedTemplatesDirectory(persistedPath))
+                return false;
+
+            return !AreTemplateDirectoriesEqual(persistedPath, currentDefaultPath);
+        }
+
+        private static bool AreTemplateDirectoriesEqual(string first, string second)
+        {
+            if (string.IsNullOrEmpty(first) || string.IsNullOrEmpty(second))
+                return false;
+
+            try
+            {
+                return PathHelper.AreDirectoryPathsEqual(first, second);
+            }
+            catch (Exception)
+            {
+                return string.Equals(first, second, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         internal bool UpdatePreferenceItemPath(PreferenceItem item, string newLocation)
         {
-            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newLocation) == null;
-            if (!isValidFolder)
+            if (string.IsNullOrEmpty(newLocation))
                 return false;
 
             switch (item)
             {
                 case PreferenceItem.Backup:
+                    if (PathHelper.CreateFolderIfNotExist(newLocation) != null)
+                        return false;
                     backupDirectory = newLocation;
                     break;
                 case PreferenceItem.Templates:
+                    // Do not create this folder. A stale persisted path must stay invalid
+                    // so startup can fall back to the current install's shipped templates.
+                    if (!Directory.Exists(newLocation))
+                        return false;
                     templatesDirectory = newLocation;
                     break;
+                default:
+                    return false;
             }
             return true;
         }
