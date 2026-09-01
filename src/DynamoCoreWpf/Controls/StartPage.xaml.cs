@@ -619,7 +619,7 @@ namespace Dynamo.UI.Controls
             {
                 if(ex is JsonReaderException)
                 {
-                    DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
+                    DynamoViewModel.Model.Logger.Log($"Could not load Start Page preview data for '{filePath}': file is not valid JSON.");
                 }
                 else
                 {
