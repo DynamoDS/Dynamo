@@ -2065,6 +2065,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
   </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Package/Extension {0} not offered because the Autodesk ADP Desktop SDK is not installed ({1} could not be found), so MCP tokens cannot be validated; every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
     <value>このプロセスの Autodesk Identity (IDSDK)は MCP トークンを検証できない({1} が {2} を書き出さない)ため、パッケージ/拡張機能 {0} は提供されません。すべての要求は HTTP 401 で拒否されます。</value>
   </data>
