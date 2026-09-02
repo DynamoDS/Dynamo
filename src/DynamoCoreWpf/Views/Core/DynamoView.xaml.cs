@@ -182,36 +182,32 @@ namespace Dynamo.Controls
             // Apply appropriate expand/collapse library button state depending on initial width
             UpdateLibraryCollapseIcon();
 
-            // Check that preference bounds are actually within one
-            // of the available monitors.
-            if (CheckVirtualScreenSize())
+            // Restore the saved window bounds, but only when they still land on a
+            // currently-connected display. When the monitor Dynamo was last shown
+            // on is no longer available (undocking, disconnected displays, remote
+            // sessions, changed multi-monitor layouts), the saved position can
+            // place the window entirely off-screen with no reliable way to recover
+            // it. In that case, recenter on the primary monitor's working area.
+            var savedBounds = new System.Drawing.Rectangle(
+                (int)dynamoViewModel.Model.PreferenceSettings.WindowX,
+                (int)dynamoViewModel.Model.PreferenceSettings.WindowY,
+                (int)dynamoViewModel.Model.PreferenceSettings.WindowW,
+                (int)dynamoViewModel.Model.PreferenceSettings.WindowH);
+
+            if (IsWindowVisibleOnAnyScreen(savedBounds))
             {
-                System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
-                int leftLimit = 0;
-                int topLimit = 0;
-                foreach (var screen in screens)
-                {
-                    leftLimit += screen.Bounds.Width;
-                    topLimit += screen.Bounds.Height;
-                }
-
-                Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
-                Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
-                Width = dynamoViewModel.Model.PreferenceSettings.WindowW;
-                Height = dynamoViewModel.Model.PreferenceSettings.WindowH;
-
-                //When the previous location was in a secondary screen then the next time Dynamo is launched will try to use the same location, then we need to added this validations to show Dynamo in the right place
-                if (Left > leftLimit)
-                    Left = 0;
-                if (Top > topLimit)
-                    Top = 0;
+                Left = savedBounds.Left;
+                Top = savedBounds.Top;
+                Width = savedBounds.Width;
+                Height = savedBounds.Height;
             }
             else
             {
-                Left = 0;
-                Top = 0;
-                Width = 1024;
-                Height = 768;
+                var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+                Width = Math.Min(1024, workingArea.Width);
+                Height = Math.Min(768, workingArea.Height);
+                Left = workingArea.Left + (workingArea.Width - Width) / 2;
+                Top = workingArea.Top + (workingArea.Height - Height) / 2;
             }
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
@@ -1187,31 +1183,36 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private bool CheckVirtualScreenSize()
+        // Minimum overlap (in pixels) that the saved window must share with a
+        // connected display's working area to be considered recoverable by the
+        // user. Anything less is treated as effectively off-screen.
+        private const int MinVisibleWindowExtent = 100;
+
+        /// <summary>
+        /// Determines whether the given window bounds overlap the working area of
+        /// any currently-connected display by a usable amount. Used on startup to
+        /// decide whether the last-saved window position can be safely restored, or
+        /// whether the window must be recentered because the monitor it was saved
+        /// on is no longer available.
+        /// </summary>
+        private static bool IsWindowVisibleOnAnyScreen(System.Drawing.Rectangle bounds)
         {
-            var w = SystemParameters.VirtualScreenWidth;
-            var h = SystemParameters.VirtualScreenHeight;
-            var ox = SystemParameters.VirtualScreenLeft;
-            var oy = SystemParameters.VirtualScreenTop;
-
-            // TODO: Remove 10 pixel check if others can't reproduce
-            // On Ian's Windows 8 setup, when Dynamo is maximized, the origin
-            // saves at -8,-8. There doesn't seem to be any documentation on this
-            // so we'll put in a 10 pixel check to still allow the window to maximize.
-            if (dynamoViewModel.Model.PreferenceSettings.WindowX < ox - 10 ||
-                dynamoViewModel.Model.PreferenceSettings.WindowY < oy - 10)
+            if (bounds.Width <= 0 || bounds.Height <= 0)
             {
                 return false;
             }
 
-            // Check that the window is smaller than the available area.
-            if (dynamoViewModel.Model.PreferenceSettings.WindowW > w ||
-                dynamoViewModel.Model.PreferenceSettings.WindowH > h)
+            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
             {
-                return false;
+                var overlap = System.Drawing.Rectangle.Intersect(screen.WorkingArea, bounds);
+                if (overlap.Width >= MinVisibleWindowExtent &&
+                    overlap.Height >= MinVisibleWindowExtent)
+                {
+                    return true;
+                }
             }
 
-            return true;
+            return false;
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
