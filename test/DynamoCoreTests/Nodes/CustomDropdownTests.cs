@@ -6,6 +6,7 @@ using System.Linq;
 using CoreNodeModels;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 
 using NUnit.Framework;
@@ -92,6 +93,46 @@ namespace Dynamo.Tests.Nodes
             Assert.NotNull(watchNode);
             string watchValue = watchNode.CachedValue.StringData;
             Assert.AreEqual("3", watchValue);
+        }
+
+        /// <summary>
+        /// Deleting a customized Custom Selection node and undoing the delete should
+        /// restore the user's items and selection rather than the constructor defaults.
+        /// Regression test for https://github.com/DynamoDS/Dynamo/issues/17305
+        /// </summary>
+        [Test]
+        public void DeleteAndUndoKeepsCustomItemsAndSelection()
+        {
+            var node = new CustomSelection();
+
+            // Replace the default items with custom ones and pick a non-default selection.
+            node.Items.Clear();
+            node.Items.Add(new DynamoDropDownItem("Alpha", "10"));
+            node.Items.Add(new DynamoDropDownItem("Beta", "20"));
+            node.Items.Add(new DynamoDropDownItem("Gamma", "30"));
+            node.SelectedIndex = 2;
+
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+
+            var guid = node.GUID;
+
+            // Delete the node, then undo the delete.
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.DeleteModelCommand(guid));
+            Assert.IsNull(CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == guid));
+
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo));
+
+            var restored = CurrentDynamoModel.CurrentWorkspace.Nodes
+                .OfType<CustomSelection>()
+                .FirstOrDefault(n => n.GUID == guid);
+            Assert.NotNull(restored, "The Custom Selection node should be restored after undo.");
+
+            Assert.AreEqual(3, restored.Items.Count);
+            Assert.AreEqual("Alpha", restored.Items[0].Name);
+            Assert.AreEqual("10", restored.Items[0].Item);
+            Assert.AreEqual("Beta", restored.Items[1].Name);
+            Assert.AreEqual("Gamma", restored.Items[2].Name);
+            Assert.AreEqual(2, restored.SelectedIndex);
         }
     }
 }

@@ -152,7 +152,11 @@ namespace CoreNodeModels.Input
         {
             base.SerializeCore(nodeElement, context);
 
-            if (context == SaveContext.Copy)
+            // Persist the custom items for both copy/paste and undo/redo. Both operations
+            // round-trip the node through XML (SaveContext.Copy and SaveContext.Undo
+            // respectively); without covering Undo, deleting the node and undoing it would
+            // restore the constructor defaults and lose the user's items (see issue #17305).
+            if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
                 var doc = nodeElement.OwnerDocument;
 
@@ -170,7 +174,7 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(nodeElement, context);
 
-            if (context == SaveContext.Copy)
+            if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
                 Items.Clear();
                 foreach (XmlNode child in nodeElement.ChildNodes)
