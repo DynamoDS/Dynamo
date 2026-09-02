@@ -2,45 +2,13 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using CoreNodeModels.Input;
-using CoreNodeModels.Properties;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
-{
-    internal class NumericValidationRule : ValidationRule
-    {
-        //if the string can be parsed to a common numeric type return true
-        internal bool validateInput(string value)
-        {
-            double doubleVal;
-            long longVal;
-
-            if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleVal)
-                || long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out longVal))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-
-            if (!validateInput(value as string))
-            {
-                return new ValidationResult(false, Resources.NumberNodeInputMustBeNumeric);
-            }
-            else
-            {
-                return new ValidationResult(true, null);
-            }
-        }
-    }
-   
+{   
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
         public void CustomizeView(DoubleInput nodeModel, NodeView nodeView)
@@ -67,8 +35,9 @@ namespace CoreNodeModelsWpf.Nodes
                 Source = nodeModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
+
             var numericalValidation = new NumericValidationRule();
-            numericalValidation.ValidationStep = ValidationStep.ConvertedProposedValue;
+            numericalValidation.ValidationStep = ValidationStep.RawProposedValue;
             textToValueBinding.ValidationRules.Add(numericalValidation);
             tb.BindToProperty(textToValueBinding);
             Validation.SetErrorTemplate(tb, null);

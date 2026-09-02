@@ -480,6 +480,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The input must match the Date Time format and be a valid date/time..
+        /// </summary>
+        public static string DateTimeNodeInputInvalidFormat {
+            get {
+                return ResourceManager.GetString("DateTimeNodeInputInvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validates the data type of an input and returns it.
         /// </summary>
         public static string DefineDataDescription {
@@ -975,6 +984,15 @@ namespace CoreNodeModels.Properties {
         public static string IntegerSliderInfoMessage {
             get {
                 return ResourceManager.GetString("IntegerSliderInfoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The input must be an integer..
+        /// </summary>
+        public static string IntegerSliderInputMustBeInteger {
+            get {
+                return ResourceManager.GetString("IntegerSliderInputMustBeInteger", resourceCulture);
             }
         }
         
