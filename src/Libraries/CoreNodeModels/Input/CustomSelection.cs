@@ -174,6 +174,9 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(nodeElement, context);
 
+            // Mirrors the guard in SerializeCore: the items are only written for
+            // copy/paste and undo/redo, so they can only be read back for those
+            // same contexts.
             if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
                 Items.Clear();

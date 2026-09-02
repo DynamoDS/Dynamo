@@ -131,7 +131,9 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual("Alpha", restored.Items[0].Name);
             Assert.AreEqual("10", restored.Items[0].Item);
             Assert.AreEqual("Beta", restored.Items[1].Name);
+            Assert.AreEqual("20", restored.Items[1].Item);
             Assert.AreEqual("Gamma", restored.Items[2].Name);
+            Assert.AreEqual("30", restored.Items[2].Item);
             Assert.AreEqual(2, restored.SelectedIndex);
         }
     }
