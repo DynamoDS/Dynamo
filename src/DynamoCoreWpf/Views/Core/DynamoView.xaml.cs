@@ -188,11 +188,11 @@ namespace Dynamo.Controls
             // sessions, changed multi-monitor layouts), the saved position can
             // place the window entirely off-screen with no reliable way to recover
             // it. In that case, recenter on the primary monitor's working area.
-            var savedBounds = new System.Drawing.Rectangle(
-                (int)dynamoViewModel.Model.PreferenceSettings.WindowX,
-                (int)dynamoViewModel.Model.PreferenceSettings.WindowY,
-                (int)dynamoViewModel.Model.PreferenceSettings.WindowW,
-                (int)dynamoViewModel.Model.PreferenceSettings.WindowH);
+            var savedBounds = new Rect(
+                dynamoViewModel.Model.PreferenceSettings.WindowX,
+                dynamoViewModel.Model.PreferenceSettings.WindowY,
+                Math.Max(0, dynamoViewModel.Model.PreferenceSettings.WindowW),
+                Math.Max(0, dynamoViewModel.Model.PreferenceSettings.WindowH));
 
             if (IsWindowVisibleOnAnyScreen(savedBounds))
             {
@@ -203,11 +203,13 @@ namespace Dynamo.Controls
             }
             else
             {
-                var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
-                Width = Math.Min(1024, workingArea.Width);
-                Height = Math.Min(768, workingArea.Height);
-                Left = workingArea.Left + (workingArea.Width - Width) / 2;
-                Top = workingArea.Top + (workingArea.Height - Height) / 2;
+                // SystemParameters.WorkArea is already in device-independent units,
+                // so it can be assigned to the window bounds without conversion.
+                var workArea = SystemParameters.WorkArea;
+                Width = Math.Min(1024, workArea.Width);
+                Height = Math.Min(768, workArea.Height);
+                Left = workArea.Left + (workArea.Width - Width) / 2;
+                Top = workArea.Top + (workArea.Height - Height) / 2;
             }
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
@@ -1183,10 +1185,10 @@ namespace Dynamo.Controls
 
         #endregion
 
-        // Minimum overlap (in pixels) that the saved window must share with a
-        // connected display's working area to be considered recoverable by the
-        // user. Anything less is treated as effectively off-screen.
-        private const int MinVisibleWindowExtent = 100;
+        // Minimum overlap (in device-independent units) that the saved window must
+        // share with a connected display's working area to be considered
+        // recoverable by the user. Anything less is treated as off-screen.
+        private const double MinVisibleWindowExtent = 100;
 
         /// <summary>
         /// Determines whether the given window bounds overlap the working area of
@@ -1195,17 +1197,31 @@ namespace Dynamo.Controls
         /// whether the window must be recentered because the monitor it was saved
         /// on is no longer available.
         /// </summary>
-        private static bool IsWindowVisibleOnAnyScreen(System.Drawing.Rectangle bounds)
+        /// <param name="bounds">Window bounds in device-independent units.</param>
+        private static bool IsWindowVisibleOnAnyScreen(Rect bounds)
         {
             if (bounds.Width <= 0 || bounds.Height <= 0)
             {
                 return false;
             }
 
+            // Screen reports device pixels, while the window bounds and the saved
+            // preferences are device-independent units, so the monitor rectangles
+            // have to be scaled before they can be intersected.
+            var scale = GetDeviceToDipScale();
+
             foreach (var screen in System.Windows.Forms.Screen.AllScreens)
             {
-                var overlap = System.Drawing.Rectangle.Intersect(screen.WorkingArea, bounds);
-                if (overlap.Width >= MinVisibleWindowExtent &&
+                var workingArea = screen.WorkingArea;
+                var overlap = new Rect(
+                    workingArea.Left * scale,
+                    workingArea.Top * scale,
+                    workingArea.Width * scale,
+                    workingArea.Height * scale);
+                overlap.Intersect(bounds);
+
+                if (!overlap.IsEmpty &&
+                    overlap.Width >= MinVisibleWindowExtent &&
                     overlap.Height >= MinVisibleWindowExtent)
                 {
                     return true;
@@ -1213,6 +1229,25 @@ namespace Dynamo.Controls
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Returns the factor that converts the device pixels reported by
+        /// <see cref="System.Windows.Forms.Screen"/> into the device-independent
+        /// units used by WPF window bounds. It is derived from the primary monitor,
+        /// so it is an approximation on mixed-DPI layouts; that is acceptable here
+        /// because the visibility check only needs to know roughly where the
+        /// connected monitors are.
+        /// </summary>
+        private static double GetDeviceToDipScale()
+        {
+            var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
+            if (primaryScreen == null || primaryScreen.Bounds.Width <= 0)
+            {
+                return 1.0;
+            }
+
+            return SystemParameters.PrimaryScreenWidth / primaryScreen.Bounds.Width;
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
