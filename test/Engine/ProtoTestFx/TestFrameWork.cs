@@ -32,11 +32,9 @@ namespace ProtoTestFx.TD
         private readonly ProtoScriptRunner runner;
         private static string mErrorMessage = "";
         bool testImport;
-        bool testDebug;
         bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
-        bool executeInDebugMode = true;
  
         public TestFrameWork()
         {
@@ -97,38 +95,6 @@ namespace ProtoTestFx.TD
             {
                 Verify(pair.Key, pair.Value);
             }
-            
-            if (executeInDebugMode)
-            {
-                RunDebugWatch(code);
-                RunDebugEqualityTest(code);
-            }
-        }
-
-
-        /// <summary>
-        /// Generates a list of variables to watch. Runs the code and verifies the results against the generated watch list
-        /// Verifies the results against a list
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="verification"></param>
-        private void RunDebugWatch(string code)
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            WatchTestFx.GeneratePrintStatements(code, ref map);
-            WatchTestFx fx = new WatchTestFx();
-            fx.CompareRunAndWatchResults(null, code, map);
-        }
-
-
-        /// <summary>
-        /// Runs the code in Normal Execution, Debug StepOver, Debug StepIn 
-        /// Verifies that all 3 runs produce the same output 
-        /// </summary>
-        /// <param name="code"></param>
-        private void RunDebugEqualityTest(string code)
-        {
-            DebugTestFx.CompareDebugAndRunResults(code);
         }
 
         /// <summary>
@@ -290,11 +256,6 @@ namespace ProtoTestFx.TD
             {
                 testImport = cfgDebug;
             }
-            else
-            {
-                testDebug = false;
-                
-            }
         
             return testCore;
         }
@@ -331,25 +292,6 @@ namespace ProtoTestFx.TD
                     createDSFile(fileToRun, directory, importCode);
                     errorString = "tested as import file";
                     
-            }
-            else if (testDebug)
-            {
-                    Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-                    string fname = Path.Combine(directory, filename);
-                    TextReader file = new StreamReader(fname);
-                    WatchTestFx.GeneratePrintStatements(file, ref map);
-                    file = new StreamReader(fname);
-                    String src = file.ReadToEnd();
-                    file.Close();
-
-                    WatchTestFx fx = new WatchTestFx();
-                    testCore = fx.TestCore;
-                  
-                    fx.CompareRunAndWatchResults(Path.GetFullPath(filename), src, map);
-                    testMirror = fx.Mirror;
-
-                    return testMirror;
-                       
             }
 
             string dsFullPathName = directory + currentFile;
@@ -429,31 +371,6 @@ namespace ProtoTestFx.TD
 
                 return testMirror = RunScriptFile(importDir, importFileName);
 
-            }
-
-            if (testDebug)
-            {
-                Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-                if (!String.IsNullOrEmpty(includePath))
-                {
-                    if (System.IO.Directory.Exists(includePath))
-                    {
-                        testCore.Options.IncludeDirectories.Add(includePath);
-                    }
-                    else
-                    {
-                        Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
-                    }
-                }
-                StringReader file = new StringReader(sourceCode);
-                WatchTestFx.GeneratePrintStatements(file, ref map);
-
-                WatchTestFx fx = new WatchTestFx();
-                testCore = fx.TestCore;
-                fx.CompareRunAndWatchResults("", sourceCode, map);
-                testMirror = fx.Mirror;
-                
-                return testMirror;
             }
 
             SetupTestCore();
