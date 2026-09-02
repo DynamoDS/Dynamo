@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,7 +16,6 @@ using Dynamo.Notifications.View;
 using DynamoUtilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
@@ -147,7 +147,7 @@ namespace Dynamo.Notifications
 
         private void AddNotifications(List<NotificationItemModel> notifications)
         {
-            var notificationsList = JsonConvert.SerializeObject(notifications);
+            var notificationsList = JsonSerializer.Serialize(notifications);
             InvokeJS($"window.setNotifications({notificationsList});");
         }
 
@@ -163,7 +163,15 @@ namespace Dynamo.Notifications
             using (StreamReader reader = new StreamReader(stream))
             {
                 jsonStringFile = reader.ReadToEnd();
-                notificationsModel = JsonConvert.DeserializeObject<NotificationsModel>(jsonStringFile);
+                
+                // Use case-insensitive deserialization to match JSON property names
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    AllowTrailingCommas = true
+                };
+                
+                notificationsModel = JsonSerializer.Deserialize<NotificationsModel>(jsonStringFile, options);
 
                 //We are adding a limit of months to grab the notifications
                 var limitDate = DateTime.Now.AddMonths(-limitOfMonthsFilterNotifications);
