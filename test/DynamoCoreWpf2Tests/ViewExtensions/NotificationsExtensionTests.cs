@@ -24,23 +24,21 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var notificationExtension = this.View.viewExtensionManager.ViewExtensions.OfType<NotificationsViewExtension>().FirstOrDefault();
             NotificationUI notificationUI = null;
 
-            // Wait for the NotificationCenterController webview2 control to finish initialization
+            // Wait for the NotificationCenterController webview2 control to finish initialization and the popup to open.
+            // Querying the popup directly (rather than searching PresentationSource.CurrentSources for the Popup's
+            // internal HwndSource) avoids racing against the timing of the Popup's own native window creation.
             DispatcherUtil.DoEventsLoop(() =>
             {
-                if (notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done)
+                var popup = notificationExtension.notificationCenterController.notificationUIPopup;
+                if (notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done
+                    && popup != null && popup.IsOpen)
                 {
-                    notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
-                            .Select(h => h.RootVisual)
-                            .OfType<FrameworkElement>()
-                            .Select(f => f.Parent)
-                            .OfType<NotificationUI>()
-                            .FirstOrDefault(p => p.IsOpen);
-
-                    return notificationUI != null;
+                    notificationUI = popup;
+                    return true;
                 }
                 return false;
             }, 300);
-            
+
             Assert.NotNull(notificationUI, "Notification popup not part of the dynamo visual tree");
             var webView = notificationUI.FindName("webView");
             Assert.NotNull(webView, "WebView framework element not found.");
