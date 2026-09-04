@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Input;
+using Dynamo.Models;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -13,7 +14,19 @@ namespace DynamoCoreWpfTests
 
         public override void Open(string path)
         {
+            // These graphs run RunType="Automatic", so a single DoEvents() pump can
+            // return before the background evaluation (and its UI updates) finishes,
+            // racing under CI load. Waiting for EvaluationCompleted closes that race.
+            // See DYN-10842.
+            var evaluationCompleted = false;
+            EventHandler<EvaluationCompletedEventArgs> markDone = (s, e) => evaluationCompleted = true;
+            ViewModel.Model.EvaluationCompleted += markDone;
+
             base.Open(path);
+
+            DispatcherUtil.DoEventsLoop(() => evaluationCompleted, timeoutSeconds: 10);
+
+            ViewModel.Model.EvaluationCompleted -= markDone;
 
             DispatcherUtil.DoEvents();
         }
