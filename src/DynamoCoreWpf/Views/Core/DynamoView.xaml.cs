@@ -1234,10 +1234,12 @@ namespace Dynamo.Controls
         /// <summary>
         /// Returns the factor that converts the device pixels reported by
         /// <see cref="System.Windows.Forms.Screen"/> into the device-independent
-        /// units used by WPF window bounds. It is derived from the primary monitor,
-        /// so it is an approximation on mixed-DPI layouts; that is acceptable here
-        /// because the visibility check only needs to know roughly where the
-        /// connected monitors are.
+        /// units used by WPF window bounds, derived from the primary monitor.
+        /// Dynamo is System-DPI-aware, so Windows virtualizes every monitor's
+        /// coordinates to this single system scale; the factor is therefore correct
+        /// for all displays, not just the primary one. If Dynamo ever adopts
+        /// Per-Monitor V2 awareness (where each display can have its own scale),
+        /// this must be replaced with a per-monitor GetDpiForMonitor lookup.
         /// </summary>
         private static double GetDeviceToDipScale()
         {
