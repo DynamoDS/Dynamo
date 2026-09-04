@@ -18,16 +18,21 @@ namespace DynamoCoreWpfTests
             // return before the background evaluation (and its UI updates) finishes,
             // racing under CI load. Waiting for EvaluationCompleted closes that race.
             // See DYN-10842.
-            var evaluationCompleted = false;
-            EventHandler<EvaluationCompletedEventArgs> markDone = (s, e) => evaluationCompleted = true;
+            var evaluationCompleted = 0;
+            EventHandler<EvaluationCompletedEventArgs> markDone = (_, __) => System.Threading.Interlocked.Exchange(ref evaluationCompleted, 1);
             ViewModel.Model.EvaluationCompleted += markDone;
 
-            base.Open(path);
+            try
+            {
+                base.Open(path);
 
-            DispatcherUtil.DoEventsLoop(() => evaluationCompleted, timeoutSeconds: 10);
-
-            ViewModel.Model.EvaluationCompleted -= markDone;
-
+                DispatcherUtil.DoEventsLoop(() => System.Threading.Volatile.Read(ref evaluationCompleted) == 1, timeoutSeconds: 10);
+                Assert.That(System.Threading.Volatile.Read(ref evaluationCompleted) == 1, $"Timed out waiting for EvaluationCompleted after opening '{path}'.");
+            }
+            finally
+            {
+                ViewModel.Model.EvaluationCompleted -= markDone;
+            }
             DispatcherUtil.DoEvents();
         }
 
