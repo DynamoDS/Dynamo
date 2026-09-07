@@ -1665,6 +1665,43 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
         }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenSetGroupCollapsedThenGroupIsCollapsedAndUndoRestoresIt()
+        {
+            // Arrange - create a new group with a node in it
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            DynamoSelection.Instance.Selection.Add(addNode);
+            ViewModel.AddAnnotationCommand.Execute(null);
+
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var groupVm = workspaceVm.Annotations.FirstOrDefault();
+
+            // Assert that the group was created and is not collapsed
+            Assert.IsNotNull(groupVm, "Expected a group after AddAnnotationCommand.");
+
+            var groupId = groupVm.AnnotationModel.GUID;
+            Assert.IsFalse(workspaceVm.GetGroupCollapsed(groupId));
+
+            ViewModel.CurrentSpace.HasUnsavedChanges = false;
+
+            // Collapse the group
+            workspaceVm.SetGroupCollapsed(groupId, true);
+
+            // Assert that the group is now collapsed and the graph has unsaved changes
+            Assert.IsTrue(workspaceVm.GetGroupCollapsed(groupId));
+            Assert.IsFalse(groupVm.IsExpanded);
+            Assert.IsTrue(ViewModel.CurrentSpace.HasUnsavedChanges);
+
+            // Undo the collapse
+            ViewModel.UndoCommand.Execute(null);
+
+            // Assert that the group is no longer collapsed and the graph has unsaved changes
+            Assert.IsFalse(workspaceVm.GetGroupCollapsed(groupId));
+            Assert.IsTrue(groupVm.IsExpanded);
+        }
+
         #endregion
     }
 }

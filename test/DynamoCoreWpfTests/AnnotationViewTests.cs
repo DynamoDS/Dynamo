@@ -222,5 +222,64 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialWorkspaceNodeCount + 1, ws.Nodes.Count(), "A new node should be created in the workspace.");
             Assert.AreEqual(initialGroupNodeCount, groupModel.Nodes.Count(), "Collapsed group should NOT receive the new node.");
         }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenAnnotationModelIsExpandedSetFalseThenGroupCollapsesOnCanvas()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var annotationModel = Model.CurrentWorkspace.Annotations.First();
+            var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
+            var groupId = annotationModel.GUID;
+
+            // Assert initial state - the group is expanded
+            Assert.IsNotNull(annotationModel);
+            Assert.IsTrue(annotationModel.IsExpanded);
+            Assert.IsFalse(workspaceViewModel.GetGroupCollapsed(groupId));
+
+            // Collapse through the model
+            annotationModel.IsExpanded = false;
+            DispatcherUtil.DoEvents();
+
+            // Assert that the group is collapsed on the canvas
+            Assert.IsFalse(annotationModel.IsExpanded);
+            Assert.IsTrue(workspaceViewModel.GetGroupCollapsed(groupId));
+            Assert.IsFalse(workspaceViewModel.Annotations.First().IsExpanded);
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenSetGroupCollapsedThenGroupCollapseStateMatches()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var annotationModel = Model.CurrentWorkspace.Annotations.First();
+            var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
+            var groupId = annotationModel.GUID;
+
+            // Assert initial state - the group is expanded
+            Assert.IsNotNull(annotationModel);
+            Assert.IsTrue(annotationModel.IsExpanded);
+            Assert.IsFalse(workspaceViewModel.GetGroupCollapsed(groupId));
+
+            // Collapse through the workspace view model
+            workspaceViewModel.SetGroupCollapsed(groupId, collapsed: true);
+            DispatcherUtil.DoEvents();
+
+            // Assert that the group is collapsed on the canvas
+            Assert.IsTrue(workspaceViewModel.GetGroupCollapsed(groupId));
+            Assert.IsFalse(workspaceViewModel.Annotations.First().IsExpanded);
+
+            // Expand through the workspace view model
+            workspaceViewModel.SetGroupCollapsed(groupId, collapsed: false);
+            DispatcherUtil.DoEvents();
+
+            // Assert that the group is expanded on the canvas
+            Assert.IsFalse(workspaceViewModel.GetGroupCollapsed(groupId));
+            Assert.IsTrue(workspaceViewModel.Annotations.First().IsExpanded);
+        }
     }
 }
