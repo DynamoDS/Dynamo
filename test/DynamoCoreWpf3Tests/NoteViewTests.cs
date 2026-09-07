@@ -17,7 +17,9 @@ namespace DynamoCoreWpfTests
             // These graphs run RunType="Automatic", so a single DoEvents() pump can
             // return before the background evaluation (and its UI updates) finishes,
             // racing under CI load. Waiting for EvaluationCompleted closes that race.
-            // See DYN-10842.
+            // Assumes every graph opened via this override is RunType="Automatic";
+            // a non-Automatic graph will never raise EvaluationCompleted and will
+            // burn the full 10s timeout before failing. See DYN-10842.
             var evaluationCompleted = 0;
             EventHandler<EvaluationCompletedEventArgs> markDone = (_, __) => System.Threading.Interlocked.Exchange(ref evaluationCompleted, 1);
             ViewModel.Model.EvaluationCompleted += markDone;
