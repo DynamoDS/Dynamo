@@ -1289,16 +1289,8 @@ namespace Dynamo.ViewModels
         /// <exception cref="ArgumentException">Thrown when no annotation matches <paramref name="groupId"/>.</exception>
         public bool GetGroupCollapsed(Guid groupId)
         {
-            var annotation = Model.Annotations.FirstOrDefault(x => x.GUID == groupId);
-
-            if (annotation == null)
-            {
-                throw new ArgumentException($"No annotation group found with id: '{groupId}'.", nameof(groupId));
-            }
-
-            return !annotation.IsExpanded;
+            return !GetAnnotationViewModel(groupId).IsExpanded;
         }
-
 
         /// <summary>
         /// Collapses or expands an annotation group. The change is recordable and undoable.
@@ -1308,7 +1300,7 @@ namespace Dynamo.ViewModels
         /// <exception cref="ArgumentException">Thrown when no annotation matches <paramref name="groupId"/>.</exception>
         public void SetGroupCollapsed(Guid groupId, bool collapsed)
         {
-            var annotation = Model.Annotations.FirstOrDefault(x => x.GUID == groupId);
+            var annotation = GetAnnotationViewModel(groupId);
 
             if (annotation == null)
             {
@@ -1324,6 +1316,16 @@ namespace Dynamo.ViewModels
                     annotation.GUID,
                     nameof(AnnotationModel.IsExpanded),
                     expanded.ToString()));
+        }
+
+        private AnnotationModel GetAnnotationViewModel(Guid groupId)
+        {
+            var annotation = Annotations.FirstOrDefault(x => x.AnnotationModel.GUID == groupId);
+            if (annotation == null)
+            {
+                throw new ArgumentException($"No annotation group found with id: '{groupId}'.", nameof(groupId));
+            }
+            return annotation.AnnotationModel;
         }
 
         /// <summary>

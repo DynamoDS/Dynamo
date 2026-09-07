@@ -1692,6 +1692,7 @@ namespace DynamoCoreWpfTests
             // Assert that the group is now collapsed and the graph has unsaved changes
             Assert.IsTrue(workspaceVm.GetGroupCollapsed(groupId));
             Assert.IsFalse(groupVm.IsExpanded);
+            Assert.That(groupVm.ViewModelBases.All(x => x.IsCollapsed));
             Assert.IsTrue(ViewModel.CurrentSpace.HasUnsavedChanges);
 
             // Undo the collapse
@@ -1700,6 +1701,40 @@ namespace DynamoCoreWpfTests
             // Assert that the group is no longer collapsed and the graph has unsaved changes
             Assert.IsFalse(workspaceVm.GetGroupCollapsed(groupId));
             Assert.IsTrue(groupVm.IsExpanded);
+            Assert.That(groupVm.ViewModelBases.All(x => !x.IsCollapsed));
+
+            ViewModel.RedoCommand.Execute(null);
+
+            Assert.IsTrue(workspaceVm.GetGroupCollapsed(groupId));
+            Assert.That(groupVm.ViewModelBases.All(x => x.IsCollapsed));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenGroupIdIsUnknownThenGetAndSetGroupCollapsedThrow()
+        {
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var unknownId = Guid.NewGuid();
+
+            Assert.Throws<ArgumentException>(() => workspaceVm.GetGroupCollapsed(unknownId));
+            Assert.Throws<ArgumentException>(() => workspaceVm.SetGroupCollapsed(unknownId, true));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenSetGroupCollapsedOnNestedParentThenContentsAndNestedGroupAreCollapsed()
+        {
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var parent = workspaceVm.Annotations.First(x => x.AnnotationText == "GroupWithGroupedGroup");
+            var nested = workspaceVm.Annotations.First(x => x.AnnotationText == "GroupInsideOtherGroup");
+
+            workspaceVm.SetGroupCollapsed(parent.AnnotationModel.GUID, true);
+
+            Assert.IsTrue(workspaceVm.GetGroupCollapsed(parent.AnnotationModel.GUID));
+            Assert.That(parent.ViewModelBases.All(x => x.IsCollapsed));
+            Assert.IsTrue(nested.IsCollapsed);
         }
 
         #endregion
