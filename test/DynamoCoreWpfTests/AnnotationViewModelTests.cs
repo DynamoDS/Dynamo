@@ -719,7 +719,6 @@ namespace DynamoCoreWpfTests
             string newName = "A1B2C3";
             var workspaceVm = ViewModel.CurrentSpaceViewModel;
             var groupVm = workspaceVm.Annotations.First();
-            groupVm.IsExpanded = true;
 
             // Assert that initial conditions are met
             Assert.IsNotNull(groupVm, "Expected an initial group to be present");
@@ -727,8 +726,8 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(groupVm.AnnotationText.Equals(newName));
 
             // Rename and collapse the group
-            groupVm.AnnotationText = newName;
-            groupVm.IsExpanded = false;
+            ViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(Guid.Empty, groupId, "TextBlockText", newName));
+            workspaceVm.SetGroupCollapsed(groupId, true);
 
             // Assert initial action
             Assert.IsFalse(groupVm.IsExpanded, "Group should be collapsed");
