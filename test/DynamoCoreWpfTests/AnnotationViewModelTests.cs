@@ -719,6 +719,7 @@ namespace DynamoCoreWpfTests
             string newName = "A1B2C3";
             var workspaceVm = ViewModel.CurrentSpaceViewModel;
             var groupVm = workspaceVm.Annotations.First();
+            var groupId = groupVm.AnnotationModel.GUID;
 
             // Assert that initial conditions are met
             Assert.IsNotNull(groupVm, "Expected an initial group to be present");
