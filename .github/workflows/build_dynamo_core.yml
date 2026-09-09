@@ -9,7 +9,7 @@ on:
 jobs:
   build_windows_runtime:
     name: Build DynamoCore windows runtime
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v7
@@ -39,7 +39,7 @@ jobs:
           }
   build_linux_runtime_on_windows:
     name: Build DynamoCore linux runtime on windows
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v7
