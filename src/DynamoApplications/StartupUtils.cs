@@ -398,7 +398,7 @@ namespace Dynamo.Applications
                 {
                     throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
                 }
-                Version asmBinariesVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath, OSHelper.IsWindows() ? "*ASMAHL*.dll" : "*ASMahl*.so");
+                Version asmBinariesVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath, OSHelper.IsWindows() ? "*ASMAHL*.dll" : OperatingSystem.IsMacOS() ? "*ASMahl*.dylib" : "*ASMahl*.so");
 
                 //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
                 preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(asmBinariesVersion, rootFolder);
