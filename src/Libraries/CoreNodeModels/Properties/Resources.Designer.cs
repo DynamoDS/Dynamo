@@ -988,6 +988,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The input must be an integer..
+        /// </summary>
+        public static string IntegerSliderNonIntegerInputMessage {
+            get {
+                return ResourceManager.GetString("IntegerSliderNonIntegerInputMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to integerslider;.
         /// </summary>
         public static string IntegerSliderSearchTags {

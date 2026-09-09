@@ -754,4 +754,7 @@ double[]</value>
   <data name="CurveMapperInfoMessage" xml:space="preserve">
     <value>When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range.</value>
   </data>
+  <data name="IntegerSliderNonIntegerInputMessage" xml:space="preserve">
+    <value>The input must be an integer.</value>
+  </data>
 </root>
