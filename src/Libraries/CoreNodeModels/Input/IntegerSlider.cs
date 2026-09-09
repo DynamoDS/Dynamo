@@ -291,7 +291,7 @@ namespace CoreNodeModels.Input
         }
 
         // If the value field in the slider has a number greater than
-        // long.Maxvalue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
+        // long.MaxValue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
         // The property setter is overridden here to update the UI, in case the value is changed. 
         public override long Value
         {
@@ -315,36 +315,27 @@ namespace CoreNodeModels.Input
             {
                 case nameof(Min):
                 case "MinText":
+                    ClearErrorsAndWarnings();
                     Min = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Max):
                 case "MaxText":
+                    ClearErrorsAndWarnings();
                     Max = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Value):
                 case "ValueText":
-                    UpdateNodeInfo(value);
+                    ClearErrorsAndWarnings();
                     Value = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Step):
                 case "StepText":
+                    ClearErrorsAndWarnings();
                     Step = ConvertStringToInt64(value);
                     return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
-        }
-
-        private void UpdateNodeInfo(string value)
-        {
-            if (IsValueInt64(value))
-            {
-                ClearInfoMessages();
-            }
-            else
-            {
-                Info(Resources.IntegerSliderInfoMessage, true);
-            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -389,6 +380,8 @@ namespace CoreNodeModels.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
+
+            ClearErrorsAndWarnings();
 
             foreach (XmlNode subNode in element.ChildNodes)
             {

@@ -1,10 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Dynamo.Configuration;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Xml;
 
 namespace CoreNodeModels.Input
 {
@@ -21,6 +23,27 @@ namespace CoreNodeModels.Input
         {
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
+        }
+
+        /// <summary>
+        /// Display text for the DateTime input. Bound TwoWay so WPF validation can run;
+        /// the setter intentionally discard the value — commits go through UpdateModelValueCommand.
+        /// </summary>
+        [JsonIgnore]
+        public string ValueText
+        {
+            get => Value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
+            set => _ = value;
+        }
+
+        public override System.DateTime Value
+        {
+            get { return base.Value; }
+            set
+            {
+                base.Value = value;
+                RaisePropertyChanged(nameof(ValueText));
+            }
         }
 
         /// <summary>
@@ -92,12 +115,51 @@ namespace CoreNodeModels.Input
             };
         }
 
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            if (updateValueParams.PropertyName == nameof(Value)
+                || updateValueParams.PropertyName == nameof(ValueText))
+            {
+                if (!TryParseDateTime(updateValueParams.PropertyValue, out var parsed))
+                {
+                    Error(Properties.Resources.DateTimeNodeInputInvalidFormat);
+                    return false;
+                }
+
+                ClearErrorsAndWarnings();
+                Value = System.DateTime.SpecifyKind(parsed, DateTimeKind.Utc);
+                return true;
+            }
+            return base.UpdateValueCore(updateValueParams);
+        }
+
+        /// <summary>
+        /// Parses <paramref name="text"/> using <see cref="PreferenceSettings.DefaultDateFormat"/>
+        /// and the invariant culture.
+        /// </summary>
+        /// <param name="text">The date/time string to parse.</param>
+        /// <param name="parsed">When this method returns, the parsed value if successful; otherwise default.</param>
+        /// <returns>Return <c>true</c> if <paramref name="text"/> matches the expected format; otherwise <c>false</c>.</returns>
+        public static bool TryParseDateTime(string text, out System.DateTime parsed)
+        {
+            return System.DateTime.TryParseExact(
+                text,
+                PreferenceSettings.DefaultDateFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out parsed);
+        }
+
         protected override System.DateTime DeserializeValue(string val)
         {
-            System.DateTime result;
-            result = System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
-                result : PreferenceSettings.DynamoDefaultTime;
+            var result = TryParseDateTime(val, out var parsed) ? parsed : PreferenceSettings.DynamoDefaultTime;
             return System.DateTime.SpecifyKind(result, DateTimeKind.Utc);
+        }
+
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context); 
+            ClearErrorsAndWarnings();
         }
 
         protected override string SerializeValue()

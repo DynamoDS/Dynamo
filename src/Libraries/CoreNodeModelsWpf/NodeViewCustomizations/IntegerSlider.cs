@@ -14,6 +14,8 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
                 DataContext = new SliderViewModel<int>(model)
             };
 
+            slider.BindValidatedTextBoxes();
+
             nodeView.inputGrid.Children.Add(slider);
         }
 
@@ -28,6 +30,8 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
             {
                 DataContext = new SliderViewModel<long>(model)
             };
+
+            slider.BindValidatedTextBoxes(() => new Integer64ValidationRule());
 
             nodeView.inputGrid.Children.Add(slider);
         }
