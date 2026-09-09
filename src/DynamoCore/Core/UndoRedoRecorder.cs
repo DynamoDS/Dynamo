@@ -295,6 +295,18 @@ namespace Dynamo.Core
         public bool CanRedo { get { return redoStack.Count > 0; } }
 
         /// <summary>
+        /// True while an action group is open — that is, between a <see cref="BeginActionGroup"/>
+        /// call and the disposal of the root disposable it returned.
+        /// </summary>
+        /// <remarks>
+        /// Undo and redo both refuse to run while a group is open (see EnsureValidRecorderStates),
+        /// so a caller that holds a group open across several separate operations needs to be able
+        /// to ask whether one is currently open. See
+        /// <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup"/>.
+        /// </remarks>
+        public bool IsActionGroupOpen { get { return currentActionGroup != null; } }
+
+        /// <summary>
         /// The number of action groups currently on the undo stack that actually affect
         /// what would be written to the saved file (i.e. were recorded via
         /// RecordCreationForUndo/RecordDeletionForUndo, or RecordModificationForUndo with
@@ -524,6 +536,13 @@ namespace Dynamo.Core
         {
             private readonly UndoRedoRecorder recorder;
             private readonly bool isRoot;
+
+            // EndActionGroup throws when no group is open, so a second Dispose() would throw rather
+            // than no-op. A `using` block never disposes twice, but a caller holding the group open
+            // across separate calls (WorkspaceModel.BeginUndoActionGroup) can reach a second dispose
+            // on an error or teardown path, and a disposable that throws on redispose is a trap.
+            private bool disposed;
+
             public ActionGroupDisposable(UndoRedoRecorder recorder, bool isRoot)
             {
                 this.recorder = recorder;
@@ -532,6 +551,13 @@ namespace Dynamo.Core
 
             public void Dispose()
             {
+                if (disposed)
+                {
+                    return;
+                }
+
+                disposed = true;
+
                 if (isRoot)
                 {
                     recorder.EndActionGroup();
