@@ -5,14 +5,13 @@ using Dynamo.Configuration;
 using DynamoServices;
 using Greg;
 using Greg.AuthProviders;
-using RestSharp;
 
 namespace Dynamo.Core
 {
     /// <summary>
     /// The class to provide auth APIs for IDSDK related methods.
     /// </summary>
-    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider, IOAuth2UserIDProvider, IDisposable
+    public class IDSDKManager : IOAuth2AccessTokenProvider, IOAuth2UserIDProvider, IDisposable
     {
         /// <summary>
         /// Used by the auth provider to request authentication.
@@ -102,34 +101,9 @@ namespace Dynamo.Core
             }
         }
 
-        /// <summary>
-        /// Used by the auth provider to sign request with the authorized token.
-        /// </summary>
-        public void SignRequest(ref RestRequest m, RestClient client)
-        {
-            if (LoginState == LoginState.LoggedOut && !Login())
-            {
-                throw new Exception("You must be logged in, to use the Package Manager.");
-            }
-            m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");
-        }
         public string GetAccessToken()
         {
             return IDSDK_GetToken();
-        }
-
-        /// <summary>
-        /// Checks if the user is logged in and adds the token to request header.
-        /// </summary>
-        internal void LoginRequest(ref RestRequest m, RestClient client)
-        {
-            if (LoginState == LoginState.LoggedIn)
-            {
-                m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");          
-            }
-            else {
-                throw new Exception("You must be logged in, to use this service.");
-            }
         }
 
         private void OnLoginStateChanged(LoginState state)
