@@ -413,9 +413,12 @@ namespace Dynamo.Graph.Annotations
             get { return isExpanded; }
             set
             {
+                if (isExpanded == value) return;
+
                 isExpanded = value;
                 UpdateBoundaryFromSelection();
                 UpdateErrorAndWarningIconVisibility();
+                RaisePropertyChanged(nameof(IsExpanded));
             }
         }
 
@@ -1024,7 +1027,7 @@ namespace Dynamo.Graph.Annotations
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
             this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
-            this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
+            this.isExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
             this.IsOptionalInPortsCollapsed = helper.ReadBoolean(nameof(IsOptionalInPortsCollapsed), true);
             this.IsUnconnectedOutPortsCollapsed = helper.ReadBoolean(nameof(IsUnconnectedOutPortsCollapsed), true);
             this.HasToggledOptionalInPorts = helper.ReadBoolean(nameof(HasToggledOptionalInPorts), false);
@@ -1074,6 +1077,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged(nameof(AnnotationText));
             RaisePropertyChanged(nameof(Nodes));
             RaisePropertyChanged(nameof(IsExpanded));
+            UpdateErrorAndWarningIconVisibility();
             RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
             RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
             this.ReportPosition();
