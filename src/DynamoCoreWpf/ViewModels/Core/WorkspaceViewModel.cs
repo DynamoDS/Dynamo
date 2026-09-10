@@ -1289,7 +1289,7 @@ namespace Dynamo.ViewModels
         /// <exception cref="ArgumentException">Thrown when no annotation matches <paramref name="groupId"/>.</exception>
         public bool GetGroupCollapsed(Guid groupId)
         {
-            return !GetAnnotationViewModel(groupId).IsExpanded;
+            return !GetAnnotationModel(groupId).IsExpanded;
         }
 
         /// <summary>
@@ -1300,7 +1300,7 @@ namespace Dynamo.ViewModels
         /// <exception cref="ArgumentException">Thrown when no annotation matches <paramref name="groupId"/>.</exception>
         public void SetGroupCollapsed(Guid groupId, bool collapsed)
         {
-            var annotation = GetAnnotationViewModel(groupId);
+            var annotation = GetAnnotationModel(groupId);
 
             if (annotation == null)
             {
@@ -1312,13 +1312,13 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.ExecuteCommand(
                 new DynamoModel.UpdateModelValueCommand(
-                    Guid.Empty,
+                    Model.Guid,
                     annotation.GUID,
                     nameof(AnnotationModel.IsExpanded),
                     expanded.ToString()));
         }
 
-        private AnnotationModel GetAnnotationViewModel(Guid groupId)
+        private AnnotationModel GetAnnotationModel(Guid groupId)
         {
             var annotation = Annotations.FirstOrDefault(x => x.AnnotationModel.GUID == groupId);
             if (annotation == null)
