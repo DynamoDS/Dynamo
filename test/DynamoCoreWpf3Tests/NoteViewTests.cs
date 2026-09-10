@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Windows.Input;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -13,8 +15,27 @@ namespace DynamoCoreWpfTests
 
         public override void Open(string path)
         {
-            base.Open(path);
+            // These graphs run RunType="Automatic", so a single DoEvents() pump can
+            // return before the background evaluation (and its UI updates) finishes,
+            // racing under CI load. Waiting for EvaluationCompleted closes that race.
+            // Assumes every graph opened via this override is RunType="Automatic";
+            // a non-Automatic graph will never raise EvaluationCompleted and will
+            // burn the full 10s timeout before failing. See DYN-10842.
+            var evaluationCompleted = 0;
+            EventHandler<EvaluationCompletedEventArgs> markDone = (_, __) => System.Threading.Interlocked.Exchange(ref evaluationCompleted, 1);
+            ViewModel.Model.EvaluationCompleted += markDone;
 
+            try
+            {
+                base.Open(path);
+
+                DispatcherUtil.DoEventsLoop(() => System.Threading.Volatile.Read(ref evaluationCompleted) == 1, timeoutSeconds: 10);
+                Assert.That(System.Threading.Volatile.Read(ref evaluationCompleted) == 1, $"Timed out waiting for EvaluationCompleted after opening '{path}'.");
+            }
+            finally
+            {
+                ViewModel.Model.EvaluationCompleted -= markDone;
+            }
             DispatcherUtil.DoEvents();
         }
 
@@ -23,6 +44,34 @@ namespace DynamoCoreWpfTests
             base.Run();
 
             DispatcherUtil.DoEvents();
+        }
+
+        /// <summary>
+        /// Resolves the NodeView for the given guid, waiting for its ZIndex to reach a
+        /// stable, non-zero value before returning it. ZIndex is assigned exactly once,
+        /// in the NodeViewModel constructor (never to 0), so a 0 read here means the
+        /// container/view-model pairing observed is not yet the final one -- e.g. it is
+        /// still settling after Open(). Waiting here avoids asserting against that
+        /// transient state without weakening the assertions that consume the result.
+        /// See DYN-10842.
+        /// </summary>
+        private NodeView WaitForStableNodeView(string guid, int timeoutSeconds = 5)
+        {
+            NodeView result = null;
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                var matches = View.NodeViewsInFirstWorkspace()
+                    .Where(x => x.ViewModel.NodeLogic.GUID.ToString() == guid)
+                    .ToList();
+
+                if (matches.Count != 1) return false;
+
+                result = matches[0];
+                return result.ViewModel.ZIndex != 0;
+            }, timeoutSeconds);
+
+            Assert.IsNotNull(result, $"Timed out waiting for a stable NodeView with guid: {guid}");
+            return result;
         }
 
         [Test]
@@ -61,7 +110,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3 + ViewModel.HomeSpace.Notes.Count() + ViewModel.HomeSpace.Nodes.Count(), Dynamo.ViewModels.NoteViewModel.StaticZIndex);
 
             // Index of First Node (initally) == 4
-            var nodeView = NodeViewWithGuid("bbc16882-75c2-4a50-a4e4-5e50e191af8f");
+            var nodeView = WaitForStableNodeView("bbc16882-75c2-4a50-a4e4-5e50e191af8f");
             Assert.AreEqual(4, nodeView.ViewModel.ZIndex);
             Assert.AreEqual(3 + ViewModel.HomeSpace.Nodes.Count(), Dynamo.ViewModels.NodeViewModel.StaticZIndex);
 
@@ -78,7 +127,7 @@ namespace DynamoCoreWpfTests
 
             Open(@"UI\UINotes.dyn");
             var noteView = NoteViewWithGuid("4677e999-d5f5-4bb2-9706-a97bf3a86711");
-            var nodeView = NodeViewWithGuid("bbc16882-75c2-4a50-a4e4-5e50e191af8f");
+            var nodeView = WaitForStableNodeView("bbc16882-75c2-4a50-a4e4-5e50e191af8f");
 
             // Click on First Node
             nodeView.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
