@@ -103,6 +103,25 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// Asks the engine to stop the evaluation that is currently running.
+        /// Returns immediately: it raises a flag, it does not wait for the
+        /// evaluation to actually stop. Safe to call when nothing is running
+        /// and safe to call more than once.
+        internal void RequestCancellation()
+        {
+            if (IsDisposed) return;
+            LiveRunnerRuntimeCore?.RequestCancellation();
+        }
+
+        /// <summary>
+        /// Clears any pending cancellation so a later evaluation is unaffected.
+        /// </summary>
+        internal void ResetCancellation()
+        {
+            if (IsDisposed) return;
+            LiveRunnerRuntimeCore?.ResetCancellation();
+        }
 
         /// <summary>
         /// Returns library service instance.
