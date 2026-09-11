@@ -193,6 +193,12 @@ namespace ProtoCore
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
         private bool cancellationPending = false;
+
+        /// <summary>
+        /// Returns true when a cancellation has been requested for the execution
+        /// that is currently in progress. The virtual machine reads this between
+        /// instructions and before dispatching a function call.
+        /// </summary>
         public bool CancellationPending
         {
             get
@@ -201,7 +207,26 @@ namespace ProtoCore
             }
         }
 
-#region DEBUGGER_PROPERTIES
+        /// <summary>
+        /// Asks the currently running execution to stop. Cancellation is cooperative:
+        /// the virtual machine only stops at the next instruction or function call
+        /// boundary, so a single long running external call must return first.
+        /// Calling this repeatedly has no additional effect.
+        /// </summary>
+        public void RequestCancellation()
+        {
+            cancellationPending = true;
+        }
+
+        /// <summary>
+        /// Clears a pending cancellation so it cannot affect a later execution.
+        /// </summary>
+        public void ResetCancellation()
+        {
+            cancellationPending = false;
+        }
+
+        #region DEBUGGER_PROPERTIES
 
         public int watchClassScope { get; set; }
 
