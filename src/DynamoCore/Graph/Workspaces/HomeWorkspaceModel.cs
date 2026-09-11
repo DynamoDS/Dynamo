@@ -826,12 +826,12 @@ namespace Dynamo.Graph.Workspaces
 
             if (wasCancelled)
             {
-                // These nodes had their dirty flags cleared when the task was scheduled,
-                // but the evaluation never reached them. Mark them dirty again so the
-                // next run recomputes them instead of quietly reusing older values.
-                foreach (var modifiedNode in updateTask.ModifiedNodes)
+                // Cancelling tears down and rebuilds the DesignScript VM, so nothing
+                // compiled survives. Mark the whole graph dirty the same way a VM reset
+                // does, otherwise the next run sends a partial graph to an empty VM.
+                foreach (var node in Nodes)
                 {
-                    modifiedNode.MarkNodeAsModified();
+                    node.MarkNodeAsModified();
                 }
             }
 

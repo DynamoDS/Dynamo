@@ -82,7 +82,7 @@ namespace Dynamo.Models
         private void RunCancelImpl(RunCancelCommand command)
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;
-            if (model != null)
+            if (model == null)
                 return;
 
             if (command.CancelRun)
