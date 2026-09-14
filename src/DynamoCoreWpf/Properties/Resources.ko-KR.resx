@@ -2064,7 +2064,7 @@
     <value>확장이 이미 확장 사이트바에 있어 새 탭이 추가되지 않습니다.</value>
   </data>
   <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
-    <value>Package/Extension {0} not offered because the Autodesk ADP Desktop SDK is not installed ({1} could not be found), so MCP tokens cannot be validated; every request would be rejected with HTTP 401.</value>
+    <value>Autodesk ADP Desktop SDK가 설치되어 있지 않아({1}을(를) 찾을 수 없음) MCP 토큰을 검증할 수 없습니다. 따라서 모든 요청이 HTTP 401 오류로 거부되므로 패키지/확장 {0}은(는) 제공되지 않습니다.</value>
   </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
     <value>이 프로세스의 Autodesk Identity(IDSDK)에서 MCP 토큰을 검증할 수 없으므로 Package/Extension {0}이(가) 제공되지 않습니다({1}에서 {2}을(를) 내보내지 않음). 모든 요청이 HTTP 401 오류로 거부됩니다.</value>
