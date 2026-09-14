@@ -719,7 +719,7 @@ namespace DynamoCoreWpfTests
             string newName = "A1B2C3";
             var workspaceVm = ViewModel.CurrentSpaceViewModel;
             var groupVm = workspaceVm.Annotations.First();
-            groupVm.IsExpanded = true;
+            var groupId = groupVm.AnnotationModel.GUID;
 
             // Assert that initial conditions are met
             Assert.IsNotNull(groupVm, "Expected an initial group to be present");
@@ -727,8 +727,8 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(groupVm.AnnotationText.Equals(newName));
 
             // Rename and collapse the group
-            groupVm.AnnotationText = newName;
-            groupVm.IsExpanded = false;
+            ViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(Guid.Empty, groupId, "TextBlockText", newName));
+            workspaceVm.SetGroupCollapsed(groupId, true);
 
             // Assert initial action
             Assert.IsFalse(groupVm.IsExpanded, "Group should be collapsed");
@@ -1663,6 +1663,78 @@ namespace DynamoCoreWpfTests
 
             // Assert connectors remain collapsed post-undo
             Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenSetGroupCollapsedThenGroupIsCollapsedAndUndoRestoresIt()
+        {
+            // Arrange - create a new group with a node in it
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            DynamoSelection.Instance.Selection.Add(addNode);
+            ViewModel.AddAnnotationCommand.Execute(null);
+
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var groupVm = workspaceVm.Annotations.FirstOrDefault();
+
+            // Assert that the group was created and is not collapsed
+            Assert.IsNotNull(groupVm, "Expected a group after AddAnnotationCommand.");
+
+            var groupId = groupVm.AnnotationModel.GUID;
+            Assert.IsFalse(workspaceVm.GetGroupCollapsed(groupId));
+
+            ViewModel.CurrentSpace.HasUnsavedChanges = false;
+
+            // Collapse the group
+            workspaceVm.SetGroupCollapsed(groupId, true);
+
+            // Assert that the group is now collapsed and the graph has unsaved changes
+            Assert.IsTrue(workspaceVm.GetGroupCollapsed(groupId));
+            Assert.IsFalse(groupVm.IsExpanded);
+            Assert.That(groupVm.ViewModelBases.All(x => x.IsCollapsed));
+            Assert.IsTrue(ViewModel.CurrentSpace.HasUnsavedChanges);
+
+            // Undo the collapse
+            ViewModel.UndoCommand.Execute(null);
+
+            // Assert that the group is no longer collapsed and the graph has unsaved changes
+            Assert.IsFalse(workspaceVm.GetGroupCollapsed(groupId));
+            Assert.IsTrue(groupVm.IsExpanded);
+            Assert.That(groupVm.ViewModelBases.All(x => !x.IsCollapsed));
+
+            ViewModel.RedoCommand.Execute(null);
+
+            Assert.IsTrue(workspaceVm.GetGroupCollapsed(groupId));
+            Assert.That(groupVm.ViewModelBases.All(x => x.IsCollapsed));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenGroupIdIsUnknownThenGetAndSetGroupCollapsedThrow()
+        {
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var unknownId = Guid.NewGuid();
+
+            Assert.Throws<ArgumentException>(() => workspaceVm.GetGroupCollapsed(unknownId));
+            Assert.Throws<ArgumentException>(() => workspaceVm.SetGroupCollapsed(unknownId, true));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenSetGroupCollapsedOnNestedParentThenContentsAndNestedGroupAreCollapsed()
+        {
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var parent = workspaceVm.Annotations.First(x => x.AnnotationText == "GroupWithGroupedGroup");
+            var nested = workspaceVm.Annotations.First(x => x.AnnotationText == "GroupInsideOtherGroup");
+
+            workspaceVm.SetGroupCollapsed(parent.AnnotationModel.GUID, true);
+
+            Assert.IsTrue(workspaceVm.GetGroupCollapsed(parent.AnnotationModel.GUID));
+            Assert.That(parent.ViewModelBases.All(x => x.IsCollapsed));
+            Assert.IsTrue(nested.IsCollapsed);
         }
 
         #endregion
