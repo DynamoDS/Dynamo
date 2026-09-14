@@ -38,6 +38,8 @@ Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> b
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
+Dynamo.ViewModels.WorkspaceViewModel.GetGroupCollapsed(System.Guid groupId) -> bool
+Dynamo.ViewModels.WorkspaceViewModel.SetGroupCollapsed(System.Guid groupId, bool collapsed) -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
