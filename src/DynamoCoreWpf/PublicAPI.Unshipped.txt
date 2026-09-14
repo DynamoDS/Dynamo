@@ -36,8 +36,15 @@ Dynamo.ViewModels.OpenNodeAnnotationEventArgs.InputTypes.get -> System.Collectio
 Dynamo.ViewModels.OpenNodeAnnotationEventArgs.OutputTypes.get -> System.Collections.Generic.IEnumerable<string>
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.SelectedTheme.get -> string
+Dynamo.ViewModels.PreferencesViewModel.SelectedTheme.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ThemesList.get -> System.Collections.ObjectModel.ObservableCollection<string>
+Dynamo.ViewModels.PreferencesViewModel.ThemesList.set -> void
+static Dynamo.UI.SharedDictionaryManager.BaseDynamoColorsAndBrushesDictionaryUri.get -> System.Uri
+static Dynamo.UI.SharedDictionaryManager.CurrentTheme.get -> Dynamo.Configuration.DynamoTheme
+static Dynamo.UI.SharedDictionaryManager.CurrentTheme.set -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
@@ -80,6 +87,11 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerUninstall.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotifications.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotificationsTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewThemeDark.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewThemeLight.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewThemeRestartRequired.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsTheme.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesWindowThemeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetStylesButton.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetStylesButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonText.get -> string

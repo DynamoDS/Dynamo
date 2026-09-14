@@ -48,9 +48,11 @@ namespace Dynamo.ViewModels
         private string selectedUnits;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
+        private string selectedTheme;
 
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> unitList;
+        private ObservableCollection<string> themesList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<int> groupStyleFontSizeList;
@@ -177,6 +179,63 @@ namespace Dynamo.ViewModels
                         dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maps the localized theme name shown in the dropdown to the persisted enum value.
+        /// </summary>
+        private static readonly Dictionary<string, DynamoTheme> LocalizedThemesMap =
+            new Dictionary<string, DynamoTheme>
+            {
+                { Res.PreferencesViewThemeDark, DynamoTheme.Dark },
+                { Res.PreferencesViewThemeLight, DynamoTheme.Light }
+            };
+
+        /// <summary>
+        /// The themes offered by the theme dropdown in Preferences -> Visual Settings -> Display Settings.
+        /// </summary>
+        public ObservableCollection<string> ThemesList
+        {
+            get
+            {
+                return themesList ??
+                    (themesList = new ObservableCollection<string>(LocalizedThemesMap.Keys));
+            }
+            set
+            {
+                themesList = value;
+                RaisePropertyChanged(nameof(ThemesList));
+            }
+        }
+
+        /// <summary>
+        /// The localized name of the currently selected theme.
+        /// </summary>
+        /// <remarks>
+        /// Dynamo resolves its resource dictionaries once during startup, so selecting a theme
+        /// here only changes the persisted preference; the UI keeps the theme it started with
+        /// until the next launch.
+        /// </remarks>
+        public string SelectedTheme
+        {
+            get
+            {
+                return selectedTheme;
+            }
+            set
+            {
+                if (selectedTheme == value) return;
+
+                selectedTheme = value;
+                RaisePropertyChanged(nameof(SelectedTheme));
+
+                if (!LocalizedThemesMap.TryGetValue(value ?? string.Empty, out DynamoTheme theme)) return;
+                if (preferenceSettings.Theme == theme) return;
+
+                preferenceSettings.Theme = theme;
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                    Res.PreferencesViewThemeRestartRequired, true);
             }
         }
 
@@ -1512,6 +1571,8 @@ namespace Dynamo.ViewModels
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
+            selectedTheme = LocalizedThemesMap
+                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.PreferencesViewThemeDark;
             dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
             dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
             dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = preferenceSettings.UseRenderInstancing;
@@ -1575,6 +1636,11 @@ namespace Dynamo.ViewModels
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key ?? Configurations.SupportedLocaleDic.FirstOrDefault().Key;
+
+            // Assigned to the backing field so that opening Preferences does not raise the
+            // "restart required" toast for a theme the user has not actually changed.
+            selectedTheme = LocalizedThemesMap
+                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.PreferencesViewThemeDark;
 
             LocalizedUnitsMap = new Dictionary<string, string>();
             foreach (var unit in Configurations.SupportedUnits)
@@ -1886,6 +1952,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(OptionsGeometryScale):
                     description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingsMenuChangeScaleFactor), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(SelectedTheme):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsTheme), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowEdges):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);

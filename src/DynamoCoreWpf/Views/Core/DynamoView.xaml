@@ -805,7 +805,7 @@
               Grid.Column="2"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
-              Background="#232323"
+              Background="{StaticResource WorkspaceBackgroundBrush}"
               IsHitTestVisible="{Binding BackgroundPreviewViewModel.CanNavigateBackground}">
             <Canvas Name="backgroundCanvas"
                     Margin="0,0,0,0"

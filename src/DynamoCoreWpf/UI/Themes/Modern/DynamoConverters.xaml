@@ -28,22 +28,22 @@
                                       TrueBrush="Black" />
 
     <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter"
-                                               False="#444"
-                                               True="#6AC0E7" />
+                                               False="{StaticResource ConnectorNoneColor}"
+                                               True="{StaticResource ConnectorSelectionColor}" />
 
     <controls:ConnectionStateToColorConverter x:Key="ConnectionStateToColorConverter"
-                                              ExecutionPreview="#F2930C"
-                                              Hover="#808080"
-                                              None="#444"
-                                              Selection="#6AC0E7"
-                                              Transient="#D5BCF7"/>
+                                              ExecutionPreview="{StaticResource ConnectorExecutionPreviewColor}"
+                                              Hover="{StaticResource ConnectorHoverColor}"
+                                              None="{StaticResource ConnectorNoneColor}"
+                                              Selection="{StaticResource ConnectorSelectionColor}"
+                                              Transient="{StaticResource ConnectorTransientColor}"/>
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
-                                              ExecutionPreviewBrush="#F2930C"
-                                              HoverBrush="#808080"
-                                              NoneBrush="#444"
-                                              SelectionBrush="#6AC0E7"
-                                              TransientBrush="#D5BCF7"/>
+                                              ExecutionPreviewBrush="{StaticResource ConnectorExecutionPreviewBrush}"
+                                              HoverBrush="{StaticResource ConnectorHoverBrush}"
+                                              NoneBrush="{StaticResource ConnectorNoneBrush}"
+                                              SelectionBrush="{StaticResource ConnectorSelectionBrush}"
+                                              TransientBrush="{StaticResource ConnectorTransientBrush}"/>
 
     <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter" />
     <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />

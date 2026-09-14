@@ -80,7 +80,7 @@
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                    FontSize="12px"
                                    FontWeight="Medium"
-                                   Foreground="#DCDCDC"
+                                   Foreground="{StaticResource PortLabelForegroundBrush}"
                                    IsHitTestVisible="False"
                                    Text="{Binding Path=PortName}">
                             <TextBlock.Style>

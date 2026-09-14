@@ -878,6 +878,14 @@ namespace Dynamo.ViewModels
 
             // initialize core data structures
             this.model = startConfiguration.DynamoModel;
+
+            // The theme has to be selected before any view is constructed, because the shared
+            // resource dictionaries are cached by URI the first time a view resolves them.
+            if (model.PreferenceSettings != null)
+            {
+                SharedDictionaryManager.CurrentTheme = model.PreferenceSettings.Theme;
+            }
+
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;

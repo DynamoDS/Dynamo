@@ -968,6 +968,27 @@ namespace Dynamo.Configuration
         /// </summary>
         internal event Action AutocompletePreferencesChanged;
 
+        private DynamoTheme theme;
+        /// <summary>
+        /// The visual theme Dynamo renders its interface with.
+        /// </summary>
+        /// <remarks>
+        /// The theme is read once during startup to select the resource dictionary folder,
+        /// so a change only takes effect after Dynamo is restarted.
+        /// </remarks>
+        public DynamoTheme Theme
+        {
+            get => theme;
+            set
+            {
+                if (theme != value)
+                {
+                    theme = value;
+                    RaisePropertyChanged(nameof(Theme));
+                }
+            }
+        }
+
         /// <summary>
         /// Show Run Preview flag.
         /// </summary>
@@ -1071,6 +1092,7 @@ namespace Dynamo.Configuration
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+            Theme = DynamoTheme.Dark;
             ShowDefaultGroupDescription = true;
             OptionalInPortsCollapsed = true;
             UnconnectedOutPortsCollapsed = true;

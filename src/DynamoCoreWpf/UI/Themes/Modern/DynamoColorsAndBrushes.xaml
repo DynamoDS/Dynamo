@@ -80,6 +80,14 @@
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
+    <!--
+        Semantic node surface keys. Prefer these over the palette greys above when styling a node:
+        the palette names describe a shade, not a role, so they cannot be re-themed safely
+        (the same key is used as a foreground in one view and a background in another).
+    -->
+    <SolidColorBrush x:Key="NodeBodyBackgroundBrush" Color="{StaticResource DarkerGrey}" />
+    <SolidColorBrush x:Key="NodeHeaderBackgroundBrush" Color="{StaticResource DarkMidGrey}" />
+
     <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
     <SolidColorBrush x:Key="NodeTransientOverlayColor" Color="#D5BCF7" />
     <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
@@ -176,6 +184,12 @@
     <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor" Color="#38ABDF" />
 
     <!--  Port color  -->
+    <!--  Role-named port keys; these are read by PortViewModel and Ports.xaml.  -->
+    <SolidColorBrush x:Key="PortBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="PortBackgroundPreviewOffBrush" Color="#666666" />
+    <SolidColorBrush x:Key="PortBorderBrush" Color="#A1A1A1" />
+    <SolidColorBrush x:Key="PortLabelForegroundBrush" Color="#DCDCDC" />
+
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
     <SolidColorBrush x:Key="ChevronHighlightOverlayBackground" Color="#E5E2DE" />
@@ -183,6 +197,22 @@
 
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
+
+    <!--
+        Wire colors per connection state. Both a Color and a Brush form are needed because
+        ConnectionStateToColorConverter and ConnectionStateToBrushConverter take different types.
+    -->
+    <Color x:Key="ConnectorNoneColor">#444444</Color>
+    <Color x:Key="ConnectorSelectionColor">#6AC0E7</Color>
+    <Color x:Key="ConnectorHoverColor">#808080</Color>
+    <Color x:Key="ConnectorExecutionPreviewColor">#F2930C</Color>
+    <Color x:Key="ConnectorTransientColor">#D5BCF7</Color>
+
+    <SolidColorBrush x:Key="ConnectorNoneBrush" Color="{StaticResource ConnectorNoneColor}" />
+    <SolidColorBrush x:Key="ConnectorSelectionBrush" Color="{StaticResource ConnectorSelectionColor}" />
+    <SolidColorBrush x:Key="ConnectorHoverBrush" Color="{StaticResource ConnectorHoverColor}" />
+    <SolidColorBrush x:Key="ConnectorExecutionPreviewBrush" Color="{StaticResource ConnectorExecutionPreviewColor}" />
+    <SolidColorBrush x:Key="ConnectorTransientBrush" Color="{StaticResource ConnectorTransientColor}" />
 
     <!--  Modal Pattern  -->
 
