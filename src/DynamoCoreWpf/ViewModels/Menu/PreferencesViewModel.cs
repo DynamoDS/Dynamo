@@ -188,8 +188,8 @@ namespace Dynamo.ViewModels
         private static readonly Dictionary<string, DynamoTheme> LocalizedThemesMap =
             new Dictionary<string, DynamoTheme>
             {
-                { Res.PreferencesViewThemeDark, DynamoTheme.Dark },
-                { Res.PreferencesViewThemeLight, DynamoTheme.Light }
+                { Res.ResourceManager.GetString("PreferencesViewThemeDark", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Dark.ToString(), DynamoTheme.Dark },
+                { Res.ResourceManager.GetString("PreferencesViewThemeLight", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Light.ToString(), DynamoTheme.Light }
             };
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Dynamo.ViewModels
 
                 preferenceSettings.Theme = theme;
                 dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
-                    Res.PreferencesViewThemeRestartRequired, true);
+                    Res.ResourceManager.GetString("PreferencesViewThemeRestartRequired", System.Globalization.CultureInfo.CurrentUICulture), true);
             }
         }
 
@@ -1572,7 +1572,7 @@ namespace Dynamo.ViewModels
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
             selectedTheme = LocalizedThemesMap
-                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.PreferencesViewThemeDark;
+                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.ResourceManager.GetString("PreferencesViewThemeDark", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Dark.ToString();
             dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
             dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
             dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = preferenceSettings.UseRenderInstancing;
@@ -1640,7 +1640,7 @@ namespace Dynamo.ViewModels
             // Assigned to the backing field so that opening Preferences does not raise the
             // "restart required" toast for a theme the user has not actually changed.
             selectedTheme = LocalizedThemesMap
-                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.PreferencesViewThemeDark;
+                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.ResourceManager.GetString("PreferencesViewThemeDark", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Dark.ToString();
 
             LocalizedUnitsMap = new Dictionary<string, string>();
             foreach (var unit in Configurations.SupportedUnits)
@@ -1954,7 +1954,7 @@ namespace Dynamo.ViewModels
                     description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingsMenuChangeScaleFactor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(SelectedTheme):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsTheme), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString("PreferencesViewVisualSettingsTheme", System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowEdges):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);
