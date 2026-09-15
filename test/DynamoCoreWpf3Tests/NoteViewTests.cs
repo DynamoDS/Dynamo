@@ -47,12 +47,13 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Resolves the NodeView for the given guid, waiting for its ZIndex to reach a
-        /// stable, non-zero value before returning it. ZIndex is assigned exactly once,
-        /// in the NodeViewModel constructor (never to 0), so a 0 read here means the
-        /// container/view-model pairing observed is not yet the final one -- e.g. it is
-        /// still settling after Open(). Waiting here avoids asserting against that
-        /// transient state without weakening the assertions that consume the result.
+        /// Resolves the NodeView for the given guid, retrying until exactly one match is
+        /// found -- View.NodeViewsInFirstWorkspace() can transiently return zero or more
+        /// than one NodeView for a guid while the view is still settling after Open().
+        /// The additional ZIndex != 0 check is a defensive guard, not the primary
+        /// condition: ZIndex defaults to Configurations.NodeStartZIndex via a field
+        /// initializer that runs before the NodeViewModel constructor body, so a fully
+        /// constructed instance is never actually observed with ZIndex == 0.
         /// See DYN-10842.
         /// </summary>
         private NodeView WaitForStableNodeView(string guid, int timeoutSeconds = 5)
