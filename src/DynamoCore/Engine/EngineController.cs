@@ -108,6 +108,7 @@ namespace Dynamo.Engine
         /// Returns immediately: it raises a flag, it does not wait for the
         /// evaluation to actually stop. Safe to call when nothing is running
         /// and safe to call more than once.
+        /// </summary>
         internal void RequestCancellation()
         {
             if (IsDisposed) return;

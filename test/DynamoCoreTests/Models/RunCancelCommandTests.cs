@@ -182,10 +182,11 @@ namespace Dynamo.Tests.ModelsTest
             Assert.IsTrue(home.GraphRunInProgress, "Run did not start.");
 
             var deadline = DateTime.UtcNow.AddSeconds(30);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.RunCancelCommand(false, true));
+
             while (!finished.Wait(50))
             {
                 Assert.Less(DateTime.UtcNow, deadline, "Cancelled evaluation never completed.");
-                CurrentDynamoModel.ExecuteCommand(new DynamoModel.RunCancelCommand(false, true));
             }
 
             return completed;

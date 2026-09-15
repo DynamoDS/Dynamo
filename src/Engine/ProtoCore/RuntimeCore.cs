@@ -192,7 +192,7 @@ namespace ProtoCore
         
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
-        private bool cancellationPending = false;
+        private volatile bool cancellationPending = false;
 
         /// <summary>
         /// Returns true when a cancellation has been requested for the execution
