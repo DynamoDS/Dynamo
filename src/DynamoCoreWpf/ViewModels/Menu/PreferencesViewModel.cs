@@ -49,7 +49,6 @@ namespace Dynamo.ViewModels
         private string selectedNumberFormat;
         private string selectedPythonEngine;
         private string selectedTheme;
-        private bool themeChangeRequiresRestart;
 
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> unitList;
@@ -235,30 +234,8 @@ namespace Dynamo.ViewModels
                 if (preferenceSettings.Theme == theme) return;
 
                 preferenceSettings.Theme = theme;
-                ThemeChangeRequiresRestart = true;
-            }
-        }
-
-        /// <summary>
-        /// True once the user has selected a theme other than the one Dynamo started with.
-        /// </summary>
-        /// <remarks>
-        /// Surfaced inline in the Preferences window rather than through the toast manager. The
-        /// toast renders onto the main Dynamo window, which sits behind the Preferences window the
-        /// user is looking at, so a toast raised from here is never visible.
-        /// </remarks>
-        public bool ThemeChangeRequiresRestart
-        {
-            get
-            {
-                return themeChangeRequiresRestart;
-            }
-            private set
-            {
-                if (themeChangeRequiresRestart == value) return;
-
-                themeChangeRequiresRestart = value;
-                RaisePropertyChanged(nameof(ThemeChangeRequiresRestart));
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                    Res.ResourceManager.GetString("PreferencesViewThemeRestartRequired", System.Globalization.CultureInfo.CurrentUICulture), true);
             }
         }
 

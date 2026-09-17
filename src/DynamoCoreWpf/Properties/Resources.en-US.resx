@@ -2592,6 +2592,14 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Show Edges</value>
     <comment>Show Edges</comment>
   </data>
+  <data name="PreferencesViewThemeRestartRequired" xml:space="preserve">
+    <value>Restart Dynamo to apply the new theme.</value>
+    <comment>Shown next to the theme dropdown after the selection changes</comment>
+  </data>
+  <data name="PreferencesWindowThemeTooltip" xml:space="preserve">
+    <value>Selects the color theme used by the Dynamo interface. The change takes effect the next time Dynamo starts. Some areas, including the library, the home page and the Package Manager, currently remain dark in both themes.</value>
+    <comment>Tooltip for the theme selection dropdown</comment>
+  </data>
   <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
     <value>Isolate Selected Geometry</value>
     <comment>Toogle Button Content</comment>
