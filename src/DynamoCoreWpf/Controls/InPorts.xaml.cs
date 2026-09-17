@@ -31,7 +31,9 @@ namespace Dynamo.UI.Controls
         private bool _useLevelSpinnerInit = false;
 
         // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
-        private static SolidColorBrush _primaryCharcoal200Brush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+        // Port text uses a role-named key rather than PrimaryCharcoal200Brush: that shade is also
+        // used as a background elsewhere, so it cannot be recolored per theme.
+        private static SolidColorBrush _portLabelForegroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortLabelForegroundBrush"] as SolidColorBrush;
         private static SolidColorBrush _chevronHighlightOverlayBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["ChevronHighlightOverlayBackground"] as SolidColorBrush;
         private static SolidColorBrush _portMouseOverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortMouseOverColor"] as SolidColorBrush;
         private static SolidColorBrush _nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
@@ -43,7 +45,7 @@ namespace Dynamo.UI.Controls
 
         static InPorts()
         {
-            _primaryCharcoal200Brush.Freeze();
+            _portLabelForegroundBrush.Freeze();
             _chevronHighlightOverlayBackground.Freeze();
             _portMouseOverColor.Freeze();
             _nodeTransientOverlayColor.Freeze();
@@ -145,7 +147,7 @@ namespace Dynamo.UI.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontFamily = _artifactElementReg,
                 FontSize = 12,
-                Foreground = _primaryCharcoal200Brush,
+                Foreground = _portLabelForegroundBrush,
                 IsHitTestVisible = false,
             };
 
@@ -297,7 +299,7 @@ namespace Dynamo.UI.Controls
                 Padding = new Thickness(0, 1, 1, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
-                Foreground = _primaryCharcoal200Brush,
+                Foreground = _portLabelForegroundBrush,
                 IsHitTestVisible = false,
                 Text = ">",
                 TextAlignment = TextAlignment.Center

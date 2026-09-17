@@ -125,6 +125,18 @@
     <SolidColorBrush x:Key="ChevronHighlightOverlayBackground" Color="#6E6A64" />
 
     <!--
+        Port value-type markers. These are thin 5px chips drawn directly on the node body, so the
+        dark-theme values (#CCCCCC, #999999) would be almost indistinguishable from it here.
+    -->
+    <SolidColorBrush x:Key="PortValueMarkerDefaultBrush" Color="#8A8578" />
+    <SolidColorBrush x:Key="PortValueMarkerBlueBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="PortValueMarkerRedBrush" Color="#C62828" />
+    <SolidColorBrush x:Key="PortValueMarkerGreyBrush" Color="#6E6A64" />
+
+    <!--  Keep-list-structure pill keeps its blue fill; only the border needs more definition.  -->
+    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#6E8894" />
+
+    <!--
         Wires. Both the Color and the Brush form must be redefined: the base brushes resolve their
         Color with StaticResource when the base dictionary loads, so overriding only the Color
         here would leave the base brushes on their dark-theme values.

@@ -30,7 +30,9 @@ namespace Dynamo.UI.Controls
         // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
         private static BoolToVisibilityCollapsedConverter _boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
-        private static SolidColorBrush _primaryCharcoal200Brush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+        // Port text uses a role-named key rather than PrimaryCharcoal200Brush: that shade is also
+        // used as a background elsewhere, so it cannot be recolored per theme.
+        private static SolidColorBrush _portLabelForegroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortLabelForegroundBrush"] as SolidColorBrush;
         private static SolidColorBrush _midGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"] as SolidColorBrush;
         private static SolidColorBrush _nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
         private static SolidColorBrush _portMouseOverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortMouseOverColor"] as SolidColorBrush;
@@ -42,7 +44,7 @@ namespace Dynamo.UI.Controls
 
         static OutPorts()
         {
-            _primaryCharcoal200Brush.Freeze();
+            _portLabelForegroundBrush.Freeze();
             _midGrey.Freeze();
             _portMouseOverColor.Freeze();
             _nodeTransientOverlayColor.Freeze();
@@ -136,7 +138,7 @@ namespace Dynamo.UI.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontFamily = _artifactElementReg,
                 FontSize = 12,
-                Foreground = _primaryCharcoal200Brush,
+                Foreground = _portLabelForegroundBrush,
                 IsHitTestVisible = false,
                 Margin = new Thickness(13, 3, 10, 0)
             };

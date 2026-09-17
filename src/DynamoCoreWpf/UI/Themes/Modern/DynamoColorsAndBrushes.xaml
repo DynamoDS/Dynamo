@@ -217,7 +217,14 @@
     <SolidColorBrush x:Key="PortBorderBrush" Color="#A1A1A1" />
     <SolidColorBrush x:Key="PortLabelForegroundBrush" Color="#DCDCDC" />
 
+    <!--  Port value-type markers; read by InPortViewModel / OutPortViewModel.  -->
+    <SolidColorBrush x:Key="PortValueMarkerDefaultBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="PortValueMarkerBlueBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="PortValueMarkerRedBrush" Color="#EB5555" />
+    <SolidColorBrush x:Key="PortValueMarkerGreyBrush" Color="#999999" />
+
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
+    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#A8B5BB" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
     <SolidColorBrush x:Key="ChevronHighlightOverlayBackground" Color="#E5E2DE" />
     <SolidColorBrush x:Key="PortMouseOverColor" Color="#636363" />
