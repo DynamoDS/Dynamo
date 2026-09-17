@@ -29,7 +29,7 @@
                                     Name="Thumb"
                                     Width="4"
                                     Height="14"
-                                    Background="#FFFFFF"
+                                    Background="{StaticResource NodeSliderThumbBrush}"
                                     Canvas.ZIndex="30"
                                     CornerRadius="1" />
                                 <Border
@@ -65,7 +65,7 @@
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
                             <Border
                                 Height="2"
-                                Background="{StaticResource PrimaryCharcoal100Brush}"
+                                Background="{StaticResource NodeSliderTrackBrush}"
                                 BorderThickness="0" />
                         </ControlTemplate>
                     </Setter.Value>
@@ -121,7 +121,7 @@
                     FontFamily="{StaticResource ArtifaktElementRegular}"
                     FontSize="14px"
                     FontWeight="Medium"
-                    Foreground="#CCCCCC" />
+                    Foreground="{StaticResource NodeInputLabelForegroundBrush}" />
                 <Label
                     Grid.Row="1"
                     Grid.Column="0"
@@ -130,7 +130,7 @@
                     FontFamily="{StaticResource ArtifaktElementRegular}"
                     FontSize="14px"
                     FontWeight="Medium"
-                    Foreground="#CCCCCC" />
+                    Foreground="{StaticResource NodeInputLabelForegroundBrush}" />
                 <Label
                     Grid.Row="2"
                     Grid.Column="0"
@@ -139,7 +139,7 @@
                     FontFamily="{StaticResource ArtifaktElementRegular}"
                     FontSize="14px"
                     FontWeight="Medium"
-                    Foreground="#CCCCCC" />
+                    Foreground="{StaticResource NodeInputLabelForegroundBrush}" />
                 <nodes1:DynamoTextBox
                     x:Name="MinTb"
                     Grid.Row="0"
@@ -147,10 +147,10 @@
                     Margin="3"
                     Padding="7,5,0,5"
                     VerticalContentAlignment="Center"
-                    Background="{StaticResource MidGreyBrush}"
-                    BorderBrush="#4A4A4A"
+                    Background="{StaticResource NodeInputBackgroundBrush}"
+                    BorderBrush="{StaticResource NodeInputBorderBrush}"
                     BorderThickness="1"
-                    Foreground="#bcbcbc"
+                    Foreground="{StaticResource NodeInputSecondaryForegroundBrush}"
                     Text="{Binding MinText, Mode=OneWay, UpdateSourceTrigger=Explicit}" />
                 <nodes1:DynamoTextBox
                     x:Name="MaxTb"
@@ -159,10 +159,10 @@
                     Margin="3"
                     Padding="7,5,0,5"
                     VerticalContentAlignment="Center"
-                    Background="{StaticResource MidGreyBrush}"
-                    BorderBrush="#4A4A4A"
+                    Background="{StaticResource NodeInputBackgroundBrush}"
+                    BorderBrush="{StaticResource NodeInputBorderBrush}"
                     BorderThickness="1"
-                    Foreground="#bcbcbc"
+                    Foreground="{StaticResource NodeInputSecondaryForegroundBrush}"
                     Text="{Binding MaxText, Mode=OneWay, UpdateSourceTrigger=Explicit}" />
                 <nodes1:DynamoTextBox
                     x:Name="StepTb"
@@ -171,10 +171,10 @@
                     Margin="3"
                     Padding="7,5,0,5"
                     VerticalContentAlignment="Center"
-                    Background="{StaticResource MidGreyBrush}"
-                    BorderBrush="#4A4A4A"
+                    Background="{StaticResource NodeInputBackgroundBrush}"
+                    BorderBrush="{StaticResource NodeInputBorderBrush}"
                     BorderThickness="1"
-                    Foreground="#bcbcbc"
+                    Foreground="{StaticResource NodeInputSecondaryForegroundBrush}"
                     Text="{Binding StepText, Mode=OneWay, UpdateSourceTrigger=Explicit}" />
             </Grid>
 
@@ -196,11 +196,11 @@
                 Padding="4,6"
                 VerticalAlignment="Top"
                 VerticalContentAlignment="Center"
-                Background="{StaticResource MidGreyBrush}"
-                BorderBrush="#4A4A4A"
+                Background="{StaticResource NodeInputBackgroundBrush}"
+                BorderBrush="{StaticResource NodeInputBorderBrush}"
                 BorderThickness="1"
                 TextWrapping="NoWrap"
-                Foreground="{StaticResource PrimaryCharcoal100Brush}"
+                Foreground="{StaticResource NodeInputForegroundBrush}"
                 Opacity="1"
                 Text="{Binding ValueText, Mode=OneWay}">
                 <nodes1:DynamoTextBox.ToolTip>

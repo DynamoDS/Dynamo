@@ -12,3 +12,4 @@ Dynamo.Configuration.DynamoTheme.Dark = 0 -> Dynamo.Configuration.DynamoTheme
 Dynamo.Configuration.DynamoTheme.Light = 1 -> Dynamo.Configuration.DynamoTheme
 Dynamo.Configuration.PreferenceSettings.Theme.get -> Dynamo.Configuration.DynamoTheme
 Dynamo.Configuration.PreferenceSettings.Theme.set -> void
+static readonly Dynamo.Configuration.Configurations.LightHighlightingFile -> string

@@ -124,7 +124,7 @@
                                Content="&gt;"
                                FontSize="16px"
                                FontWeight="Medium"
-                               Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                               Foreground="{StaticResource PortLabelForegroundBrush}"
                                IsHitTestVisible="False"
                             Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
                         <Grid.Style>

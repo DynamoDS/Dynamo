@@ -5,15 +5,27 @@
     <!--
         Light theme palette (DYN-6228).
 
-        This dictionary merges the base (Modern) palette and redefines only the keys whose role is
-        unambiguous, so that keys added to the base palette are inherited automatically.
+        This dictionary merges the base (Modern) palette and redefines only the keys it changes,
+        so keys added to the base palette are inherited automatically and the two files cannot
+        drift apart.
 
         Deliberately NOT overridden: the shade-named palette entries (PrimaryCharcoal*, MidGrey,
-        DarkGrey, DarkerGrey, Blue300, ...). Those same keys are used as a foreground in one view
-        and as a background in another, so inverting them would make text unreadable somewhere
-        else. They can only be re-themed once each surface reads a role-named key instead; until
-        then the surfaces that still use them (main window chrome, library, Package Manager,
-        prompts) stay dark. See the "Known limitations" section of the theme documentation.
+        DarkGrey, DarkerGrey, Blue300, ...). The same key is used as a foreground in one view and
+        as a background in another, so inverting it would make text unreadable somewhere else.
+        Each of those can only be re-themed after the surface that uses it reads a role-named key
+        instead; that is why the keys below are all role-named.
+
+        Consequently these surfaces remain dark in the light theme, and the keys serving them are
+        left inherited on purpose:
+          - Main window chrome and workspace tabs (DynamoWindowBrush, WorkspaceTab*)
+          - Library and search sidebar (Library*, *MemberText, Filter*, Search*)
+          - Package Manager (PM*) and the shared prompts/menus (Normal*, Highlighted*)
+          - Extensions sidebar (Extension*, FeedbackSectionBackground)
+          - The Python script editor (TextEditorBrush): its colors come from a separate .xshd
+            that has no light variant yet, so flipping only its background would leave
+            bright-on-dark tokens on a light surface.
+          - 3D preview colors (EdgeColor, PointColor, SelectionColor, MaterialColor), which
+            describe geometry rather than UI chrome.
     -->
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.BaseDynamoColorsAndBrushesDictionaryUri}" />
@@ -44,11 +56,62 @@
     <SolidColorBrush x:Key="NodeCustomColor" Color="#1E7A70" />
     <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#1A7FB5" />
 
+    <!--  Node value-type label chips; darkened so the white chip text still reads.  -->
+    <SolidColorBrush x:Key="stringLabelBackground" Color="#B87333" />
+    <SolidColorBrush x:Key="numberLabelBackground" Color="#2F7FA8" />
+    <SolidColorBrush x:Key="objectLabelBackground" Color="#8A8578" />
+    <SolidColorBrush x:Key="boolLabelBackground" Color="#9A8410" />
+    <SolidColorBrush x:Key="nullLabelBackground" Color="#9A8410" />
+
     <!--  Node context menu  -->
     <SolidColorBrush x:Key="NodeContextMenuForeground" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight" Color="#1A1A1A" />
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="#F2F0ED" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#DCD8D2" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#C4BFB8" />
+
+    <!--  Node input widgets: a near-white field reads as editable against the warm node body.  -->
+    <SolidColorBrush x:Key="NodeInputBackgroundBrush" Color="#FBFAF8" />
+    <SolidColorBrush x:Key="NodeInputBorderBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="NodeInputForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="NodeInputSecondaryForegroundBrush" Color="#44403A" />
+    <SolidColorBrush x:Key="NodeInputLabelForegroundBrush" Color="#3A362F" />
+    <SolidColorBrush x:Key="NodeInputCaretBrush" Color="#1A7FB5" />
+    <!--  Selection wash flips from translucent white to translucent black.  -->
+    <SolidColorBrush x:Key="NodeInputHighlightBrush" Color="#33000000" />
+
+    <SolidColorBrush x:Key="NodeSliderThumbBrush" Color="#3A362F" />
+    <SolidColorBrush x:Key="NodeSliderTrackBrush" Color="#A8A296" />
+
+    <!--
+        Code block editor. The token colors here must stay in step with
+        DesignScript.Resources.SyntaxHighlighting.Light.xshd, which supplies the keyword,
+        comment and string colors for the same editor.
+    -->
+    <SolidColorBrush x:Key="CodeEditorBackgroundBrush" Color="#FBFAF8" />
+    <SolidColorBrush x:Key="CodeEditorForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="CodeEditorLineNumbersBrush" Color="#7A7468" />
+    <SolidColorBrush x:Key="CodeEditorBorderBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="CodeEditorNumberBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="CodeEditorClassBrush" Color="#4F7A2A" />
+    <SolidColorBrush x:Key="CodeEditorMethodBrush" Color="#1F7A70" />
+    <SolidColorBrush x:Key="CodeEditorLinkBrush" Color="#0B6E9E" />
+
+    <!--  Node autocomplete popup  -->
+    <SolidColorBrush x:Key="autocompletionWindow" Color="#F2F0ED" />
+    <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#2B2B2B" />
+
+    <!--  Preview bubbles  -->
+    <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#8A8578" />
+    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#8A8578" />
+    <Color x:Key="PinnedIconBackgroundColorAnimation">#8A8578</Color>
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor" Color="#14688F" />
+
+    <!--  Misc text  -->
+    <SolidColorBrush x:Key="DynamoStandardLabelTextBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="TextBlockLinkForegroundColor" Color="#0B6E9E" />
 
     <!--
         Ports. The port background matches the node body in both themes, so the port label sits

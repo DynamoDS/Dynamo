@@ -1485,10 +1485,27 @@
                                                Style="{StaticResource QuestionIcon}"
                                                ToolTipService.ShowDuration="30000">
                                                 <Image.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowThemeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    <!--
+                                                        GenericToolTipLight is MaxWidth=300 around a bare ContentPresenter,
+                                                        so a plain string Content is clipped rather than wrapped. Longer
+                                                        tooltips have to supply their own wrapped TextBlock.
+                                                    -->
+                                                    <ToolTip Style="{StaticResource GenericToolTipLight}">
+                                                        <TextBlock MaxWidth="260"
+                                                                   Text="{x:Static p:Resources.PreferencesWindowThemeTooltip}"
+                                                                   TextWrapping="Wrap"/>
+                                                    </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
                                         </Label>
+                                        <TextBlock VerticalAlignment="Center"
+                                                   Margin="4,0,0,0"
+                                                   MaxWidth="220"
+                                                   TextWrapping="Wrap"
+                                                   Text="{x:Static p:Resources.PreferencesViewThemeRestartRequired}"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                   FontStyle="Italic"
+                                                   Visibility="{Binding ThemeChangeRequiresRestart, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal"

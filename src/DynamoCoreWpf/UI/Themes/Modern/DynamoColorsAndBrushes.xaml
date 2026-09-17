@@ -102,9 +102,36 @@
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
 
     <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight" Color="#FFFFFF" />
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
+
+    <!--
+        Node input widgets: DynamoTextBox and the slider value boxes. Read from here instead of
+        being hard-coded in DynamoTextBox.cs, so a theme can recolor them with the node body.
+    -->
+    <SolidColorBrush x:Key="NodeInputBackgroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="NodeInputBorderBrush" Color="#4A4A4A" />
+    <SolidColorBrush x:Key="NodeInputForegroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="NodeInputSecondaryForegroundBrush" Color="#BCBCBC" />
+    <SolidColorBrush x:Key="NodeInputLabelForegroundBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="NodeInputCaretBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="NodeInputHighlightBrush" Color="#64FFFFFF" />
+
+    <!--  Slider track and thumb  -->
+    <SolidColorBrush x:Key="NodeSliderThumbBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NodeSliderTrackBrush" Color="{StaticResource PrimaryCharcoal100}" />
+
+    <!--  Code block and Python editor surface  -->
+    <SolidColorBrush x:Key="CodeEditorBackgroundBrush" Color="#3A3B3B" />
+    <SolidColorBrush x:Key="CodeEditorForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="CodeEditorLineNumbersBrush" Color="#AAAAAA" />
+    <SolidColorBrush x:Key="CodeEditorBorderBrush" Color="#959595" />
+    <SolidColorBrush x:Key="CodeEditorNumberBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="CodeEditorClassBrush" Color="#B7D78C" />
+    <SolidColorBrush x:Key="CodeEditorMethodBrush" Color="#84D7CE" />
+    <SolidColorBrush x:Key="CodeEditorLinkBrush" Color="#6AC0E7" />
 
     <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7" />
 

@@ -24,12 +24,12 @@
                  HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
                  VerticalContentAlignment="Center"
-                 Background="#666666"
-                 BorderBrush="#4A4A4A"
+                 Background="{StaticResource NodeInputBackgroundBrush}"
+                 BorderBrush="{StaticResource NodeInputBorderBrush}"
                  BorderThickness="1"
-                 CaretBrush="#6AC0E7"
+                 CaretBrush="{StaticResource NodeInputCaretBrush}"
                  FontSize="16px"
-                 Foreground="#EEEEEE"
+                 Foreground="{StaticResource NodeInputForegroundBrush}"
                  Style="{StaticResource SZoomFadeTextBox}"
                  Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}">
             <TextBox.ToolTip>

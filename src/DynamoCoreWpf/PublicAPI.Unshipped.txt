@@ -40,6 +40,7 @@ Dynamo.ViewModels.PreferencesViewModel.SelectedTheme.get -> string
 Dynamo.ViewModels.PreferencesViewModel.SelectedTheme.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ThemeChangeRequiresRestart.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ThemesList.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.PreferencesViewModel.ThemesList.set -> void
 static Dynamo.UI.SharedDictionaryManager.BaseDynamoColorsAndBrushesDictionaryUri.get -> System.Uri
