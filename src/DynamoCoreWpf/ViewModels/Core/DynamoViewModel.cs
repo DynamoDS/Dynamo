@@ -1916,7 +1916,9 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddModelsToGroup(object obj)
         {
-            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+            // Must match DynamoModel.AddToGroup: destination has to be selected and expanded.
+            // A collapsed-only selection used to no-op; it now throws if Execute is called.
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any(x => x.IsExpanded);
         }
 
         internal void AddModelsToGroup(object parameters)
