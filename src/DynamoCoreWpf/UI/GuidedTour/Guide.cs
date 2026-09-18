@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,7 +10,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.GuidedTour;
-using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -21,13 +21,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This list will contain all the steps per guide read from a json file
         /// </summary>
-        [JsonProperty("GuideSteps")]
+        [JsonPropertyName("GuideSteps")]
         internal List<Step> GuideSteps { get; set; }
 
         /// <summary>
         /// This property represent the name of the Guide, e.g. "Get Started", "Packages"
         /// </summary>
-        [JsonProperty("Name")]
+        [JsonPropertyName("Name")]
         internal string Name { get; set; }
 
         /// <summary>
@@ -36,13 +36,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// 1 - User interface guide
         /// 2 - Onboarding guide
         /// </summary>
-        [JsonProperty("SequenceOrder")]
+        [JsonPropertyName("SequenceOrder")]
         internal int SequenceOrder { get; set; }
 
         /// <summary>
         /// This property has the resource key string for the guide
         /// </summary>
-        [JsonProperty("GuideNameResource")]
+        [JsonPropertyName("GuideNameResource")]
         internal string GuideNameResource { get; set; }
 
 
