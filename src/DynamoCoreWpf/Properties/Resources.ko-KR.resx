@@ -151,7 +151,7 @@
     <value>로그인하려면 네트워크 모드를 활성화합니다.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>패키지 관리자를 사용하려면 네트워크 모드를 활성화합니다.</value>
+    <value>Package Manager를 사용하려면 네트워크 모드를 활성화합니다.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
