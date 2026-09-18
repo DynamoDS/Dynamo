@@ -70,17 +70,8 @@ namespace ProtoCore
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.Invalid; //not yet started
 
-            ContinuationStruct = new ContinuationStructure();
-
-
-            watchStack = new List<StackValue>();
-            watchFramePointer = Constants.kInvalidIndex;
-            WatchSymbolList = new List<SymbolNode>();
-
             FunctionCallDepth = 0;
             cancellationPending = false;
-
-            watchClassScope = Constants.kInvalidIndex;
 
             ExecutionInstance = CurrentExecutive = new Executive(this);
             ExecutiveProvider = new ExecutiveProvider();
@@ -107,20 +98,18 @@ namespace ProtoCore
             }
             RunningBlock = 0;
             RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
-            WatchSymbolList = compileCore.watchSymbolList;
-            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
+
+            SetProperties(compileCore.Options, compileCore.DSExecutable, null);
             RegisterDllTypes(compileCore.DllTypesToLoad);
             NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin);
             LastDispatchedCallSite = null;
         }
 
-        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
+        public void SetProperties(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context = null)
         {
             this.Context = context;
             this.DSExecutable = executable;
             this.Options = runtimeOptions;
-            this.DebugProps = debugProps;
-            this.ExprInterpreterExe = exprInterpreterExe;
         }
 
         /// <summary>
@@ -143,7 +132,6 @@ namespace ProtoCore
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
-        public Executable ExprInterpreterExe { get; private set; }
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
@@ -200,27 +188,6 @@ namespace ProtoCore
                 return cancellationPending;
             }
         }
-
-#region DEBUGGER_PROPERTIES
-
-        public int watchClassScope { get; set; }
-
-        public DebugProperties DebugProps { get; set; }
-        public List<Instruction> Breakpoints { get; set; }
-
-        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
-        public ContinuationStructure ContinuationStruct { get; set; }
-        /// <summary>
-        /// Returns the reason why the execution was last suspended
-        /// </summary>
-        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
-
-
-        public List<StackValue> watchStack { get; set; }
-        public int watchFramePointer { get; set; }
-
-        public List<SymbolNode> WatchSymbolList { get; set; }
-#endregion 
         
         private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
         /// <summary>
@@ -302,7 +269,7 @@ namespace ProtoCore
         {
             int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
-                return DebugProps.CurrentBlockId;
+                return 0; //Todo do we need this?
 
             CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(DSExecutable.CodeBlocks, constructBlockId);
             while (null != constructBlock && constructBlock.blockType == CodeBlockType.Construct)
@@ -313,10 +280,7 @@ namespace ProtoCore
             if (null != constructBlock)
                 constructBlockId = constructBlock.codeBlockId;
 
-            if (constructBlockId != DebugProps.CurrentBlockId)
-                return DebugProps.CurrentBlockId;
-            else
-                return RuntimeMemory.CurrentConstructBlockId;
+            return RuntimeMemory.CurrentConstructBlockId;
         }
 
         //STop
