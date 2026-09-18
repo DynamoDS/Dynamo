@@ -20,7 +20,7 @@ namespace DynamoCoreWpfTests
             // racing under CI load. Waiting for EvaluationCompleted closes that race.
             // Assumes every graph opened via this override is RunType="Automatic";
             // a non-Automatic graph will never raise EvaluationCompleted and will
-            // burn the full 10s timeout before failing. See DYN-10842.
+            // burn the full 10s timeout before failing. See DYN-10842
             var evaluationCompleted = 0;
             EventHandler<EvaluationCompletedEventArgs> markDone = (_, __) => System.Threading.Interlocked.Exchange(ref evaluationCompleted, 1);
             ViewModel.Model.EvaluationCompleted += markDone;
