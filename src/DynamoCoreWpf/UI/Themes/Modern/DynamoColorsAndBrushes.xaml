@@ -106,6 +106,8 @@
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
+    <!--  Checkmarks and submenu arrows drawn inside a canvas context menu.  -->
+    <SolidColorBrush x:Key="NodeContextMenuAccentBrush" Color="{StaticResource Blue300}" />
 
     <!--
         Surfaces that borrowed the NodeContextMenu* keys but are not canvas context menus, and

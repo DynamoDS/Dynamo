@@ -69,6 +69,8 @@
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="#F2F0ED" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#DCD8D2" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#C4BFB8" />
+    <!--  Blue300 would sit at ~1.9:1 on the light menu background.  -->
+    <SolidColorBrush x:Key="NodeContextMenuAccentBrush" Color="#1A7FB5" />
 
     <!--  Node input widgets: a near-white field reads as editable against the warm node body.  -->
     <SolidColorBrush x:Key="NodeInputBackgroundBrush" Color="#FBFAF8" />
