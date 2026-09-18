@@ -697,7 +697,7 @@ namespace Dynamo.Models
                 }
             }
 
-            AddToGroup(modelsToGroup);
+            AddToGroup(modelsToGroup, command.HostGroupGuid);
         }
 
         private void AddGroupsToGroupImpl(AddGroupToGroupCommand command)
