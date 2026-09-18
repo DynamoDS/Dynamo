@@ -1,11 +1,14 @@
-﻿using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Shapes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using System;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace CoreNodeModelsWpf.Controls
 {
@@ -29,6 +32,41 @@ namespace CoreNodeModelsWpf.Controls
                 nodeUI.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
 
+        }
+
+        /// <summary>
+        /// Installs the Text bindings for the value, min, max and step text boxes.
+        /// </summary>
+        /// <param name="ruleFactory">
+        /// Optional factory, invoked once per text box. It must return a <b>new</b> rule instance on
+        /// every call - a shared instance would let one field's validation state leak into another.
+        /// Pass <c>null</c> to bind without validation.
+        /// </param>
+        public void BindValidatedTextBoxes(Func<ValidationRule> ruleFactory = null)
+        {
+            BindField(ValTb, "ValueText", ruleFactory?.Invoke());
+            BindField(MinTb, "MinText", ruleFactory?.Invoke());
+            BindField(MaxTb, "MaxText", ruleFactory?.Invoke());
+            BindField(StepTb, "StepText", ruleFactory?.Invoke());
+        }
+
+        private static void BindField(DynamoTextBox textBox, string propertyName, ValidationRule validationRule)
+        {
+            var binding = new Binding(propertyName)
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
+                NotifyOnValidationError = false
+            };
+
+            if (validationRule != null)
+            {
+                validationRule.ValidationStep = ValidationStep.RawProposedValue;
+                binding.ValidationRules.Add(validationRule);
+            }
+
+            textBox.BindToProperty(binding);
+            Validation.SetErrorTemplate(textBox, null);
         }
 
         #region Event Handlers
