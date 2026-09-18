@@ -54,7 +54,7 @@ namespace DynamoCoreWpfTests
         /// condition: ZIndex defaults to Configurations.NodeStartZIndex via a field
         /// initializer that runs before the NodeViewModel constructor body, so a fully
         /// constructed instance is never actually observed with ZIndex == 0.
-        /// See DYN-10842.
+        /// See DYN-10842
         /// </summary>
         private NodeView WaitForStableNodeView(string guid, int timeoutSeconds = 5)
         {
