@@ -106,6 +106,43 @@ namespace Dynamo.Tests.ModelsTest
 
         [Test]
         [Category("UnitTests")]
+        public void WhenHostGuidProvidedAndNodeIdIsMissingThenThrowsAndDoesNotAdd()
+        {
+            // Arrange
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var countBefore = group.Nodes.Count();
+            DynamoSelection.Instance.ClearSelection();
+
+            var command = new AddModelToGroupCommand(Guid.NewGuid(), group.GUID);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.AreEqual(countBefore, group.Nodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidProvidedAndNodeAlreadyInGroupThenSucceeds()
+        {
+            // Arrange — adding a node that is already in the group is a no-op, not a failure
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            DynamoSelection.Instance.ClearSelection();
+
+            var command = new AddModelToGroupCommand(groupedNode.GUID, group.GUID);
+
+            // Act
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            // Assert
+            Assert.IsTrue(group.Nodes.Contains(groupedNode));
+            Assert.AreEqual(1, group.Nodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void WhenHostGuidOmittedAndGroupSelectedExpandedThenNodeIsAdded()
         {
             // Arrange — this is the canvas path: no host id, group must be selected and expanded

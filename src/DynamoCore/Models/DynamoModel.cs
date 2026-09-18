@@ -3018,7 +3018,8 @@ namespace Dynamo.Models
         /// <param name="modelsToAdd">Nodes or notes to add to the group.</param>
         /// <param name="hostGroupGuid">Optional destination group id. Empty uses selection.</param>
         /// <exception cref="InvalidOperationException">
-        /// Thrown when the host is missing, is not a group, is collapsed, or no destination group can be resolved.
+        /// Thrown when the host is missing, is not a group, is collapsed, no destination group can be resolved,
+        /// or none of the models ended up in the host group.
         /// </exception>
         internal void AddToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid = default)
         {
@@ -3061,6 +3062,14 @@ namespace Dynamo.Models
             {
                 CurrentWorkspace.RecordGroupModelBeforeUngroup(hostGroup);
                 hostGroup.AddToTargetAnnotationModel(model);
+            }
+
+            // Already-grouped models count as success (idempotent). Wrong ids are
+            // rejected in AddToGroupImpl. If nothing is in the host after this loop,
+            // the add did not happen.
+            if (!modelsToAdd.Any(model => model != null && hostGroup.Nodes.Any(node => node.GUID == model.GUID)))
+            {
+                throw new InvalidOperationException("Cannot add to group: none of the models were added to the host group.");
             }
         }
 
