@@ -1496,6 +1496,7 @@ namespace ProtoScript.Runners
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
         private Dictionary<Guid, List<Guid>> executedAstGuids = new Dictionary<Guid, List<Guid>>();
+        private bool executionCancelled;
 
         public LiveRunner()
             : this(new Configuration())
@@ -1696,6 +1697,7 @@ namespace ProtoScript.Runners
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
+                executionCancelled = true;
                 runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
@@ -1732,6 +1734,8 @@ namespace ProtoScript.Runners
         /// </summary>
         private void PostExecution()
         {
+            if (executionCancelled) return;
+
             ApplyUpdate();
             SuppressResolvedUnboundVariableWarnings();
         }
@@ -1760,9 +1764,11 @@ namespace ProtoScript.Runners
                 runnerCore.Options.ApplyUpdate = true;
                 Execute(true);
 
+                if (executionCancelled) return;
+
                 // Execute() will push a stack frame in SetupAndBounceStackFrame().
                 // In normal execution, that stack frame will pop in RETB. But in
-                // ApplyUpdate(), there is no RETB instruciton, so need to manually
+                // ApplyUpdate(), there is no RETB instruction, so need to manually
                 // cleanup stack frame.
                 StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexFramePointer);
                 runtimeCore.RuntimeMemory.FramePointer = (int)restoreFramePointer.IntegerValue;
@@ -1779,6 +1785,7 @@ namespace ProtoScript.Runners
         /// </summary>
         private void ResetForDeltaExecution()
         {
+            executionCancelled = false;
             runnerCore.ResetForDeltaExecution();
             runtimeCore.ResetForDeltaExecution();
         }
