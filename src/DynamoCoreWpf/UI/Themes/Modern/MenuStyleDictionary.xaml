@@ -14,7 +14,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Separator">
-                    <Border BorderBrush="{StaticResource NodeContextMenuSeparatorColor}" BorderThickness="0,1,0,0" />
+                    <Border BorderBrush="{StaticResource MainMenuSeparatorBrush}" BorderThickness="0,1,0,0" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

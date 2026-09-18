@@ -404,14 +404,14 @@
                                                       DockPanel.Dock="Left"
                                                       RecognizesAccessKey="True"
                                                       SnapsToDevicePixels="True"
-                                                      TextBlock.Foreground="#F5F5F5" />
+                                                      TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
                                 </DockPanel>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
                                         <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                                         <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="False">
@@ -453,7 +453,7 @@
                                                       DockPanel.Dock="Left"
                                                       RecognizesAccessKey="True"
                                                       SnapsToDevicePixels="True"
-                                                      TextBlock.Foreground="#F5F5F5" />
+                                                      TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
                                     <Label x:Name="subMenuArrow"
                                            Margin="0,0,8,7"
                                            Padding="0"
@@ -506,12 +506,12 @@
                                         <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                                        <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
+                                        <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                                         <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                                     </Trigger>
                                     <Trigger Property="IsSubmenuOpen" Value="True">
-                                        <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                                        <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="False">
                                         <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />

@@ -104,6 +104,7 @@ namespace Dynamo.Nodes
         private static SolidColorBrush _nodeContextMenuBackgroundHighlight = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuBackgroundHighlight"] as SolidColorBrush;
         private static SolidColorBrush _nodeContextMenuBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuBackground"] as SolidColorBrush;
         private static SolidColorBrush _nodeContextMenuForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuForeground"] as SolidColorBrush;
+        private static SolidColorBrush _nodeContextMenuForegroundHighlight = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuForegroundHighlight"] as SolidColorBrush;
 
         private static CornerRadius _cornerRadius = new CornerRadius(10, 10, 0, 0);
 
@@ -150,6 +151,7 @@ namespace Dynamo.Nodes
             _nodeContextMenuBackgroundHighlight.Freeze();
             _nodeContextMenuBackground.Freeze();
             _nodeContextMenuForeground.Freeze();
+            _nodeContextMenuForegroundHighlight.Freeze();
         }
         public AnnotationView()
         {
@@ -2042,7 +2044,7 @@ namespace Dynamo.Nodes
                 popup.PlacementTarget = border;
                 popup.IsOpen = true;
                 border.Background = _nodeContextMenuBackgroundHighlight;
-                arrow.Foreground = Brushes.White;
+                arrow.Foreground = _nodeContextMenuForegroundHighlight;
             };
 
             border.MouseLeave += (s, e) =>

@@ -108,6 +108,21 @@
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
 
     <!--
+        Surfaces that borrowed the NodeContextMenu* keys but are not canvas context menus, and
+        that stay dark in every theme. They get their own keys so re-theming the canvas menus
+        cannot leak into them. Values intentionally match the dark NodeContextMenu* equivalents.
+    -->
+    <SolidColorBrush x:Key="DividerRectangleBrush" Color="#808080" />
+    <SolidColorBrush x:Key="MainMenuSeparatorBrush" Color="#AFAFAF" />
+
+    <!--  Package Manager context menus (DarkContextMenuStyle is used only by Package Manager).  -->
+    <SolidColorBrush x:Key="PMContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="PMContextMenuForegroundHighlight" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="PMContextMenuBackground" Color="{StaticResource MidGrey}" />
+    <SolidColorBrush x:Key="PMContextMenuBackgroundHighlight" Color="#808080" />
+    <SolidColorBrush x:Key="PMContextMenuSeparatorColor" Color="#AFAFAF" />
+
+    <!--
         Node input widgets: DynamoTextBox and the slider value boxes. Read from here instead of
         being hard-coded in DynamoTextBox.cs, so a theme can recolor them with the node body.
     -->

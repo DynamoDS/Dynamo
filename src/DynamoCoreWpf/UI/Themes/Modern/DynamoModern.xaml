@@ -4113,12 +4113,13 @@
                             <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
-                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericMouseOverBackgroundColorBrush}" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
+                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
+                            <!--  Same #808080 as GenericMouseOverBackgroundColorBrush, but themeable.  -->
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                         </Trigger>
                         <Trigger Property="IsSubmenuOpen" Value="True">
-                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
@@ -4160,7 +4161,7 @@
                                       DockPanel.Dock="Left"
                                       RecognizesAccessKey="True"
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                                      TextBlock.Foreground="{StaticResource PMContextMenuForeground}" />
                         <Label x:Name="subMenuArrow"
                            Margin="0,0,15,7"
                            Padding="0"
@@ -4318,12 +4319,12 @@
                             <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
+                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                         </Trigger>
                         <Trigger Property="IsSubmenuOpen" Value="True">
-                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
@@ -4385,10 +4386,29 @@
         </Style.Resources>
     </Style>
 
+    <!--  Separator for the Package Manager menus, which stay dark in every theme.  -->
+    <Style x:Key="PMContextMenuSeparatorStyle" TargetType="Separator">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border Height="1"
+                            Margin="15,8,15,8"
+                            Background="{StaticResource PMContextMenuSeparatorColor}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--
+        Used only by Package Manager. It must not inherit the canvas menu foreground from
+        ContextMenuStyle, because the Package Manager window stays dark in the light theme.
+    -->
     <Style x:Key="DarkContextMenuStyle" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource ContextMenuStyle}">
+        <Setter Property="Foreground" Value="{StaticResource PMContextMenuForeground}" />
         <Style.Resources>
             <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
-               BasedOn="{StaticResource ContextMenuSeparatorStyle}"
+               BasedOn="{StaticResource PMContextMenuSeparatorStyle}"
                TargetType="Separator" />
             <Style x:Key="{x:Type MenuItem}"
                BasedOn="{StaticResource DarkContextMenuItemStyle}"
@@ -5756,12 +5776,12 @@
                             <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
+                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                         </Trigger>
                         <Trigger Property="IsSubmenuOpen" Value="True">
-                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
+                            <Setter TargetName="subMenuArrow" Property="Foreground" Value="{StaticResource NodeContextMenuForegroundHighlight}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />

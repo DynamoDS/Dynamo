@@ -188,7 +188,7 @@
                         <ContextMenu
                             MinWidth="180"
                             Width="Auto"
-                            Background="{StaticResource NodeContextMenuBackground}"
+                            Background="{StaticResource PMContextMenuBackground}"
                             Style="{StaticResource DarkContextMenuStyle}">
 
                             <!--  Sub-Title 'SORT BY'  -->
@@ -311,7 +311,7 @@
                         <ContextMenu
                             Name="HostFilter"
                             Width="180"
-                            Background="{StaticResource NodeContextMenuBackground}"
+                            Background="{StaticResource PMContextMenuBackground}"
                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                             DisplayMemberPath="FilterName"
                             ItemsSource="{Binding HostFilter}"
