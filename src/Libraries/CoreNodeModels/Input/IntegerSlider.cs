@@ -291,7 +291,7 @@ namespace CoreNodeModels.Input
         }
 
         // If the value field in the slider has a number greater than
-        // long.Maxvalue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
+        // long.MaxValue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
         // The property setter is overridden here to update the UI, in case the value is changed. 
         public override long Value
         {
@@ -315,35 +315,112 @@ namespace CoreNodeModels.Input
             {
                 case nameof(Min):
                 case "MinText":
-                    Min = ConvertStringToInt64(value);
-                    return true; // UpdateValueCore handled.
                 case nameof(Max):
                 case "MaxText":
-                    Max = ConvertStringToInt64(value);
-                    return true; // UpdateValueCore handled.
-                case nameof(Value):
-                case "ValueText":
-                    UpdateNodeInfo(value);
-                    Value = ConvertStringToInt64(value);
-                    return true; // UpdateValueCore handled.
                 case nameof(Step):
                 case "StepText":
-                    Step = ConvertStringToInt64(value);
-                    return true;
+                case nameof(Value):
+                case "ValueText":
+                    if (string.IsNullOrEmpty(value))
+                        return false;
+
+                    // Reject anything that isn't a strict Int64 literal (no decimals/thousands
+                    // separators). Distinguish out-of-range from non-numeric so the user gets
+                    // an accurate error message; both cases keep the last valid value.
+                    if (!TryParseInt64(value, out long parsed, out bool isOutOfRange))
+                    {
+                        Info(Resources.IntegerSliderNonIntegerInputMessage, true);
+
+                        // The textbox is OneWay-bound and already displays the rejected text.
+                        // Nothing reverts it automatically since Min/Max/Step/Value never changed.
+                        // Re-raise the change notification for the canonical property so
+                        // SliderViewModel re-reads the last valid value and the stale, invalid
+                        // text the user typed is visibly replaced.
+                        RaisePropertyChanged(ToCanonicalPropertyName(name));
+                        return false;
+                    }
+
+                    if (isOutOfRange)
+                    {
+                        Info(Resources.IntegerSliderInfoMessage, true);
+                    }
+                    else
+                    {
+                        ClearInfoMessages();
+                    }
+
+                    switch (name)
+                    {
+                        case nameof(Min):
+                        case "MinText":
+                            Min = parsed;
+                            return true;
+                        case nameof(Max):
+                        case "MaxText":
+                            Max = parsed;
+                            return true;
+                        case nameof(Step):
+                        case "StepText":
+                            Step = parsed;
+                            return true;
+                        case nameof(Value):
+                        case "ValueText":
+                            Value = parsed;
+                            return true;
+                    }
+                    break;
             }
 
             return base.UpdateValueCore(updateValueParams);
         }
 
-        private void UpdateNodeInfo(string value)
+        /// <summary>
+        /// Attempts to parse a strict 64-bit integer literal. Returns false only when
+        /// <paramref name="value"/> is not an integer literal at all (contains a decimal point,
+        /// letters, etc.). If <paramref name="value"/> is a well-formed integer (optional sign
+        /// followed only by digits) that exceeds the Int64 range, <paramref name="isOutOfRange"/>
+        /// is set to true and <paramref name="result"/> is clamped to Int64.MaxValue/MinValue,
+        /// matching how the slider already clamps values dragged or set past Min/Max.
+        /// </summary>
+        private static bool TryParseInt64(string value, out long result, out bool isOutOfRange)
         {
-            if (IsValueInt64(value))
+            isOutOfRange = false;
+
+            if (long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+                return true;
+
+            var start = value.Length > 0 && (value[0] == '-' || value[0] == '+') ? 1 : 0;
+            if (start < value.Length && value.Skip(start).All(char.IsDigit))
             {
-                ClearInfoMessages();
+                isOutOfRange = true;
+                result = value[0] == '-' ? long.MinValue : long.MaxValue;
+                return true;
             }
-            else
+
+            result = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Maps a text-box property name (e.g. "MinText") to the canonical model property
+        /// name (e.g. "Min") that <see cref="SliderViewModel{T}"/> listens for when deciding
+        /// which bound text (MinText/MaxText/StepText/ValueText) to refresh.
+        /// </summary>
+        private static string ToCanonicalPropertyName(string name)
+        {
+            switch (name)
             {
-                Info(Resources.IntegerSliderInfoMessage, true);
+                case nameof(Min):
+                case "MinText":
+                    return "Min";
+                case nameof(Max):
+                case "MaxText":
+                    return "Max";
+                case nameof(Step):
+                case "StepText":
+                    return "Step";
+                default:
+                    return "Value";
             }
         }
 
