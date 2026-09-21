@@ -46,8 +46,8 @@
             <Border Grid.ColumnSpan="2"
                     Margin="0,0,0,2"
                     Padding="5"
-                    Background="{StaticResource SearchTextBoxBackground}"
-                    BorderBrush="#2A576C"
+                    Background="{StaticResource InCanvasSearchBackgroundBrush}"
+                    BorderBrush="{StaticResource InCanvasSearchBorderBrush}"
                     BorderThickness="0,0,0,1">
                 <Grid>
                     <DockPanel Name="SearchIconAndTextBlockGrid" Grid.ColumnSpan="2">
@@ -71,7 +71,7 @@
                                    DockPanel.Dock="Left"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                    FontSize="14"
-                                   Foreground="{StaticResource DefaultSearchTextBlockText}"
+                                   Foreground="{StaticResource InCanvasSearchPlaceholderBrush}"
                                    IsHitTestVisible="False"
                                    Text="{x:Static resx:Resources.SearchTextBlockText}"
                                    Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
@@ -82,17 +82,17 @@
                              VerticalAlignment="Center"
                              Background="Transparent"
                              BorderThickness="0"
-                             CaretBrush="{StaticResource CommonSidebarTextColor}"
+                             CaretBrush="{StaticResource InCanvasSearchCaretBrush}"
                              FontFamily="{StaticResource ArtifaktElementRegular}"
                              FontSize="14"
-                             Foreground="{StaticResource DefaultSearchTextBlockText}"
+                             Foreground="{StaticResource InCanvasSearchForegroundBrush}"
                              IsEnabled="True"
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
             </Border>
             
         </Grid>
-        <Rectangle Grid.Row="0" Height="2px" Fill="#ADD4E5" VerticalAlignment="Bottom"/>
+        <Rectangle Grid.Row="0" Height="0px" Fill="{StaticResource InCanvasSearchAccentBrush}" VerticalAlignment="Bottom"/>
         <Border Name="FoundMembers"
                 Grid.Row="1"
                 MaxHeight="250"

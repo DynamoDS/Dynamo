@@ -187,6 +187,19 @@
     <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
     <SolidColorBrush x:Key="ExtensionButtonBackgroundColor" Color="#535353" />
 
+    <!--
+        In-canvas search. This control is embedded in the canvas and group context menus, so it
+        follows the canvas theme rather than the library sidebar, even though it reuses the
+        library's result-row templates. Values match the library keys it previously borrowed
+        (SearchTextBoxBackground, DefaultSearchTextBlockText, CommonSidebarTextColor).
+    -->
+    <SolidColorBrush x:Key="InCanvasSearchBackgroundBrush" Color="#444444" />
+    <SolidColorBrush x:Key="InCanvasSearchBorderBrush" Color="#2A576C" />
+    <SolidColorBrush x:Key="InCanvasSearchForegroundBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="InCanvasSearchPlaceholderBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="InCanvasSearchCaretBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="InCanvasSearchAccentBrush" Color="#ADD4E5" />
+
     <!--  Library background  -->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
     <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
@@ -216,6 +229,15 @@
     <SolidColorBrush x:Key="NodeNameForeground" Color="#ffffff" />
     <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
     <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
+
+    <!--
+        Preview bubble: the result panel shown when hovering a node, plus the expanded watch tree
+        inside it. Values match the literals and palette greys these surfaces previously used.
+    -->
+    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="PreviewBubbleSecondaryForegroundBrush" Color="#D3D3D3" />
+    <SolidColorBrush x:Key="PreviewBubbleAccentBrush" Color="{StaticResource Blue300}" />
 
     <!--  Bubble preview  -->
     <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />

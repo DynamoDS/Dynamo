@@ -110,7 +110,9 @@ namespace DynamoCoreWpfTests
             "NodeContextMenuBackground",
             "NodeContextMenuForeground",
             "CodeEditorBackgroundBrush",
-            "CodeEditorForegroundBrush"
+            "CodeEditorForegroundBrush",
+            "InCanvasSearchBackgroundBrush",
+            "InCanvasSearchForegroundBrush"
         };
 
         /// <summary>
@@ -351,6 +353,37 @@ namespace DynamoCoreWpfTests
                 Assert.GreaterOrEqual(ratio, 4.5d,
                     $"[{theme}] node input text {text} on field {field} has a contrast ratio of " +
                     $"{ratio:F2}:1, below the 4.5:1 required for readable text.");
+            }
+        }
+
+        /// <summary>
+        /// The in-canvas search box is embedded in the canvas and group context menus, so its
+        /// input row has to follow the canvas theme rather than the library sidebar it borrows
+        /// its result templates from.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPaletteIsLoadedThenInCanvasSearchTextContrastsWithItsBoxInBothThemes()
+        {
+            foreach (var theme in new[] { DynamoTheme.Dark, DynamoTheme.Light })
+            {
+                var palette = LoadPalette(theme);
+
+                var box = ColorOf(palette["InCanvasSearchBackgroundBrush"]);
+
+                foreach (var key in new[]
+                {
+                    "InCanvasSearchForegroundBrush",
+                    "InCanvasSearchPlaceholderBrush"
+                })
+                {
+                    var text = ColorOf(palette[key]);
+                    var ratio = ContrastRatio(box, text);
+
+                    Assert.GreaterOrEqual(ratio, 4.5d,
+                        $"[{theme}] {key} {text} on the search box {box} has a contrast ratio " +
+                        $"of {ratio:F2}:1, below the 4.5:1 required for readable text.");
+                }
             }
         }
 

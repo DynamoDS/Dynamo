@@ -103,6 +103,30 @@
     <SolidColorBrush x:Key="autocompletionWindow" Color="#F2F0ED" />
     <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#2B2B2B" />
 
+    <!--
+        In-canvas search box, which appears inside the canvas and group context menus.
+        Only the input row is re-themed here. The results dropdown below it keeps
+        LibraryCommonBackground and the library's row templates, whose text colours live in
+        SidebarGridStyleDictionary.xaml and are shared with the library sidebar; flipping the
+        dropdown without those would leave light text on a light background.
+    -->
+    <SolidColorBrush x:Key="InCanvasSearchBackgroundBrush" Color="#FBFAF8" />
+    <SolidColorBrush x:Key="InCanvasSearchBorderBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="InCanvasSearchForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="InCanvasSearchPlaceholderBrush" Color="#6E6A64" />
+    <SolidColorBrush x:Key="InCanvasSearchCaretBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="InCanvasSearchAccentBrush" Color="#1A7FB5" />
+
+	<!--
+        Preview bubble: the result panel shown when hovering a node, plus the expanded watch tree
+        inside it. Values match the literals and palette greys these surfaces previously used.
+    -->
+    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush" Color="#DBD7D1" />
+    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="PreviewBubbleSecondaryForegroundBrush" Color="#44403A" />
+    <SolidColorBrush x:Key="PreviewBubbleAccentBrush" Color="#1A7FB5" />
+	
+	
     <!--  Preview bubbles  -->
     <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#8A8578" />
     <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="#1A7FB5" />

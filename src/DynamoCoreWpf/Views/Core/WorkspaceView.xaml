@@ -36,7 +36,7 @@
                                         Name="ContextMenuPanel">
                                 <Border BorderThickness="0"
                                     Name="MenuItems"
-                                    Background="#666666"
+                                    Background="{StaticResource NodeContextMenuBackground}"
                                     BorderBrush="#bbbbbb"
                                     Padding="0,3,0,3">
                                     <StackPanel IsItemsHost="True"
@@ -395,7 +395,7 @@
                                            Content="✓"
                                            DockPanel.Dock="Left"
                                            FontSize="9px"
-                                           Foreground="White"
+                                           Foreground="{StaticResource NodeContextMenuForeground}"
                                            Visibility="Collapsed" />
                                     <ContentPresenter x:Name="ContentPresenter"
                                                       Margin="{TemplateBinding Padding}"
@@ -444,7 +444,7 @@
                                            Content="✓"
                                            DockPanel.Dock="Left"
                                            FontSize="9px"
-                                           Foreground="White"
+                                           Foreground="{StaticResource NodeContextMenuForeground}"
                                            Visibility="Collapsed" />
                                     <ContentPresenter x:Name="ContentPresenter"
                                                       Margin="{TemplateBinding Padding}"
@@ -617,7 +617,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_x_average.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -626,7 +626,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_left.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignLeft}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignLeft}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -635,7 +635,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_right.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignRight}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignRight}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -644,7 +644,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_y_average.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignYAverage}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignYAverage}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -653,7 +653,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_top.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignTop}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignTop}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -662,7 +662,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_bottom.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlighBottom}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlighBottom}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -671,7 +671,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_y_distribute.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignYDistribute}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignYDistribute}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
@@ -680,7 +680,7 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_X_distribute.png" />
-                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}" Foreground="White"/>
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}"/>
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>
