@@ -287,6 +287,48 @@ namespace Dynamo.Tests.ModelsTest
             Assert.AreEqual(hostGuid, deserialized.HostGroupGuid);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGroupIsAlreadyNestedThenAddGroupToGroupThrows()
+        {
+            // Arrange — A contains B. Nesting C into B would be two levels.
+            var groupA = CreateGroupAround(CreateNode());
+            var groupB = CreateGroupAround(CreateNode());
+            var groupC = CreateGroupAround(CreateNode());
+            DynamoSelection.Instance.ClearSelection();
+
+            CurrentDynamoModel.ExecuteCommand(
+                new AddGroupToGroupCommand(groupB.GUID, groupA.GUID));
+            Assert.IsTrue(groupA.Nodes.Contains(groupB));
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(
+                    new AddGroupToGroupCommand(groupC.GUID, groupB.GUID)));
+            Assert.IsFalse(groupB.Nodes.Contains(groupC));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenGroupBeingAddedHasNestedGroupsThenAddGroupToGroupThrows()
+        {
+            // Arrange — A already contains B. Nesting A into C would be two levels.
+            var groupA = CreateGroupAround(CreateNode());
+            var groupB = CreateGroupAround(CreateNode());
+            var groupC = CreateGroupAround(CreateNode());
+            DynamoSelection.Instance.ClearSelection();
+
+            CurrentDynamoModel.ExecuteCommand(
+                new AddGroupToGroupCommand(groupB.GUID, groupA.GUID));
+            Assert.IsTrue(groupA.HasNestedGroups);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(
+                    new AddGroupToGroupCommand(groupA.GUID, groupC.GUID)));
+            Assert.IsFalse(groupC.Nodes.Contains(groupA));
+        }
+
         private DummyNode CreateNode()
         {
             var node = new DummyNode();

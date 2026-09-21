@@ -3075,14 +3075,34 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Add a list of annotations to the host group on model level.
+        /// Only a single level of nesting is allowed, matching the canvas:
+        /// the host must not already belong to another group, and none of the
+        /// groups being added may themselves contain nested groups
         /// </summary>
         /// <param name="modelsToAdd">List of annotation models.</param>
         /// <param name="hostGroupGuid">Host annotation guid.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the host is already nested, or a group being added already contains groups.
+        /// </exception>
         internal void AddGroupsToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
+
+            // Cannot nest into a group that is already inside another group
+            if (workspaceAnnotations.ContainsModel(selectedGroup))
+            {
+                throw new InvalidOperationException("Cannot add group to group: the host group is already nested.");
+            }
+
+            var groupsToAdd = modelsToAdd.OfType<AnnotationModel>().ToList();
+
+            // Cannot nest a group that already nested groups
+            if (groupsToAdd.Any(g => g.HasNestedGroups))
+            {
+                throw new InvalidOperationException("Cannot add group to group: a group being added already contains nested groups.");
+            }
 
             var modelsToModify = new List<ModelBase>();
             modelsToModify.AddRange(modelsToAdd);
