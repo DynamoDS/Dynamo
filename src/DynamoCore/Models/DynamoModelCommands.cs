@@ -685,7 +685,7 @@ namespace Dynamo.Models
                 return;
 
             var modelsToGroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
-            if (modelsToGroup.Any(model => model == null))
+            if (modelsToGroup.Contains(null))
             {
                 throw new InvalidOperationException( "Cannot add to group: one or more model ids were not found.");
             }
