@@ -404,9 +404,9 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 231:
-                    return true;
                 case 232:
+                    return true;
+                case 233:
                     return true;
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
