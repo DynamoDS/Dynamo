@@ -121,8 +121,8 @@
         Preview bubble: the result panel shown when hovering a node, plus the expanded watch tree
         inside it. Values match the literals and palette greys these surfaces previously used.
     -->
-    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush" Color="#DBD7D1" />
-    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush" Color="#5E5C5A" />
+    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush" Color="#FBFAF8" />
     <SolidColorBrush x:Key="PreviewBubbleSecondaryForegroundBrush" Color="#44403A" />
     <SolidColorBrush x:Key="PreviewBubbleAccentBrush" Color="#1A7FB5" />
 	
