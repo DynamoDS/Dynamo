@@ -2115,6 +2115,53 @@ var06 = g;
 
         #endregion
 
+        #region Undo action groups (DYN-10756)
+
+        /// <summary>
+        /// Regression test for a PR review comment on DYN-10756: a code change that drops a
+        /// connector takes UpdateModelValue down ModelModificationUndoHelper's rebuild path,
+        /// which pops the action group its own constructor pushed and re-forms it together with
+        /// the connector changes. An open undo action group must therefore not stop that group
+        /// from reaching the undo stack -- it would otherwise pop an unrelated earlier group, or
+        /// fail outright with nothing on the stack to pop.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCodeChangeDropsConnectorInsideUndoActionGroupThenUndoRestoresBoth()
+        {
+            var source = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(source, "a = 1;\nb = 2;");
+
+            var target = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(target, "x;");
+
+            // Connect the source's second output, so that dropping that output from the code
+            // drops the connector along with it.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                source.GUID, 1, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                target.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            Assert.AreEqual(2, source.OutPorts.Count);
+            Assert.AreEqual(1, target.InPorts[0].Connectors.Count);
+
+            using (CurrentDynamoModel.CurrentWorkspace.BeginUndoActionGroup())
+            {
+                UpdateCodeBlockNodeContent(source, "a = 1;");
+            }
+
+            Assert.AreEqual(1, source.OutPorts.Count);
+            Assert.AreEqual(0, target.InPorts[0].Connectors.Count);
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            // The code change and the connector it dropped are both reverted by that one undo.
+            Assert.AreEqual(2, source.OutPorts.Count);
+            Assert.AreEqual(1, target.InPorts[0].Connectors.Count);
+        }
+
+        #endregion
+
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
             var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);

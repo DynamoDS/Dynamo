@@ -34,24 +34,26 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Determine if undo operation is currently possible.
+        ///     Determine if undo operation is currently possible. Always false while an undo
+        ///     action group opened by <see cref="BeginUndoActionGroup"/> is still open.
         /// </summary>
         public bool CanUndo
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanUndo);
+                return (null != undoRecorder && undoRecorder.CanUndo && !undoRecorder.IsCoalescingScopeOpen);
             }
         }
 
         /// <summary>
-        ///     Determine if redo operation is currently possible.
+        ///     Determine if redo operation is currently possible. Always false while an undo
+        ///     action group opened by <see cref="BeginUndoActionGroup"/> is still open.
         /// </summary>
         public bool CanRedo
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanRedo);
+                return (null != undoRecorder && undoRecorder.CanRedo && !undoRecorder.IsCoalescingScopeOpen);
             }
         }
 
@@ -63,7 +65,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.IsActionGroupOpen);
+                return (null != undoRecorder && undoRecorder.IsCoalescingScopeOpen);
             }
         }
 
@@ -73,25 +75,26 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Individual workspace operations already open their own action groups internally, and
-        /// nested groups are flattened into the outermost one. Holding a group open across several
-        /// operations therefore collapses all of them into one undo step, which is what an automation
-        /// client (for example an assistant applying a batch of edits in response to a single user
-        /// request) needs so the user can reverse the whole batch with one undo rather than one undo
-        /// per internal operation. The number of internal undo steps an operation occupies is an
-        /// implementation detail and varies per operation, so it is not something a client can
-        /// compensate for by counting.
+        /// Individual workspace operations keep recording exactly as they do outside a group, each
+        /// one landing on the undo stack as usual; disposing the returned object merges everything
+        /// they recorded into a single undo step. That is what an automation client (for example an
+        /// assistant applying a batch of edits in response to a single user request) needs so the
+        /// user can reverse the whole batch with one undo rather than one undo per internal
+        /// operation. The number of internal undo steps an operation occupies is an implementation
+        /// detail and varies per operation, so it is not something a client can compensate for by
+        /// counting.
         /// </para>
         /// <para>
-        /// The caller MUST dispose the returned object. While a group is open the recorder refuses
-        /// undo and redo, and nothing recorded in the group reaches the undo stack, so a group that
-        /// is never closed leaves undo unavailable and keeps absorbing later changes. Callers that
+        /// The caller MUST dispose the returned object. While a group is open, undo and redo do
+        /// nothing and <see cref="CanUndo"/> and <see cref="CanRedo"/> report false, so a group
+        /// that is never closed leaves undo unavailable for the rest of the session. Callers that
         /// cannot use a <c>using</c> block — because the group spans several separate calls — must
-        /// hold the object and dispose it on every exit path, including error paths.
+        /// hold the object and dispose it on every exit path, including error paths. Disposing it
+        /// more than once is safe.
         /// </para>
         /// <para>
-        /// A group in which nothing was recorded is discarded rather than pushed onto the undo
-        /// stack, so opening and closing one around a read-only operation leaves the stack untouched.
+        /// A group in which nothing was recorded leaves the undo stack untouched, so opening and
+        /// closing one around a read-only operation costs nothing.
         /// </para>
         /// </remarks>
         /// <returns>
@@ -104,7 +107,7 @@ namespace Dynamo.Graph.Workspaces
                 return NoOpUndoActionGroup.Instance;
             }
 
-            return undoRecorder.BeginActionGroup();
+            return undoRecorder.BeginCoalescingScope();
         }
 
         /// <summary>

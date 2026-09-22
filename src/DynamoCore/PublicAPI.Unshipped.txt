@@ -7,3 +7,5 @@ Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotificati
 Dynamo.Models.DynamoModel.OpenFileCommand.OpenFileCommand(System.String filePath, System.Boolean forceManualExecutionMode, System.Boolean isTemplate, System.Boolean forceBlockRun) -> void
 Dynamo.Models.DynamoModel.InsertFileCommand.InsertFileCommand(System.String filePath, System.Boolean forceManualExecutionMode, System.Boolean forceBlockRun) -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.MarkAsIndependentlyModified() -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup() -> System.IDisposable
+Dynamo.Graph.Workspaces.WorkspaceModel.IsUndoActionGroupOpen.get -> bool
