@@ -288,6 +288,29 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
+        public void CannotAddModelsToGroupWhenSelectedGroupIsCollapsed()
+        {
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+            Assert.IsNotNull(annotation);
+
+            DynamoSelection.Instance.ClearSelection();
+            annotation.IsExpanded = false;
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
+            DynamoSelection.Instance.Selection.Add(secondNode);
+
+            Assert.IsFalse(ViewModel.CanAddModelsToGroup(null));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
         public void CanAddToGroupForNodeWhichIsAlreadyInAGroup()
         {
             //Create a Node
