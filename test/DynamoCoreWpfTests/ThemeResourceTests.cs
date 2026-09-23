@@ -133,13 +133,28 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public void SetUp()
         {
+            // Loading a loose ResourceDictionary by URI relies on WPF resource/pack-URI
+            // machinery that only gets initialized once an Application exists. When this fixture
+            // runs on its own (no other fixture has created a window first), that never happens,
+            // and even the simplest dictionary fails to load. Force it here instead.
+            if (Application.Current == null)
+            {
+                new Application();
+            }
+
             originalTheme = SharedDictionaryManager.CurrentTheme;
+
+            // SharedResourceDictionary caches every dictionary it loads by URI and never expires
+            // that cache, so a dictionary loaded under one theme in an earlier test would otherwise
+            // be handed back unchanged here, even though CurrentTheme has since switched.
+            SharedResourceDictionary._sharedDictionaries.Clear();
         }
 
         [TearDown]
         public void TearDown()
         {
             SharedDictionaryManager.CurrentTheme = originalTheme;
+            SharedResourceDictionary._sharedDictionaries.Clear();
         }
 
         private static ResourceDictionary LoadDictionary(Uri uri)

@@ -88,12 +88,12 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if(defaultGeometryScaling != value)
+                if (defaultGeometryScaling != value)
                 {
                     defaultGeometryScaling = value;
                     SelectedDefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)defaultGeometryScaling);
                     RaisePropertyChanged(nameof(DefaultGeometryScaling));
-                }              
+                }
             }
         }
 
@@ -185,11 +185,17 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Maps the localized theme name shown in the dropdown to the persisted enum value.
         /// </summary>
-        private static readonly Dictionary<string, DynamoTheme> LocalizedThemesMap =
+        /// <remarks>
+        /// Computed on every access rather than cached: caching it as a static field would bake
+        /// in whatever <see cref="System.Globalization.CultureInfo.CurrentUICulture"/> was active
+        /// the first time this class was touched, and stop matching <see cref="Res"/> lookups
+        /// made later under a different UI culture.
+        /// </remarks>
+        private static Dictionary<string, DynamoTheme> LocalizedThemesMap =>
             new Dictionary<string, DynamoTheme>
             {
-                { Res.ResourceManager.GetString("PreferencesViewThemeDark", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Dark.ToString(), DynamoTheme.Dark },
-                { Res.ResourceManager.GetString("PreferencesViewThemeLight", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Light.ToString(), DynamoTheme.Light }
+                { Res.PreferencesViewThemeDark ?? DynamoTheme.Dark.ToString(), DynamoTheme.Dark },
+                { Res.PreferencesViewThemeLight ?? DynamoTheme.Light.ToString(), DynamoTheme.Light }
             };
 
         /// <summary>
@@ -234,8 +240,7 @@ namespace Dynamo.ViewModels
                 if (preferenceSettings.Theme == theme) return;
 
                 preferenceSettings.Theme = theme;
-                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
-                    Res.ResourceManager.GetString("PreferencesViewThemeRestartRequired", System.Globalization.CultureInfo.CurrentUICulture), true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesViewThemeRestartRequired, true);
             }
         }
 
@@ -321,7 +326,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return preferenceSettings.BackupInterval/60000;
+                return preferenceSettings.BackupInterval / 60000;
             }
             set
             {
@@ -425,7 +430,7 @@ namespace Dynamo.ViewModels
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
-        }        
+        }
 
         /// <summary>
         /// Controls the IsChecked property in the Show Run Preview toggle button
@@ -540,7 +545,7 @@ namespace Dynamo.ViewModels
                     packagePathsForInstall = new ObservableCollection<string>();
                     foreach (var path in directoryPaths)
                     {
-                            packagePathsForInstall.Add(path);
+                        packagePathsForInstall.Add(path);
                     }
                 }
                 return packagePathsForInstall;
@@ -575,13 +580,13 @@ namespace Dynamo.ViewModels
         /// Flag specifying whether loading built-in packages
         /// is disabled, if true, or enabled, if false.
         /// </summary>
-        public bool DisableBuiltInPackages 
-        { 
-            get 
+        public bool DisableBuiltInPackages
+        {
+            get
             {
                 return preferenceSettings.DisableBuiltinPackages;
-            } 
-            set 
+            }
+            set
             {
                 preferenceSettings.DisableBuiltinPackages = value;
                 PackagePathsViewModel.SetPackagesScheduledState(PathManager.BuiltinPackagesDirectory, value);
@@ -593,8 +598,8 @@ namespace Dynamo.ViewModels
         /// Flag specifying whether loading custom packages
         /// is disabled, if true, or enabled, if false.
         /// </summary>
-        public bool DisableCustomPackages 
-        { 
+        public bool DisableCustomPackages
+        {
             get
             {
                 return preferenceSettings.DisableCustomPackageLocations;
@@ -602,12 +607,12 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.DisableCustomPackageLocations = value;
-                foreach(var path in preferenceSettings.CustomPackageFolders.Where(x => x != DynamoModel.BuiltInPackagesToken))
+                foreach (var path in preferenceSettings.CustomPackageFolders.Where(x => x != DynamoModel.BuiltInPackagesToken))
                 {
                     PackagePathsViewModel.SetPackagesScheduledState(path, value);
                 }
                 RaisePropertyChanged(nameof(DisableCustomPackages));
-            } 
+            }
         }
 
         /// <summary>
@@ -692,7 +697,8 @@ namespace Dynamo.ViewModels
         /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem {
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem
+            {
                 HexColorString = style.HexColorString,
                 Name = style.Name,
                 FontSize = style.FontSize,
@@ -702,7 +708,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(StyleItemsList));
             RaisePropertyChanged(nameof(CanResetGroupStyles));
         }
-     
+
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
         /// </summary>
@@ -971,11 +977,11 @@ namespace Dynamo.ViewModels
         // Perform unit reverse conversion to create a uniform grid for any Host units
         internal Configurations.Units GetTransformedHostUnits(Configurations.Units hostUnits)
         {
-            if(hostUnits == Configurations.Units.Millimeters)
+            if (hostUnits == Configurations.Units.Millimeters)
             {
                 return Configurations.Units.Meters;
             }
-            else if(hostUnits == Configurations.Units.Centimeters)
+            else if (hostUnits == Configurations.Units.Centimeters)
             {
                 return Configurations.Units.Centimeters;
             }
@@ -1038,12 +1044,12 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This property will make Visible or Collapse the AddStyle Border defined in the GroupStyles section
         /// </summary>
-        public bool IsVisibleAddStyleBorder 
+        public bool IsVisibleAddStyleBorder
         {
             get
             {
                 return isVisibleAddStyleBorder;
-            } 
+            }
             set
             {
                 isVisibleAddStyleBorder = value;
@@ -1054,7 +1060,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This property will Enable or Disable the AddStyle button defined in the GroupStyles section
         /// </summary>
-        public bool IsEnabledAddStyleButton 
+        public bool IsEnabledAddStyleButton
         {
             get
             {
@@ -1116,11 +1122,12 @@ namespace Dynamo.ViewModels
                 if (value != selectedPythonEngine)
                 {
                     selectedPythonEngine = value;
-                    if(value != Res.DefaultPythonEngineNone)
+                    if (value != Res.DefaultPythonEngineNone)
                     {
                         preferenceSettings.DefaultPythonEngine = value;
                     }
-                    else{
+                    else
+                    {
                         preferenceSettings.DefaultPythonEngine = string.Empty;
                     }
 
@@ -1237,7 +1244,7 @@ namespace Dynamo.ViewModels
                 {
                     return host.Equals("Dynamo Revit");
                 }
-                else if(this.dynamoViewModel.Model?.HostName != null)
+                else if (this.dynamoViewModel.Model?.HostName != null)
                 {
                     return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
                 }
@@ -1383,7 +1390,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(HideNodesBelowSpecificConfidenceLevelIsChecked));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
             }
-        }        
+        }
 
         /// <summary>
         /// Contains the confidence level of a ML recommendation
@@ -1455,7 +1462,7 @@ namespace Dynamo.ViewModels
         private void AddPythonEnginesOptions()
         {
             var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
-            foreach (var item in PythonEngineManager.Instance.AvailableEngines.GroupBy(x=>x.Name).Select(g=>g.FirstOrDefault()).ToList())
+            foreach (var item in PythonEngineManager.Instance.AvailableEngines.GroupBy(x => x.Name).Select(g => g.FirstOrDefault()).ToList())
             {
                 options.Add(item.Name);
             }
@@ -1572,7 +1579,7 @@ namespace Dynamo.ViewModels
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
             selectedTheme = LocalizedThemesMap
-                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.ResourceManager.GetString("PreferencesViewThemeDark", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Dark.ToString();
+                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.PreferencesViewThemeDark ?? DynamoTheme.Dark.ToString();
             dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
             dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
             dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = preferenceSettings.UseRenderInstancing;
@@ -1631,7 +1638,7 @@ namespace Dynamo.ViewModels
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
-            SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
+            SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
@@ -1640,7 +1647,7 @@ namespace Dynamo.ViewModels
             // Assigned to the backing field so that opening Preferences does not raise the
             // "restart required" toast for a theme the user has not actually changed.
             selectedTheme = LocalizedThemesMap
-                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.ResourceManager.GetString("PreferencesViewThemeDark", System.Globalization.CultureInfo.CurrentUICulture) ?? DynamoTheme.Dark.ToString();
+                .FirstOrDefault(x => x.Value == preferenceSettings.Theme).Key ?? Res.PreferencesViewThemeDark ?? DynamoTheme.Dark.ToString();
 
             LocalizedUnitsMap = new Dictionary<string, string>();
             foreach (var unit in Configurations.SupportedUnits)
@@ -1708,7 +1715,7 @@ namespace Dynamo.ViewModels
                 Preferences = preferenceSettings
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             TrustedPathsViewModel = new TrustedPathViewModel(this.preferenceSettings, this.dynamoViewModel?.Model?.Logger);
 
@@ -2149,7 +2156,7 @@ namespace Dynamo.ViewModels
             IsSaveButtonEnabled = true;
             AddStyleControl = new StyleItem();
             IsWarningEnabled = false;
-            IsVisibleAddStyleBorder = false;          
+            IsVisibleAddStyleBorder = false;
         }
 
         /// <summary>
@@ -2217,7 +2224,7 @@ namespace Dynamo.ViewModels
         ///   3 - Extra Large
         /// </param>
         /// <returns>The Scale Factor (-2, 0, 2, 4)</returns>
-        public static int ConvertUIToScaleFactor (int index)
+        public static int ConvertUIToScaleFactor(int index)
         {
             return (index - 1) * 2;
         }
@@ -2235,7 +2242,7 @@ namespace Dynamo.ViewModels
         /// <returns>The radiobutton index (0,1,2,3)</returns>
         public static int ConvertScaleFactorToUI(int scaleValue)
         {
-           return (scaleValue / 2) + 1;
+            return (scaleValue / 2) + 1;
         }
     }
 
@@ -2267,7 +2274,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     expanderActive = value;
                     OnPropertyChanged(nameof(ExpanderActive));
