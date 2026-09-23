@@ -150,8 +150,7 @@
                     Background="{StaticResource MidGreyBrush}"
                     BorderBrush="#4A4A4A"
                     BorderThickness="1"
-                    Foreground="#bcbcbc"
-                    Text="{Binding MinText, Mode=OneWay, UpdateSourceTrigger=Explicit}" />
+                    Foreground="#bcbcbc" />
                 <nodes1:DynamoTextBox
                     x:Name="MaxTb"
                     Grid.Row="1"
@@ -162,8 +161,7 @@
                     Background="{StaticResource MidGreyBrush}"
                     BorderBrush="#4A4A4A"
                     BorderThickness="1"
-                    Foreground="#bcbcbc"
-                    Text="{Binding MaxText, Mode=OneWay, UpdateSourceTrigger=Explicit}" />
+                    Foreground="#bcbcbc" />
                 <nodes1:DynamoTextBox
                     x:Name="StepTb"
                     Grid.Row="2"
@@ -174,8 +172,7 @@
                     Background="{StaticResource MidGreyBrush}"
                     BorderBrush="#4A4A4A"
                     BorderThickness="1"
-                    Foreground="#bcbcbc"
-                    Text="{Binding StepText, Mode=OneWay, UpdateSourceTrigger=Explicit}" />
+                    Foreground="#bcbcbc" />
             </Grid>
 
         </Expander>
@@ -201,8 +198,7 @@
                 BorderThickness="1"
                 TextWrapping="NoWrap"
                 Foreground="{StaticResource PrimaryCharcoal100Brush}"
-                Opacity="1"
-                Text="{Binding ValueText, Mode=OneWay}">
+                Opacity="1">
                 <nodes1:DynamoTextBox.ToolTip>
                     <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}"/>
                 </nodes1:DynamoTextBox.ToolTip>

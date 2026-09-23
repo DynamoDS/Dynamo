@@ -337,6 +337,8 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(element, context); //Base implementation must be called
 
+            ClearErrorsAndWarnings();
+
             foreach (
                 XmlNode subNode in
                     element.ChildNodes.Cast<XmlNode>()
@@ -344,6 +346,9 @@ namespace CoreNodeModels.Input
             {
                 Value = subNode.Attributes[0].Value;
             }
+
+            // Value's equality guard can skip notify, force UI to drop uncommitted invalid text
+            RaisePropertyChanged(nameof(Value));
         }
 
         #endregion
