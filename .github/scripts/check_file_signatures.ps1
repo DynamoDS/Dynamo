@@ -39,12 +39,19 @@
 #
 # Usage:
 #   pwsh -NoProfile -File .\check_file_signatures.ps1 <extracted-release-zip-dir>
-#   pwsh -NoProfile -File .\check_file_signatures.ps1 <dir> -RequireValid
 #   pwsh -NoProfile -File .\check_file_signatures.ps1 <dir> -Patterns 'LibG*.dll'
+#   pwsh -NoProfile -File .\check_file_signatures.ps1 <dir> -AllowUnverifiedChain
 #
-# Runs standalone: no credentials, no network. Signature trust evaluation may consult the local
-# certificate store, which is why a signed-but-not-Valid status is reported as a warning by default
-# and only becomes a hard failure under -RequireValid.
+# Runs standalone: no credentials, no network.
+#
+# Every matched file must evaluate to Valid. Matching the signer's common name is not enough on
+# its own: anyone can mint a self-signed certificate with CN "Autodesk, Inc.", and a file signed
+# with one reports the right name, a correct hash, and a status of UnknownError ("terminated in a
+# root certificate which is not trusted") - not NotTrusted. Only the chain evaluation tells a real
+# Autodesk signature from a forged one, so a non-Valid status is a failure by default.
+#
+# -AllowUnverifiedChain downgrades that to a warning, for a machine whose certificate store is
+# known to be incomplete. It is an explicit, visible opt-out; do not use it on a release gate.
 #
 # https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.signaturestatus
 [CmdletBinding()]
@@ -61,8 +68,10 @@ param (
     # The certificate common name every matched file must be signed with.
     [Parameter(Mandatory = $false)][string]$ExpectedSigner = 'Autodesk, Inc.',
 
-    # Escalate "signed, but the signature did not evaluate to Valid" from a warning to a failure.
-    [Parameter(Mandatory = $false)][switch]$RequireValid
+    # Downgrade "signed by the expected name, but the chain did not evaluate to Valid" from a
+    # failure to a warning. Only for a machine with a known-incomplete certificate store - with it
+    # set, a binary signed by a forged "Autodesk, Inc." certificate passes.
+    [Parameter(Mandatory = $false)][switch]$AllowUnverifiedChain
 )
 
 $ErrorActionPreference = "Stop"
@@ -207,14 +216,15 @@ foreach ($file in $files) {
         $reason = "hash mismatch - the file does not match its signature"
     }
     elseif ($status -ne 'Valid') {
-        # Signed by the right party, but the signature did not evaluate to Valid - typically an
-        # expired or untrusted chain on this machine. Reported loudly, but not fatal by default.
-        if ($RequireValid) {
-            $reason = "signature status is '$status' (-RequireValid)"
-        }
-        else {
+        # The right name, but the chain did not evaluate to Valid. This is what a forged
+        # certificate looks like (UnknownError: untrusted root), so it fails unless the caller has
+        # explicitly declared this machine's trust store unreliable.
+        if ($AllowUnverifiedChain) {
             $warned = $true
             $warnings += [PSCustomObject]@{ File = $file; Status = $status; Signer = $signerText; Message = $signature.StatusMessage }
+        }
+        else {
+            $reason = "signature status is '$status', not Valid - the name matches but the chain does not verify ($($signature.StatusMessage))"
         }
     }
 
