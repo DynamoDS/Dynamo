@@ -52,7 +52,7 @@ namespace Dynamo.Notifications
 
     public class NotificationCenterController : IDisposable
     {
-        private readonly NotificationUI notificationUIPopup;
+        internal readonly NotificationUI notificationUIPopup;
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;

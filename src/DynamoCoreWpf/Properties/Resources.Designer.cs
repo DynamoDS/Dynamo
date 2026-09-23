@@ -3070,7 +3070,25 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ExtensionAlreadyPresent", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Package/Extension {0} not offered because the Autodesk ADP Desktop SDK is not installed ({1} could not be found), so MCP tokens cannot be validated; every request would be rejected with HTTP 401..
+        /// </summary>
+        public static string ExtensionNotOfferedAdpWrapperMissing {
+            get {
+                return ResourceManager.GetString("ExtensionNotOfferedAdpWrapperMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Package/Extension {0} not {1} because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({2} does not export {3}); every request would be rejected with HTTP 401..
+        /// </summary>
+        public static string ExtensionNotOfferedMcpTokenValidationUnavailable {
+            get {
+                return ResourceManager.GetString("ExtensionNotOfferedMcpTokenValidationUnavailable", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to All Files ({0})|{0}.
         /// </summary>

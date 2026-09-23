@@ -362,6 +362,8 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
+                if (annotationModel.IsExpanded == value) return;
+
                 // This change is triggered by the user interaction in the View.
                 // Before we updating the value in the Model and ViewModel
                 // we record the current state in the UndoRedoStack.
@@ -374,8 +376,6 @@ namespace Dynamo.ViewModels
 
                 annotationModel.IsExpanded = value;
 
-                // Methods to collapse or expand the group based on the new value of IsExpanded.
-                ManageAnnotationMVExpansionAndCollapse();
                 HandlePrePortToggleLayout();
             }
         }
@@ -1479,7 +1479,7 @@ namespace Dynamo.ViewModels
                 UpdateProxyPortsPosition();
                 RaisePropertyChanged(nameof(NodeContentCount));
             }
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             AddGroupToGroupCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged(nameof(IsExpanded));
             RedrawConnectors();
@@ -1817,7 +1817,7 @@ namespace Dynamo.ViewModels
             FontSize = (double)itemEntryParameter.FontSize;
             GroupStyleId = itemEntryParameter.GroupStyleId;
 
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
         }
 
         /// <summary>
@@ -2024,7 +2024,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             this.AnnotationModel.UpdateGroupFrozenStatus();
         }
 
@@ -2123,7 +2123,7 @@ namespace Dynamo.ViewModels
             this.AnnotationModel.IsVisible = !this.AnnotationModel.IsVisible;
             WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
             WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
 
             Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, this.AnnotationModel.IsVisible.ToString());
         }
@@ -2162,7 +2162,7 @@ namespace Dynamo.ViewModels
 
             WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
             WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
-            WorkspaceViewModel.HasUnsavedChanges = true;
+            WorkspaceViewModel.Model.MarkAsIndependentlyModified();
 
             Analytics.TrackEvent(Actions.Freeze, Categories.GroupOperations, newFrozenState.ToString());
         }

@@ -305,7 +305,10 @@ namespace Dynamo.Models
         {
             try
             {
-                WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
+                // markAsModified: false -- selection is undo-tracked for UX (Ctrl+Z restores
+                // it) but is transient UI state, never written to the saved file, so it must
+                // not dirty the workspace (DYN-10717).
+                WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder, markAsModified: false);
                 DynamoSelection.Instance.Selection.AddUnique(model);
             }
             catch (Exception ex)
@@ -324,7 +327,7 @@ namespace Dynamo.Models
                 models.Add(modelBase);
             }
 
-            WorkspaceModel.RecordModelsForModification(models, CurrentWorkspace.UndoRecorder);
+            WorkspaceModel.RecordModelsForModification(models, CurrentWorkspace.UndoRecorder, markAsModified: false);
 
             DynamoSelection.Instance.ClearSelection();
         }
@@ -682,6 +685,11 @@ namespace Dynamo.Models
                 return;
 
             var modelsToGroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
+            if (modelsToGroup.Contains(null))
+            {
+                throw new InvalidOperationException( "Cannot add to group: one or more model ids were not found.");
+            }
+
             if (modelsToGroup.OfType<NodeModel>().Any())
             {
                 var nodeModels = modelsToGroup.OfType<NodeModel>();
@@ -694,7 +702,7 @@ namespace Dynamo.Models
                 }
             }
 
-            AddToGroup(modelsToGroup);
+            AddToGroup(modelsToGroup, command.HostGroupGuid);
         }
 
         private void AddGroupsToGroupImpl(AddGroupToGroupCommand command)

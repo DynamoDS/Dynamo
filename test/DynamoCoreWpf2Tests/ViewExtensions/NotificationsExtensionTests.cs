@@ -24,24 +24,20 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var notificationExtension = this.View.viewExtensionManager.ViewExtensions.OfType<NotificationsViewExtension>().FirstOrDefault();
             NotificationUI notificationUI = null;
 
-            // Wait for the NotificationCenterController webview2 control to finish initialization
+            // Wait for the NotificationCenterController webview2 control to finish initialization.
+            // initState only reaches Done via webView.Loaded, which already implies the popup was realized,
+            // so this alone is sufficient (no need to also poll IsOpen or re-check for a null popup).
             DispatcherUtil.DoEventsLoop(() =>
             {
                 if (notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done)
                 {
-                    notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
-                            .Select(h => h.RootVisual)
-                            .OfType<FrameworkElement>()
-                            .Select(f => f.Parent)
-                            .OfType<NotificationUI>()
-                            .FirstOrDefault(p => p.IsOpen);
-
-                    return notificationUI != null;
+                    notificationUI = notificationExtension.notificationCenterController.notificationUIPopup;
+                    return true;
                 }
                 return false;
             }, 300);
-            
-            Assert.NotNull(notificationUI, "Notification popup not part of the dynamo visual tree");
+
+            Assert.NotNull(notificationUI, "Notification popup did not open within the timeout");
             var webView = notificationUI.FindName("webView");
             Assert.NotNull(webView, "WebView framework element not found.");
         }

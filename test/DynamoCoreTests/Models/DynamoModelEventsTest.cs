@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CoreNodeModels;
@@ -437,6 +438,57 @@ namespace Dynamo.Tests.ModelsTest
         }
 
 
+
+        /// <summary>
+        /// DYN-10740: a failed evaluation showed an "Unhandled exception in Dynamo engine" dialog
+        /// with a completely blank message, and nothing was written to the Dynamo log, so the only
+        /// evidence available was a dialog that said nothing. OnEvaluationCompleted must record the
+        /// failing exception - specifically its type and stack trace, which stay useful when Message
+        /// is empty - to the log before the dialog is dispatched.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenEvaluationFailsThenExceptionTypeAndStackAreLogged()
+        {
+            //Arrange
+            //Throw and catch so the exception carries a real stack trace. The empty message is the
+            //DYN-10740 shape: Message alone conveys nothing.
+            Exception failure;
+            try
+            {
+                throw new Exception(string.Empty);
+            }
+            catch (Exception exception)
+            {
+                failure = exception;
+            }
+
+            Assert.IsEmpty(failure.Message, "The empty message is what makes this the DYN-10740 shape.");
+
+            //In test mode DynamoLogger writes to standard output, so capture it to observe the log.
+            var standardOutput = Console.Out;
+            string logOutput;
+            using (var logWriter = new StringWriter())
+            {
+                Console.SetOut(logWriter);
+                try
+                {
+                    //Act
+                    CurrentDynamoModel.OnEvaluationCompleted(this, new EvaluationCompletedEventArgs(true, failure));
+                }
+                finally
+                {
+                    Console.SetOut(standardOutput);
+                }
+
+                logOutput = logWriter.ToString();
+            }
+
+            //Assert
+            StringAssert.Contains(DynamoModel.EngineFailureLogPrefix, logOutput);
+            StringAssert.Contains(typeof(Exception).FullName, logOutput);
+            StringAssert.Contains(nameof(WhenEvaluationFailsThenExceptionTypeAndStackAreLogged), logOutput);
+        }
 
         #region SubscriberEvents
         private void CurrentDynamoModel_RefreshCompleted(Graph.Workspaces.HomeWorkspaceModel obj)

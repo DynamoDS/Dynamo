@@ -457,7 +457,7 @@ namespace Dynamo.Nodes
 
             if (groupTextBox.ActualHeight > 0 && groupTextBox.ActualWidth > 0)
             {
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             }
         }
 
@@ -589,7 +589,7 @@ namespace Dynamo.Nodes
             SetTextHeight();
             if (groupDescriptionTextBox.ActualHeight > 0 && groupDescriptionTextBox.ActualWidth > 0)
             {
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             }
 
         }
@@ -619,13 +619,13 @@ namespace Dynamo.Nodes
             if (xAdjust >= ViewModel.Width - ViewModel.AnnotationModel.WidthAdjustment)
             {
                 ViewModel.AnnotationModel.WidthAdjustment += e.HorizontalChange;
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             }
 
             if (yAdjust >= ViewModel.Height - ViewModel.AnnotationModel.HeightAdjustment)
             {
                 ViewModel.AnnotationModel.HeightAdjustment += e.VerticalChange;
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
 
             }
         }

@@ -304,17 +304,17 @@ namespace UnitsUI
 
         private void SelectConversionQuantity_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            nodeViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
         }
 
         private void SelectConversionFrom_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            nodeViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
         }
 
         private void SelectConversionTo_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            nodeViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
         }
 
         public void Dispose()

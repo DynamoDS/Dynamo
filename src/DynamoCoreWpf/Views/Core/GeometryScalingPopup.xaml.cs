@@ -69,7 +69,7 @@ namespace Dynamo.Views
             if (dynamoViewModel.ScaleFactorLog != viewModel.ScaleValue)
             {
                 dynamoViewModel.ScaleFactorLog = (int)viewModel.ScaleValue;
-                dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                dynamoViewModel.CurrentSpace.MarkAsIndependentlyModified();
 
                 //Due that binding are done before the constructor of this class we need to execute the Log only if the viewModel was assigned previously
                 if (viewModel != null)

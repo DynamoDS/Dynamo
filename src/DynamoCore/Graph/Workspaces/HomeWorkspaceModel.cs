@@ -513,6 +513,84 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Computes the external file references by inspecting evaluated output values from
+        /// this workspace's running engine (only possible for a home workspace, not e.g. a
+        /// custom node workspace, hence this override).
+        /// </summary>
+        private protected override List<INodeLibraryDependencyInfo> ComputeExternalFileReferences()
+        {
+            var externalFiles = new Dictionary<object, DependencyInfo>();
+
+            // If an execution is in progress we'll have to wait for it to be done before we can gather the
+            // external file references as this implementation relies on the output values of each node.
+            // instead just bail to avoid blocking the UI.
+            if (RunSettings.RunEnabled && !RunSettings.ForceBlockRun)
+            {
+                foreach (var node in Nodes)
+                {
+                    CollectExternalFileReferencesForNode(node, externalFiles);
+                }
+            }
+
+            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// Checks each output port of the given node for a file path value, recording any
+        /// found as an external file reference.
+        /// </summary>
+        private void CollectExternalFileReferencesForNode(NodeModel node, Dictionary<object, DependencyInfo> externalFiles)
+        {
+            externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
+
+            // Check for the file path string value at each of the output ports of all nodes in the workspace.
+            var outputIdentifierNames = node.OutPorts.Select(port => node.GetAstIdentifierForOutputIndex(port.Index)?.Name);
+            foreach (var id in outputIdentifierNames)
+            {
+                var mirror = EngineController.GetMirror(id);
+                var data = mirror?.GetData().Data;
+
+                if (data is string dataString && dataString.Contains(@"\"))
+                {
+                    RecordExternalFileReference(node, dataString, serializedDependencyInfo, externalFiles);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records the given output value as an external file reference, either because it
+        /// exists on disk, or -- if not -- because it matches a previously serialized
+        /// dependency for this node.
+        /// </summary>
+        private void RecordExternalFileReference(NodeModel node, string dataString, DependencyInfo serializedDependencyInfo, Dictionary<object, DependencyInfo> externalFiles)
+        {
+            // Check if the value exists on disk
+            DynamoUtilities.PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+            if (fileExists)
+            {
+                var externalFilePath = System.IO.Path.GetFullPath(dataString);
+                var externalFileName = System.IO.Path.GetFileName(dataString);
+
+                if (!externalFiles.ContainsKey(externalFilePath))
+                {
+                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                }
+
+                externalFiles[externalFilePath].AddDependent(node.GUID);
+                externalFiles[externalFilePath].Size = fileSize;
+            }
+            // Read the serialized value for that node.
+            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+            {
+                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                {
+                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                }
+                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+            }
+        }
+
+        /// <summary>
         /// Called when the RequestSilenceNodeModifiedEvents event is emitted from a Node
         /// </summary>
         /// <param name="node">The node itself</param>
@@ -925,10 +1003,10 @@ namespace Dynamo.Graph.Workspaces
                 cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
             // This method is intended to be called only during opening of an existing workspace
-            // and therefore if the workspace is set as dirty on account of CBN precompilation, 
+            // and therefore if the workspace is set as dirty on account of CBN precompilation,
             // the workspace should be reverted to a clean state as it's undesirable to have unsaved
             // changes for a workspace that is newly opened.
-            HasUnsavedChanges = false;
+            MarkAsSaved();
         }
 
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)

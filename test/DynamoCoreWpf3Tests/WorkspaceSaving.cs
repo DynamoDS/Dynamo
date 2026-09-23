@@ -588,6 +588,21 @@ namespace Dynamo.Tests
                 Path.Combine(templateRoot, "fr-FR", "Template.dyn"), localizedTemplateDirectory));
         }
 
+        /// <summary>
+        /// DYN-10661: Save/SaveAs threw ArgumentNullException when the templates directory
+        /// was null, because the check was a bare path.Contains(templatesDirectory).
+        /// The check must treat an unknown templates directory as "not a template path".
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckDoesNotThrowWhenTemplateDirectoryIsUnknown()
+        {
+            var savePath = Path.Combine(TempFolder, "Workspace.dyn");
+
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(savePath, null));
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(savePath, string.Empty));
+        }
+
         [Test]
         [Category("UnitTests")]
         public void TemplateSavePathCheckAllowsPathsOutsideTemplateRoot()

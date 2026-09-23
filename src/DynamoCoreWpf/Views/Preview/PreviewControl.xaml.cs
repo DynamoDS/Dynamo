@@ -44,6 +44,12 @@ namespace Dynamo.UI.Controls
         private State currentState = State.Hidden;
         private readonly Queue<State> queuedRequest = new Queue<State>();
 
+        // The pending mouse-hover fade-in delay timer, if one is currently running.
+        // Tracked so it can be stopped when the control is unloaded, preventing its
+        // Tick handler from running against a control/model that has since been torn down.
+        private DispatcherTimer fadeInDelayTimer;
+        private Action fadeInOnMouseLeave;
+
         // Data source and display.
         private CompactBubbleViewModel cachedSmallContent;
         private WatchViewModel cachedLargeContent;
@@ -567,10 +573,23 @@ namespace Dynamo.UI.Controls
             nodeViewModel.OnMouseLeave += onMouseLeave;
             delayTimer.Tick += (obj, e) =>
             {
-                Dispatcher.Invoke(ProcessFadeIn);
                 nodeViewModel.OnMouseLeave -= onMouseLeave;
                 delayTimer.Stop();
+                fadeInDelayTimer = null;
+                fadeInOnMouseLeave = null;
+
+                // The control may have been unloaded (e.g. the node/workspace was
+                // torn down) while this timer was pending; in that case the scheduler
+                // backing this control is no longer valid, so skip the refresh.
+                if (!IsLoaded) return;
+
+                Dispatcher.Invoke(ProcessFadeIn);
             };
+
+            // Tracked so PreviewControl_Unloaded can stop this timer if the control
+            // is torn down before the delay elapses.
+            fadeInDelayTimer = delayTimer;
+            fadeInOnMouseLeave = onMouseLeave;
 
             await Task.Run(() => delayTimer.Start());
         }
@@ -706,6 +725,19 @@ namespace Dynamo.UI.Controls
         {
             SizeChanged -= UpdateMargin;
             Unloaded -= PreviewControl_Unloaded;
+
+            // Stop any pending fade-in delay timer so its Tick handler doesn't run
+            // later against this now torn-down control (see BeginFadeInTransition).
+            if (fadeInDelayTimer != null)
+            {
+                fadeInDelayTimer.Stop();
+                fadeInDelayTimer = null;
+            }
+            if (fadeInOnMouseLeave != null)
+            {
+                nodeViewModel.OnMouseLeave -= fadeInOnMouseLeave;
+                fadeInOnMouseLeave = null;
+            }
         }
 
         private void UpdateMargin(object sender, SizeChangedEventArgs e)

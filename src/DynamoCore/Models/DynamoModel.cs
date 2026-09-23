@@ -1891,6 +1891,10 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+
+            // Capture before locale swap so reset logs/saves compare against the value from DynamoSettings.xml.
+            var persistedTemplatePath = PreferenceSettings.TemplateFilePath;
+
             var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
 
             //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
@@ -1907,9 +1911,36 @@ namespace Dynamo.Models
                 }
             }
 
+            if (Core.PathManager.ShouldResetPersistedTemplatesPath(PreferenceSettings.TemplateFilePath, pathManager.DefaultTemplatesDirectory))
+            {
+                PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Log($"Configured template path {persistedTemplatePath} is not available; falling back to {PreferenceSettings.TemplateFilePath}");
+                }
+            }
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
-            UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
+            if (!UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath))
+            {
+                // The preferred templates location could not be used, so the default stays
+                // in effect. This previously failed silently and only surfaced downstream as
+                // a null templates directory. See DYN-10661.
+                Logger?.Log("Could not use templates location '" + PreferenceSettings.TemplateFilePath +
+                    "'. Falling back to '" + pathManager.TemplatesDirectory + "'.", LogLevel.File);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+                {
+                    PreferenceSettings.AddTrustedLocation(PreferenceSettings.TemplateFilePath);
+                }
+
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+                }
+            }
         }
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
         {
@@ -2636,7 +2667,7 @@ namespace Dynamo.Models
 
                 if (string.IsNullOrEmpty(workspace.FileName))
                 {
-                    workspace.HasUnsavedChanges = true;
+                    workspace.MarkAsIndependentlyModified();
                 }
 
                 RunType runType = RunType.Manual;
@@ -2727,7 +2758,7 @@ namespace Dynamo.Models
 
             if (resolvedDummyNode)
             {
-                currentWorkspace.HasUnsavedChanges = false;
+                currentWorkspace.MarkAsSaved();
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
                 // the Dependency table is regenerated in the WorkspaceDependencyView extension.
                 currentWorkspace.OnDummyNodesReloaded();
@@ -2978,40 +3009,100 @@ namespace Dynamo.Models
             }
         }
 
-        internal void AddToGroup(List<ModelBase> modelsToAdd)
+        /// <summary>
+        /// Adds models to a group.
+        /// When <paramref name="hostGroupGuid"/> is empty, uses the selected expanded group
+        /// (existing canvas behavior). When a host id is provided, uses that group even if
+        /// it is not selected. The host must exist and be expanded.
+        /// </summary>
+        /// <param name="modelsToAdd">Nodes or notes to add to the group.</param>
+        /// <param name="hostGroupGuid">Optional destination group id. Empty uses selection.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the host is missing, is not a group, is collapsed, no destination group can be resolved,
+        /// or none of the models ended up in the host group.
+        /// </exception>
+        internal void AddToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid = default)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
-            var selectedGroups = workspaceAnnotations
-                .Where(x => x.IsSelected && x.IsExpanded);
+            AnnotationModel hostGroup;
 
-            // If multiple groups are selected, chances are that we
-            // have a group that contains a nested group.
-            // If this is the case we want to make sure that we add the
-            // node to the parent folder.
-            var selectedGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
-                selectedGroups.FirstOrDefault();
-
-            if (selectedGroup != null)
+            if (hostGroupGuid != Guid.Empty)
             {
-                foreach (var model in modelsToAdd)
+                // Explicit host: do not require selection - MCP path
+                hostGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
+                if (hostGroup == null)
                 {
-                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToTargetAnnotationModel(model);
+                    throw new InvalidOperationException("Cannot add to group: the host id does not match an existing group.");
+                }
+
+                if (!hostGroup.IsExpanded)
+                {
+                    throw new InvalidOperationException("Cannot add to group: the host group is collapsed.");
+                }
+            }
+            else
+            {
+                var selectedGroups = workspaceAnnotations
+                    .Where(x => x.IsSelected && x.IsExpanded);
+
+                // If multiple groups are selected, chances are that we
+                // have a group that contains a nested group.
+                // If this is the case we want to make sure that we add the
+                // node to the parent folder.
+                hostGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
+                    selectedGroups.FirstOrDefault();
+
+                if (hostGroup == null)
+                {
+                    throw new InvalidOperationException("Cannot add to group: no selected expanded group was found.");
                 }
             }
 
+            foreach (var model in modelsToAdd)
+            {
+                CurrentWorkspace.RecordGroupModelBeforeUngroup(hostGroup);
+                hostGroup.AddToTargetAnnotationModel(model);
+            }
+
+            // Already-grouped models count as success (idempotent). Wrong ids are
+            // rejected in AddToGroupImpl. If nothing is in the host after this loop,
+            // the add did not happen.
+            if (!modelsToAdd.Any(model => model != null && hostGroup.Nodes.Any(node => node.GUID == model.GUID)))
+            {
+                throw new InvalidOperationException("Cannot add to group: none of the models were added to the host group.");
+            }
         }
 
         /// <summary>
         /// Add a list of annotations to the host group on model level.
+        /// Only a single level of nesting is allowed, matching the canvas:
+        /// the host must not already belong to another group, and none of the
+        /// groups being added may themselves contain nested groups
         /// </summary>
         /// <param name="modelsToAdd">List of annotation models.</param>
         /// <param name="hostGroupGuid">Host annotation guid.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the host is already nested, or a group being added already contains groups.
+        /// </exception>
         internal void AddGroupsToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
+
+            // Cannot nest into a group that is already inside another group
+            if (workspaceAnnotations.ContainsModel(selectedGroup))
+            {
+                throw new InvalidOperationException("Cannot add group to group: the host group is already nested.");
+            }
+
+            var groupsToAdd = modelsToAdd.OfType<AnnotationModel>().ToList();
+
+            // Cannot nest a group that already nested groups
+            if (groupsToAdd.Any(g => g.HasNestedGroups))
+            {
+                throw new InvalidOperationException("Cannot add group to group: a group being added already contains nested groups.");
+            }
 
             var modelsToModify = new List<ModelBase>();
             modelsToModify.AddRange(modelsToAdd);
@@ -3601,7 +3692,7 @@ namespace Dynamo.Models
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
-            CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.MarkAsSaved();
             CurrentWorkspace.Name = "";
 
             // Clear workspace metadata properties when creating new workspace

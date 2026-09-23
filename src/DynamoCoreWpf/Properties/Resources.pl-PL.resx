@@ -151,7 +151,7 @@
     <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Aby móc korzystać z Menedżera pakietów, włącz tryb sieciowy.</value>
+    <value>Aby móc korzystać z narzędzia Package Manager, włącz tryb sieciowy.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -2064,6 +2064,12 @@ Czy chcesz zainstalować najnowszą aktualizację dodatku Dynamo?</value>
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Nie zostanie dodana nowa karta, ponieważ to rozszerzenie już występuje na pasku bocznym rozszerzeń.</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Brak dostępu do pakietu/rozszerzenia {0}, ponieważ nie zainstalowano zestawu SDK formatu Autodesk ADP na komputer (nie znaleziono {1}), przez co nie można sprawdzić poprawności tokenów MCP. Każde żądanie zostanie odrzucone z komunikatem o błędzie 401 protokołu HTTP.</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Pakiet/rozszerzenie {0} nie jest oferowane, ponieważ pakiet Autodesk Identity (IDSDK) w tym procesie nie może sprawdzić poprawności tokenów MCP (biblioteka {1} nie eksportuje elementu {2}); każde żądanie zostanie odrzucone z kodem błędu HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>Nie można wczytać {1}.

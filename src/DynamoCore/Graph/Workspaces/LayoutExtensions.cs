@@ -693,7 +693,7 @@ namespace Dynamo.Graph.Workspaces
                     node.X = n.X;
                     node.Y = n.Y + n.NotesHeight + offsetY;
                     node.ReportPosition();
-                    workspace.HasUnsavedChanges = true;
+                    workspace.MarkAsIndependentlyModified();
 
                     double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)
@@ -724,7 +724,7 @@ namespace Dynamo.Graph.Workspaces
                         pin.CenterX = n.X;
                         pin.CenterY = n.Y;
                         pin.ReportPosition();
-                        workspace.HasUnsavedChanges = true;
+                        workspace.MarkAsIndependentlyModified();
                     }
                 }
             }

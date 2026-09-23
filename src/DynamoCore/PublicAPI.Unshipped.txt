@@ -1,8 +1,14 @@
 Dynamo.Graph.Nodes.IValueSchemaProvider
 Dynamo.Graph.Nodes.IValueSchemaProvider.IsListValue.get -> bool
 Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId.get -> string
+Dynamo.Models.DynamoModel.AddModelToGroupCommand.AddModelToGroupCommand(string modelGuid, string hostModelGuid) -> void
+Dynamo.Models.DynamoModel.AddModelToGroupCommand.AddModelToGroupCommand(System.Collections.Generic.IEnumerable<System.Guid> modelGuid, System.Guid hostModelGuid) -> void
+Dynamo.Models.DynamoModel.AddModelToGroupCommand.AddModelToGroupCommand(System.Guid modelGuid, System.Guid hostModelGuid) -> void
+Dynamo.Models.DynamoModel.AddModelToGroupCommand.HostGroupGuid.get -> System.Guid
+Dynamo.Models.DynamoModel.AddModelToGroupCommand.HostGroupGuid.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Models.DynamoModel.OpenFileCommand.OpenFileCommand(System.String filePath, System.Boolean forceManualExecutionMode, System.Boolean isTemplate, System.Boolean forceBlockRun) -> void
 Dynamo.Models.DynamoModel.InsertFileCommand.InsertFileCommand(System.String filePath, System.Boolean forceManualExecutionMode, System.Boolean forceBlockRun) -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.MarkAsIndependentlyModified() -> void

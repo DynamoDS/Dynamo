@@ -207,7 +207,9 @@ namespace DynamoCoreWpfTests.PackageManager
                 var loader = Model.GetPackageManagerExtension().PackageLoader;
                 var pkg = loader.ScanPackageDirectory(pkgDir);
                 loader.LoadPackages(new List<Package> { pkg });
-                Assert.AreEqual(1, loader.RequestedExtensions.Count());
+                //Counts the extensions requested by every package the loader has seen, so this includes
+                //the model extensions shipped by built-in packages (DynamoMCP added one in 0.6.0).
+                Assert.AreEqual(2, loader.RequestedExtensions.Count());
                 Assert.AreEqual(5, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
                 Assert.IsTrue(viewExtensionLoadStart);
                 Assert.IsTrue(viewExtensionAdd);

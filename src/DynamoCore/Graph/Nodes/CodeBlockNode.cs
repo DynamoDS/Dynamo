@@ -684,6 +684,9 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal void UndefineFunctionDefinitions()
         {
+            if (ParseParam?.ParsedNodes == null)
+                return;
+
             var funcDefs = ParseParam.ParsedNodes.OfType<FunctionDefinitionNode>();
             foreach (var funcDef in funcDefs)
             {
@@ -790,6 +793,17 @@ namespace Dynamo.Graph.Nodes
             {
                 previewVariable = null;
             }
+
+            // Deactivate the function definitions registered by this node's previous compile before
+            // recompiling. They are still active on the shared precompilation core, so re-appending
+            // them is rejected as a redefinition, and code generation then flags the definition
+            // skipMe and never traverses its body. That silently drops every diagnostic inside the
+            // body - notably the "function not found" warning of DYN-10693, which appeared when the
+            // graph was opened and then vanished after any edit to the code block. Deactivating
+            // first lets ProcedureTable.Append replace the stale entry, so the body is compiled and
+            // its warnings are reported again. See DYN-10693.
+            UndefineFunctionDefinitions();
+
             // During loading of CBN from file, the elementResolver from the workspace is unavailable
             // in which case, a local copy of the ER obtained from the CBN is used
             var resolver = workspaceElementResolver ?? ElementResolver;

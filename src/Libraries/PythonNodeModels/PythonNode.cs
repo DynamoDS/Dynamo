@@ -128,6 +128,35 @@ namespace PythonNodeModels
             return "Input #" + index;
         }
 
+        /// <summary>
+        /// Returns true if the input port at <paramref name="index"/> has a name or tooltip that
+        /// differs from the auto-generated default for that index, i.e. the user renamed the port
+        /// or edited its description through the port context menu. Used to decide whether removing
+        /// the port would actually discard anything the user configured.
+        /// Returns false for an out-of-range index, so callers can pass the index of a port that
+        /// does not exist (for example when there are no input ports left to remove).
+        /// </summary>
+        /// <param name="index">Index of the input port to inspect.</param>
+        /// <returns>True when the port carries user-customized properties.</returns>
+        internal bool HasCustomInputPortProperties(int index)
+        {
+            if (index < 0 || index >= InPorts.Count)
+            {
+                return false;
+            }
+
+            // For PythonNode, port i is created with GetInputName(i)/GetInputTooltip(i), so any
+            // difference from those defaults is a user edit.
+            // This does NOT hold for PythonStringNode: it prepends a fixed "script" port and
+            // overrides GetInputIndex to subtract one, so its port i carries the defaults for
+            // i - 1 and EVERY untouched port would be reported as customized. That is inert only
+            // because the sole caller narrows to PythonNode; widening it to PythonNodeBase
+            // requires correcting the index mapping here first.
+            var port = InPorts[index];
+            return !string.Equals(port.Name, GetInputName(index), StringComparison.Ordinal)
+                || !string.Equals(port.ToolTip, GetInputTooltip(index), StringComparison.Ordinal);
+        }
+
         protected AssociativeNode CreateOutputAST(
             AssociativeNode codeInputNode, List<AssociativeNode> inputAstNodes,
             List<Tuple<string, AssociativeNode>> additionalBindings)

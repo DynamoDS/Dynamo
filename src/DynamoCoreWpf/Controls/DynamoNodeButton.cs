@@ -68,11 +68,15 @@ namespace Dynamo.Nodes
             {
                 // Only show the prompt if it is a Python node
                 var nodeVM = (sender as DynamoNodeButton)?.DataContext as NodeViewModel;
-                if (nodeVM?.NodeModel is PythonNodeModels.PythonNode)
-                {                    
+                if (nodeVM?.NodeModel is PythonNodeModels.PythonNode pythonNode)
+                {
                     MessageBoxResult result = MessageBoxResult.None;
 
-                    if (eventName.Equals("RemoveInPort") && ShowWarningForRemovingInPort)
+                    // Removing an input port always removes the last one, so only warn when that
+                    // port carries custom properties that the user would actually lose. This also
+                    // suppresses the prompt when there is no port left to remove.
+                    if (eventName.Equals("RemoveInPort") && ShowWarningForRemovingInPort
+                        && pythonNode.HasCustomInputPortProperties(pythonNode.InPorts.Count - 1))
                     {
                         result = MessageBoxService.Show
                         (
