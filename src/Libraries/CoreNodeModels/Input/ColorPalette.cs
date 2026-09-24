@@ -106,12 +106,14 @@ namespace CoreNodeModels.Input
             return base.UpdateValueCore(updateValueParams);
         }
 
+        private static readonly Regex nonDigitRegex = new Regex(@"\D+", RegexOptions.Compiled);
+
         private DSColor DeserializeValue(string val)
         {
             try
             {
                 //Splits the xml string and returns each of the ARGB values as a string array.
-                string[] argb = Regex.Split(val, @"\D+").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+                string[] argb = nonDigitRegex.Split(val).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
                 return DSColor.ByARGB(int.Parse(argb[3]), int.Parse(argb[0]), int.Parse(argb[1]), int.Parse(argb[2]));
             }
             catch
