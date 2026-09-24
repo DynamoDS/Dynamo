@@ -642,8 +642,8 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>File menu | New | New home workspace</comment>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Open...</value>
-    <comment>File menu | Open</comment>
+    <value>_Open File</value>
+    <comment>File menu | Open File</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>Open _Recent Files</value>
