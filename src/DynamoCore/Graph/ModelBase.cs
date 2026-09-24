@@ -236,7 +236,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// Has this <see cref="ModelBase"/> been disposed? Gets set when <see cref="Dispose"/> is called.
         /// </summary>
-        protected bool HasBeenDisposed { get; private set; }
+        protected internal bool HasBeenDisposed { get; private set; }
 
         /// <summary>
         /// Protected constructor.

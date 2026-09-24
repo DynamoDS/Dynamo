@@ -433,9 +433,12 @@ namespace Dynamo.Graph.Workspaces
                 EngineController.Dispose();
             }
 
-            if (pulseMaker == null) return;
-
-            pulseMaker.Stop();
+            if (pulseMaker != null)
+            {
+                pulseMaker.Stop();
+                pulseMaker.Dispose();
+                pulseMaker = null;
+            }
         }
 
         protected override void OnNodeRemoved(NodeModel node)
