@@ -96,7 +96,8 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Available Python engines.
         /// </summary>
-        public ObservableCollection<string> AvailableEngines {
+        public ObservableCollection<string> AvailableEngines
+        {
             get; private set;
         }
         #endregion
@@ -178,10 +179,12 @@ namespace PythonNodeModelsWpf
                 tooltip.Content = string.Format(
                 PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
                 PythonEngineManager.PythonNet3EngineName);
-            }            
+            }
 
             // Add custom highlighting rules consistent with DesignScript
-            CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
+            // The Python editor keeps its dark surface in both themes, so its dynamic rules
+            // must use the dark palette even when the canvas theme is light.
+            CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController, true);
 
             AvailableEngines =
                 new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
@@ -365,7 +368,7 @@ namespace PythonNodeModelsWpf
                 e.Handled = true;
             }
 
-            int percentage = Convert.ToInt32( editText.FontSize / fontSizePreferencesSliderProportionValue );
+            int percentage = Convert.ToInt32(editText.FontSize / fontSizePreferencesSliderProportionValue);
             zoomScaleCacheValue = percentage;
             dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = percentage;
         }
@@ -407,9 +410,9 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    if (!AvailableEngines.Contains((string) item))
+                    if (!AvailableEngines.Contains((string)item))
                     {
-                        AvailableEngines.Add((string) item);
+                        AvailableEngines.Add((string)item);
                     }
                 }
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Configuration;
@@ -22,9 +23,12 @@ namespace Dynamo.Wpf.Views
         /// Reads a token color from the themed palette so that code block highlighting stays
         /// legible against the themed editor background.
         /// </summary>
-        private static Color GetThemedColor(string resourceKey)
+        private static Color GetThemedColor(string resourceKey, bool useBaseThemeColors = false)
         {
-            var brush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary[resourceKey] as SolidColorBrush;
+            var palette = useBaseThemeColors
+                ? new ResourceDictionary { Source = SharedDictionaryManager.BaseDynamoColorsAndBrushesDictionaryUri }
+                : SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+            var brush = palette[resourceKey] as SolidColorBrush;
             return brush.Color;
         }
 
@@ -34,9 +38,14 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateNumberHighlightingRule()
         {
+            return CreateNumberHighlightingRule(false);
+        }
+
+        private static HighlightingRule CreateNumberHighlightingRule(bool useBaseThemeColors)
+        {
             var digitRule = new HighlightingRule();
 
-            Color color = GetThemedColor("CodeEditorNumberBrush");
+            Color color = GetThemedColor("CodeEditorNumberBrush", useBaseThemeColors);
             digitRule.Color = new HighlightingColor()
             {
                 Foreground = new CustomizedBrush(color)
@@ -68,7 +77,12 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateClassHighlightRule(EngineController engineController)
         {
-            Color color = GetThemedColor("CodeEditorClassBrush");
+            return CreateClassHighlightRule(engineController, false);
+        }
+
+        private static HighlightingRule CreateClassHighlightRule(EngineController engineController, bool useBaseThemeColors)
+        {
+            Color color = GetThemedColor("CodeEditorClassBrush", useBaseThemeColors);
             var classHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -92,7 +106,12 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateMethodHighlightRule(EngineController engineController)
         {
-            Color color = GetThemedColor("CodeEditorMethodBrush");
+            return CreateMethodHighlightRule(engineController, false);
+        }
+
+        private static HighlightingRule CreateMethodHighlightRule(EngineController engineController, bool useBaseThemeColors)
+        {
+            Color color = GetThemedColor("CodeEditorMethodBrush", useBaseThemeColors);
             var methodHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -165,15 +184,20 @@ namespace Dynamo.Wpf.Views
         // Allows each individual eidtor to have their own set of rules, and aligns the common ones
         internal static void AddCommonHighlighingRules(TextEditor editor, EngineController controller)
         {
+            AddCommonHighlighingRules(editor, controller, false);
+        }
+
+        internal static void AddCommonHighlighingRules(TextEditor editor, EngineController controller, bool useBaseThemeColors)
+        {
             // Highlighting Digits
             var rules = editor.SyntaxHighlighting.MainRuleSet.Rules;
 
-            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
+            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule(useBaseThemeColors));
 
-            var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller);
+            var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller, useBaseThemeColors);
             if (classRule != null) rules.Add(classRule);
 
-            var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller);
+            var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller, useBaseThemeColors);
             if (methodRule != null) rules.Add(methodRule);
         }
     }

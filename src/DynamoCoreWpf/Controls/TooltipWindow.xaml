@@ -13,15 +13,15 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border CornerRadius="5"
             Opacity=".95"
-            Background="{StaticResource LibraryCommonBackground}"
+            Background="{StaticResource InCanvasSearchTooltipBackgroundBrush}"
             Padding="10">
         <Grid Width="325">
             <Grid.RowDefinitions>
@@ -55,7 +55,7 @@
                                TextWrapping="WrapWithOverflow">
                         <TextBlock.Foreground>
                             <Binding Path="HasDescription"
-                                     Converter="{StaticResource DescriptionToColorConverter}" />
+                                     Converter="{StaticResource DescriptionToColorConverter}"/>
                         </TextBlock.Foreground>
                     </TextBlock>
                 </ScrollViewer>
@@ -65,13 +65,13 @@
                        Width="96"
                        HorizontalAlignment="Right"
                        Source="{Binding Path=LargeIcon}"
-                       Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}" />
+                       Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}"/>
             </Grid>
             <TextBlock Text="{x:Static resx:Resources.InputLabel}"
                        Grid.Row="1"
                        FontSize="10"
                        Foreground="#50b5a3"
-                       Margin="0,3,0,0" />
+                       Margin="0,3,0,0"/>
             <ListBox ItemsSource="{Binding InputParameters}"
                      Grid.Row="2"
                      Grid.ColumnSpan="3"
@@ -82,7 +82,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter />
+                                    <ContentPresenter/>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -92,15 +92,15 @@
                     <DataTemplate>
                         <WrapPanel Orientation="Horizontal">
                             <TextBlock FontSize="13"
-                                       Foreground="{StaticResource CommonSidebarTextColor}"
-                                       Text="{Binding Item1, Mode=OneWay}" />
+                                       Foreground="{StaticResource InCanvasSearchResultForegroundBrush}"
+                                       Text="{Binding Item1, Mode=OneWay}"/>
                             <TextBlock FontSize="13"
-                                       Foreground="{StaticResource VariableTypeTextColor}">
+                                       Foreground="{StaticResource InCanvasSearchResultSecondaryForegroundBrush}">
                                 <TextBlock.Text>
                                     <Binding Path="Item2"
                                              Mode="OneWay"
                                              Converter="{StaticResource InOutParamTypeConverter}"
-                                             ConverterParameter="inputParam" />
+                                             ConverterParameter="inputParam"/>
                                 </TextBlock.Text>
                             </TextBlock>
                         </WrapPanel>
@@ -111,7 +111,7 @@
                        Grid.Row="3"
                        FontSize="10"
                        Foreground="#50b5a3"
-                       Margin="0,10,0,0" />
+                       Margin="0,10,0,0"/>
             <ListBox ItemsSource="{Binding OutputParameters}"
                      Grid.Row="4"
                      Grid.ColumnSpan="3"
@@ -122,7 +122,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter />
+                                    <ContentPresenter/>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -135,7 +135,7 @@
                             <TextBlock.Foreground>
                                 <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
                                          Path="DataContext"
-                                         Converter="{StaticResource NodeTypeToColorConverter}" />
+                                         Converter="{StaticResource NodeTypeToColorConverter}"/>
                             </TextBlock.Foreground>
                         </TextBlock>
                     </DataTemplate>

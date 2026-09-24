@@ -1,10 +1,12 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--  a good color picker  -->
     <!--  http://www.colorspire.com/rgb-color-wheel/  -->
 
     <!--  Universal  -->
-    <SolidColorBrush x:Key="DynamoStandardLabelTextBrush" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="DynamoStandardLabelTextBrush"
+            Color="#BBBBBB"/>
 
     <!--  Autodesk Colors  -->
     <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
@@ -36,48 +38,81 @@
 
 
     <!--  Autodesk Colors  -->
-    <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
-    <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}" />
-    <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
-    <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
-    <SolidColorBrush x:Key="LightMidGreyBrush" Color="{StaticResource LightMidGrey}" />
+    <SolidColorBrush x:Key="PrimaryCharcoal100Brush"
+            Color="{StaticResource PrimaryCharcoal100}"/>
+    <SolidColorBrush x:Key="PrimaryCharcoal200Brush"
+            Color="{StaticResource PrimaryCharcoal200}"/>
+    <SolidColorBrush x:Key="PrimaryCharcoal300Brush"
+            Color="{StaticResource PrimaryCharcoal300}"/>
+    <SolidColorBrush x:Key="LightGreyBrush"
+            Color="{StaticResource LightGrey}"/>
+    <SolidColorBrush x:Key="LightMidGreyBrush"
+            Color="{StaticResource LightMidGrey}"/>
     <SolidColorBrush x:Key="LightMidGreyOpacityBrush"
                      Opacity="0.2"
-                     Color="{StaticResource LightMidGrey}" />
-    <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
-    <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
-    <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
-    <SolidColorBrush x:Key="DarkerGreyBrush" Color="{StaticResource DarkerGrey}" />
-    <SolidColorBrush x:Key="LilacBrush" Color="{StaticResource Lilac}" />
-    <SolidColorBrush x:Key="Green300Brush" Color="{StaticResource Green300}" />
-    <SolidColorBrush x:Key="Turqoise300Brush" Color="{StaticResource Turqoise300}" />
-    <SolidColorBrush x:Key="YellowOrange500Brush" Color="{StaticResource YellowOrange500}" />
-    <SolidColorBrush x:Key="Red400Brush" Color="{StaticResource Red400}" />
-    <SolidColorBrush x:Key="Red500Brush" Color="{StaticResource Red500}" />
-    <SolidColorBrush x:Key="Blue200Brush" Color="{StaticResource Blue200}" />
-    <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}" />
-    <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}" />
-    <SolidColorBrush x:Key="Blue450Brush" Color="{StaticResource Blue450}" />
-    <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}" />
-    <SolidColorBrush x:Key="DefaultFontColorBrush" Color="{StaticResource DefaultFontColor}" />
-    <SolidColorBrush x:Key="HoverFontColorBrush" Color="{StaticResource HoverFontColor}" />
-    <SolidColorBrush x:Key="PressedFontColorBrush" Color="{StaticResource PressedFontColor}" />
-    <SolidColorBrush x:Key="DisabledFontColorBrush" Color="{StaticResource DisabledFontColor}" />
+                     Color="{StaticResource LightMidGrey}"/>
+    <SolidColorBrush x:Key="MidGreyBrush"
+            Color="{StaticResource MidGrey}"/>
+    <SolidColorBrush x:Key="DarkMidGreyBrush"
+            Color="{StaticResource DarkMidGrey}"/>
+    <SolidColorBrush x:Key="DarkGreyBrush"
+            Color="{StaticResource DarkGrey}"/>
+    <SolidColorBrush x:Key="DarkerGreyBrush"
+            Color="{StaticResource DarkerGrey}"/>
+    <SolidColorBrush x:Key="LilacBrush"
+            Color="{StaticResource Lilac}"/>
+    <SolidColorBrush x:Key="Green300Brush"
+            Color="{StaticResource Green300}"/>
+    <SolidColorBrush x:Key="Turqoise300Brush"
+            Color="{StaticResource Turqoise300}"/>
+    <SolidColorBrush x:Key="YellowOrange500Brush"
+            Color="{StaticResource YellowOrange500}"/>
+    <SolidColorBrush x:Key="Red400Brush"
+            Color="{StaticResource Red400}"/>
+    <SolidColorBrush x:Key="Red500Brush"
+            Color="{StaticResource Red500}"/>
+    <SolidColorBrush x:Key="Blue200Brush"
+            Color="{StaticResource Blue200}"/>
+    <SolidColorBrush x:Key="Blue300Brush"
+            Color="{StaticResource Blue300}"/>
+    <SolidColorBrush x:Key="Blue400Brush"
+            Color="{StaticResource Blue400}"/>
+    <SolidColorBrush x:Key="Blue450Brush"
+            Color="{StaticResource Blue450}"/>
+    <SolidColorBrush x:Key="DarkBlue200Brush"
+            Color="{StaticResource DarkBlue200}"/>
+    <SolidColorBrush x:Key="DefaultFontColorBrush"
+            Color="{StaticResource DefaultFontColor}"/>
+    <SolidColorBrush x:Key="HoverFontColorBrush"
+            Color="{StaticResource HoverFontColor}"/>
+    <SolidColorBrush x:Key="PressedFontColorBrush"
+            Color="{StaticResource PressedFontColor}"/>
+    <SolidColorBrush x:Key="DisabledFontColorBrush"
+            Color="{StaticResource DisabledFontColor}"/>
 
     <!--  Workspaces  -->
-    <SolidColorBrush x:Key="DynamoWindowBrush" Color="#353535" />
-    <SolidColorBrush x:Key="WorkspaceBackgroundBrush" Color="#232323" />
+    <SolidColorBrush x:Key="DynamoWindowBrush"
+            Color="#353535"/>
+    <SolidColorBrush x:Key="WorkspaceBackgroundBrush"
+            Color="#232323"/>
 
     <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
-    <SolidColorBrush x:Key="WorkspaceTabHeaderActiveTextBrush" Color="#EEEEEE" />
-    <SolidColorBrush x:Key="WorkspaceTabHeaderInactiveTextBrush" Color="#777777" />
-    <SolidColorBrush x:Key="WorkspaceBackgroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
-    <SolidColorBrush x:Key="WorkspaceBackgroundCustomBrush" Color="{StaticResource WorkspaceBackgroundCustom}" />
-    <SolidColorBrush x:Key="WorkspaceBackGroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
+    <SolidColorBrush x:Key="WorkspaceTabHeaderActiveTextBrush"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="WorkspaceTabHeaderInactiveTextBrush"
+            Color="#777777"/>
+    <SolidColorBrush x:Key="WorkspaceBackgroundHomeBrush"
+            Color="{StaticResource WorkspaceBackgroundHome}"/>
+    <SolidColorBrush x:Key="WorkspaceBackgroundCustomBrush"
+            Color="{StaticResource WorkspaceBackgroundCustom}"/>
+    <SolidColorBrush x:Key="WorkspaceBackGroundHomeBrush"
+            Color="{StaticResource WorkspaceBackgroundHome}"/>
 
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#2A2A2A" />
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue"
+            Color="#2A2A2A"/>
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse"
+            Color="#3C3C3C"/>
 
     <!--  Nodes  -->
     <!--
@@ -85,86 +120,142 @@
         the palette names describe a shade, not a role, so they cannot be re-themed safely
         (the same key is used as a foreground in one view and a background in another).
     -->
-    <SolidColorBrush x:Key="NodeBodyBackgroundBrush" Color="{StaticResource DarkerGrey}" />
-    <SolidColorBrush x:Key="NodeHeaderBackgroundBrush" Color="{StaticResource DarkMidGrey}" />
+    <SolidColorBrush x:Key="NodeBodyBackgroundBrush"
+            Color="{StaticResource DarkerGrey}"/>
+    <SolidColorBrush x:Key="NodeHeaderBackgroundBrush"
+            Color="{StaticResource DarkMidGrey}"/>
 
-    <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
-    <SolidColorBrush x:Key="NodeTransientOverlayColor" Color="#D5BCF7" />
-    <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
-    <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
-    <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
-    <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB" />
-    <SolidColorBrush x:Key="NodeCustomColor" Color="#32BCAD" />
+    <SolidColorBrush x:Key="NodeFrozenOverlayColor"
+            Color="{StaticResource DarkBlue200}"/>
+    <SolidColorBrush x:Key="NodeTransientOverlayColor"
+            Color="#D5BCF7"/>
+    <SolidColorBrush x:Key="NodeInfoColor"
+            Color="{StaticResource Blue300}"/>
+    <SolidColorBrush x:Key="NodeWarningColor"
+            Color="{StaticResource YellowOrange500}"/>
+    <SolidColorBrush x:Key="NodeErrorColor"
+            Color="{StaticResource Red500}"/>
+    <SolidColorBrush x:Key="NodePreviewColor"
+            Color="#BBBBBB"/>
+    <SolidColorBrush x:Key="NodeCustomColor"
+            Color="#32BCAD"/>
 
-    <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
-    <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
-    <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
-    <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
+    <SolidColorBrush x:Key="NodeOptionsButtonBackground"
+            Color="#282828"/>
+    <SolidColorBrush x:Key="NodeExpanderBackground"
+            Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="NodeExpanderHoverBackground"
+            Color="#282828"/>
+    <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground"
+            Color="#4B4B4B"/>
+    <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground"
+            Color="#EBEBEB"/>
+    <SolidColorBrush x:Key="NodeLacingGlyphBackground"
+            Color="#EBEBEB"/>
 
-    <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
-    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
-    <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
-    <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
+    <SolidColorBrush x:Key="NodeContextMenuForeground"
+            Color="{StaticResource PrimaryCharcoal100}"/>
+    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight"
+            Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="NodeContextMenuBackground"
+            Color="{StaticResource MidGrey}"/>
+    <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight"
+            Color="#808080"/>
+    <SolidColorBrush x:Key="NodeContextMenuSeparatorColor"
+            Color="#AFAFAF"/>
     <!--  Checkmarks and submenu arrows drawn inside a canvas context menu.  -->
-    <SolidColorBrush x:Key="NodeContextMenuAccentBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeContextMenuAccentBrush"
+            Color="{StaticResource Blue300}"/>
 
     <!--
         Surfaces that borrowed the NodeContextMenu* keys but are not canvas context menus, and
         that stay dark in every theme. They get their own keys so re-theming the canvas menus
         cannot leak into them. Values intentionally match the dark NodeContextMenu* equivalents.
     -->
-    <SolidColorBrush x:Key="DividerRectangleBrush" Color="#808080" />
-    <SolidColorBrush x:Key="MainMenuSeparatorBrush" Color="#AFAFAF" />
+    <SolidColorBrush x:Key="DividerRectangleBrush"
+            Color="#808080"/>
+    <SolidColorBrush x:Key="MainMenuSeparatorBrush"
+            Color="#AFAFAF"/>
 
     <!--  Package Manager context menus (DarkContextMenuStyle is used only by Package Manager).  -->
-    <SolidColorBrush x:Key="PMContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
-    <SolidColorBrush x:Key="PMContextMenuForegroundHighlight" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="PMContextMenuBackground" Color="{StaticResource MidGrey}" />
-    <SolidColorBrush x:Key="PMContextMenuBackgroundHighlight" Color="#808080" />
-    <SolidColorBrush x:Key="PMContextMenuSeparatorColor" Color="#AFAFAF" />
+    <SolidColorBrush x:Key="PMContextMenuForeground"
+            Color="{StaticResource PrimaryCharcoal100}"/>
+    <SolidColorBrush x:Key="PMContextMenuForegroundHighlight"
+            Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="PMContextMenuBackground"
+            Color="{StaticResource MidGrey}"/>
+    <SolidColorBrush x:Key="PMContextMenuBackgroundHighlight"
+            Color="#808080"/>
+    <SolidColorBrush x:Key="PMContextMenuSeparatorColor"
+            Color="#AFAFAF"/>
 
     <!--
         Node input widgets: DynamoTextBox and the slider value boxes. Read from here instead of
         being hard-coded in DynamoTextBox.cs, so a theme can recolor them with the node body.
     -->
-    <SolidColorBrush x:Key="NodeInputBackgroundBrush" Color="#666666" />
-    <SolidColorBrush x:Key="NodeInputBorderBrush" Color="#4A4A4A" />
-    <SolidColorBrush x:Key="NodeInputForegroundBrush" Color="#EEEEEE" />
-    <SolidColorBrush x:Key="NodeInputSecondaryForegroundBrush" Color="#BCBCBC" />
-    <SolidColorBrush x:Key="NodeInputLabelForegroundBrush" Color="#CCCCCC" />
-    <SolidColorBrush x:Key="NodeInputCaretBrush" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="NodeInputHighlightBrush" Color="#64FFFFFF" />
+    <SolidColorBrush x:Key="NodeInputBackgroundBrush"
+            Color="#666666"/>
+    <SolidColorBrush x:Key="NodeInputBorderBrush"
+            Color="#4A4A4A"/>
+    <SolidColorBrush x:Key="NodeInputForegroundBrush"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="NodeInputSecondaryForegroundBrush"
+            Color="#BCBCBC"/>
+    <SolidColorBrush x:Key="NodeInputLabelForegroundBrush"
+            Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="NodeInputCaretBrush"
+            Color="#6AC0E7"/>
+    <SolidColorBrush x:Key="NodeInputHighlightBrush"
+            Color="#64FFFFFF"/>
 
     <!--  Slider track and thumb  -->
-    <SolidColorBrush x:Key="NodeSliderThumbBrush" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="NodeSliderTrackBrush" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="NodeSliderThumbBrush"
+            Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="NodeSliderTrackBrush"
+            Color="{StaticResource PrimaryCharcoal100}"/>
 
     <!--  Code block and Python editor surface  -->
-    <SolidColorBrush x:Key="CodeEditorBackgroundBrush" Color="#3A3B3B" />
-    <SolidColorBrush x:Key="CodeEditorForegroundBrush" Color="#DCDCDC" />
-    <SolidColorBrush x:Key="CodeEditorLineNumbersBrush" Color="#AAAAAA" />
-    <SolidColorBrush x:Key="CodeEditorBorderBrush" Color="#959595" />
-    <SolidColorBrush x:Key="CodeEditorNumberBrush" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="CodeEditorClassBrush" Color="#B7D78C" />
-    <SolidColorBrush x:Key="CodeEditorMethodBrush" Color="#84D7CE" />
-    <SolidColorBrush x:Key="CodeEditorLinkBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="CodeEditorBackgroundBrush"
+            Color="#3A3B3B"/>
+    <SolidColorBrush x:Key="CodeEditorForegroundBrush"
+            Color="#DCDCDC"/>
+    <SolidColorBrush x:Key="CodeEditorLineNumbersBrush"
+            Color="#AAAAAA"/>
+    <SolidColorBrush x:Key="CodeEditorBorderBrush"
+            Color="#959595"/>
+    <SolidColorBrush x:Key="CodeEditorNumberBrush"
+            Color="#6AC0E7"/>
+    <SolidColorBrush x:Key="CodeEditorClassBrush"
+            Color="#B7D78C"/>
+    <SolidColorBrush x:Key="CodeEditorMethodBrush"
+            Color="#84D7CE"/>
+    <SolidColorBrush x:Key="CodeEditorLinkBrush"
+            Color="#6AC0E7"/>
 
-    <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7" />
+    <SolidColorBrush x:Key="NodeSelectionTextColor"
+            Color="#6ac0e7"/>
 
     <!--  Node colors in selected state  -->
-    <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
+    <SolidColorBrush x:Key="outerBorderSelection"
+            Color="#4192d9"/>
 
     <!--  NodeLabel colors  -->
-    <SolidColorBrush x:Key="stringLabelBackground" Color="#E0A86F" />
-    <SolidColorBrush x:Key="numberLabelBackground" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="objectLabelBackground" Color="#EEEEEE" />
-    <SolidColorBrush x:Key="boolLabelBackground" Color="#F9F9A5" />
-    <SolidColorBrush x:Key="nullLabelBackground" Color="#F9F9A5" />
+    <SolidColorBrush x:Key="stringLabelBackground"
+            Color="#E0A86F"/>
+    <SolidColorBrush x:Key="numberLabelBackground"
+            Color="#6AC0E7"/>
+    <SolidColorBrush x:Key="objectLabelBackground"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="boolLabelBackground"
+            Color="#F9F9A5"/>
+    <SolidColorBrush x:Key="nullLabelBackground"
+            Color="#F9F9A5"/>
 
     <!--  Node Autocomplete  -->
-    <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
-    <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="autocompletionWindow"
+            Color="#535353"/>
+    <SolidColorBrush x:Key="AutocompletionWindowFontColor"
+            Color="#F5F5F5"/>
 
     <!--  3D  -->
     <Color x:Key="EdgeColor">#000000</Color>
@@ -173,19 +264,30 @@
     <Color x:Key="MaterialColor">#efede4</Color>
 
     <!--  Brushes for Menu  -->
-    <SolidColorBrush x:Key="NormalBorderBrush" Color="#444444" />
-    <SolidColorBrush x:Key="NormalBackgroundBrush" Color="#535353" />
-    <SolidColorBrush x:Key="NormalForegroundBrush" Color="#EEEEEE" />
-    <SolidColorBrush x:Key="ActiveForegroundBrush" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="HighlightedHeaderBrush" Color="#424242" />
-    <SolidColorBrush x:Key="HighlightedBrush" Color="#424242" />
-    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#949494" />
+    <SolidColorBrush x:Key="NormalBorderBrush"
+            Color="#444444"/>
+    <SolidColorBrush x:Key="NormalBackgroundBrush"
+            Color="#535353"/>
+    <SolidColorBrush x:Key="NormalForegroundBrush"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="ActiveForegroundBrush"
+            Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="HighlightedHeaderBrush"
+            Color="#424242"/>
+    <SolidColorBrush x:Key="HighlightedBrush"
+            Color="#424242"/>
+    <SolidColorBrush x:Key="DisabledForegroundBrush"
+            Color="#949494"/>
 
     <!--  Extensions Sidebar  -->
-    <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
-    <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
-    <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
-    <SolidColorBrush x:Key="ExtensionButtonBackgroundColor" Color="#535353" />
+    <SolidColorBrush x:Key="BorderBrushWhite"
+            Color="#FF3F4040"/>
+    <SolidColorBrush x:Key="FeedbackSectionBackground"
+            Color="#4192D9"/>
+    <SolidColorBrush x:Key="ExtensionBackgroundColor"
+            Color="#353535"/>
+    <SolidColorBrush x:Key="ExtensionButtonBackgroundColor"
+            Color="#535353"/>
 
     <!--
         In-canvas search. This control is embedded in the canvas and group context menus, so it
@@ -193,83 +295,176 @@
         library's result-row templates. Values match the library keys it previously borrowed
         (SearchTextBoxBackground, DefaultSearchTextBlockText, CommonSidebarTextColor).
     -->
-    <SolidColorBrush x:Key="InCanvasSearchBackgroundBrush" Color="#444444" />
-    <SolidColorBrush x:Key="InCanvasSearchBorderBrush" Color="#2A576C" />
-    <SolidColorBrush x:Key="InCanvasSearchForegroundBrush" Color="#C0C0C0" />
-    <SolidColorBrush x:Key="InCanvasSearchPlaceholderBrush" Color="#C0C0C0" />
-    <SolidColorBrush x:Key="InCanvasSearchCaretBrush" Color="#CCCCCC" />
-    <SolidColorBrush x:Key="InCanvasSearchAccentBrush" Color="#ADD4E5" />
+    <SolidColorBrush x:Key="InCanvasSearchBackgroundBrush"
+            Color="#444444"/>
+    <SolidColorBrush x:Key="InCanvasSearchBorderBrush"
+            Color="#2A576C"/>
+    <SolidColorBrush x:Key="InCanvasSearchForegroundBrush"
+            Color="#C0C0C0"/>
+    <SolidColorBrush x:Key="InCanvasSearchPlaceholderBrush"
+            Color="#C0C0C0"/>
+    <SolidColorBrush x:Key="InCanvasSearchCaretBrush"
+            Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="InCanvasSearchAccentBrush"
+            Color="#ADD4E5"/>
+    <SolidColorBrush x:Key="InCanvasSearchResultBackgroundBrush"
+            Color="#333333"/>
+    <SolidColorBrush x:Key="InCanvasSearchResultForegroundBrush"
+            Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="InCanvasSearchResultSecondaryForegroundBrush"
+            Color="#808285"/>
+    <SolidColorBrush x:Key="InCanvasSearchTooltipBackgroundBrush"
+            Color="#333333"/>
 
     <!--  Library background  -->
-    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
-    <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
-    <SolidColorBrush x:Key="LibraryMemberOnHover" Color="#404040" />
-    <SolidColorBrush x:Key="LibraryItemHostBackground" Color="#353535" />
-    <SolidColorBrush x:Key="RootElementBackground" Color="#282828" />
-    <SolidColorBrush x:Key="RootElementOnHover" Color="#222222" />
-    <SolidColorBrush x:Key="ClassButtonClickedBackground" Color="#272727" />
+    <SolidColorBrush x:Key="SearchTextBoxBackground"
+            Color="#444444"/>
+    <SolidColorBrush x:Key="LibraryCommonBackground"
+            Color="#333333"/>
+    <SolidColorBrush x:Key="LibraryMemberOnHover"
+            Color="#404040"/>
+    <SolidColorBrush x:Key="LibraryItemHostBackground"
+            Color="#353535"/>
+    <SolidColorBrush x:Key="RootElementBackground"
+            Color="#282828"/>
+    <SolidColorBrush x:Key="RootElementOnHover"
+            Color="#222222"/>
+    <SolidColorBrush x:Key="ClassButtonClickedBackground"
+            Color="#272727"/>
 
     <!--  Library text colors  -->
-    <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="DefaultSearchTextBlockText" Color="#C0C0C0" />
-    <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
-    <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
-    <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />
-    <SolidColorBrush x:Key="VariableTypeTextColor" Color="#777777" />
-    <SolidColorBrush x:Key="SearchDarkGreyTextColor" Color="#808285" />
-    <SolidColorBrush x:Key="CreateMembersColor" Color="#7B9F2D" />
-    <SolidColorBrush x:Key="ActionMembersColor" Color="#D56867" />
-    <SolidColorBrush x:Key="QueryMembersColor" Color="#65999A" />
-    <SolidColorBrush x:Key="SearchElementLineDeterminerColor" Color="#4D4D4D" />
-    <SolidColorBrush x:Key="FilterIconColor" Color="#787878" />
-    <SolidColorBrush x:Key="FilterPopupBorderColor" Color="#808080" />
-    <SolidColorBrush x:Key="FilterPopupBackgroundColor" Color="#666666" />
-    <SolidColorBrush x:Key="SelectedFilterButtonTextColor" Color="#4D4D4D" />
-    <SolidColorBrush x:Key="FilterCategoryIsNotSelectedColor" Color="#737373" />
-    <SolidColorBrush x:Key="NodeNameForeground" Color="#ffffff" />
-    <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
-    <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
+    <SolidColorBrush x:Key="MemberButtonText"
+            Color="#aaaaaa"/>
+    <SolidColorBrush x:Key="DefaultSearchTextBlockText"
+            Color="#C0C0C0"/>
+    <SolidColorBrush x:Key="CommonSidebarTextColor"
+            Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="SearchBoxBackgroundColor"
+            Color="#231F20"/>
+    <SolidColorBrush x:Key="NestedMemberTextColor"
+            Color="#989898"/>
+    <SolidColorBrush x:Key="VariableTypeTextColor"
+            Color="#777777"/>
+    <SolidColorBrush x:Key="SearchDarkGreyTextColor"
+            Color="#808285"/>
+    <SolidColorBrush x:Key="CreateMembersColor"
+            Color="#7B9F2D"/>
+    <SolidColorBrush x:Key="ActionMembersColor"
+            Color="#D56867"/>
+    <SolidColorBrush x:Key="QueryMembersColor"
+            Color="#65999A"/>
+    <SolidColorBrush x:Key="SearchElementLineDeterminerColor"
+            Color="#4D4D4D"/>
+    <SolidColorBrush x:Key="FilterIconColor"
+            Color="#787878"/>
+    <SolidColorBrush x:Key="FilterPopupBorderColor"
+            Color="#808080"/>
+    <SolidColorBrush x:Key="FilterPopupBackgroundColor"
+            Color="#666666"/>
+    <SolidColorBrush x:Key="SelectedFilterButtonTextColor"
+            Color="#4D4D4D"/>
+    <SolidColorBrush x:Key="FilterCategoryIsNotSelectedColor"
+            Color="#737373"/>
+    <SolidColorBrush x:Key="NodeNameForeground"
+            Color="#ffffff"/>
+    <SolidColorBrush x:Key="UnSelectedLayoutForeground"
+            Color="#999999"/>
+    <SolidColorBrush x:Key="NodeCategoryForeground"
+            Color="#b3b3b3"/>
 
     <!--
         Preview bubble: the result panel shown when hovering a node, plus the expanded watch tree
         inside it. Values match the literals and palette greys these surfaces previously used.
     -->
-    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush" Color="#3C3C3C" />
-    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush" Color="#DCDCDC" />
-    <SolidColorBrush x:Key="PreviewBubbleSecondaryForegroundBrush" Color="#D3D3D3" />
-    <SolidColorBrush x:Key="PreviewBubbleAccentBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush"
+            Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush"
+            Color="#DCDCDC"/>
+    <SolidColorBrush x:Key="PreviewBubbleSecondaryForegroundBrush"
+            Color="#D3D3D3"/>
+    <SolidColorBrush x:Key="PreviewBubbleAccentBrush"
+            Color="{StaticResource Blue300}"/>
+
+    <!--  Watch tree surfaces  -->
+    <SolidColorBrush x:Key="WatchTreeBackgroundBrush"
+            Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="WatchTreeForegroundBrush"
+            Color="#D3D3D3"/>
+    <SolidColorBrush x:Key="WatchTreeSecondaryForegroundBrush"
+            Color="#959595"/>
+    <SolidColorBrush x:Key="WatchTreeLineBrush"
+            Color="#959595"/>
+
+    <!--  Boolean node controls  -->
+    <SolidColorBrush x:Key="BooleanControlForegroundBrush"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="BooleanControlBorderBrush"
+            Color="#C0C0C0"/>
+    <SolidColorBrush x:Key="BooleanControlMarkBrush"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="BooleanControlHoverBrush"
+            Color="#FFFFFF"/>
+
+    <!--  Run mode combo  -->
+    <SolidColorBrush x:Key="RunSettingsComboBackgroundBrush"
+            Color="#2A2A2A"/>
+    <SolidColorBrush x:Key="RunSettingsComboForegroundBrush"
+            Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="RunSettingsComboDisabledBrush"
+            Color="#888888"/>
 
     <!--  Bubble preview  -->
-    <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="PinnedIconForegroundColor" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#666666" />
+    <SolidColorBrush x:Key="BubblePreviewBorderColor"
+            Color="#aaaaaa"/>
+    <SolidColorBrush x:Key="UnpinnedIconForegroundColor"
+            Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="PinnedIconForegroundColor"
+            Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor"
+            Color="#6AC0E7"/>
+    <SolidColorBrush x:Key="PinnedIconBackgroundColor"
+            Color="#666666"/>
     <Color x:Key="PinnedIconBackgroundColorAnimation">#666666</Color>
-    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor" Color="#38ABDF" />
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor"
+            Color="#6AC0E7"/>
+    <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor"
+            Color="#38ABDF"/>
 
     <!--  Port color  -->
     <!--  Role-named port keys; these are read by PortViewModel and Ports.xaml.  -->
-    <SolidColorBrush x:Key="PortBackgroundBrush" Color="#3C3C3C" />
-    <SolidColorBrush x:Key="PortBackgroundPreviewOffBrush" Color="#666666" />
-    <SolidColorBrush x:Key="PortBorderBrush" Color="#A1A1A1" />
-    <SolidColorBrush x:Key="PortLabelForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="PortBackgroundBrush"
+            Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="PortBackgroundPreviewOffBrush"
+            Color="#666666"/>
+    <SolidColorBrush x:Key="PortBorderBrush"
+            Color="#A1A1A1"/>
+    <SolidColorBrush x:Key="PortLabelForegroundBrush"
+            Color="#DCDCDC"/>
 
     <!--  Port value-type markers; read by InPortViewModel / OutPortViewModel.  -->
-    <SolidColorBrush x:Key="PortValueMarkerDefaultBrush" Color="#CCCCCC" />
-    <SolidColorBrush x:Key="PortValueMarkerBlueBrush" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="PortValueMarkerRedBrush" Color="#EB5555" />
-    <SolidColorBrush x:Key="PortValueMarkerGreyBrush" Color="#999999" />
+    <SolidColorBrush x:Key="PortValueMarkerDefaultBrush"
+            Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="PortValueMarkerBlueBrush"
+            Color="#6AC0E7"/>
+    <SolidColorBrush x:Key="PortValueMarkerRedBrush"
+            Color="#EB5555"/>
+    <SolidColorBrush x:Key="PortValueMarkerGreyBrush"
+            Color="#999999"/>
 
-    <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
-    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#A8B5BB" />
-    <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
-    <SolidColorBrush x:Key="ChevronHighlightOverlayBackground" Color="#E5E2DE" />
-    <SolidColorBrush x:Key="PortMouseOverColor" Color="#636363" />
+    <SolidColorBrush x:Key="PortKeepListStructureBackground"
+            Color="#537E91"/>
+    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush"
+            Color="#A8B5BB"/>
+    <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor"
+            Color="#808080"/>
+    <SolidColorBrush x:Key="ChevronHighlightOverlayBackground"
+            Color="#E5E2DE"/>
+    <SolidColorBrush x:Key="PortMouseOverColor"
+            Color="#636363"/>
 
     <!--  Connector  -->
-    <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
+    <SolidColorBrush x:Key="ConnectorHoverStateColor"
+            Color="#808080"/>
 
     <!--
         Wire colors per connection state. Both a Color and a Brush form are needed because
@@ -281,28 +476,38 @@
     <Color x:Key="ConnectorExecutionPreviewColor">#F2930C</Color>
     <Color x:Key="ConnectorTransientColor">#D5BCF7</Color>
 
-    <SolidColorBrush x:Key="ConnectorNoneBrush" Color="{StaticResource ConnectorNoneColor}" />
-    <SolidColorBrush x:Key="ConnectorSelectionBrush" Color="{StaticResource ConnectorSelectionColor}" />
-    <SolidColorBrush x:Key="ConnectorHoverBrush" Color="{StaticResource ConnectorHoverColor}" />
-    <SolidColorBrush x:Key="ConnectorExecutionPreviewBrush" Color="{StaticResource ConnectorExecutionPreviewColor}" />
-    <SolidColorBrush x:Key="ConnectorTransientBrush" Color="{StaticResource ConnectorTransientColor}" />
+    <SolidColorBrush x:Key="ConnectorNoneBrush"
+            Color="{StaticResource ConnectorNoneColor}"/>
+    <SolidColorBrush x:Key="ConnectorSelectionBrush"
+            Color="{StaticResource ConnectorSelectionColor}"/>
+    <SolidColorBrush x:Key="ConnectorHoverBrush"
+            Color="{StaticResource ConnectorHoverColor}"/>
+    <SolidColorBrush x:Key="ConnectorExecutionPreviewBrush"
+            Color="{StaticResource ConnectorExecutionPreviewColor}"/>
+    <SolidColorBrush x:Key="ConnectorTransientBrush"
+            Color="{StaticResource ConnectorTransientColor}"/>
 
     <!--  Modal Pattern  -->
 
     <!--  TextBlock Link  -->
-    <SolidColorBrush x:Key="TextBlockLinkForegroundColor" Color="{StaticResource Blue350}" />
+    <SolidColorBrush x:Key="TextBlockLinkForegroundColor"
+            Color="{StaticResource Blue350}"/>
 
     <!--  TextBlock Link Dark  -->
-    <SolidColorBrush x:Key="TextBlockLinkForegroundColorDark" Color="{StaticResource Blue450}" />
+    <SolidColorBrush x:Key="TextBlockLinkForegroundColorDark"
+            Color="{StaticResource Blue450}"/>
 
     <!--  TextBlock ToolTip color  -->
-    <SolidColorBrush x:Key="TextBlockToolTipDescriptionColor" Color="{StaticResource DarkerGrey}" />
+    <SolidColorBrush x:Key="TextBlockToolTipDescriptionColor"
+            Color="{StaticResource DarkerGrey}"/>
 
     <!--  TextEditor brush color  -->
-    <SolidColorBrush x:Key="TextEditorBrush" Color="#353535" />
+    <SolidColorBrush x:Key="TextEditorBrush"
+            Color="#353535"/>
 
     <!--  Custom ToolTip border color  -->
-    <SolidColorBrush x:Key="CustomToolTipBorderColor" Color="#808080" />
+    <SolidColorBrush x:Key="CustomToolTipBorderColor"
+            Color="#808080"/>
 
     <!--  Package Manager Colors  -->
     <Color x:Key="PMForegroundColor">#DFDFDF</Color>
@@ -315,13 +520,22 @@
     <Color x:Key="PMVersionUnknownColor">#73C5FF</Color>
     <Color x:Key="PMInnerVerticleLineColor">#646464</Color>
 
-    <SolidColorBrush x:Key="PMForegroundColorBrush" Color="{StaticResource PMForegroundColor}" />
-    <SolidColorBrush x:Key="PMBorderColorBrush" Color="{StaticResource PMBorderColor}" />
-    <SolidColorBrush x:Key="PMHeaderBackgroundColorBrush" Color="{StaticResource PMHeaderBackgroundColor}" />
-    <SolidColorBrush x:Key="PMDataGridBackgroundColorBrush" Color="{StaticResource PMDataGridBackgroundColor}" />
-    <SolidColorBrush x:Key="PMDataAltBackgroundColorBrush" Color="{StaticResource PMDataAltBackgroundColor}" />
-    <SolidColorBrush x:Key="PMVersionCompatibleColorBrush" Color="{StaticResource PMVersionCompatibleColor}" />
-    <SolidColorBrush x:Key="PMVersionUncompatibleColorBrush" Color="{StaticResource PMVersionUncompatibleColor}" />
-    <SolidColorBrush x:Key="PMVersionUnknownColorBrush" Color="{StaticResource PMVersionUnknownColor}" />
-    <SolidColorBrush x:Key="PMInnerVerticleLineColorBrush" Color="{StaticResource PMInnerVerticleLineColor}" />
+    <SolidColorBrush x:Key="PMForegroundColorBrush"
+            Color="{StaticResource PMForegroundColor}"/>
+    <SolidColorBrush x:Key="PMBorderColorBrush"
+            Color="{StaticResource PMBorderColor}"/>
+    <SolidColorBrush x:Key="PMHeaderBackgroundColorBrush"
+            Color="{StaticResource PMHeaderBackgroundColor}"/>
+    <SolidColorBrush x:Key="PMDataGridBackgroundColorBrush"
+            Color="{StaticResource PMDataGridBackgroundColor}"/>
+    <SolidColorBrush x:Key="PMDataAltBackgroundColorBrush"
+            Color="{StaticResource PMDataAltBackgroundColor}"/>
+    <SolidColorBrush x:Key="PMVersionCompatibleColorBrush"
+            Color="{StaticResource PMVersionCompatibleColor}"/>
+    <SolidColorBrush x:Key="PMVersionUncompatibleColorBrush"
+            Color="{StaticResource PMVersionUncompatibleColor}"/>
+    <SolidColorBrush x:Key="PMVersionUnknownColorBrush"
+            Color="{StaticResource PMVersionUnknownColor}"/>
+    <SolidColorBrush x:Key="PMInnerVerticleLineColorBrush"
+            Color="{StaticResource PMInnerVerticleLineColor}"/>
 </ResourceDictionary>

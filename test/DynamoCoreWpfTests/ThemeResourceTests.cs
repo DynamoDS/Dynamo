@@ -103,6 +103,8 @@ namespace DynamoCoreWpfTests
             "WorkspaceBackgroundBrush",
             "NodeBodyBackgroundBrush",
             "NodeHeaderBackgroundBrush",
+            "NodeExpanderBackground",
+            "NodeExpanderHoverBackground",
             "PortLabelForegroundBrush",
             "PortBackgroundBrush",
             "NodeInputBackgroundBrush",
@@ -112,7 +114,18 @@ namespace DynamoCoreWpfTests
             "CodeEditorBackgroundBrush",
             "CodeEditorForegroundBrush",
             "InCanvasSearchBackgroundBrush",
-            "InCanvasSearchForegroundBrush"
+            "InCanvasSearchForegroundBrush",
+            "InCanvasSearchResultBackgroundBrush",
+            "InCanvasSearchResultForegroundBrush",
+            "InCanvasSearchTooltipBackgroundBrush",
+            "PreviewBubbleBackgroundBrush",
+            "PreviewBubbleForegroundBrush",
+            "nullLabelBackground",
+            "WatchTreeBackgroundBrush",
+            "WatchTreeForegroundBrush",
+            "BooleanControlForegroundBrush",
+            "RunSettingsComboBackgroundBrush",
+            "RunSettingsComboForegroundBrush"
         };
 
         /// <summary>
