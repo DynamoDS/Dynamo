@@ -1,6 +1,6 @@
 using System;
 using AngleSharp.Css.Dom;
-using Ganss.XSS;
+using Ganss.Xss;
 
 namespace Md2Html
 {
