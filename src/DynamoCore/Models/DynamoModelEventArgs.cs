@@ -143,6 +143,15 @@ namespace Dynamo.Models
         {
             get { return !error.HasValue(); }
         }
+
+        /// <summary>
+        /// Returns true when the evaluation was stopped before finishing because
+        /// a cancellation was requested. When this is true, the values cached on
+        /// the nodes are left over from an earlier run and are not the result of
+        /// this one.
+        /// </summary>
+        public bool WasCancelled { get; internal set; }
+
         /// <summary>
         /// IDs for messages generated during a run. These are node guids.
         /// </summary>
@@ -176,10 +185,11 @@ namespace Dynamo.Models
 
             error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();
         }
-        internal EvaluationCompletedEventArgs(bool evaluationTookPlace, IEnumerable<Guid> messageKeys, Exception errorMsg = null)
+        internal EvaluationCompletedEventArgs(bool evaluationTookPlace, IEnumerable<Guid> messageKeys, Exception errorMsg = null, bool wasCancelled = false)
             :this(evaluationTookPlace,errorMsg)
         {
             MessageKeys = messageKeys;
+            WasCancelled = wasCancelled;
         }
     }
 
