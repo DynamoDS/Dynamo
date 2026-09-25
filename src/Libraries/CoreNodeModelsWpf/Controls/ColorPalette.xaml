@@ -4,10 +4,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
     d:DesignHeight="30"
     d:DesignWidth="90"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <!--
+                Required for NodeExpanderBackground and BooleanControlHoverBrush below. This control
+                is constructed on its own by the node view customization, so it cannot rely on an
+                ancestor to supply the palette.
+            -->
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
         <Style x:Key="CustomColorToggle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -46,24 +56,25 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                                <Setter TargetName="BlueUnderline" Property="Fill" Value="White" />
+                                <Setter TargetName="BlueUnderline" Property="Fill" Value="{StaticResource NodeDropDownArrowBrush}" />
                             </Trigger>
                             <Trigger Property="ToggleButton.IsChecked" Value="true">
-                                <Setter TargetName="Arrow" Property="Fill" Value="#6AC0E7" />
+                                <Setter TargetName="Arrow" Property="Fill" Value="{StaticResource NodeDropDownAccentBrush}" />
                                 <Setter TargetName="Arrow" Property="Data" Value="M0,6 L0,4 L4,0 L8,4 L8,6 L4,2 z" />
-                                <Setter TargetName="BlueUnderline" Property="Fill" Value="#6AC0E7" />
+                                <Setter TargetName="BlueUnderline" Property="Fill" Value="{StaticResource NodeDropDownAccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Border" Property="Background" Value="#3C3C3C" />
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
-                                <Setter Property="Foreground" Value="#888888" />
-                                <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource NodeExpanderBackground}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource NodeDropDownDisabledBorderBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource NodeDropDownDisabledForegroundBrush}" />
+                                <Setter TargetName="Arrow" Property="Fill" Value="{StaticResource NodeDropDownDisabledForegroundBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid x:Name="mainGrid">

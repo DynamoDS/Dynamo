@@ -2008,11 +2008,11 @@
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    Background="#666666" />
+                    Background="{StaticResource NodeDropDownBackgroundBrush}" />
             <Border x:Name="Border" Grid.Column="1" />
             <Border Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    BorderBrush="#4A4A4A"
+                    BorderBrush="{StaticResource NodeDropDownBorderBrush}"
                     BorderThickness="0,1,1,1" />
             <Rectangle x:Name="BlueUnderline"
                        Grid.Column="0"
@@ -2024,22 +2024,22 @@
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
                   Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
-                  Fill="White" />
+                  Fill="{StaticResource NodeDropDownArrowBrush}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="#808080" />
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource NodeDropDownHighlightBrush}" />
             </Trigger>
             <Trigger Property="ToggleButton.IsChecked" Value="true">
-                <Setter TargetName="Arrow" Property="Fill" Value="#6AC0E7" />
+                <Setter TargetName="Arrow" Property="Fill" Value="{StaticResource NodeDropDownAccentBrush}" />
                 <Setter TargetName="Arrow" Property="Data" Value="M0,6 L0,4 L4,0 L8,4 L8,6 L4,2 z" />
-                <Setter TargetName="BlueUnderline" Property="Fill" Value="#6AC0E7" />
+                <Setter TargetName="BlueUnderline" Property="Fill" Value="{StaticResource NodeDropDownAccentBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
-                <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
-                <Setter Property="Foreground" Value="#888888" />
-                <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource NodeDropDownDisabledBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource NodeDropDownDisabledBorderBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource NodeDropDownDisabledForegroundBrush}" />
+                <Setter TargetName="Arrow" Property="Fill" Value="{StaticResource NodeDropDownDisabledForegroundBrush}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -2051,7 +2051,7 @@
         <Setter Property="MinWidth" Value="300px" />
         <Setter Property="Margin" Value="-6,0,0,0" />
         <Setter Property="Height" Value="29px" />
-        <Setter Property="Foreground" Value="{StaticResource MenuHeaderForegroundColorBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource NodeDropDownForegroundBrush}" />
         <Setter Property="FontSize" Value="16px" />
         <Setter Property="Template">
             <Setter.Value>
@@ -2078,7 +2078,7 @@
                                  Focusable="True"
                                  FontFamily="{StaticResource ArtifaktElementRegular}"
                                  FontSize="18px"
-                                 Foreground="#F5F5F5"
+                                 Foreground="{StaticResource NodeDropDownEditableForegroundBrush}"
                                  IsReadOnly="{TemplateBinding IsReadOnly}"
                                  Visibility="Hidden" />
                         <TextBlock x:Name="PART_ReadOnlyTextBlock"
@@ -2100,7 +2100,7 @@
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   SnapsToDevicePixels="True">
-                                <Border x:Name="DropDownBorder" Background="#666666" />
+                                <Border x:Name="DropDownBorder" Background="{StaticResource NodeDropDownPopupBackgroundBrush}" />
                                 <ScrollViewer Margin="0"
                                               SnapsToDevicePixels="True"
                                               VerticalScrollBarVisibility="Visible">
@@ -2114,7 +2114,7 @@
                             <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="#888888" />
+                            <Setter Property="Foreground" Value="{StaticResource NodeDropDownDisabledForegroundBrush}" />
                         </Trigger>
                         <Trigger Property="IsGrouping" Value="true">
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
@@ -2132,6 +2132,37 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Resources>
+            <!--
+                Items of a node dropdown. Scoped to this style rather than changing the global
+                ComboBoxItem style below, which also serves dropdowns that stay dark (Package
+                Manager, dialogs). Mirrors that global style, with themed colours.
+            -->
+            <Style TargetType="{x:Type ComboBoxItem}">
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="Foreground" Value="{StaticResource NodeDropDownForegroundBrush}" />
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                            <Border Name="Border"
+                                    Padding="10,5"
+                                    SnapsToDevicePixels="true">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="true">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource NodeDropDownHighlightBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{StaticResource NodeDropDownDisabledForegroundBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Style.Resources>
     </Style>
 
     <!--  SimpleStyles: ComboBoxItem  -->
@@ -5669,7 +5700,7 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       Foreground="white"
+                                       Foreground="{StaticResource NodeSelectionButtonForegroundBrush}"
                                        Opacity="1"
                                        Text="{TemplateBinding Content}" />
                         </Border>
@@ -5682,8 +5713,8 @@
                             <Setter TargetName="mousePressedBorder" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource SecondaryGray}" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource SecondaryGray}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource NodeSelectionButtonDisabledBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource NodeSelectionButtonDisabledBrush}" />
                             <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
                             <Setter Property="Cursor" Value="No" />
                         </Trigger>

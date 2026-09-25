@@ -142,6 +142,70 @@
     <SolidColorBrush x:Key="NodeSliderThumbBrush" Color="#FFFFFF" />
     <SolidColorBrush x:Key="NodeSliderTrackBrush" Color="{StaticResource PrimaryCharcoal100}" />
 
+    <!--
+        Node dropdowns: the RefreshComboBox style and its toggle button, used by every dropdown
+        node (DSDropDownBase, e.g. Custom Selection), Curve Mapper, and the converter and unit
+        nodes. Values match the literals those templates used before.
+    -->
+    <SolidColorBrush x:Key="NodeDropDownBackgroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="NodeDropDownBorderBrush" Color="#4A4A4A" />
+    <SolidColorBrush x:Key="NodeDropDownForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="NodeDropDownEditableForegroundBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="NodeDropDownPlaceholderBrush" Color="#AFAFAF" />
+    <SolidColorBrush x:Key="NodeDropDownArrowBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NodeDropDownHighlightBrush" Color="#808080" />
+    <SolidColorBrush x:Key="NodeDropDownAccentBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeDropDownPopupBackgroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledBackgroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledBorderBrush" Color="#AAAAAA" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledForegroundBrush" Color="#888888" />
+    <!--  The swap button between the From/To dropdowns of the converter node.  -->
+    <SolidColorBrush x:Key="NodeDropDownButtonHoverBrush" Color="#373737" />
+    <SolidColorBrush x:Key="NodeDropDownButtonPressedBrush" Color="#272727" />
+    <SolidColorBrush x:Key="NodeDropDownButtonDisabledBackgroundBrush" Color="#373737" />
+    <SolidColorBrush x:Key="NodeDropDownButtonDisabledForegroundBrush" Color="#555555" />
+
+    <!--
+        Other node controls drawn on the node body. Values match what each control used
+        before: Define Data borrowed PreferencesWindowFontColor, Curve Mapper borrowed
+        DefaultFontColorBrush, and the rest were literals.
+    -->
+    <SolidColorBrush x:Key="NodeLabelForegroundBrush" Color="#E5E5E5" />
+    <SolidColorBrush x:Key="NodePanelOverlayBrush" Color="#19FFFFFF" />
+    <SolidColorBrush x:Key="NodeSelectionButtonBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="NodeSelectionButtonForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NodeSelectionButtonDisabledBrush" Color="#707070" />
+    <SolidColorBrush x:Key="NodeSelectionTextBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="CurveMapperLabelForegroundBrush" Color="{StaticResource DefaultFontColor}" />
+    <SolidColorBrush x:Key="CurveMapperAxisLabelBrush" Color="#979797" />
+    <SolidColorBrush x:Key="CurveMapperCurveBrush" Color="#5BC9BD" />
+    <SolidColorBrush x:Key="CurveMapperGridLineBrush" Color="#5E5E5E" />
+
+    <!--
+        Node autocomplete bar (NodeAutoCompleteBarView). Values match what the bar used before:
+        literals, the shade keys DarkGreyBrush / LightGreyBrush, the library key
+        DefaultSearchTextBlockText, and the Package Manager combo styles it borrowed.
+        The glyph colours are the colours of the PNGs they recolour (see the bar's XAML).
+    -->
+    <SolidColorBrush x:Key="AutoCompleteBorderBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="AutoCompleteButtonHoverBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="AutoCompleteGlyphBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="AutoCompleteGlyphDisabledBrush" Color="#999999" />
+    <SolidColorBrush x:Key="AutoCompleteGripperBrush" Color="#999999" />
+    <SolidColorBrush x:Key="AutoCompleteGripperHoverBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="AutoCompleteSearchForegroundBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="AutoCompleteCaretBrush" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="AutoCompleteSearchIconBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="AutoCompleteResultSecondaryForegroundBrush" Color="#ABAFB3" />
+    <SolidColorBrush x:Key="AutoCompleteItemHighlightBrush" Color="#474747" />
+    <SolidColorBrush x:Key="AutoCompleteItemDisabledForegroundBrush" Color="#888888" />
+    <SolidColorBrush x:Key="AutoCompleteToggleBorderBrush" Color="#A9A9A9" />
+    <SolidColorBrush x:Key="AutoCompleteToggleArrowBrush" Color="#999999" />
+    <SolidColorBrush x:Key="AutoCompleteToggleArrowHoverBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchBackgroundBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchBorderBrush" Color="#A9A9A9" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchKnobDisabledBrush" Color="{StaticResource LightGrey}" />
+
     <!--  Code block and Python editor surface  -->
     <SolidColorBrush x:Key="CodeEditorBackgroundBrush" Color="#3A3B3B" />
     <SolidColorBrush x:Key="CodeEditorForegroundBrush" Color="#DCDCDC" />
@@ -250,6 +314,12 @@
     <SolidColorBrush x:Key="WatchTreeForegroundBrush" Color="#D3D3D3" />
     <SolidColorBrush x:Key="WatchTreeSecondaryForegroundBrush" Color="#959595" />
     <SolidColorBrush x:Key="WatchTreeLineBrush" Color="#959595" />
+    <!--  The "List" label, returned by ObjectTypeConverter (also used by the preview bubble).  -->
+    <SolidColorBrush x:Key="WatchTreeListLabelBrush" Color="{StaticResource PrimaryCharcoal200}" />
+    <!--  The {count} shown after a list label.  -->
+    <SolidColorBrush x:Key="WatchTreeAccentBrush" Color="{StaticResource Blue300}" />
+    <!--  Index of a leaf item, drawn on the light #DCDCDC chip from ListIndexBackgroundConverter.  -->
+    <SolidColorBrush x:Key="WatchTreeIndexForegroundBrush" Color="#4D4D4D" />
 
     <!--  Boolean node controls  -->
     <SolidColorBrush x:Key="BooleanControlForegroundBrush" Color="#EEEEEE" />

@@ -4,10 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:CoreNodeModelsWpf.Converters"
-             mc:Ignorable="d" 
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             mc:Ignorable="d"
              d:DesignHeight="100" d:DesignWidth="200">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <!--
+                Required for the NodeSelection* keys below: SelectionBase constructs this control
+                on its own, so it cannot rely on an ancestor to supply the palette.
+            -->
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
         <converters:SelectionButtonContentConverter x:Key="SelectionButtonContentConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
@@ -19,7 +29,7 @@
                 Command="{Binding SelectCommand}"
                 Grid.Row="0" IsEnabled="{Binding Model.CanSelect}"
                 ToolTipService.ShowOnDisabled="True"
-                Background="#3c3c3c"
+                Background="{StaticResource NodeSelectionButtonBackgroundBrush}"
                 Style="{StaticResource SelectionButtonStyle}">
             <Button.ToolTip>
                 <TextBlock Text="{Binding Model.SelectionSuggestion}" />
@@ -32,7 +42,7 @@
                    Margin="5"
                    MaxWidth="200" 
                    MaxHeight="200"
-                   Foreground="#F5F5F5">
+                   Foreground="{StaticResource NodeSelectionTextBrush}">
             <TextBlock.ToolTip>
                 <TextBlock Text="{Binding Model.Text}" MaxHeight="200" TextTrimming="WordEllipsis"/>
             </TextBlock.ToolTip>

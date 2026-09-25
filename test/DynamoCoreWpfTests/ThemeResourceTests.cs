@@ -47,7 +47,23 @@ namespace DynamoCoreWpfTests
             "Blue400Brush",
             "Blue450",
             "ChevronHighlightOverlayBackground",
+            "CodeEditorClassBrush",
             "CodeEditorLinkBrush",
+            "CodeEditorMethodBrush",
+            "CodeEditorNumberBrush",
+            "CurveMapperCurveBrush",
+            "CurveMapperGridLineBrush",
+            // Looked up through a local variable or a helper rather than the dictionary directly
+            // (ObjectTypeConverter, the library member converter, CodeBlockEditorUtils).
+            "ActionMembersColor",
+            "CreateMembersColor",
+            "QueryMembersColor",
+            "WatchTreeListLabelBrush",
+            "boolLabelBackground",
+            "nullLabelBackground",
+            "numberLabelBackground",
+            "objectLabelBackground",
+            "stringLabelBackground",
             "DarkBlue200Brush",
             "DarkGreyBrush",
             "DarkMidGreyBrush",
@@ -126,7 +142,19 @@ namespace DynamoCoreWpfTests
             "BooleanControlForegroundBrush",
             "RunSettingsComboBackgroundBrush",
             "RunSettingsComboForegroundBrush",
-            "RunSettingsComboItemDisabledBrush"
+            "RunSettingsComboItemDisabledBrush",
+            "NodeDropDownBackgroundBrush",
+            "NodeDropDownForegroundBrush",
+            "NodeDropDownPopupBackgroundBrush",
+            "NodeLabelForegroundBrush",
+            "NodeSelectionTextBrush",
+            "CurveMapperCurveBrush",
+            "WatchTreeListLabelBrush",
+            "WatchTreeAccentBrush",
+            "AutoCompleteGlyphBrush",
+            "AutoCompleteButtonHoverBrush",
+            "AutoCompleteSearchForegroundBrush",
+            "AutoCompleteItemHighlightBrush"
         };
 
         /// <summary>
@@ -423,6 +451,184 @@ namespace DynamoCoreWpfTests
         /// translucent white (about 1.9:1), which is pre-existing and out of scope. WCAG exempts
         /// inactive controls from 4.5:1, so 3:1 is the bar here.
         /// </summary>
+        /// <summary>
+        /// Node dropdowns (Custom Selection and every other DSDropDownBase node, Curve Mapper, the
+        /// converter and unit nodes) share RefreshComboBox. Its text must read both in the closed
+        /// box and in the open list, which use different backgrounds.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPaletteIsLoadedThenNodeDropDownTextContrastsWithBoxAndListInBothThemes()
+        {
+            foreach (var theme in new[] { DynamoTheme.Dark, DynamoTheme.Light })
+            {
+                var palette = LoadPalette(theme);
+                var text = ColorOf(palette["NodeDropDownForegroundBrush"]);
+
+                foreach (var surface in new[]
+                {
+                    "NodeDropDownBackgroundBrush",
+                    "NodeDropDownPopupBackgroundBrush",
+                    "NodeDropDownHighlightBrush"
+                })
+                {
+                    var background = ColorOf(palette[surface]);
+                    var ratio = ContrastRatio(background, text);
+
+                    // The light theme is held to 4.5:1. The dark theme keeps its pre-existing
+                    // values, which are below that and out of scope for DYN-6228: #DCDCDC on
+                    // #666666 is 4.19:1 and on the #808080 highlight is 2.88:1. Its bars stop a
+                    // regression without failing on the historical palette.
+                    double required;
+                    if (theme == DynamoTheme.Light)
+                    {
+                        required = 4.5d;
+                    }
+                    else
+                    {
+                        required = surface == "NodeDropDownHighlightBrush" ? 2.5d : 4.0d;
+                    }
+
+                    Assert.GreaterOrEqual(ratio, required,
+                        $"[{theme}] dropdown text {text} on {surface} {background} is {ratio:F2}:1.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Labels drawn directly on the node body by Define Data, Element Selection and Curve Mapper
+        /// previously borrowed light-only colours, which vanished on the light node body.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPaletteIsLoadedThenNodeBodyLabelsContrastWithTheNodeBodyInBothThemes()
+        {
+            foreach (var theme in new[] { DynamoTheme.Dark, DynamoTheme.Light })
+            {
+                var palette = LoadPalette(theme);
+                var body = ColorOf(palette["NodeBodyBackgroundBrush"]);
+
+                foreach (var key in new[]
+                {
+                    "NodeLabelForegroundBrush",
+                    "NodeSelectionTextBrush",
+                    "CurveMapperLabelForegroundBrush"
+                })
+                {
+                    var label = ColorOf(palette[key]);
+                    var ratio = ContrastRatio(body, label);
+
+                    Assert.GreaterOrEqual(ratio, 4.5d,
+                        $"[{theme}] {key} {label} on the node body {body} is {ratio:F2}:1.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Everything drawn as text in the watch tree (Watch node and preview bubble): the "List"
+        /// label and value colours returned by ObjectTypeConverter, the item count, and the index
+        /// of a leaf item, which sits on a chip that ListIndexBackgroundConverter hard-codes.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPaletteIsLoadedThenWatchTreeTextIsReadableInBothThemes()
+        {
+            // ListIndexBackgroundConverter returns this literal for leaf items in both themes.
+            var leafIndexChip = (Color)ColorConverter.ConvertFromString("#DCDCDC");
+
+            foreach (var theme in new[] { DynamoTheme.Dark, DynamoTheme.Light })
+            {
+                var palette = LoadPalette(theme);
+                var tree = ColorOf(palette["WatchTreeBackgroundBrush"]);
+
+                foreach (var key in new[]
+                {
+                    "WatchTreeListLabelBrush",
+                    "WatchTreeAccentBrush",
+                    "objectLabelBackground",
+                    "numberLabelBackground",
+                    "stringLabelBackground",
+                    "boolLabelBackground",
+                    "nullLabelBackground"
+                })
+                {
+                    var text = ColorOf(palette[key]);
+                    var ratio = ContrastRatio(tree, text);
+                    Assert.GreaterOrEqual(ratio, 4.5d,
+                        $"[{theme}] watch tree text {key} {text} on {tree} is {ratio:F2}:1.");
+                }
+
+                var index = ColorOf(palette["WatchTreeIndexForegroundBrush"]);
+                var indexRatio = ContrastRatio(leafIndexChip, index);
+                Assert.GreaterOrEqual(indexRatio, 4.5d,
+                    $"[{theme}] leaf index {index} on its {leafIndexChip} chip is {indexRatio:F2}:1.");
+            }
+        }
+
+        /// <summary>
+        /// The value-type colours double as node label-chip backgrounds under white text, so
+        /// darkening them for the watch tree must not break the chips.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLightPaletteIsLoadedThenValueTypeChipsKeepWhiteTextReadable()
+        {
+            var palette = LoadPalette(DynamoTheme.Light);
+
+            foreach (var key in new[]
+            {
+                "objectLabelBackground",
+                "numberLabelBackground",
+                "stringLabelBackground",
+                "boolLabelBackground",
+                "nullLabelBackground"
+            })
+            {
+                var chip = ColorOf(palette[key]);
+                var ratio = ContrastRatio(chip, Colors.White);
+                Assert.GreaterOrEqual(ratio, 4.5d, $"White text on {key} {chip} is {ratio:F2}:1.");
+            }
+        }
+
+        /// <summary>
+        /// The node autocomplete bar draws its Accept, Cancel and navigation glyphs from white
+        /// PNGs recoloured through an opacity mask, so they must contrast with the bar and with
+        /// the button hover in both themes. Also covers the search text and the highlighted
+        /// dropdown item, which previously borrowed dark Package Manager colours.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPaletteIsLoadedThenAutoCompleteBarIsReadableInBothThemes()
+        {
+            foreach (var theme in new[] { DynamoTheme.Dark, DynamoTheme.Light })
+            {
+                var palette = LoadPalette(theme);
+
+                // Search text in the dark theme has always been #C0C0C0 on #535353 (4.23:1),
+                // which is pre-existing; the light theme is held to 4.5:1.
+                var searchRequired = theme == DynamoTheme.Light ? 4.5d : 4.0d;
+
+                var checks = new[]
+                {
+                    ("AutoCompleteGlyphBrush", "autocompletionWindow", 4.5d),
+                    ("AutoCompleteGlyphBrush", "AutoCompleteButtonHoverBrush", 4.5d),
+                    ("AutoCompleteSearchForegroundBrush", "autocompletionWindow", searchRequired),
+                    ("AutocompletionWindowFontColor", "AutoCompleteItemHighlightBrush", 4.5d)
+                };
+
+                foreach (var (foregroundKey, backgroundKey, required) in checks)
+                {
+                    var foreground = ColorOf(palette[foregroundKey]);
+                    var background = ColorOf(palette[backgroundKey]);
+                    var ratio = ContrastRatio(background, foreground);
+
+                    Assert.GreaterOrEqual(ratio, required,
+                        $"[{theme}] {foregroundKey} {foreground} on {backgroundKey} {background} " +
+                        $"is {ratio:F2}:1.");
+                }
+            }
+        }
+
         [Test]
         [Category("UnitTests")]
         public void WhenLightPaletteIsLoadedThenDisabledRunTypeItemIsReadableButDimmer()

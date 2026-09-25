@@ -50,6 +50,54 @@
             <Style x:Key="RectangleStyle" TargetType="Rectangle">
                 <Setter Property="Opacity" Value="0" />
             </Style>
+            <!--
+                Local copies of PackageManagerComboBoxItemStyle and PackageManagerComboBoxToggleButton,
+                which this dropdown used to borrow. Package Manager stays dark in every theme, so
+                those cannot be re-themed; these are identical apart from following the canvas theme.
+            -->
+            <Style x:Key="AutoCompleteComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                            <Border Name="Border"
+                                    Padding="10,5"
+                                    SnapsToDevicePixels="true">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="true">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource AutoCompleteItemHighlightBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{StaticResource AutoCompleteItemDisabledForegroundBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <ControlTemplate x:Key="AutoCompleteComboBoxToggleButton" TargetType="ToggleButton">
+                <Grid>
+                    <Border x:Name="Border"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource AutoCompleteToggleBorderBrush}"
+                            BorderThickness="0,0,0,1" />
+                    <Path x:Name="Arrow"
+                          Margin="0"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Center"
+                          Data="M 0 0 L 4 4 L 8 0 Z"
+                          Fill="{StaticResource AutoCompleteToggleArrowBrush}" />
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                        <Setter TargetName="Arrow" Property="Fill" Value="{StaticResource AutoCompleteToggleArrowHoverBrush}" />
+                    </Trigger>
+                    <Trigger Property="ToggleButton.IsChecked" Value="true">
+                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource BlueBrush}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
             <Style x:Key="AutocompleteDropdown" TargetType="{x:Type ComboBox}">
                 <Setter Property="SnapsToDevicePixels" Value="true" />
                 <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -62,7 +110,7 @@
                 <Setter Property="MaxHeight" Value="40" />
                 <Setter Property="FontSize" Value="10" />
                 <Setter Property="Foreground" Value="{StaticResource AutocompletionWindowFontColor}" />
-                <Setter Property="ItemContainerStyle" Value="{DynamicResource PackageManagerComboBoxItemStyle}" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource AutoCompleteComboBoxItemStyle}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ComboBox">
@@ -72,7 +120,7 @@
                                       ClickMode="Press"
                                       Focusable="false"
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                      Template="{DynamicResource PackageManagerComboBoxToggleButton}" />
+                                      Template="{StaticResource AutoCompleteComboBoxToggleButton}" />
                                 <ContentPresenter Name="ContentSite"
                                           Margin="1,3,12,3"
                                           HorizontalAlignment="Left"
@@ -94,7 +142,7 @@
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
                                  Background="{StaticResource autocompletionWindow}"
-                                 CaretBrush="#bbbbbb"
+                                 CaretBrush="{StaticResource AutoCompleteCaretBrush}"
                                  Focusable="True"
                                  Foreground="{StaticResource AutocompletionWindowFontColor}"
                                  IsReadOnly="{TemplateBinding IsReadOnly}"
@@ -183,7 +231,7 @@
 
     <Grid>
         <Border Margin="0"
-                BorderBrush="{StaticResource DarkGreyBrush}"
+                BorderBrush="{StaticResource AutoCompleteBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="7,7,7,7"
                 Panel.ZIndex="1"
@@ -232,24 +280,32 @@
                                             <Border x:Name="DotsBackgroundBorder"
                                                     Background="Transparent"
                                                     CornerRadius="8,0,0,8" />
-                                            <Image x:Name="DotsImage"
-                                                   Source="/DynamoCoreWpf;component/UI/Images/gripper-default.png"
-                                                   Margin="5"
-                                                   Width="20px"
-                                                   Height="20px"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" />
+                                            <!--
+                                                The glyph PNGs in this bar are single-colour with alpha, so each is drawn
+                                                as a themed fill masked by the PNG: identical to the image in the dark
+                                                theme, and legible instead of white-on-light in the light theme.
+                                            -->
+                                            <Rectangle x:Name="DotsImage"
+                                                       Margin="5"
+                                                       Width="20px"
+                                                       Height="20px"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Fill="{StaticResource AutoCompleteGripperBrush}">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/gripper-default.png" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter TargetName="DotsBackgroundBorder"
                                                         Property="Background"
-                                                        Value="{StaticResource DarkGreyBrush}" />
+                                                        Value="{StaticResource AutoCompleteButtonHoverBrush}" />
                                                 <Setter TargetName="DotsImage"
-                                                        Property="Source"
-                                                        Value="/DynamoCoreWpf;component/UI/Images/gripper-hover.png" />
+                                                        Property="Fill"
+                                                        Value="{StaticResource AutoCompleteGripperHoverBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -257,8 +313,8 @@
                                                         Property="Background"
                                                         Value="Transparent" />
                                                 <Setter TargetName="DotsImage"
-                                                        Property="Source"
-                                                        Value="/DynamoCoreWpf;component/UI/Images/gripper-default.png" />
+                                                        Property="Fill"
+                                                        Value="{StaticResource AutoCompleteGripperBrush}" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -297,7 +353,7 @@
                                                      Value="True">
                                                 <Setter TargetName="BackgroundBorder"
                                                         Property="Background"
-                                                        Value="{StaticResource DarkGreyBrush}" />
+                                                        Value="{StaticResource AutoCompleteButtonHoverBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -323,7 +379,7 @@
                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                             Width="240"
                             FontFamily="{StaticResource ArtifaktElementRegular}"
-                            Foreground="{StaticResource DefaultSearchTextBlockText}"
+                            Foreground="{StaticResource AutoCompleteSearchForegroundBrush}"
                             ItemsSource="{Binding FilteredView, NotifyOnTargetUpdated=True}"
                             IsDropDownOpen="{Binding IsDropDownOpen, Mode=TwoWay}"
                             Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -361,18 +417,17 @@
                                         Margin="12,3,7,3"
                                         Width="Auto"
                                         Visibility="{Binding Text.Length, ElementName=AutoCompleteSearchBox, Converter={StaticResource LengthToVisibilityConverter}}">
-                                        <Image x:Name="SearchIcon"
+                                        <Rectangle x:Name="SearchIcon"
                                             Width="20px"
                                             Height="20px"                                            
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
-                                            DockPanel.Dock="Left">
-                                            <Image.Style>
-                                                <Style TargetType="{x:Type Image}">
-                                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/searchmagnifier.png" />
-                                                </Style>
-                                            </Image.Style>
-                                        </Image>
+                                            DockPanel.Dock="Left"
+                                            Fill="{StaticResource AutoCompleteSearchIconBrush}">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/searchmagnifier.png" Stretch="Uniform" />
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
                                         <TextBlock Padding="2" FontSize="14" Text="{x:Static resxother:Resources.LibraryViewSearchText}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Grid>
@@ -400,7 +455,7 @@
                                             <Run Text="{Binding Description, Mode=OneWay}"
                                                  Foreground="{StaticResource AutocompletionWindowFontColor}" />
                                             <Run Text="{Binding Parameters, Mode=OneWay}"
-                                                 Foreground="{StaticResource WatchTreeSecondaryForegroundBrush}" />
+                                                 Foreground="{StaticResource AutoCompleteResultSecondaryForegroundBrush}" />
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
@@ -432,30 +487,32 @@
                                                     Background="Transparent"
                                                     CornerRadius="2"
                                                     Width="36"/>
-                                            <Image x:Name="PrevImage"
-                                                   Width="12px"
-                                                   Height="12px"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" >
-                                                <Image.Style>
-                                                    <Style TargetType="Image">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-left-disabled.png"/>
+                                            <Rectangle x:Name="PrevImage"
+                                                       Width="12px"
+                                                       Height="12px"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/caret-left-default.png" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Fill" Value="{StaticResource AutoCompleteGlyphDisabledBrush}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding HasPrevious}" Value="True">
-                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-left-default.png"/>
+                                                                <Setter Property="Fill" Value="{StaticResource AutoCompleteGlyphBrush}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Image.Style>
-                                            </Image>
+                                                </Rectangle.Style>
+                                            </Rectangle>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter TargetName="DotsBackgroundBorder"
                                                         Property="Background"
-                                                        Value="{StaticResource DarkGreyBrush}" />
+                                                        Value="{StaticResource AutoCompleteButtonHoverBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -495,30 +552,32 @@
                                                     Background="Transparent"
                                                     CornerRadius="2"
                                                     Width="36"/>
-                                            <Image x:Name="NextImage"
-                                                   Width="12px"
-                                                   Height="12px"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" >
-                                                <Image.Style>
-                                                    <Style TargetType="Image">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-right-disabled.png"/>
+                                            <Rectangle x:Name="NextImage"
+                                                       Width="12px"
+                                                       Height="12px"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/caret-right-default.png" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Fill" Value="{StaticResource AutoCompleteGlyphDisabledBrush}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding HasNext}" Value="True">
-                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-right-default.png"/>
+                                                                <Setter Property="Fill" Value="{StaticResource AutoCompleteGlyphBrush}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Image.Style>
-                                            </Image>
+                                                </Rectangle.Style>
+                                            </Rectangle>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter TargetName="DotsBackgroundBorder"
                                                         Property="Background"
-                                                        Value="{StaticResource DarkGreyBrush}" />
+                                                        Value="{StaticResource AutoCompleteButtonHoverBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -547,31 +606,33 @@
                                                     Background="Transparent"
                                                     CornerRadius="2" 
                                                     Width="36"/>
-                                            <Image x:Name="DotsImage"
-                                                   Width="20px"
-                                                   Height="20px"
-                                                   Margin="3"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" >
-                                                <Image.Style>
-                                                    <Style TargetType="Image">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/check-disabled.png"/>
+                                            <Rectangle x:Name="DotsImage"
+                                                       Width="20px"
+                                                       Height="20px"
+                                                       Margin="3"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/check.png" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Fill" Value="{StaticResource AutoCompleteGlyphDisabledBrush}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding HasUnfilteredResults}" Value="True">
-                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/check.png"/>
+                                                                <Setter Property="Fill" Value="{StaticResource AutoCompleteGlyphBrush}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Image.Style>
-                                            </Image>
+                                                </Rectangle.Style>
+                                            </Rectangle>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter TargetName="DotsBackgroundBorder"
                                                         Property="Background"
-                                                        Value="{StaticResource DarkGreyBrush}" />
+                                                        Value="{StaticResource AutoCompleteButtonHoverBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -600,21 +661,24 @@
                                                     Background="Transparent"
                                                     CornerRadius="2"
                                                     Width="36"/>
-                                            <Image x:Name="DotsImage"
-                                                   Source="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png"
-                                                   Width="20px"
-                                                   Height="20px"
-                                                   Margin="3"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" />
+                                            <Rectangle x:Name="DotsImage"
+                                                       Width="20px"
+                                                       Height="20px"
+                                                       Margin="3"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Fill="{StaticResource AutoCompleteGlyphBrush}">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter TargetName="DotsBackgroundBorder"
                                                         Property="Background"
-                                                        Value="{StaticResource DarkGreyBrush}" />
+                                                        Value="{StaticResource AutoCompleteButtonHoverBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -632,7 +696,7 @@
                 <Grid Grid.Column="8" Visibility="{Binding IsDNAClusterPlacementEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}">
                     <ToggleButton x:Name="SwitchButton" Width="100" Height="36" FocusVisualStyle="{x:Null}"
                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                      Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
+                      Background="{StaticResource AutoCompleteSwitchBackgroundBrush}" BorderBrush="{StaticResource AutoCompleteSwitchBorderBrush}" BorderThickness="2"
                       IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
                       IsEnabled="{Binding SwitchIsEnabled}" TabIndex="5">
                         <ToggleButton.Template>
@@ -653,7 +717,7 @@
                                         <Setter TargetName="KnobText" Property="Text" Value="Single"/>
                                     </Trigger>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter TargetName="SwitchKnob" Property="Background" Value="{StaticResource LightGreyBrush}"/>
+                                        <Setter TargetName="SwitchKnob" Property="Background" Value="{StaticResource AutoCompleteSwitchKnobDisabledBrush}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>

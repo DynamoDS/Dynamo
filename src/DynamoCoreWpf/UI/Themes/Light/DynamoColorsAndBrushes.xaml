@@ -58,11 +58,15 @@
     <SolidColorBrush x:Key="NodeCustomColor" Color="#1E7A70" />
     <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#1A7FB5" />
 
-    <!--  Node value-type label chips; darkened so the white chip text still reads.  -->
-    <SolidColorBrush x:Key="stringLabelBackground" Color="#B87333" />
-    <SolidColorBrush x:Key="numberLabelBackground" Color="#2F7FA8" />
-    <SolidColorBrush x:Key="objectLabelBackground" Color="#8A8578" />
-    <SolidColorBrush x:Key="boolLabelBackground" Color="#9A8410" />
+    <!--
+        Value-type colours. Used two ways: as node label-chip backgrounds under white text, and
+        by ObjectTypeConverter as the text colour of values in the watch tree and preview bubble.
+        Each is dark enough for both: 4.5:1 or better as text on the light tree and under white.
+    -->
+    <SolidColorBrush x:Key="stringLabelBackground" Color="#8F531C" />
+    <SolidColorBrush x:Key="numberLabelBackground" Color="#1F6A93" />
+    <SolidColorBrush x:Key="objectLabelBackground" Color="#66625C" />
+    <SolidColorBrush x:Key="boolLabelBackground" Color="#7A6608" />
     <SolidColorBrush x:Key="nullLabelBackground" Color="#6B5700" />
 
     <!--  Node context menu  -->
@@ -86,6 +90,64 @@
 
     <SolidColorBrush x:Key="NodeSliderThumbBrush" Color="#3A362F" />
     <SolidColorBrush x:Key="NodeSliderTrackBrush" Color="#A8A296" />
+
+    <!--
+        Node dropdowns (RefreshComboBox). The closed box matches the node input fields; the
+        open list matches the canvas context menus.
+    -->
+    <SolidColorBrush x:Key="NodeDropDownBackgroundBrush" Color="#FBFAF8" />
+    <SolidColorBrush x:Key="NodeDropDownBorderBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="NodeDropDownForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="NodeDropDownEditableForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="NodeDropDownPlaceholderBrush" Color="#6E6A64" />
+    <SolidColorBrush x:Key="NodeDropDownArrowBrush" Color="#3A362F" />
+    <SolidColorBrush x:Key="NodeDropDownHighlightBrush" Color="#DCD8D2" />
+    <SolidColorBrush x:Key="NodeDropDownAccentBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="NodeDropDownPopupBackgroundBrush" Color="#F2F0ED" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledBackgroundBrush" Color="#E6E3DE" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledBorderBrush" Color="#C4BFB8" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledForegroundBrush" Color="#7A7468" />
+    <SolidColorBrush x:Key="NodeDropDownButtonHoverBrush" Color="#EDEAE5" />
+    <SolidColorBrush x:Key="NodeDropDownButtonPressedBrush" Color="#DCD8D2" />
+    <SolidColorBrush x:Key="NodeDropDownButtonDisabledBackgroundBrush" Color="#E6E3DE" />
+    <SolidColorBrush x:Key="NodeDropDownButtonDisabledForegroundBrush" Color="#A8A296" />
+
+    <!--  Other node controls drawn on the node body.  -->
+    <SolidColorBrush x:Key="NodeLabelForegroundBrush" Color="#2B2B2B" />
+    <!--  A white wash is invisible on the light body; a faint dark wash keeps the panel edge.  -->
+    <SolidColorBrush x:Key="NodePanelOverlayBrush" Color="#14000000" />
+    <SolidColorBrush x:Key="NodeSelectionButtonBackgroundBrush" Color="#FBFAF8" />
+    <SolidColorBrush x:Key="NodeSelectionButtonForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="NodeSelectionButtonDisabledBrush" Color="#E6E3DE" />
+    <SolidColorBrush x:Key="NodeSelectionTextBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="CurveMapperLabelForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="CurveMapperAxisLabelBrush" Color="#5A554C" />
+    <!--  The dark theme's #5BC9BD teal sits near 1.4:1 on the light body.  -->
+    <SolidColorBrush x:Key="CurveMapperCurveBrush" Color="#1E7A70" />
+    <SolidColorBrush x:Key="CurveMapperGridLineBrush" Color="#B9B4AC" />
+
+    <!--
+        Node autocomplete bar. The glyphs are white PNGs recoloured through an opacity mask, so
+        in the light theme they can be drawn dark instead of disappearing.
+    -->
+    <SolidColorBrush x:Key="AutoCompleteBorderBrush" Color="#C4BFB8" />
+    <SolidColorBrush x:Key="AutoCompleteButtonHoverBrush" Color="#DCD8D2" />
+    <SolidColorBrush x:Key="AutoCompleteGlyphBrush" Color="#3A362F" />
+    <SolidColorBrush x:Key="AutoCompleteGlyphDisabledBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="AutoCompleteGripperBrush" Color="#8A8578" />
+    <SolidColorBrush x:Key="AutoCompleteGripperHoverBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="AutoCompleteSearchForegroundBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="AutoCompleteCaretBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="AutoCompleteSearchIconBrush" Color="#6E6A64" />
+    <SolidColorBrush x:Key="AutoCompleteResultSecondaryForegroundBrush" Color="#6E6A64" />
+    <SolidColorBrush x:Key="AutoCompleteItemHighlightBrush" Color="#DCD8D2" />
+    <SolidColorBrush x:Key="AutoCompleteItemDisabledForegroundBrush" Color="#7A7468" />
+    <SolidColorBrush x:Key="AutoCompleteToggleBorderBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="AutoCompleteToggleArrowBrush" Color="#6E6A64" />
+    <SolidColorBrush x:Key="AutoCompleteToggleArrowHoverBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchBackgroundBrush" Color="#DCD8D2" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchBorderBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchKnobDisabledBrush" Color="#C4BFB8" />
 
     <!--
         Code block editor. The token colors here must stay in step with
@@ -137,6 +199,10 @@
     <SolidColorBrush x:Key="WatchTreeForegroundBrush" Color="#2B2B2B" />
     <SolidColorBrush x:Key="WatchTreeSecondaryForegroundBrush" Color="#6E6A64" />
     <SolidColorBrush x:Key="WatchTreeLineBrush" Color="#A8A296" />
+    <SolidColorBrush x:Key="WatchTreeListLabelBrush" Color="#2B2B2B" />
+    <!--  Slightly darker than the general #1A7FB5 accent: this is small monospace text.  -->
+    <SolidColorBrush x:Key="WatchTreeAccentBrush" Color="#14688F" />
+    <SolidColorBrush x:Key="WatchTreeIndexForegroundBrush" Color="#3A362F" />
 
     <!--  Boolean node controls  -->
     <SolidColorBrush x:Key="BooleanControlForegroundBrush" Color="#2B2B2B" />

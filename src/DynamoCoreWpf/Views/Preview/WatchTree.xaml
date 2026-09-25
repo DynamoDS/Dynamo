@@ -345,7 +345,7 @@
                                     <Setter Property="Foreground" Value="{StaticResource WatchTreeForegroundBrush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Children.Count}" Value="0">
-                                            <Setter Property="Foreground" Value="{StaticResource WatchTreeSecondaryForegroundBrush}" />
+                                            <Setter Property="Foreground" Value="{StaticResource WatchTreeIndexForegroundBrush}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -410,7 +410,7 @@
                            Foreground="{StaticResource WatchTreeForegroundBrush}"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                    {<Run Foreground="{StaticResource Blue300Brush}" Text="{Binding NumberOfItems}" />}</TextBlock>
+                    {<Run Foreground="{StaticResource WatchTreeAccentBrush}" Text="{Binding NumberOfItems}" />}</TextBlock>
 
                 <!--  Shows list@level labels in List  -->
                 <ListView Name="listLevelsView"

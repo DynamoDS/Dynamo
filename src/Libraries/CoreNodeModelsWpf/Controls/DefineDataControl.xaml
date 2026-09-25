@@ -38,7 +38,7 @@
                           Style="{StaticResource EllipseToggleButton1}"/>
             <Label Content="{x:Static p:Resources.DataInputAutoDetectTypeLabel}"
                    Margin="0 0 15 0"    
-                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                   Foreground="{StaticResource NodeLabelForegroundBrush}"/>
             <Canvas VerticalAlignment="Center" Width="14" Height="14">
                 <Viewbox Width="14" Height="14">
                     <Path Data="{StaticResource QuestionIcon}"
@@ -54,7 +54,7 @@
         </StackPanel>
         
         <!--Main control border-->
-        <Border Background="#19FFFFFF"
+        <Border Background="{StaticResource NodePanelOverlayBrush}"
                 Padding="10"
                 Grid.Row="1"
                 MinWidth="285"
@@ -69,7 +69,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{x:Static p:Resources.DataInputTypeLabel}"
                            Margin="0 0 5 0"    
-                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                           Foreground="{StaticResource NodeLabelForegroundBrush}"/>
                     <Grid>
                         <!-- Placeholder for ComboBox -->
                         <TextBox x:Name="TextPlaceholder" Visibility="Collapsed"/>
@@ -82,7 +82,7 @@
                     <Label Content="{x:Static p:Resources.DataInputListLabel}"
                            Margin="0 0 13 0"
                            VerticalAlignment="Center"
-                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                           Foreground="{StaticResource NodeLabelForegroundBrush}"/>
                     <ToggleButton x:Name="listToggleBtn"
                                   VerticalAlignment="Center"
                                   Width="32"
