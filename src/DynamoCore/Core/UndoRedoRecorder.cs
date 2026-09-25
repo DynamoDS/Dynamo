@@ -469,6 +469,15 @@ namespace Dynamo.Core
         /// current action group, or false otherwise.</returns>
         private bool IsRecordedInActionGroup(XmlElement group, ModelBase model)
         {
+            return null != FindRecordedAction(group, model);
+        }
+
+        /// <summary>
+        /// Returns the action already recorded for a given model in an action group, or null if
+        /// the model has not been recorded in it. See IsRecordedInActionGroup.
+        /// </summary>
+        private XmlElement FindRecordedAction(XmlElement group, ModelBase model)
+        {
             if (null == group)
                 throw new ArgumentNullException("group");
             if (null == model)
@@ -477,16 +486,16 @@ namespace Dynamo.Core
             Guid guid = model.GUID;
             foreach (XmlNode childNode in group.ChildNodes)
             {
-                // See if the model supports Guid identification, in unit test cases 
-                // those sample models do not support this so in such cases identity 
+                // See if the model supports Guid identification, in unit test cases
+                // those sample models do not support this so in such cases identity
                 // check will not be performed.
-                // 
+                //
                 XmlAttribute guidAttribute = childNode.Attributes["guid"];
                 if (null != guidAttribute && (guid == Guid.Parse(guidAttribute.Value)))
-                    return true; // This model was found to be recorded.
+                    return childNode as XmlElement; // This model was found to be recorded.
             }
 
-            return false;
+            return null;
         }
 
         private void SetNodeAction(XmlNode childNode, string action)
@@ -576,7 +585,22 @@ namespace Dynamo.Core
                         ModelBase toBeDeleted = undoClient.GetModelForElement(element);
                         if (toBeDeleted != null)
                         {
-                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            // A group merged by a coalescing scope can hold a later
+                            // modification of the model it creates. Walking in reverse, that
+                            // modification has already put the model in the redo group, holding
+                            // its latest state, and RecordActionInternal would skip it. Redo
+                            // must recreate the model from that state rather than modify a model
+                            // that no longer exists, so that entry becomes the creation.
+                            var recorded = FindRecordedAction(newGroup, toBeDeleted);
+                            if (recorded == null)
+                            {
+                                RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            }
+                            else if (recorded.GetAttribute(UserActionAttrib) == UserAction.Modification.ToString())
+                            {
+                                recorded.SetAttribute(UserActionAttrib, UserAction.Creation.ToString());
+                            }
+
                             undoClient.DeleteModel(element);
                         }
                         break;

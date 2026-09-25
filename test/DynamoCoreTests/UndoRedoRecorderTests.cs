@@ -863,5 +863,76 @@ namespace Dynamo.Tests
             Assert.IsNotNull(workspace.GetModel(2));
             Assert.AreEqual(false, recorder.CanRedo);
         }
+
+        /// <summary>
+        /// A merged action group can hold a creation and a later modification of the same model,
+        /// which a live action group never does. Undoing it walks the modification first, so the
+        /// model is already in the redo group by the time the creation is reached; the redo group
+        /// must still recreate the model rather than only try to modify one that no longer exists.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenModifiedInCoalescingScopeThenRedoRecreatesItModified()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.ModifyModel(1); // Doubles the radius to 20.
+            }
+
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(1));
+
+            recorder.Redo();
+
+            var recreated = workspace.GetModel(1);
+            Assert.IsNotNull(recreated);
+            Assert.AreEqual(20, recreated.Radius);
+        }
+
+        /// <summary>
+        /// Following on from the redo above, the batch has to keep round-tripping: undoing again
+        /// must remove the recreated model, not leave it behind.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenModifiedInCoalescingScopeThenUndoAfterRedoRemovesIt()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.ModifyModel(1);
+            }
+
+            recorder.Undo();
+            recorder.Redo();
+            recorder.Undo();
+
+            Assert.IsNull(workspace.GetModel(1));
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+        }
+
+        /// <summary>
+        /// A model created and then deleted within one batch has no net effect, so neither undo
+        /// nor redo of that batch may leave it behind.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenDeletedInCoalescingScopeThenRedoDoesNotRecreateIt()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.ModifyModel(1);
+                workspace.RemoveModel(1);
+            }
+
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(1));
+
+            recorder.Redo();
+            Assert.IsNull(workspace.GetModel(1));
+        }
     }
 }

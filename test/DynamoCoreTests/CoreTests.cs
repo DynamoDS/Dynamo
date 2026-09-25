@@ -1033,6 +1033,35 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(movedPosition, NodePosition(guid));
         }
 
+        /// <summary>
+        /// DYN-10756: creating a node and then editing it is the typical shape of a batch an
+        /// automation client applies inside an undo action group. The merged group then holds a
+        /// creation and a modification of the same node, and redoing it must bring the node back
+        /// with the edit applied rather than silently leave it out.
+        /// </summary>
+        [Test]
+        public void WhenNodeCreatedThenEditedInUndoActionGroupThenRedoRecreatesTheEditedNode()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(
+                    Guid.Empty, cbn.GUID, "Code", "42;"));
+            }
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsFalse(workspace.Nodes.Any(n => n.GUID == cbn.GUID));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+
+            var recreated = workspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault(n => n.GUID == cbn.GUID);
+            Assert.IsNotNull(recreated);
+            Assert.AreEqual("42;", recreated.Code);
+        }
+
         private void MoveNodeBy(Guid nodeGuid, double offsetX)
         {
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First(n => n.GUID == nodeGuid);
