@@ -70,7 +70,7 @@
             <TextBlock Text="{x:Static resx:Resources.InputLabel}"
                        Grid.Row="1"
                        FontSize="10"
-                       Foreground="#50b5a3"
+                       Foreground="{StaticResource InCanvasSearchTooltipHeaderBrush}"
                        Margin="0,3,0,0" />
             <ListBox ItemsSource="{Binding InputParameters}"
                      Grid.Row="2"
@@ -110,7 +110,7 @@
             <TextBlock Text="{x:Static resx:Resources.OutputLabel}"
                        Grid.Row="3"
                        FontSize="10"
-                       Foreground="#50b5a3"
+                       Foreground="{StaticResource InCanvasSearchTooltipHeaderBrush}"
                        Margin="0,10,0,0" />
             <ListBox ItemsSource="{Binding OutputParameters}"
                      Grid.Row="4"
@@ -159,7 +159,7 @@
                 <Grid.Resources>
                     <Style TargetType="{x:Type Hyperlink}">
                         <Setter Property="Foreground"
-                                Value="#4192d9" />
+                                Value="{StaticResource InCanvasSearchTooltipAccentBrush}" />
                         <Setter Property="TextBlock.TextDecorations"
                                 Value="{x:Null}" />
                     </Style>
@@ -176,7 +176,7 @@
                     <TextBlock Name="code"
                                FontSize="13"
                                FontFamily="Consolas Regular"
-                               Foreground="#777777"
+                               Foreground="{StaticResource InCanvasSearchTooltipMutedBrush}"
                                Margin="3,0,10,0">
                         <TextBlock.Text>
                             <Binding Path="FullName"
@@ -221,7 +221,7 @@
                                Grid.Row="3"
                                Grid.Column="1"
                                FontSize="10"
-                               Foreground="#4192d9"
+                               Foreground="{StaticResource InCanvasSearchTooltipAccentBrush}"
                                Margin="0,0,0,10" />
                     <TextBlock Grid.Row="3"
                                Grid.Column="2"

@@ -99,6 +99,9 @@
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
     <SolidColorBrush x:Key="NodeExpanderBackground" Color="#3C3C3C" />
     <SolidColorBrush x:Key="NodeExpanderHoverBackground" Color="#282828" />
+    <!--  Chevron and outline of the expander toggle (Number Slider, Custom Selection).  -->
+    <SolidColorBrush x:Key="NodeExpanderGlyphBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeExpanderGlyphPressedBrush" Color="#FFFFFF" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
@@ -117,6 +120,12 @@
         cannot leak into them. Values intentionally match the dark NodeContextMenu* equivalents.
     -->
     <SolidColorBrush x:Key="DividerRectangleBrush" Color="#808080" />
+    <!--
+        Plain text in the Python script editor, which stays dark in every theme. It used to borrow
+        AutocompletionWindowFontColor, which the light theme darkens for the autocomplete popup,
+        so identifiers such as sys, clr and IN became dark grey on the dark editor.
+    -->
+    <SolidColorBrush x:Key="PythonEditorForegroundBrush" Color="#F5F5F5" />
     <SolidColorBrush x:Key="MainMenuSeparatorBrush" Color="#AFAFAF" />
 
     <!--  Package Manager context menus (DarkContextMenuStyle is used only by Package Manager).  -->
@@ -269,6 +278,18 @@
     <SolidColorBrush x:Key="InCanvasSearchResultForegroundBrush" Color="#CCCCCC" />
     <SolidColorBrush x:Key="InCanvasSearchResultSecondaryForegroundBrush" Color="#808285" />
     <SolidColorBrush x:Key="InCanvasSearchTooltipBackgroundBrush" Color="#333333" />
+    <!--
+        In-canvas search result rows (IncanvasSearchControl), and the node tooltip (ToolTipWindow)
+        shared by the in-canvas search and the library's hover tooltip. Values match what they
+        used before: LibraryMemberOnHover, the #3E464C search-match highlight, and literals.
+    -->
+    <SolidColorBrush x:Key="InCanvasSearchResultHoverBrush" Color="#404040" />
+    <SolidColorBrush x:Key="InCanvasSearchResultHighlightBrush" Color="#3E464C" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipTextBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipDescriptionMissingBrush" Color="#666666" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipMutedBrush" Color="#777777" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipHeaderBrush" Color="#50B5A3" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipAccentBrush" Color="#4192D9" />
 
     <!--  Library background  -->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />

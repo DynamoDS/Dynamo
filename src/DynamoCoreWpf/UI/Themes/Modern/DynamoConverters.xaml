@@ -126,12 +126,13 @@
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
     <controls:ConfidenceScoreFormattingConverter x:Key="ConfidenceScoreFormattingConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
+    <!--  Both used only by ToolTipWindow; themed with it.  -->
     <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
-                                       FalseBrush="#777777"
-                                       TrueBrush="#cccccc" />
+                                       FalseBrush="{StaticResource InCanvasSearchTooltipMutedBrush}"
+                                       TrueBrush="{StaticResource InCanvasSearchTooltipTextBrush}" />
     <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
-                                      FalseBrush="#666666"
-                                      TrueBrush="#cccccc" />
+                                      FalseBrush="{StaticResource InCanvasSearchTooltipDescriptionMissingBrush}"
+                                      TrueBrush="{StaticResource InCanvasSearchTooltipTextBrush}" />
     <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter" />
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter" />

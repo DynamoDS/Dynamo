@@ -18,13 +18,94 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!--
+                The result rows follow the canvas theme, while MemberGroupMemberStyle and
+                MemberTemplate stay dark for the library sidebar that shares them. Those resolve
+                their colours when SidebarGridStyleDictionary loads, so they cannot be overridden
+                from here; the background setter can, but the hover/selected colours are template
+                triggers, so the (small) template is repeated below with themed colours.
+            -->
             <Style x:Key="SearchMemberStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
                 <EventSetter Event="PreviewMouseLeftButtonUp" Handler="OnMouseLeftButtonUp" />
                 <EventSetter Event="MouseEnter" Handler="OnMouseEnter" />
                 <EventSetter Event="MouseLeave" Handler="OnMouseLeave" />
+                <Setter Property="Background" Value="{StaticResource InCanvasSearchResultBackgroundBrush}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource InCanvasSearchResultHoverBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource InCanvasSearchResultHoverBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
+
+            <!--  Copy of MemberTemplate (SidebarGridStyleDictionary.xaml) with themed colours.  -->
+            <DataTemplate x:Key="InCanvasSearchMemberTemplate">
+                <StackPanel Name="ImageAndNodeName"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.DisplayIcon, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            MinWidth="25"
+                            MaxWidth="33"
+                            FontSize="11"
+                            Margin="5,12,0,0"
+                            Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Text="{Binding AutoCompletionNodeMachineLearningInfo.ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay, Converter={StaticResource ConfidenceScoreFormattingConverter}}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
+                        </TextBlock>
+                        <Image HorizontalAlignment="Center"
+                               Height="14"
+                               VerticalAlignment="Center"
+                               Width="14"
+                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/clock-icon.png"
+                               Margin="7,10,8,0"
+                               Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByUse, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    </StackPanel>
+                    <Image HorizontalAlignment="Left"
+                           Height="36"
+                           Margin="2,0,16,0"
+                           VerticalAlignment="Center"
+                           Width="24"
+                           Source="{Binding SmallIcon}" />
+                    <Grid Margin="-10,0,0,0">
+                        <Rectangle Fill="{StaticResource InCanvasSearchResultHighlightBrush}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch">
+                            <Rectangle.Margin>
+                                <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                                    <Binding ElementName="memberName" />
+                                    <Binding Path="DataContext"
+                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}" />
+                                </MultiBinding>
+                            </Rectangle.Margin>
+                        </Rectangle>
+                        <TextBlock Grid.Column="1"
+                                   Name="memberName"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontSize="13">
+                            <Run Text="{Binding Name, Mode=OneWay}"
+                                 Foreground="{StaticResource InCanvasSearchResultForegroundBrush}" />
+                            <Run Text="{Binding Parameters, Mode=OneWay}"
+                                 Foreground="{StaticResource InCanvasSearchResultSecondaryForegroundBrush}" />
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </DataTemplate>
 
             <Style BasedOn="{StaticResource LibraryScrollViewerStyle}" TargetType="{x:Type ScrollViewer}">
                 <Setter Property="Template" Value="{StaticResource LibraryScrollViewerControlTemplate}" />
@@ -96,7 +177,7 @@
         <Border Name="FoundMembers"
                 Grid.Row="1"
                 MaxHeight="250"
-                Background="{StaticResource LibraryCommonBackground}"
+                Background="{StaticResource InCanvasSearchResultBackgroundBrush}"
                 Opacity=".9">
             <ListBox Name="MembersListBox"
                      Background="Transparent"
@@ -111,7 +192,7 @@
                                       CanContentScroll="True"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       Template="{StaticResource InCanvasScrollViewerControlTemplate}">
-                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
+                            <ContentPresenter ContentTemplate="{StaticResource InCanvasSearchMemberTemplate}" />
                         </ScrollViewer>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

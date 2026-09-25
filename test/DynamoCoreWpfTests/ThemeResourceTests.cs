@@ -154,7 +154,12 @@ namespace DynamoCoreWpfTests
             "AutoCompleteGlyphBrush",
             "AutoCompleteButtonHoverBrush",
             "AutoCompleteSearchForegroundBrush",
-            "AutoCompleteItemHighlightBrush"
+            "AutoCompleteItemHighlightBrush",
+            "InCanvasSearchResultHoverBrush",
+            "InCanvasSearchResultHighlightBrush",
+            "InCanvasSearchTooltipTextBrush",
+            "InCanvasSearchTooltipHeaderBrush",
+            "NodeExpanderGlyphBrush"
         };
 
         /// <summary>
@@ -165,6 +170,7 @@ namespace DynamoCoreWpfTests
         {
             "DividerRectangleBrush",
             "MainMenuSeparatorBrush",
+            "PythonEditorForegroundBrush",
             "PMContextMenuForeground",
             "PMContextMenuForegroundHighlight",
             "PMContextMenuBackground",
@@ -626,6 +632,64 @@ namespace DynamoCoreWpfTests
                         $"[{theme}] {foregroundKey} {foreground} on {backgroundKey} {background} " +
                         $"is {ratio:F2}:1.");
                 }
+            }
+        }
+
+        /// <summary>
+        /// The Python script editor stays dark in every theme. Its plain text previously borrowed
+        /// a key the light theme darkens, which left identifiers dark grey on the dark editor.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPaletteIsLoadedThenPythonEditorTextContrastsWithTheDarkEditorInBothThemes()
+        {
+            foreach (var theme in new[] { DynamoTheme.Dark, DynamoTheme.Light })
+            {
+                var palette = LoadPalette(theme);
+
+                var editor = ColorOf(palette["TextEditorBrush"]);
+                var text = ColorOf(palette["PythonEditorForegroundBrush"]);
+                var ratio = ContrastRatio(editor, text);
+
+                Assert.GreaterOrEqual(ratio, 4.5d,
+                    $"[{theme}] Python editor text {text} on {editor} is {ratio:F2}:1.");
+            }
+        }
+
+        /// <summary>
+        /// Right-click search results and the node tooltip beside them follow the canvas theme.
+        /// Only the light theme is asserted for the secondary colours: several dark values
+        /// (for example #808285 parameters on the #404040 hover, 2.69:1) are pre-existing.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLightPaletteIsLoadedThenInCanvasSearchResultsAndTooltipAreReadable()
+        {
+            var palette = LoadPalette(DynamoTheme.Light);
+
+            var checks = new[]
+            {
+                ("InCanvasSearchResultForegroundBrush", "InCanvasSearchResultBackgroundBrush", 4.5d),
+                ("InCanvasSearchResultForegroundBrush", "InCanvasSearchResultHoverBrush", 4.5d),
+                ("InCanvasSearchResultForegroundBrush", "InCanvasSearchResultHighlightBrush", 4.5d),
+                ("InCanvasSearchResultSecondaryForegroundBrush", "InCanvasSearchResultBackgroundBrush", 4.5d),
+                ("InCanvasSearchResultSecondaryForegroundBrush", "InCanvasSearchResultHoverBrush", 4.5d),
+                ("InCanvasSearchTooltipTextBrush", "InCanvasSearchTooltipBackgroundBrush", 4.5d),
+                ("InCanvasSearchTooltipMutedBrush", "InCanvasSearchTooltipBackgroundBrush", 4.5d),
+                ("InCanvasSearchTooltipHeaderBrush", "InCanvasSearchTooltipBackgroundBrush", 4.5d),
+                ("InCanvasSearchTooltipAccentBrush", "InCanvasSearchTooltipBackgroundBrush", 4.5d),
+                // "No description available" is deliberately muted.
+                ("InCanvasSearchTooltipDescriptionMissingBrush", "InCanvasSearchTooltipBackgroundBrush", 3.0d)
+            };
+
+            foreach (var (foregroundKey, backgroundKey, required) in checks)
+            {
+                var foreground = ColorOf(palette[foregroundKey]);
+                var background = ColorOf(palette[backgroundKey]);
+                var ratio = ContrastRatio(background, foreground);
+
+                Assert.GreaterOrEqual(ratio, required,
+                    $"{foregroundKey} {foreground} on {backgroundKey} {background} is {ratio:F2}:1.");
             }
         }
 

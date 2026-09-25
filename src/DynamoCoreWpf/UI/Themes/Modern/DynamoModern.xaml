@@ -6196,16 +6196,16 @@
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Background="Transparent"
-                                                        BorderBrush="{StaticResource Blue300Brush}"
+                                                        BorderBrush="{StaticResource NodeExpanderGlyphBrush}"
                                                         BorderThickness="1.5"
                                                         CornerRadius="1"
                                                         SnapsToDevicePixels="True" />
                                                 <Polygon Name="Triangle"
                                                          Grid.Column="0"
-                                                         Fill="{StaticResource Blue300Brush}"
+                                                         Fill="{StaticResource NodeExpanderGlyphBrush}"
                                                          Points="11,12.5 13.5,15.5,16,12.5"
                                                          SnapsToDevicePixels="True"
-                                                         Stroke="{StaticResource Blue300Brush}"
+                                                         Stroke="{StaticResource NodeExpanderGlyphBrush}"
                                                          StrokeThickness="1" />
                                                 <ContentPresenter Grid.Column="1"
                                                                   HorizontalAlignment="Left"
@@ -6226,9 +6226,9 @@
                                                 <Setter TargetName="ButtonBackgroundRectangle" Property="Fill" Value="{StaticResource NodeExpanderHoverBackground}" />
                                             </Trigger>
                                             <Trigger Property="ButtonBase.IsPressed" Value="True">
-                                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="White" />
-                                                <Setter TargetName="Triangle" Property="Stroke" Value="White" />
-                                                <Setter TargetName="Triangle" Property="Fill" Value="White" />
+                                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource NodeExpanderGlyphPressedBrush}" />
+                                                <Setter TargetName="Triangle" Property="Stroke" Value="{StaticResource NodeExpanderGlyphPressedBrush}" />
+                                                <Setter TargetName="Triangle" Property="Fill" Value="{StaticResource NodeExpanderGlyphPressedBrush}" />
                                                 <Setter TargetName="Triangle" Property="StrokeThickness" Value="2" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>

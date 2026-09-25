@@ -355,7 +355,7 @@
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
                                            Background="{StaticResource TextEditorBrush}"
-                                           Foreground="{StaticResource AutocompletionWindowFontColor}"
+                                           Foreground="{StaticResource PythonEditorForegroundBrush}"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
                                            PreviewMouseWheel="EditorBox_PreviewMouseWheel"

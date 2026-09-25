@@ -42,8 +42,14 @@
     <SolidColorBrush x:Key="NodeHeaderBackgroundBrush" Color="#5E5C5A" />
 
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#CFCAC3" />
-    <SolidColorBrush x:Key="NodeExpanderBackground" Color="#CFCAC3" />
-    <SolidColorBrush x:Key="NodeExpanderHoverBackground" Color="#B9B4AC" />
+    <!--
+        Expander toggle on Number Slider and Custom Selection. Matches the near-white node input
+        fields beside it rather than reading as a darker chip on the node body.
+    -->
+    <SolidColorBrush x:Key="NodeExpanderBackground" Color="#FBFAF8" />
+    <SolidColorBrush x:Key="NodeExpanderHoverBackground" Color="#E6E3DE" />
+    <SolidColorBrush x:Key="NodeExpanderGlyphBrush" Color="#1A7FB5" />
+    <SolidColorBrush x:Key="NodeExpanderGlyphPressedBrush" Color="#2B2B2B" />
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#B9B4AC" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#B9B4AC" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#2B2B2B" />
@@ -182,8 +188,18 @@
     <SolidColorBrush x:Key="InCanvasSearchAccentBrush" Color="#1A7FB5" />
     <SolidColorBrush x:Key="InCanvasSearchResultBackgroundBrush" Color="#F2F0ED" />
     <SolidColorBrush x:Key="InCanvasSearchResultForegroundBrush" Color="#2B2B2B" />
-    <SolidColorBrush x:Key="InCanvasSearchResultSecondaryForegroundBrush" Color="#6E6A64" />
+    <!--  Dark enough to hold 4.5:1 on a hovered result row as well as a resting one.  -->
+    <SolidColorBrush x:Key="InCanvasSearchResultSecondaryForegroundBrush" Color="#5A554C" />
     <SolidColorBrush x:Key="InCanvasSearchTooltipBackgroundBrush" Color="#F2F0ED" />
+    <SolidColorBrush x:Key="InCanvasSearchResultHoverBrush" Color="#DCD8D2" />
+    <!--  Behind the part of a result name that matches the search text.  -->
+    <SolidColorBrush x:Key="InCanvasSearchResultHighlightBrush" Color="#C9DDEB" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipTextBrush" Color="#2B2B2B" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipDescriptionMissingBrush" Color="#8A8578" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipMutedBrush" Color="#6E6A64" />
+    <!--  The dark theme's #50B5A3 teal INPUT/OUTPUT headers sit near 2.3:1 on light.  -->
+    <SolidColorBrush x:Key="InCanvasSearchTooltipHeaderBrush" Color="#1E7A70" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipAccentBrush" Color="#1F6FBF" />
 
     <!--
         Preview bubble: the result panel shown when hovering a node, plus the expanded watch tree
