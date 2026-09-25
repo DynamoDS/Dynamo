@@ -13,51 +13,40 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}"/>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="BorderlessButton"
-                    TargetType="{x:Type Button}">
-                <Setter Property="Padding"
-                        Value="1"/>
-                <Setter Property="Background"
-                        Value="PaleGreen"/>
+            <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="1" />
+                <Setter Property="Background" Value="PaleGreen" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Name="border"
-                                    Background="{TemplateBinding Background}">
+                            <Border Name="border" Background="{TemplateBinding Background}">
                                 <ContentPresenter Name="content"
                                                   Margin="{TemplateBinding Padding}"
                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   RecognizesAccessKey="True"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </Border>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                        Value="True">
-                                    <Setter TargetName="content"
-                                            Property="RenderTransform">
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="content" Property="RenderTransform">
                                         <Setter.Value>
-                                            <ScaleTransform ScaleX="1.1"
-                                                    ScaleY="1.1"/>
+                                            <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
                                         </Setter.Value>
                                     </Setter>
                                 </Trigger>
-                                <Trigger Property="IsPressed"
-                                        Value="True">
-                                    <Setter TargetName="content"
-                                            Property="RenderTransform">
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="content" Property="RenderTransform">
                                         <Setter.Value>
-                                            <ScaleTransform ScaleX=".95"
-                                                    ScaleY=".95"/>
+                                            <ScaleTransform ScaleX=".95" ScaleY=".95" />
                                         </Setter.Value>
                                     </Setter>
                                 </Trigger>
-                                <Trigger Property="IsFocused"
-                                        Value="True"/>
+                                <Trigger Property="IsFocused" Value="True" />
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -65,10 +54,8 @@
             </Style>
 
             <!--  Expander Button Style  -->
-            <Style x:Key="ExpandCollapseToggleStyleWT"
-                    TargetType="ToggleButton">
-                <Setter Property="Focusable"
-                        Value="False"/>
+            <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
+                <Setter Property="Focusable" Value="False" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ToggleButton">
@@ -88,11 +75,8 @@
                                       StrokeThickness="2"/>
                             </Grid>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked"
-                                        Value="True">
-                                    <Setter TargetName="ExpandPath"
-                                            Property="Data"
-                                            Value="M-8,0 -4,4 L-8,8"/>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="ExpandPath" Property="Data" Value="M-8,0 -4,4 L-8,8" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -108,7 +92,7 @@
                                            Opacity="0"
                                            Stroke="IndianRed"
                                            StrokeDashArray="1 2"
-                                           StrokeThickness="5"/>
+                                           StrokeThickness="5" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -116,45 +100,34 @@
             </Style>
 
             <!--  TreeViewItem Control Style  -->
-            <Style x:Key="WatchTreeViewItem"
-                    TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded"
-                        Value="{Binding IsNodeExpanded}"/>
+            <Style x:Key="WatchTreeViewItem" TargetType="{x:Type TreeViewItem}">
+                <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded}" />
 
-                <Setter Property="Background"
-                        Value="Transparent"/>
-                <Setter Property="HorizontalContentAlignment"
-                        Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="VerticalContentAlignment"
-                        Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="Padding"
-                        Value="2,0,0,0"/>
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                <Setter Property="FocusVisualStyle"
-                        Value="{StaticResource TreeViewItemFocusVisual}"/>
-                <EventSetter Event="MouseLeftButtonUp"
-                        Handler="treeviewItem_MouseLeftButtonUp"/>
-                <EventSetter Event="KeyDown"
-                        Handler="treeviewItem_KeyDown"/>
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                <Setter Property="Padding" Value="2,0,0,0" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
+                <EventSetter Event="MouseLeftButtonUp" Handler="treeviewItem_MouseLeftButtonUp" />
+                <EventSetter Event="KeyDown" Handler="treeviewItem_KeyDown" />
 
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <Grid Name="TreeGrid"
-                                    Background="Transparent">
+                            <Grid Name="TreeGrid" Background="Transparent">
 
                                 <!--  Set Column and Row Definitions for Grid Panel  -->
 
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
                                 <!--  Insert Toggle Button for Expander  -->
@@ -165,7 +138,7 @@
                                               ClickMode="Press"
                                               IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                               Style="{StaticResource ExpandCollapseToggleStyleWT}"
-                                              Visibility="{Binding IsTopLevel, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+                                              Visibility="{Binding IsTopLevel, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                                 <!--  Set Border for ListNode  -->
 
@@ -182,11 +155,10 @@
                                     <ContentPresenter x:Name="PART_Header"
                                                       MinWidth="20"
                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      ContentSource="Header"/>
+                                                      ContentSource="Header" />
                                 </Border>
 
-                                <Grid Grid.Row="1"
-                                        Grid.Column="0">
+                                <Grid Grid.Row="1" Grid.Column="0">
 
                                     <!--  Vertical line  -->
 
@@ -198,7 +170,7 @@
                                                Fill="Black"
                                                SnapsToDevicePixels="True"
                                                UseLayoutRounding="True"
-                                               Stroke="{StaticResource WatchTreeLineBrush}"/>
+                                               Stroke="{StaticResource WatchTreeLineBrush}" />
 
                                     <!--  Draw Ellipse at the bottom of each vertical line  -->
 
@@ -211,7 +183,7 @@
                                              Fill="{StaticResource WatchTreeLineBrush}"
                                              SnapsToDevicePixels="True"
                                              UseLayoutRounding="True"
-                                             Stroke="{StaticResource WatchTreeLineBrush}"/>
+                                             Stroke="{StaticResource WatchTreeLineBrush}" />
 
                                 </Grid>
 
@@ -219,42 +191,24 @@
 
                                 <ItemsPresenter x:Name="ItemsHost"
                                                 Grid.Row="1"
-                                                Grid.Column="1"/>
+                                                Grid.Column="1" />
                             </Grid>
 
 
                             <ControlTemplate.Triggers>
-                                <Trigger Property="HasItems"
-                                        Value="false">
-                                    <Setter TargetName="Expander"
-                                            Property="Visibility"
-                                            Value="Hidden"/>
-                                    <Setter TargetName="VerLn"
-                                            Property="Visibility"
-                                            Value="Hidden"/>
-                                    <Setter TargetName="LnEnd"
-                                            Property="Visibility"
-                                            Value="Hidden"/>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                                    <Setter TargetName="VerLn" Property="Visibility" Value="Hidden" />
+                                    <Setter TargetName="LnEnd" Property="Visibility" Value="Hidden" />
                                 </Trigger>
-                                <Trigger Property="IsExpanded"
-                                        Value="false">
-                                    <Setter TargetName="ItemsHost"
-                                            Property="Visibility"
-                                            Value="Collapsed"/>
-                                    <Setter TargetName="VerLn"
-                                            Property="Visibility"
-                                            Value="Hidden"/>
-                                    <Setter TargetName="LnEnd"
-                                            Property="Visibility"
-                                            Value="Collapsed"/>
+                                <Trigger Property="IsExpanded" Value="false">
+                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
+                                    <Setter TargetName="VerLn" Property="Visibility" Value="Hidden" />
+                                    <Setter TargetName="LnEnd" Property="Visibility" Value="Collapsed" />
                                 </Trigger>
-                                <Trigger Property="IsSelected"
-                                        Value="true">
-                                    <Setter TargetName="Bd"
-                                            Property="Background"
-                                            Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                    <Setter Property="Foreground"
-                                            Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                                <Trigger Property="IsSelected" Value="true">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -267,20 +221,19 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                            <Grid x:Name="Grid"
-                                    Background="Transparent">
+                            <Grid x:Name="Grid" Background="Transparent">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Rectangle x:Name="Corner"
                                            Grid.Row="1"
                                            Grid.Column="1"
-                                           Fill="{StaticResource WatchTreeBackgroundBrush}"/>
+                                           Fill="{StaticResource WatchTreeBackgroundBrush}" />
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
                                                         Grid.Row="0"
                                                         Grid.Column="0"
@@ -289,7 +242,7 @@
                                                         CanHorizontallyScroll="False"
                                                         CanVerticallyScroll="False"
                                                         Content="{TemplateBinding Content}"
-                                                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                                                        ContentTemplate="{TemplateBinding ContentTemplate}" />
                                 <ScrollBar x:Name="PART_VerticalScrollBar"
                                            Grid.Row="0"
                                            Grid.Column="1"
@@ -301,7 +254,7 @@
                                            Minimum="0"
                                            ViewportSize="{TemplateBinding ViewportHeight}"
                                            Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
                                 <ScrollBar x:Name="PART_HorizontalScrollBar"
                                            Grid.Row="1"
                                            Grid.Column="0"
@@ -313,7 +266,7 @@
                                            Orientation="Horizontal"
                                            ViewportSize="{TemplateBinding ViewportWidth}"
                                            Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                                           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -324,8 +277,8 @@
 
     <Grid Name="inputGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <TreeView Name="treeView1"
@@ -341,13 +294,10 @@
 
             <TreeView.Style>
                 <Style TargetType="TreeView">
-                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                            Value="Hidden"/>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
                     <Style.Triggers>
-                        <Trigger Property="IsMouseOver"
-                                Value="True">
-                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                                    Value="Auto"/>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -359,20 +309,14 @@
                         <VirtualizingPanel.Style>
                             <Style TargetType="{x:Type VirtualizingPanel}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsOneRowContent}"
-                                            Value="True">
-                                        <Setter Property="Margin"
-                                                Value="-10,5,5,5"/>
+                                    <DataTrigger Binding="{Binding IsOneRowContent}" Value="True">
+                                        <Setter Property="Margin" Value="-10,5,5,5" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsOneRowContent}"
-                                            Value="False">
-                                        <Setter Property="Margin"
-                                                Value="5,0,5,5"/>
+                                    <DataTrigger Binding="{Binding IsOneRowContent}" Value="False">
+                                        <Setter Property="Margin" Value="5,0,5,5" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsCollection}"
-                                            Value="False">
-                                        <Setter Property="Margin"
-                                                Value="-5,0,0,0"/>
+                                    <DataTrigger Binding="{Binding IsCollection}" Value="False">
+                                        <Setter Property="Margin" Value="-5,0,0,0" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -382,14 +326,12 @@
             </TreeView.ItemsPanel>
 
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:WatchViewModel}"
-                        ItemsSource="{Binding Path=Children}">
-                    <VirtualizingStackPanel Width="Auto"
-                            Orientation="Horizontal">
+                <HierarchicalDataTemplate DataType="{x:Type viewModels:WatchViewModel}" ItemsSource="{Binding Path=Children}">
+                    <VirtualizingStackPanel Width="Auto" Orientation="Horizontal">
                         <TextBlock x:Name="listIndex"
                                    Width="Auto"
                                    Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMarginConverter}}"
-                                   Padding="0,0,0,-1"
+                                   Padding="0,0,0,-1"                                   
                                    VerticalAlignment="Center"
                                    Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackgroundConverter}}"
                                    FontFamily="{StaticResource SourceCodePro}"
@@ -400,13 +342,10 @@
                                    Visibility="{Binding Path=ViewPath, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Foreground"
-                                            Value="{StaticResource WatchTreeForegroundBrush}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource WatchTreeForegroundBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Children.Count}"
-                                                Value="0">
-                                            <Setter Property="Foreground"
-                                                    Value="{StaticResource WatchTreeSecondaryForegroundBrush}"/>
+                                        <DataTrigger Binding="{Binding Path=Children.Count}" Value="0">
+                                            <Setter Property="Foreground" Value="{StaticResource WatchTreeSecondaryForegroundBrush}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -416,14 +355,14 @@
                         <TextBlock Width="Auto"
                                    x:Name="NodeValue"
                                    Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
-                                   VerticalAlignment="Center"
+                                   VerticalAlignment="Center"                                                                      
                                    FontFamily="{StaticResource SourceCodePro}"
                                    Text="{Binding Path=NodeLabel}"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" >
                             <TextBlock.Foreground>
                                 <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
-                                    <Binding Path="ValueType"/>
-                                    <Binding Path="NodeLabel"/>
+                                    <Binding Path="ValueType" />
+                                    <Binding Path="NodeLabel" />
                                 </MultiBinding>
                             </TextBlock.Foreground>
                         </TextBlock>
@@ -435,15 +374,14 @@
                                 Content="{Binding Path=Link}"
                                 RenderTransformOrigin="0.5,0.5"
                                 Style="{StaticResource BorderlessButton}"
-                                Visibility="{Binding Path=Link, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                Visibility="{Binding Path=Link, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
                     </VirtualizingStackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
 
             <TreeView.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                 Color="{StaticResource Blue450}"
-                        Opacity="0.4"/>
+                                 Color="{StaticResource Blue450}" Opacity="0.4"/>
             </TreeView.Resources>
         </TreeView>
 
@@ -454,80 +392,73 @@
                 BorderThickness="0">
             <Grid Name="ListLevelsGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <!--  Left Column display List Levels  -->
                 <DockPanel Name="ListLevelsDisplay"
-                           Height="27px"
-                           Grid.Column="0"
+                       Height="27px"
+                       Grid.Column="0"
+                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+
+                <!--  Shows counts of all items in List  -->
+                <TextBlock Name="ListItems"
+                           DockPanel.Dock="Right"
+                           Margin="-10,0,0,2"
+                           FontFamily="{StaticResource SourceCodePro}"
+                           Foreground="{StaticResource WatchTreeForegroundBrush}"
+                           VerticalAlignment="Center"
                            Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    {<Run Foreground="{StaticResource Blue300Brush}" Text="{Binding NumberOfItems}" />}</TextBlock>
 
-                    <!--  Shows counts of all items in List  -->
-                    <TextBlock Name="ListItems"
-                               DockPanel.Dock="Right"
-                               Margin="-10,0,0,2"
-                               FontFamily="{StaticResource SourceCodePro}"
-                               Foreground="{StaticResource WatchTreeForegroundBrush}"
-                               VerticalAlignment="Center"
-                               Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                    {<Run Foreground="{StaticResource Blue300Brush}"
-                                Text="{Binding NumberOfItems}"/>}</TextBlock>
+                <!--  Shows list@level labels in List  -->
+                <ListView Name="listLevelsView"
+                          DockPanel.Dock="Left"
+                          Margin="13,0,0,3"
+                          VerticalAlignment="Center"
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                    <!--  Shows list@level labels in List  -->
-                    <ListView Name="listLevelsView"
-                              DockPanel.Dock="Left"
-                              Margin="13,0,0,3"
-                              VerticalAlignment="Center"
-                              ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Margin" Value="{Binding Path=., Converter={StaticResource LeftThicknessConverter}}" />
+                            <Setter Property="Focusable" Value="False" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter TextBlock.FontSize="10px" TextBlock.Foreground="{StaticResource WatchTreeForegroundBrush}" />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
 
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Margin"
-                                        Value="{Binding Path=., Converter={StaticResource LeftThicknessConverter}}"/>
-                                <Setter Property="Focusable"
-                                        Value="False"/>
-                                <Setter Property="Padding"
-                                        Value="0"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                            <ContentPresenter TextBlock.FontSize="10px"
-                                                    TextBlock.Foreground="{StaticResource WatchTreeForegroundBrush}"/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                        <ListView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ListView.ItemsPanel>
-
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock FontFamily="{StaticResource SourceCodePro}"
-                                            FontSize="10">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="{StaticResource SourceCodePro}" FontSize="10">
                                     <Run Foreground="{StaticResource WatchTreeForegroundBrush}">@</Run>
-                                    </TextBlock>
-                                    <TextBlock Name="indivListLevel"
-                                               FontFamily="{StaticResource SourceCodePro}"
-                                               FontSize="10">
-                                    <Run Foreground="{StaticResource WatchTreeForegroundBrush}"
-                                                Text="{Binding Path=.}"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                                </TextBlock>
+                                <TextBlock Name="indivListLevel"
+                                           FontFamily="{StaticResource SourceCodePro}"
+                                           FontSize="10">
+                                    <Run Foreground="{StaticResource WatchTreeForegroundBrush}" Text="{Binding Path=.}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
                 </DockPanel>
 
@@ -543,8 +474,7 @@
                        Visibility="Collapsed">
                     <Thumb.Template>
                         <ControlTemplate>
-                            <Polygon Fill="#AFAFAF"
-                                    Points="0,8 8,8 8,0"/>
+                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
                         </ControlTemplate>
                     </Thumb.Template>
                 </Thumb>

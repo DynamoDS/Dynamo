@@ -125,7 +125,8 @@ namespace DynamoCoreWpfTests
             "WatchTreeForegroundBrush",
             "BooleanControlForegroundBrush",
             "RunSettingsComboBackgroundBrush",
-            "RunSettingsComboForegroundBrush"
+            "RunSettingsComboForegroundBrush",
+            "RunSettingsComboItemDisabledBrush"
         };
 
         /// <summary>
@@ -413,6 +414,36 @@ namespace DynamoCoreWpfTests
                         $"of {ratio:F2}:1, below the 4.5:1 required for readable text.");
                 }
             }
+        }
+
+        /// <summary>
+        /// A disabled run type (for example Periodic, when the graph cannot run periodically) is
+        /// still listed in the dropdown and must be legible, while reading as dimmer than an
+        /// enabled one. Only the light theme is asserted: the dark theme has always drawn it as
+        /// translucent white (about 1.9:1), which is pre-existing and out of scope. WCAG exempts
+        /// inactive controls from 4.5:1, so 3:1 is the bar here.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLightPaletteIsLoadedThenDisabledRunTypeItemIsReadableButDimmer()
+        {
+            var palette = LoadPalette(DynamoTheme.Light);
+
+            var dropdown = ColorOf(palette["RunSettingsComboBackgroundBrush"]);
+            var disabled = ColorOf(palette["RunSettingsComboItemDisabledBrush"]);
+            var enabled = ColorOf(palette["DynamoStandardLabelTextBrush"]);
+
+            Assert.AreEqual(255, disabled.A,
+                "The disabled item colour must be opaque in the light theme; a translucent " +
+                "white is invisible on the light dropdown.");
+
+            var disabledRatio = ContrastRatio(dropdown, disabled);
+            var enabledRatio = ContrastRatio(dropdown, enabled);
+
+            Assert.GreaterOrEqual(disabledRatio, 3.0d,
+                $"Disabled run type text {disabled} on {dropdown} is {disabledRatio:F2}:1.");
+            Assert.Less(disabledRatio, enabledRatio,
+                "A disabled run type should read as dimmer than an enabled one.");
         }
 
         [Test]

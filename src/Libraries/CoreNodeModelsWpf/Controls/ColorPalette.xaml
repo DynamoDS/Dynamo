@@ -8,36 +8,33 @@
     d:DesignWidth="90"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <Style x:Key="CustomColorToggle"
-                TargetType="{x:Type ToggleButton}">
+        <Style x:Key="CustomColorToggle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <Border
                                 x:Name="Border"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Background="{StaticResource NodeExpanderBackground}"
-                                CornerRadius="2"/>
+                                CornerRadius="2" />
                             <Rectangle
                                 x:Name="BlueUnderline"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Height="1px"
-                                VerticalAlignment="Bottom"/>
-                            <Border Grid.Column="0"
-                                    CornerRadius="2,0,0,2"
-                                    Background="{StaticResource NodeExpanderBackground}">
+                                VerticalAlignment="Bottom" />
+                            <Border Grid.Column="0" CornerRadius="2,0,0,2" Background="{StaticResource NodeExpanderBackground}">
                                 <Border
                                     x:Name="CurrentColor"
                                     Margin="2,2,2,2"
                                     Background="{Binding SelectedColor}"
-                                    BorderBrush="Transparent"/>
+                                    BorderBrush="Transparent" />
                             </Border>
                             <Path
                                 x:Name="Arrow"
@@ -45,40 +42,22 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
-                                Fill="{StaticResource BooleanControlHoverBrush}"/>
+                                Fill="{StaticResource BooleanControlHoverBrush}" />
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="ToggleButton.IsMouseOver"
-                                    Value="true">
-                                <Setter TargetName="BlueUnderline"
-                                        Property="Fill"
-                                        Value="White"/>
+                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                <Setter TargetName="BlueUnderline" Property="Fill" Value="White" />
                             </Trigger>
-                            <Trigger Property="ToggleButton.IsChecked"
-                                    Value="true">
-                                <Setter TargetName="Arrow"
-                                        Property="Fill"
-                                        Value="#6AC0E7"/>
-                                <Setter TargetName="Arrow"
-                                        Property="Data"
-                                        Value="M0,6 L0,4 L4,0 L8,4 L8,6 L4,2 z"/>
-                                <Setter TargetName="BlueUnderline"
-                                        Property="Fill"
-                                        Value="#6AC0E7"/>
+                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                <Setter TargetName="Arrow" Property="Fill" Value="#6AC0E7" />
+                                <Setter TargetName="Arrow" Property="Data" Value="M0,6 L0,4 L4,0 L8,4 L8,6 L4,2 z" />
+                                <Setter TargetName="BlueUnderline" Property="Fill" Value="#6AC0E7" />
                             </Trigger>
-                            <Trigger Property="IsEnabled"
-                                    Value="False">
-                                <Setter TargetName="Border"
-                                        Property="Background"
-                                        Value="#3C3C3C"/>
-                                <Setter TargetName="Border"
-                                        Property="BorderBrush"
-                                        Value="#AAAAAA"/>
-                                <Setter Property="Foreground"
-                                        Value="#888888"/>
-                                <Setter TargetName="Arrow"
-                                        Property="Fill"
-                                        Value="#888888"/>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="#3C3C3C" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
+                                <Setter Property="Foreground" Value="#888888" />
+                                <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
