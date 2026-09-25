@@ -52,19 +52,28 @@
                 </Setter>
             </Style>
 
+            <!--
+                MemberTemplate resolves "BooleanToVisibilityConverter" to WPF's converter (false ->
+                Collapsed). Here that key would resolve to Dynamo's BoolToVisibilityConverter from
+                DynamoConverters.xaml instead (false -> Hidden), which keeps the invisible ML badge
+                in the layout and makes every row taller than its 30px, cropping the icons. A
+                distinct key pins the original behaviour.
+            -->
+            <BooleanToVisibilityConverter x:Key="InCanvasSearchBooleanToVisibilityConverter" />
+
             <!--  Copy of MemberTemplate (SidebarGridStyleDictionary.xaml) with themed colours.  -->
             <DataTemplate x:Key="InCanvasSearchMemberTemplate">
                 <StackPanel Name="ImageAndNodeName"
                             Orientation="Horizontal"
                             VerticalAlignment="Center">
-                    <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.DisplayIcon, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.DisplayIcon, Converter={StaticResource InCanvasSearchBooleanToVisibilityConverter}}">
                         <TextBlock
                             HorizontalAlignment="Center"
                             MinWidth="25"
                             MaxWidth="33"
                             FontSize="11"
                             Margin="5,12,0,0"
-                            Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource InCanvasSearchBooleanToVisibilityConverter}}"
                             Text="{Binding AutoCompletionNodeMachineLearningInfo.ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay, Converter={StaticResource ConfidenceScoreFormattingConverter}}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
                         </TextBlock>
                         <Image HorizontalAlignment="Center"
@@ -73,7 +82,7 @@
                                Width="14"
                                Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/clock-icon.png"
                                Margin="7,10,8,0"
-                               Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByUse, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                               Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByUse, Converter={StaticResource InCanvasSearchBooleanToVisibilityConverter}}" />
                     </StackPanel>
                     <Image HorizontalAlignment="Left"
                            Height="36"
