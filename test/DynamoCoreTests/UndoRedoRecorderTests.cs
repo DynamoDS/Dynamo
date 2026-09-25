@@ -46,6 +46,12 @@ namespace Dynamo.Tests
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
+
+            // Real models (NodeModel, NoteModel, AnnotationModel, ConnectorModel) all write
+            // their guid when serializing for undo, and the recorder uses it to recognize a
+            // model it has already recorded in the action group it is recording into. Writing
+            // it here too keeps that identity check live for these tests.
+            helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute(DummyModel.RadiusName, this.Radius);
             helper.SetAttribute(DummyModel.IdName, this.Identifier);
         }
@@ -53,6 +59,7 @@ namespace Dynamo.Tests
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(nodeElement);
+            this.GUID = helper.ReadGuid("guid", this.GUID);
             this.Radius = helper.ReadInteger(DummyModel.RadiusName);
             this.Identifier = helper.ReadInteger(DummyModel.IdName);
         }
@@ -669,6 +676,263 @@ namespace Dynamo.Tests
 
             //Assert that there was an Action Group that was just pushed on top of the undo stack
             Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenOperationsRecordedInCoalescingScopeThenOneUndoRevertsAllOfThem()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.AddModel(new DummyModel(2, 20));
+                workspace.AddModel(new DummyModel(3, 30));
+            }
+
+            recorder.Undo();
+
+            Assert.IsNull(workspace.GetModel(1));
+            Assert.IsNull(workspace.GetModel(2));
+            Assert.IsNull(workspace.GetModel(3));
+            Assert.AreEqual(false, recorder.CanUndo);
+        }
+
+        /// <summary>
+        /// A coalescing scope must not merge the operations it spans by recording them into a
+        /// single action group: RecordActionInternal keeps only the first action recorded for a
+        /// given model in a group, so a modification followed by a deletion would lose the
+        /// deletion and leave undo unable to bring the model back.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelModifiedThenDeletedInCoalescingScopeThenUndoRestoresIt()
+        {
+            workspace.AddModel(new DummyModel(1, 10));
+
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.ModifyModel(1); // Doubles the radius to 20.
+                workspace.RemoveModel(1);
+            }
+
+            Assert.IsNull(workspace.GetModel(1));
+
+            recorder.Undo();
+
+            var restored = workspace.GetModel(1);
+            Assert.IsNotNull(restored);
+            Assert.AreEqual(10, restored.Radius);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCoalescingScopeIsOpenThenUndoAndRedoDoNothing()
+        {
+            workspace.AddModel(new DummyModel(1, 10));
+
+            var scope = recorder.BeginCoalescingScope();
+
+            recorder.Undo();
+            Assert.IsNotNull(workspace.GetModel(1)); // Undo was refused.
+
+            recorder.Redo();
+            Assert.AreEqual(false, recorder.CanRedo); // Redo was refused.
+
+            scope.Dispose();
+
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCoalescingScopeIsOpenedAndDisposedThenIsCoalescingScopeOpenTracksIt()
+        {
+            Assert.AreEqual(false, recorder.IsCoalescingScopeOpen);
+
+            var scope = recorder.BeginCoalescingScope();
+            Assert.AreEqual(true, recorder.IsCoalescingScopeOpen);
+
+            scope.Dispose();
+            Assert.AreEqual(false, recorder.IsCoalescingScopeOpen);
+        }
+
+        /// <summary>
+        /// A coalescing scope is meant to be held across several separate calls rather than in a
+        /// using block, so a caller can reach a second dispose on an error or teardown path.
+        /// EndCoalescingScope throws when no scope is open, so that must be absorbed rather than
+        /// surfacing as an exception or leaving the recorder unusable.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCoalescingScopeIsDisposedTwiceThenSecondDisposeIsHarmless()
+        {
+            var scope = recorder.BeginCoalescingScope();
+            workspace.AddModel(new DummyModel(1, 10));
+            workspace.AddModel(new DummyModel(2, 20));
+            scope.Dispose();
+
+            Assert.DoesNotThrow(() => scope.Dispose());
+
+            // The recorder is left closed, still holding the batch as a single undo step...
+            Assert.AreEqual(false, recorder.IsCoalescingScopeOpen);
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(1));
+            Assert.IsNull(workspace.GetModel(2));
+            Assert.AreEqual(false, recorder.CanUndo);
+
+            // ...and still recording and undoing normally afterwards.
+            workspace.AddModel(new DummyModel(3, 30));
+            Assert.AreEqual(true, recorder.CanUndo);
+
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(3));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenEmptyCoalescingScopeIsClosedThenNoUndoStepIsAdded()
+        {
+            Assert.AreEqual(false, recorder.CanUndo);
+
+            using (recorder.BeginCoalescingScope())
+            {
+            }
+
+            Assert.AreEqual(false, recorder.CanUndo);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenNothingRecordedInCoalescingScopeThenUndoStackIsUntouched()
+        {
+            workspace.AddModel(new DummyModel(1, 10));
+
+            using (recorder.BeginCoalescingScope())
+            {
+            }
+
+            Assert.AreEqual(true, recorder.CanUndo);
+
+            recorder.Undo();
+
+            Assert.IsNull(workspace.GetModel(1));
+            Assert.AreEqual(false, recorder.CanUndo);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCoalescingScopesAreNestedThenOnlyTheOutermostOneMerges()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                using (recorder.BeginCoalescingScope())
+                {
+                    workspace.AddModel(new DummyModel(1, 10));
+                    workspace.AddModel(new DummyModel(2, 20));
+                }
+
+                Assert.AreEqual(true, recorder.IsCoalescingScopeOpen);
+                workspace.AddModel(new DummyModel(3, 30));
+            }
+
+            recorder.Undo();
+
+            Assert.IsNull(workspace.GetModel(1));
+            Assert.IsNull(workspace.GetModel(2));
+            Assert.IsNull(workspace.GetModel(3));
+            Assert.AreEqual(false, recorder.CanUndo);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCoalescedActionGroupIsUndoneThenRedoReappliesTheWholeBatch()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.AddModel(new DummyModel(2, 20));
+            }
+
+            recorder.Undo();
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            recorder.Redo();
+
+            Assert.IsNotNull(workspace.GetModel(1));
+            Assert.IsNotNull(workspace.GetModel(2));
+            Assert.AreEqual(false, recorder.CanRedo);
+        }
+
+        /// <summary>
+        /// A merged action group can hold a creation and a later modification of the same model,
+        /// which a live action group never does. Undoing it walks the modification first, so the
+        /// model is already in the redo group by the time the creation is reached; the redo group
+        /// must still recreate the model rather than only try to modify one that no longer exists.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenModifiedInCoalescingScopeThenRedoRecreatesItModified()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.ModifyModel(1); // Doubles the radius to 20.
+            }
+
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(1));
+
+            recorder.Redo();
+
+            var recreated = workspace.GetModel(1);
+            Assert.IsNotNull(recreated);
+            Assert.AreEqual(20, recreated.Radius);
+        }
+
+        /// <summary>
+        /// Following on from the redo above, the batch has to keep round-tripping: undoing again
+        /// must remove the recreated model, not leave it behind.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenModifiedInCoalescingScopeThenUndoAfterRedoRemovesIt()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.ModifyModel(1);
+            }
+
+            recorder.Undo();
+            recorder.Redo();
+            recorder.Undo();
+
+            Assert.IsNull(workspace.GetModel(1));
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+        }
+
+        /// <summary>
+        /// A model created and then deleted within one batch has no net effect, so neither undo
+        /// nor redo of that batch may leave it behind.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenDeletedInCoalescingScopeThenRedoDoesNotRecreateIt()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.ModifyModel(1);
+                workspace.RemoveModel(1);
+            }
+
+            recorder.Undo();
+            Assert.IsNull(workspace.GetModel(1));
+
+            recorder.Redo();
+            Assert.IsNull(workspace.GetModel(1));
         }
     }
 }

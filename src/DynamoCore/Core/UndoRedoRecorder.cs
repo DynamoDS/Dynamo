@@ -93,6 +93,13 @@ namespace Dynamo.Core
         private readonly Stack<XmlElement> redoStack;
         private HashSet<Guid> offTrackModels;
 
+        // Nesting depth of coalescing scopes (see BeginCoalescingScope), and the undo stack
+        // depth at which the outermost one was opened. Every action group above that mark was
+        // pushed by an operation that ran inside the scope, and the whole run of them is
+        // merged into a single group when the scope closes.
+        private int coalescingDepth;
+        private int coalescingStackMark;
+
         #endregion
 
         #region Public Class Operational Methods
@@ -156,8 +163,110 @@ namespace Dynamo.Core
             undoClient.UpdateUndoRedoStack();
         }
 
+        /// <summary>
+        /// Opens a coalescing scope, in which operations record exactly as they do outside one
+        /// -- each opening and closing its own action group -- and every action group that
+        /// reaches the undo stack while the scope is open is merged into a single group when
+        /// the outermost scope closes, so the whole batch is reverted by a single undo.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Merging on close, rather than holding one action group open for the duration, is
+        /// what keeps the existing recording paths intact. Several of them push an action group
+        /// and later pop it back off to re-form it -- ModelModificationUndoHelper when a
+        /// modification turns out to have changed connectors, connector reconnection in
+        /// WorkspaceModel.RecordModelsForUndo, and CodeBlockEditor.CommitChanges -- which only
+        /// works while their own group actually reaches the stack. Recording a whole batch into
+        /// one long-lived group would also collapse separate actions on the same model into
+        /// whichever was recorded first (see RecordActionInternal), losing for instance the
+        /// deletion in a batch that modified a model and then deleted it.
+        /// </para>
+        /// <para>
+        /// Undo and redo are unavailable while a scope is open, since either would move a group
+        /// that is about to be merged. They no-op rather than throw, and the owning workspace
+        /// reports CanUndo and CanRedo as false, so UI bound to them disables itself.
+        /// </para>
+        /// </remarks>
+        /// <returns>An object that closes the scope when disposed.</returns>
+        internal IDisposable BeginCoalescingScope()
+        {
+            if (coalescingDepth == 0)
+            {
+                coalescingStackMark = undoStack.Count;
+            }
+
+            coalescingDepth++;
+            return new CoalescingScopeDisposable(this);
+        }
+
+        /// <summary>
+        /// Closes one level of coalescing scope, merging what the scope recorded once the
+        /// outermost level closes.
+        /// </summary>
+        private void EndCoalescingScope()
+        {
+            if (coalescingDepth == 0)
+                throw new InvalidOperationException("No open coalescing scope to end");
+
+            coalescingDepth--;
+            if (coalescingDepth > 0)
+                return; // Inner scope; only the outermost one merges.
+
+            // Fewer than two groups above the mark leaves nothing to merge: the scope either
+            // recorded nothing at all, or produced a single group that is already one undo
+            // step. The stack can also sit below the mark, when a path inside the scope popped
+            // groups that predate it.
+            if (undoStack.Count - coalescingStackMark >= 2)
+            {
+                MergeActionGroupsAbove(coalescingStackMark);
+            }
+
+            undoClient.UpdateUndoRedoStack();
+        }
+
+        /// <summary>
+        /// Pops every action group above the given undo stack depth and pushes back a single
+        /// group holding all of their recorded actions, in the order they were recorded.
+        /// </summary>
+        private void MergeActionGroupsAbove(int stackMark)
+        {
+            // Popping yields the groups newest-first...
+            var groups = new List<XmlElement>();
+            while (undoStack.Count > stackMark)
+            {
+                groups.Add(undoStack.Pop());
+            }
+
+            var merged = document.CreateElement(ActionGroup);
+            var affectsSavedState = false;
+
+            // ...so walk them backwards, which leaves the merged actions in the order they were
+            // recorded -- the order UndoActionGroup expects, and replays in reverse.
+            for (int index = groups.Count - 1; index >= 0; index--)
+            {
+                var group = groups[index];
+                if (group.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
+                    affectsSavedState = true;
+
+                // AppendChild detaches each action from its old group, mutating the live
+                // ChildNodes collection being walked, so take a copy of it up front.
+                foreach (var action in group.ChildNodes.Cast<XmlNode>().ToList())
+                {
+                    merged.AppendChild(action);
+                }
+            }
+
+            if (affectsSavedState)
+                merged.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
+
+            undoStack.Push(merged);
+        }
+
         public void Undo()
         {
+            if (coalescingDepth > 0)
+                return; // A batch is being recorded, see BeginCoalescingScope.
+
             EnsureValidRecorderStates();
 
             if (CanUndo == false)
@@ -173,6 +282,9 @@ namespace Dynamo.Core
 
         public void Redo()
         {
+            if (coalescingDepth > 0)
+                return; // A batch is being recorded, see BeginCoalescingScope.
+
             EnsureValidRecorderStates();
 
             if (CanRedo == false)
@@ -194,6 +306,10 @@ namespace Dynamo.Core
             EnsureValidRecorderStates();
             undoStack.Clear();
             redoStack.Clear();
+
+            // An open coalescing scope cannot keep a mark referring to a depth the stack no
+            // longer has; it merges whatever gets recorded from here on instead.
+            coalescingStackMark = 0;
         }
 
         #endregion
@@ -295,6 +411,16 @@ namespace Dynamo.Core
         public bool CanRedo { get { return redoStack.Count > 0; } }
 
         /// <summary>
+        /// True while a coalescing scope is open — that is, between a
+        /// <see cref="BeginCoalescingScope"/> call and the disposal of the outermost object it
+        /// returned. Undo and redo are unavailable for the duration, so a caller that holds a
+        /// scope open across several separate operations needs to be able to ask whether one is
+        /// currently open. See
+        /// <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup"/>.
+        /// </summary>
+        internal bool IsCoalescingScopeOpen { get { return coalescingDepth > 0; } }
+
+        /// <summary>
         /// The number of action groups currently on the undo stack that actually affect
         /// what would be written to the saved file (i.e. were recorded via
         /// RecordCreationForUndo/RecordDeletionForUndo, or RecordModificationForUndo with
@@ -343,6 +469,15 @@ namespace Dynamo.Core
         /// current action group, or false otherwise.</returns>
         private bool IsRecordedInActionGroup(XmlElement group, ModelBase model)
         {
+            return null != FindRecordedAction(group, model);
+        }
+
+        /// <summary>
+        /// Returns the action already recorded for a given model in an action group, or null if
+        /// the model has not been recorded in it. See IsRecordedInActionGroup.
+        /// </summary>
+        private XmlElement FindRecordedAction(XmlElement group, ModelBase model)
+        {
             if (null == group)
                 throw new ArgumentNullException("group");
             if (null == model)
@@ -351,16 +486,16 @@ namespace Dynamo.Core
             Guid guid = model.GUID;
             foreach (XmlNode childNode in group.ChildNodes)
             {
-                // See if the model supports Guid identification, in unit test cases 
-                // those sample models do not support this so in such cases identity 
+                // See if the model supports Guid identification, in unit test cases
+                // those sample models do not support this so in such cases identity
                 // check will not be performed.
-                // 
+                //
                 XmlAttribute guidAttribute = childNode.Attributes["guid"];
                 if (null != guidAttribute && (guid == Guid.Parse(guidAttribute.Value)))
-                    return true; // This model was found to be recorded.
+                    return childNode as XmlElement; // This model was found to be recorded.
             }
 
-            return false;
+            return null;
         }
 
         private void SetNodeAction(XmlNode childNode, string action)
@@ -378,7 +513,17 @@ namespace Dynamo.Core
                     "'PopActionGroupFromUndoStack' when the undo stack is empty");
             }
 
-            return undoStack.Pop();
+            var actionGroup = undoStack.Pop();
+
+            // A path inside a coalescing scope can pop more groups than it pushed (see
+            // CodeBlockEditor.CommitChanges), reaching below the depth the scope opened at.
+            // Following the stack down keeps the mark on groups the scope is responsible for.
+            if (coalescingDepth > 0 && coalescingStackMark > undoStack.Count)
+            {
+                coalescingStackMark = undoStack.Count;
+            }
+
+            return actionGroup;
         }
 
         private XmlElement PopActionGroupFromRedoStack()
@@ -440,7 +585,22 @@ namespace Dynamo.Core
                         ModelBase toBeDeleted = undoClient.GetModelForElement(element);
                         if (toBeDeleted != null)
                         {
-                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            // A group merged by a coalescing scope can hold a later
+                            // modification of the model it creates. Walking in reverse, that
+                            // modification has already put the model in the redo group, holding
+                            // its latest state, and RecordActionInternal would skip it. Redo
+                            // must recreate the model from that state rather than modify a model
+                            // that no longer exists, so that entry becomes the creation.
+                            var recorded = FindRecordedAction(newGroup, toBeDeleted);
+                            if (recorded == null)
+                            {
+                                RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            }
+                            else if (recorded.GetAttribute(UserActionAttrib) == UserAction.Modification.ToString())
+                            {
+                                recorded.SetAttribute(UserActionAttrib, UserAction.Creation.ToString());
+                            }
+
                             undoClient.DeleteModel(element);
                         }
                         break;
@@ -524,6 +684,7 @@ namespace Dynamo.Core
         {
             private readonly UndoRedoRecorder recorder;
             private readonly bool isRoot;
+
             public ActionGroupDisposable(UndoRedoRecorder recorder, bool isRoot)
             {
                 this.recorder = recorder;
@@ -536,6 +697,34 @@ namespace Dynamo.Core
                 {
                     recorder.EndActionGroup();
                 }
+            }
+        }
+
+        private sealed class CoalescingScopeDisposable : IDisposable
+        {
+            private readonly UndoRedoRecorder recorder;
+
+            // EndCoalescingScope throws when no scope is open, so a second Dispose() would throw
+            // rather than no-op. A `using` block never disposes twice, but this object is meant to
+            // be held across several separate calls (WorkspaceModel.BeginUndoActionGroup), which
+            // can reach a second dispose on an error or teardown path; and a disposable that
+            // throws on redispose is a trap, all the more so for one that is public API.
+            private bool disposed;
+
+            public CoalescingScopeDisposable(UndoRedoRecorder recorder)
+            {
+                this.recorder = recorder;
+            }
+
+            public void Dispose()
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                disposed = true;
+                recorder.EndCoalescingScope();
             }
         }
 

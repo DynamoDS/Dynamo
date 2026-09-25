@@ -959,6 +959,122 @@ namespace Dynamo.Tests
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
+        /// <summary>
+        /// DYN-10756: the point of WorkspaceModel.BeginUndoActionGroup is that a client applying
+        /// a batch of edits in one go can have the user reverse the whole batch with a single
+        /// undo, rather than one undo per operation the batch happened to be made of.
+        /// </summary>
+        [Test]
+        public void WhenUndoActionGroupSpansTwoEditsThenOneUndoRevertsBothOfThem()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var guids = workspace.Nodes.Take(2).Select(node => node.GUID).ToList();
+            var originalPositions = guids.Select(guid => NodePosition(guid)).ToList();
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                foreach (var guid in guids)
+                {
+                    MoveNodeBy(guid, 100);
+                }
+            }
+
+            Assert.AreNotEqual(originalPositions[0], NodePosition(guids[0]));
+            Assert.AreNotEqual(originalPositions[1], NodePosition(guids[1]));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+
+            Assert.AreEqual(originalPositions[0], NodePosition(guids[0]));
+            Assert.AreEqual(originalPositions[1], NodePosition(guids[1]));
+
+            // Both edits were reverted by that single undo, leaving nothing further to undo --
+            // the batch occupies one undo step, not one per edit.
+            Assert.IsFalse(workspace.CanUndo);
+        }
+
+        /// <summary>
+        /// DYN-10756: undo and redo would move an action group that is about to be merged, so
+        /// they are unavailable while an undo action group is open. The workspace has to report
+        /// that through CanUndo/CanRedo so that UI bound to them disables itself, and has to
+        /// become available again once the group is disposed.
+        /// </summary>
+        [Test]
+        public void WhenUndoActionGroupIsOpenThenWorkspaceReportsItAndRefusesUndo()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var guid = workspace.Nodes.First().GUID;
+            MoveNodeBy(guid, 100);
+            var movedPosition = NodePosition(guid);
+
+            Assert.IsFalse(workspace.IsUndoActionGroupOpen);
+            Assert.IsTrue(workspace.CanUndo);
+
+            var actionGroup = workspace.BeginUndoActionGroup();
+
+            Assert.IsTrue(workspace.IsUndoActionGroupOpen);
+            Assert.IsFalse(workspace.CanUndo);
+            Assert.IsFalse(workspace.CanRedo);
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreEqual(movedPosition, NodePosition(guid)); // Undo was refused.
+
+            actionGroup.Dispose();
+
+            Assert.IsFalse(workspace.IsUndoActionGroupOpen);
+            Assert.IsTrue(workspace.CanUndo);
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreNotEqual(movedPosition, NodePosition(guid));
+        }
+
+        /// <summary>
+        /// DYN-10756: creating a node and then editing it is the typical shape of a batch an
+        /// automation client applies inside an undo action group. The merged group then holds a
+        /// creation and a modification of the same node, and redoing it must bring the node back
+        /// with the edit applied rather than silently leave it out.
+        /// </summary>
+        [Test]
+        public void WhenNodeCreatedThenEditedInUndoActionGroupThenRedoRecreatesTheEditedNode()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(
+                    Guid.Empty, cbn.GUID, "Code", "42;"));
+            }
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsFalse(workspace.Nodes.Any(n => n.GUID == cbn.GUID));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+
+            var recreated = workspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault(n => n.GUID == cbn.GUID);
+            Assert.IsNotNull(recreated);
+            Assert.AreEqual("42;", recreated.Code);
+        }
+
+        private void MoveNodeBy(Guid nodeGuid, double offsetX)
+        {
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First(n => n.GUID == nodeGuid);
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(
+                Guid.Empty, nodeGuid, nameof(NodeModel.Position), $"{node.X + offsetX};{node.Y}"));
+        }
+
+        private string NodePosition(Guid nodeGuid)
+        {
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First(n => n.GUID == nodeGuid);
+            return $"{node.X};{node.Y}";
+        }
+
         // SaveImage
 
         //[Test]
