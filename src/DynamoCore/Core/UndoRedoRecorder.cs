@@ -590,7 +590,11 @@ namespace Dynamo.Core
                             // modification has already put the model in the redo group, holding
                             // its latest state, and RecordActionInternal would skip it. Redo
                             // must recreate the model from that state rather than modify a model
-                            // that no longer exists, so that entry becomes the creation.
+                            // that no longer exists, so that entry becomes the creation. It also
+                            // moves to where the creation would have been recorded: redo replays
+                            // in reverse, and anything recorded between the creation and the
+                            // modification -- a connector on this node, say -- must find the
+                            // model already recreated.
                             var recorded = FindRecordedAction(newGroup, toBeDeleted);
                             if (recorded == null)
                             {
@@ -599,6 +603,7 @@ namespace Dynamo.Core
                             else if (recorded.GetAttribute(UserActionAttrib) == UserAction.Modification.ToString())
                             {
                                 recorded.SetAttribute(UserActionAttrib, UserAction.Creation.ToString());
+                                newGroup.AppendChild(recorded); // Moves it to the end.
                             }
 
                             undoClient.DeleteModel(element);

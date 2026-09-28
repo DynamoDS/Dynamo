@@ -131,6 +131,12 @@ namespace Dynamo.Tests
 
         internal bool WasMarkedAsModified { get; private set; }
 
+        /// <summary>
+        /// Identifiers of the models the recorder has recreated through CreateModel, in the
+        /// order it recreated them.
+        /// </summary>
+        internal List<int> RecreatedModelIds { get; } = new List<int>();
+
         #endregion
 
         #region IUndoRedoRecorderClient Members
@@ -155,6 +161,7 @@ namespace Dynamo.Tests
             DummyModel model = DummyModel.CreateBlankInstance();
             model.Deserialize(modelData, SaveContext.Undo);
             models.Add(model);
+            RecreatedModelIds.Add(model.Identifier);
         }
 
         public ModelBase GetModelForElement(XmlElement modelData)
@@ -911,6 +918,29 @@ namespace Dynamo.Tests
             Assert.IsNull(workspace.GetModel(1));
             Assert.AreEqual(false, recorder.CanUndo);
             Assert.AreEqual(true, recorder.CanRedo);
+        }
+
+        /// <summary>
+        /// Redo has to recreate models in the order they were created, so that a model depending
+        /// on another -- a connector on the nodes it joins -- finds it already there. A model
+        /// modified later in the same batch must therefore be recreated from the position of its
+        /// creation in the batch, not from the position of that later modification.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenModelCreatedThenModifiedInCoalescingScopeThenRedoKeepsCreationOrder()
+        {
+            using (recorder.BeginCoalescingScope())
+            {
+                workspace.AddModel(new DummyModel(1, 10));
+                workspace.AddModel(new DummyModel(2, 20));
+                workspace.ModifyModel(1);
+            }
+
+            recorder.Undo();
+            recorder.Redo();
+
+            CollectionAssert.AreEqual(new[] { 1, 2 }, workspace.RecreatedModelIds);
         }
 
         /// <summary>

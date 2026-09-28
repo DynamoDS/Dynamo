@@ -1062,6 +1062,45 @@ namespace Dynamo.Tests
             Assert.AreEqual("42;", recreated.Code);
         }
 
+        /// <summary>
+        /// DYN-10756: a batch that creates two nodes, connects them and then moves the first one
+        /// leaves that node's creation and its move in one merged group. Redo has to recreate the
+        /// node before the connector that depends on it, or the connector finds no node to attach
+        /// to and is silently dropped.
+        /// </summary>
+        [Test]
+        public void WhenConnectedNodeIsMovedInUndoActionGroupThenRedoRecreatesTheConnector()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var source = new CodeBlockNodeModel("42;", 0, 0, CurrentDynamoModel.LibraryServices, workspace.ElementResolver);
+            var target = new CodeBlockNodeModel("x;", 200, 0, CurrentDynamoModel.LibraryServices, workspace.ElementResolver);
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(source, 0, 0, false, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(target, 200, 0, false, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                    source.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                    target.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+                MoveNodeBy(source.GUID, 100);
+            }
+
+            Assert.AreEqual(1, workspace.Connectors.Count());
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreEqual(0, workspace.Nodes.Count());
+            Assert.AreEqual(0, workspace.Connectors.Count());
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+
+            Assert.AreEqual(2, workspace.Nodes.Count());
+            var connector = workspace.Connectors.SingleOrDefault();
+            Assert.IsNotNull(connector);
+            Assert.AreEqual(source.GUID, connector.Start.Owner.GUID);
+            Assert.AreEqual(target.GUID, connector.End.Owner.GUID);
+        }
+
         private void MoveNodeBy(Guid nodeGuid, double offsetX)
         {
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First(n => n.GUID == nodeGuid);
