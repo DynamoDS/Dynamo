@@ -555,7 +555,7 @@
     <value>_Area di lavoro iniziale</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Apri...</value>
+    <value>_Open File</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>A_pri file recenti</value>
