@@ -16,9 +16,9 @@ jobs:
 
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          ticketLink: 'https://jira.autodesk.com/browse/DYN-%ticketNumber%'
+          ticketLink: 'https://autodesk.atlassian.net/browse/DYN-%ticketNumber%'
           ticketPrefix: 'DYN-'
           titleRegex: '^DYN-(?<ticketNumber>\d+)'
           branchRegex: '^DYN-(?<ticketNumber>\d+)'
           bodyRegex: 'DYN-(?<ticketNumber>\d+)'
-          bodyURLRegex: 'http(s?):\/\/(jira.autodesk.com)(\/browse)\/(DYN\-)(?<ticketNumber>\d+)'
+          bodyURLRegex: 'http(s?):\/\/(jira\.autodesk\.com|autodesk\.atlassian\.net)(\/browse)\/(DYN\-)(?<ticketNumber>\d+)'

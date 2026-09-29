@@ -39,10 +39,10 @@ $excludedFiles = @(
     "JUnit.TestLogger.dll",
     "LaunchDarkly.*",
     "LibG*.dll",
-    "libiconv.dll",         # https://jira.autodesk.com/browse/DYN-7069
-    "libintl.dll",          # https://jira.autodesk.com/browse/DYN-7069
-    "libHarfBuzzSharp.dll", # https://jira.autodesk.com/browse/DYN-6598
-    "libSkiaSharp.dll",     # https://jira.autodesk.com/browse/DYN-6598
+    "libiconv.dll",         # https://autodesk.atlassian.net/browse/DYN-7069
+    "libintl.dll",          # https://autodesk.atlassian.net/browse/DYN-7069
+    "libHarfBuzzSharp.dll", # https://autodesk.atlassian.net/browse/DYN-6598
+    "libSkiaSharp.dll",     # https://autodesk.atlassian.net/browse/DYN-6598
     "LiveChartsCore*.dll",
     "Lucene.Net*.dll",
     "MIConvexHull.dll",

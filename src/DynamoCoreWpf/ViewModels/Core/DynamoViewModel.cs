@@ -1916,7 +1916,9 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddModelsToGroup(object obj)
         {
-            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+            // Must match DynamoModel.AddToGroup: destination has to be selected and expanded.
+            // A collapsed-only selection used to no-op; it now throws if Execute is called.
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any(x => x.IsExpanded);
         }
 
         internal void AddModelsToGroup(object parameters)
@@ -1958,6 +1960,7 @@ namespace Dynamo.ViewModels
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
                 workspaces.Insert(0, newVm);
+                currentWorkspaceViewModel = newVm;
 
                 // The RunSettings control is a child of the DynamoView,
                 // but has its DataContext set to the RunSettingsViewModel
@@ -1989,11 +1992,10 @@ namespace Dynamo.ViewModels
         {
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
-                if(currentWorkspaceViewModel != null)
-                {
-                    currentWorkspaceViewModel.Dispose();
-                }
+            {
+                currentWorkspaceViewModel.Dispose();
                 currentWorkspaceViewModel = null;
+            }
             workspaces.Remove(viewModel);
         }
 
