@@ -82,12 +82,26 @@ namespace Dynamo.Models
         private void RunCancelImpl(RunCancelCommand command)
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;
-            if (model != null)
-                model.Run();
+            if (model == null)
+                return;
+
+            if (command.CancelRun)
+            {
+                model.CancelRun();
+                return;
+            }
+
+            model.Run();
         }
 
         private void ForceRunCancelImpl(ForceRunCancelCommand command)
         {
+            if (command.CancelRun)
+            {
+                (CurrentWorkspace as HomeWorkspaceModel)?.CancelRun();
+                return;
+            }
+
             ForceRun();
         }
 
