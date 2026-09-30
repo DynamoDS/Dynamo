@@ -169,9 +169,17 @@ namespace DynamoInstallDetective
             {
                 try
                 {
-                    string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
-                    string updatedPath = currentPath + ";" + installPath;
-                    Environment.SetEnvironmentVariable("PATH", updatedPath, EnvironmentVariableTarget.Process);
+                    // A new wrapper is created for every lookup, so only append the install path if it is
+                    // not already on PATH. Appending unconditionally grows PATH on every lookup until it
+                    // exceeds the 32,767 character limit, after which Win32 calls such as CreateProcess and
+                    // LoadImage fail for the rest of the process.
+                    string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process) ?? string.Empty;
+                    var pathEntries = currentPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (!pathEntries.Any(entry => string.Equals(entry.Trim().TrimEnd('\\'), installPath.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        string updatedPath = currentPath + ";" + installPath;
+                        Environment.SetEnvironmentVariable("PATH", updatedPath, EnvironmentVariableTarget.Process);
+                    }
                 }
                 catch
                 {
