@@ -1516,14 +1516,23 @@ namespace Dynamo.Graph.Nodes
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
+
+        /// <summary>
+        /// Raised when a frozen node is edited. Frozen nodes do not raise <see cref="Modified"/>,
+        /// because that would schedule a run. Listeners can still react to the edit itself.
+        /// </summary>
+        internal event Action<NodeModel> EditedWhileFrozen;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (!RaisesModificationEvents || IsFrozen)
+            if (!RaisesModificationEvents)
                 return;
-
+            if (IsFrozen)
+            {
+                EditedWhileFrozen?.Invoke(this);
+                return;
+            }
             MarkNodeAsModified(forceExecute);
-            var handler = Modified;
-            if (handler != null) handler(this);
+            Modified?.Invoke(this);
         }
 
         /// <summary>
@@ -2675,40 +2684,27 @@ namespace Dynamo.Graph.Nodes
             {
                 if (subNode.Name == "PortInfo")
                 {
-                    var indexAttr = subNode.Attributes["index"];
-                    if (indexAttr == null)
+                    int index = int.Parse(subNode.Attributes["index"].Value);
+                    if (index < InPorts.Count)
                     {
-                        continue;
-                    }
+                        portInfoProcessed.Add(index);
 
-                    var index = Convert.ToInt32(indexAttr.Value, CultureInfo.InvariantCulture);
-                    if (index >= inPorts.Count)
-                    {
-                        continue;
-                    }
-
-                    portInfoProcessed.Add(index);
-
-                    var attrValue = subNode.Attributes["default"];
-                    if (attrValue != null)
-                    {
-                        bool usingDefaultValue;
-                        if (bool.TryParse(attrValue.Value, out usingDefaultValue))
+                        var attrValue = subNode.Attributes["default"];
+                        if (attrValue != null)
                         {
-                            inPorts[index].UsingDefaultValue = usingDefaultValue;
+                            bool def = false;
+                            bool.TryParse(subNode.Attributes["default"].Value, out def);
+                            inPorts[index].UsingDefaultValue = def;
                         }
-                    }
 
-                    attrValue = subNode.Attributes["useLevels"];
-                    bool useLevels = false;
-                    if (attrValue != null)
-                    {
-                        bool.TryParse(attrValue.Value, out useLevels);
-                    }
-                    inPorts[index].UseLevels = useLevels;
+                        attrValue = subNode.Attributes["useLevels"];
+                        bool useLevels = false;
+                        if (attrValue != null)
+                        {
+                            bool.TryParse(attrValue.Value, out useLevels);
+                        }
+                        inPorts[index].UseLevels = useLevels;
 
-                    if (useLevels)
-                    {
                         attrValue = subNode.Attributes["shouldKeepListStructure"];
                         bool shouldKeepListStructure = false;
                         if (attrValue != null)

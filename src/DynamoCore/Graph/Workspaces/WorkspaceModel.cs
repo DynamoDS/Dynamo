@@ -1061,7 +1061,7 @@ namespace Dynamo.Graph.Workspaces
         /// saved to the .dyn file.
         /// </summary>
         [JsonIgnore]
-        public bool IsAiEditInProgress { get; set; }
+        public bool IsAIEditInProgress { get; set; }
 
         /// <summary>
         ///     Are there unsaved changes in the workspace?
@@ -1675,6 +1675,7 @@ namespace Dynamo.Graph.Workspaces
         protected virtual void RegisterNode(NodeModel node)
         {
             node.Modified += NodeModified;
+            node.EditedWhileFrozen += ClearAIHighlightOnFrozenEdit;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -1684,6 +1685,15 @@ namespace Dynamo.Graph.Workspaces
                 functionNode.Controller.SyncWithDefinitionStart += OnSyncWithDefinitionStart;
                 functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
             }
+        }
+
+        private void ClearAIHighlightOnFrozenEdit(NodeModel node)
+        {
+            if (node.IsTransient || IsAIEditInProgress)
+            {
+                return;
+            }
+            node.IsRecentlyModifiedByAI = false;
         }
 
         protected virtual void OnToggleNodeFreeze(NodeModel obj)
@@ -1705,7 +1715,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 return;
             }
-            if (!IsAiEditInProgress)
+            if (!IsAIEditInProgress)
             {
                 node.IsRecentlyModifiedByAI = false;
             }
@@ -1757,6 +1767,7 @@ namespace Dynamo.Graph.Workspaces
             }
             node.ConnectorAdded -= OnConnectorAdded;
             node.UpdateASTCollection -= OnToggleNodeFreeze;
+            node.EditedWhileFrozen -= ClearAIHighlightOnFrozenEdit;
             node.Modified -= NodeModified;
             node.Dispose();
         }
