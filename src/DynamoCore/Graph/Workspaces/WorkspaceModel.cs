@@ -285,7 +285,6 @@ namespace Dynamo.Graph.Workspaces
         private DateTime lastSaved;
         private string author = "None provided";
         private string description;
-        private bool isAiEditInProgress;
         private bool hasUnsavedChanges;
 
         /// <summary>
@@ -1062,11 +1061,7 @@ namespace Dynamo.Graph.Workspaces
         /// saved to the .dyn file.
         /// </summary>
         [JsonIgnore]
-        public bool IsAiEditInProgress
-        {
-            get { return isAiEditInProgress; }
-            set { isAiEditInProgress = value; }
-        }
+        public bool IsAiEditInProgress { get; set; }
 
         /// <summary>
         ///     Are there unsaved changes in the workspace?

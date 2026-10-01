@@ -662,6 +662,9 @@ namespace Dynamo.ViewModels
             get { return NodeModel.IsTransient; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this node has been recently modified by AI
+        /// </summary>
         [JsonIgnore]
         public bool IsRecentlyModifiedByAI
         {
@@ -1598,7 +1601,7 @@ namespace Dynamo.ViewModels
                     {
                         ImgGlyphTwoSource = aiChangedGlyph;
                     }
-                    else
+                    else if (ImgGlyphThreeSource != warningGlyph && ImgGlyphThreeSource != errorGlyph)
                     {
                         ImgGlyphThreeSource = aiChangedGlyph;
                     }
