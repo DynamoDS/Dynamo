@@ -1522,6 +1522,7 @@ namespace Dynamo.Graph.Nodes
         /// because that would schedule a run. Listeners can still react to the edit itself.
         /// </summary>
         internal event Action<NodeModel> EditedWhileFrozen;
+
         public virtual void OnNodeModified(bool forceExecute = false)
         {
             if (!RaisesModificationEvents)
@@ -2680,6 +2681,7 @@ namespace Dynamo.Graph.Nodes
 
             var portInfoProcessed = new HashSet<int>();
 
+            //read port information
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "PortInfo")
@@ -2750,6 +2752,7 @@ namespace Dynamo.Graph.Nodes
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
+
             }
         }
 
