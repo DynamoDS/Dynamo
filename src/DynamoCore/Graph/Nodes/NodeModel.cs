@@ -1018,14 +1018,14 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private bool isRecentlyModifiedByAI;
+
         /// <summary>
         /// A flag indicating whether this node was recently created, modified, or moved by
         /// an AI-Assistant-driven edit. This is purely a canvas review aid — it does not affect
         /// execution, is never written to the .dyn file, and clearing it does not mark the
         /// workspace as having unsaved changes.
         /// </summary>
-        private bool isRecentlyModifiedByAI;
-
         [JsonIgnore]
         public bool IsRecentlyModifiedByAI
         {
