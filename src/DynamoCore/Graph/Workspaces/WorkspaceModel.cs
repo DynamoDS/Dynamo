@@ -285,6 +285,7 @@ namespace Dynamo.Graph.Workspaces
         private DateTime lastSaved;
         private string author = "None provided";
         private string description;
+        private bool isAiEditInProgress;
         private bool hasUnsavedChanges;
 
         /// <summary>
@@ -1054,6 +1055,20 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// True only while an AI-driven edit (from DynamoMCP) is actively changing this workspace.
+        /// MCP sets this around its own tool calls. While it is true, a node modification does not
+        /// clear <see cref="NodeModel.IsRecentlyModifiedByAI"/>. While it is false, a person editing
+        /// a node clears that highlight. This flag does not turn the highlight on, and it is never
+        /// saved to the .dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAiEditInProgress
+        {
+            get { return isAiEditInProgress; }
+            set { isAiEditInProgress = value; }
+        }
+
+        /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
         public bool HasUnsavedChanges
@@ -1694,6 +1709,10 @@ namespace Dynamo.Graph.Workspaces
             if (node.IsTransient)
             {
                 return;
+            }
+            if (!IsAiEditInProgress)
+            {
+                node.IsRecentlyModifiedByAI = false;
             }
 
             HasUnsavedChanges = true;

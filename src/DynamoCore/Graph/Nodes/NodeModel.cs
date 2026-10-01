@@ -1019,6 +1019,26 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// A flag indicating whether this node was recently created, modified, or moved by
+        /// an AI-Assistant-driven edit. This is purely a canvas review aid — it does not affect
+        /// execution, is never written to the .dyn file, and clearing it does not mark the
+        /// workspace as having unsaved changes.
+        /// </summary>
+        private bool isRecentlyModifiedByAI;
+
+        [JsonIgnore]
+        public bool IsRecentlyModifiedByAI
+        {
+            get => isRecentlyModifiedByAI;
+            set
+            {
+                if (isRecentlyModifiedByAI == value) return;
+                isRecentlyModifiedByAI = value;
+                RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+            }
+        }
+
+        /// <summary>
         /// A flag indicating whether the node is in transient mode.
         /// When a node is in transient mode, the node will not participate in execution,
         /// Or saved to the graph. It is only used for previewing the AutoComplete result in the canvas.
@@ -2651,32 +2671,44 @@ namespace Dynamo.Graph.Nodes
 
             var portInfoProcessed = new HashSet<int>();
 
-            //read port information
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "PortInfo")
                 {
-                    int index = int.Parse(subNode.Attributes["index"].Value);
-                    if (index < InPorts.Count)
+                    var indexAttr = subNode.Attributes["index"];
+                    if (indexAttr == null)
                     {
-                        portInfoProcessed.Add(index);
+                        continue;
+                    }
 
-                        var attrValue = subNode.Attributes["default"];
-                        if (attrValue != null)
+                    var index = Convert.ToInt32(indexAttr.Value, CultureInfo.InvariantCulture);
+                    if (index >= inPorts.Count)
+                    {
+                        continue;
+                    }
+
+                    portInfoProcessed.Add(index);
+
+                    var attrValue = subNode.Attributes["default"];
+                    if (attrValue != null)
+                    {
+                        bool usingDefaultValue;
+                        if (bool.TryParse(attrValue.Value, out usingDefaultValue))
                         {
-                            bool def = false;
-                            bool.TryParse(subNode.Attributes["default"].Value, out def);
-                            inPorts[index].UsingDefaultValue = def;
+                            inPorts[index].UsingDefaultValue = usingDefaultValue;
                         }
+                    }
 
-                        attrValue = subNode.Attributes["useLevels"];
-                        bool useLevels = false;
-                        if (attrValue != null)
-                        {
-                            bool.TryParse(attrValue.Value, out useLevels);
-                        }
-                        inPorts[index].UseLevels = useLevels;
+                    attrValue = subNode.Attributes["useLevels"];
+                    bool useLevels = false;
+                    if (attrValue != null)
+                    {
+                        bool.TryParse(attrValue.Value, out useLevels);
+                    }
+                    inPorts[index].UseLevels = useLevels;
 
+                    if (useLevels)
+                    {
                         attrValue = subNode.Attributes["shouldKeepListStructure"];
                         bool shouldKeepListStructure = false;
                         if (attrValue != null)
@@ -2722,7 +2754,6 @@ namespace Dynamo.Graph.Nodes
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
-
             }
         }
 

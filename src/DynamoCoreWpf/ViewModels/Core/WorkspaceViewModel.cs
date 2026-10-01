@@ -1647,6 +1647,19 @@ namespace Dynamo.ViewModels
             RefreshViewOnSelectionChange(this,null);
         }
 
+        private void ClearAIChangedHighlights(object parameter)
+        {
+            foreach (var node in Nodes)
+            {
+                node.IsRecentlyModifiedByAI = false;
+            }
+        }
+
+        private  bool CanClearAIChangedHighlights(object parameter)
+        {
+            return Nodes.Any(n => n.IsRecentlyModifiedByAI);
+        }
+
         private void SetArgumentLacing(object parameter)
         {
             var modelGuids = DynamoSelection.Instance.Selection

@@ -610,6 +610,7 @@ namespace Dynamo.ViewModels
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
         private static readonly string previewGeometryGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
         private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
+        private static readonly string aiChangedGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
@@ -659,6 +660,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsTransient));
             }
             get { return NodeModel.IsTransient; }
+        }
+
+        [JsonIgnore]
+        public bool IsRecentlyModifiedByAI
+        {
+            set
+            {
+                NodeModel.IsRecentlyModifiedByAI = value;
+                RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+            }
+            get { return NodeModel.IsRecentlyModifiedByAI; }
         }
 
         /// <summary>
@@ -1311,6 +1323,10 @@ namespace Dynamo.ViewModels
                 case "IsTransient":
                     HandleColorOverlayChange();
                     break;
+                case "IsRecentlyModifiedByAI":
+                    HandleColorOverlayChange();
+                    RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+                    break;
             }
         }
 
@@ -1414,6 +1430,7 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
         private static SolidColorBrush nodeTransientOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
         private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
+        private static SolidColorBrush nodeAIChangedOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
 
         /// <summary>
         /// Sets the color of the warning bar, which informs the user that the node is in
@@ -1565,6 +1582,26 @@ namespace Dynamo.ViewModels
                 else
                 {
                     ImgGlyphThreeSource = errorGlyph;
+                }
+            }
+
+            if (this.IsRecentlyModifiedByAI)
+            {
+                result = nodeAIChangedOverlayColor;
+                if (result != null)
+                {
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = aiChangedGlyph;
+                    }
+                    else if (ImgGlyphTwoSource == null)
+                    {
+                        ImgGlyphTwoSource = aiChangedGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphThreeSource = aiChangedGlyph;
+                    }
                 }
             }
 
