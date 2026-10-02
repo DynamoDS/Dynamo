@@ -555,7 +555,7 @@
     <value>ホーム ワークスペース(_H)</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Open File</value>
+    <value>ファイルを開く(_O)</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>最近使用したファイルを開く(_R)</value>
