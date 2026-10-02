@@ -1,6 +1,10 @@
 Dynamo.Graph.Nodes.IValueSchemaProvider
 Dynamo.Graph.Nodes.IValueSchemaProvider.IsListValue.get -> bool
 Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId.get -> string
+Dynamo.Graph.Nodes.NodeModel.IsRecentlyModifiedByAI.get -> bool
+Dynamo.Graph.Nodes.NodeModel.IsRecentlyModifiedByAI.set -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.IsAIEditInProgress.get -> bool
+Dynamo.Graph.Workspaces.WorkspaceModel.IsAIEditInProgress.set -> void
 Dynamo.Models.DynamoModel.AddModelToGroupCommand.AddModelToGroupCommand(string modelGuid, string hostModelGuid) -> void
 Dynamo.Models.DynamoModel.AddModelToGroupCommand.AddModelToGroupCommand(System.Collections.Generic.IEnumerable<System.Guid> modelGuid, System.Guid hostModelGuid) -> void
 Dynamo.Models.DynamoModel.AddModelToGroupCommand.AddModelToGroupCommand(System.Guid modelGuid, System.Guid hostModelGuid) -> void
