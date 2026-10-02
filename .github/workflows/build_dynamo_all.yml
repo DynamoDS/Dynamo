@@ -9,7 +9,7 @@ on:
 jobs:
   build_and_analyze:
     name: Build and Analyze
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v7
