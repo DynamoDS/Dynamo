@@ -671,7 +671,6 @@ namespace Dynamo.ViewModels
             set
             {
                 NodeModel.IsRecentlyModifiedByAI = value;
-                RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
             }
             get { return NodeModel.IsRecentlyModifiedByAI; }
         }
