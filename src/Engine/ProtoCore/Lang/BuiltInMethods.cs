@@ -70,6 +70,7 @@ namespace ProtoCore.Lang
             ConditionalIf,
             ToStringFromObjectAndFormat,
             ToStringFromArrayAndFormat,
+            ToString,
         }
 
         //this array gets accessed using the MethodID enum
@@ -135,6 +136,7 @@ namespace ProtoCore.Lang
             Constants.kIfConditionalMethodName,
             "__ToStringFromObjectAndFormat",     // kToStringFromObjectAndFormat
             "__ToStringFromArrayAndFormat",      // kToStringFromArrayAndFormat
+            "ToString",                          // kToString
         };
 
         public static string GetMethodName(MethodID id)
@@ -831,6 +833,16 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("formatSpecifier", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.ToStringFromArrayAndFormat
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.ToString,
                 },
 
                 new BuiltInMethod
