@@ -34,25 +34,93 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Determine if undo operation is currently possible.
+        ///     Determine if undo operation is currently possible. Always false while an undo
+        ///     action group opened by <see cref="BeginUndoActionGroup"/> is still open.
         /// </summary>
         public bool CanUndo
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanUndo);
+                return (null != undoRecorder && undoRecorder.CanUndo && !undoRecorder.IsCoalescingScopeOpen);
             }
         }
 
         /// <summary>
-        ///     Determine if redo operation is currently possible.
+        ///     Determine if redo operation is currently possible. Always false while an undo
+        ///     action group opened by <see cref="BeginUndoActionGroup"/> is still open.
         /// </summary>
         public bool CanRedo
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanRedo);
+                return (null != undoRecorder && undoRecorder.CanRedo && !undoRecorder.IsCoalescingScopeOpen);
             }
+        }
+
+        /// <summary>
+        /// True while an undo action group opened by <see cref="BeginUndoActionGroup"/> is still open.
+        /// Undo and redo are unavailable while a group is open.
+        /// </summary>
+        public bool IsUndoActionGroupOpen
+        {
+            get
+            {
+                return (null != undoRecorder && undoRecorder.IsCoalescingScopeOpen);
+            }
+        }
+
+        /// <summary>
+        /// Opens an undo action group that stays open until the returned object is disposed, so that
+        /// every change recorded in the meantime is reverted by a SINGLE undo.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Individual workspace operations keep recording exactly as they do outside a group, each
+        /// one landing on the undo stack as usual; disposing the returned object merges everything
+        /// they recorded into a single undo step. That is what an automation client (for example an
+        /// assistant applying a batch of edits in response to a single user request) needs so the
+        /// user can reverse the whole batch with one undo rather than one undo per internal
+        /// operation. The number of internal undo steps an operation occupies is an implementation
+        /// detail and varies per operation, so it is not something a client can compensate for by
+        /// counting.
+        /// </para>
+        /// <para>
+        /// The caller MUST dispose the returned object. While a group is open, undo and redo do
+        /// nothing and <see cref="CanUndo"/> and <see cref="CanRedo"/> report false, so a group
+        /// that is never closed leaves undo unavailable for the rest of the session. Callers that
+        /// cannot use a <c>using</c> block — because the group spans several separate calls — must
+        /// hold the object and dispose it on every exit path, including error paths. Disposing it
+        /// more than once is safe.
+        /// </para>
+        /// <para>
+        /// A group in which nothing was recorded leaves the undo stack untouched, so opening and
+        /// closing one around a read-only operation costs nothing.
+        /// </para>
+        /// </remarks>
+        /// <returns>
+        /// An object that closes the group when disposed. Disposing it more than once is safe.
+        /// </returns>
+        public IDisposable BeginUndoActionGroup()
+        {
+            if (null == undoRecorder)
+            {
+                return NoOpUndoActionGroup.Instance;
+            }
+
+            return undoRecorder.BeginCoalescingScope();
+        }
+
+        /// <summary>
+        /// Returned by <see cref="BeginUndoActionGroup"/> when there is no recorder to open a group
+        /// on, so that callers can always dispose the result unconditionally.
+        /// </summary>
+        private sealed class NoOpUndoActionGroup : IDisposable
+        {
+            internal static readonly NoOpUndoActionGroup Instance = new NoOpUndoActionGroup();
+
+            private NoOpUndoActionGroup() { }
+
+            public void Dispose() { }
         }
 
         internal void Undo()
