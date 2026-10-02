@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -71,19 +71,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This variable will hold the name of the host (UIElement) in a string representation
         /// </summary>
-        [JsonProperty("HostUIElementString")]
+        [JsonPropertyName("HostUIElementString")]
         public string HostUIElementString { get; set; }
 
         /// <summary>
         /// This property will hold the placement location of the popup, for now we are just using Right, Left, Top and Bottom
         /// </summary>
-        [JsonProperty("PopupPlacement")]
+        [JsonPropertyName("PopupPlacement")]
         public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
-        [JsonProperty("VerticalPopupOffset")]
+        [JsonPropertyName("VerticalPopupOffset")]
         public double VerticalPopupOffSet
         {
             get
@@ -99,7 +99,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Horizontally (by specifying an offset) 
         /// </summary>
-        [JsonProperty("HorizontalPopupOffset")]
+        [JsonPropertyName("HorizontalPopupOffset")]
         public double HorizontalPopupOffSet
         {
             get
@@ -115,31 +115,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Property that represents the highlight rectangle that will be shown over the Overlay
         /// </summary>
-        [JsonProperty("HighlightRectArea")]
+        [JsonPropertyName("HighlightRectArea")]
         internal HighlightArea HighlightRectArea { get; set; }
 
         /// <summary>
         /// Property that represents the cut off section that will be removed from the Overlay
         /// </summary>
-        [JsonProperty("CutOffRectArea")]
+        [JsonPropertyName("CutOffRectArea")]
         internal CutOffArea CutOffRectArea { get; set; }
 
         /// <summary>
         /// The html page that is going to be rendered inside the popup
         /// </summary>
-        [JsonProperty("HtmlPage")]
+        [JsonPropertyName("HtmlPage")]
         public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
 
         /// <summary>
         /// This property will contain the WPF Window Name for the cases when the Popup need to be located in a different Window than DynamoView
         /// </summary>
-        [JsonProperty(nameof(WindowName))]
+        [JsonPropertyName(nameof(WindowName))]
         internal string WindowName { get; set; }
 
         /// <summary>
         /// This property will decide if the Popup.PlacementTarget needs to be calculated again or not (probably after UI Automation a new Window was opened)
         /// </summary>
-        [JsonProperty(nameof(DynamicHostWindow))]
+        [JsonPropertyName(nameof(DynamicHostWindow))]
         internal bool DynamicHostWindow { get; set; }
     }
 
@@ -151,13 +151,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// A dictionary containing the key word to be replaced in page and the filename as values
         /// </summary>
-        [JsonProperty("Resources")]
+        [JsonPropertyName("Resources")]
         public Dictionary<string, string> Resources { get => resources; set => resources = value; }
 
         /// <summary>
         /// Filename of the HTML page
         /// </summary>
-        [JsonProperty("FileName")]
+        [JsonPropertyName("FileName")]
         public string FileName { get => fileName; set => fileName = value; }
     }
 }
