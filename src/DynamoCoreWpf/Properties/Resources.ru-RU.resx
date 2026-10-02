@@ -555,7 +555,7 @@
     <value>_Начальная страница рабочего пространства</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Открыть...</value>
+    <value>_Open File</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>Откры_ть последние файлы</value>
