@@ -500,7 +500,14 @@ namespace PythonNodeModels
 
             if (scriptNode != null)
             {
-                script = scriptNode.InnerText;
+                var restoredScript = scriptNode.InnerText;
+                var scriptChanged = script != restoredScript;
+                script = restoredScript;
+
+                if (context == SaveContext.Undo && scriptChanged)
+                {
+                    OnNodeModified();
+                }
             }
             var engineNode =
               nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == nameof(EngineName));
