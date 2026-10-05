@@ -151,7 +151,7 @@
     <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Aby móc korzystać z Menedżera pakietów, włącz tryb sieciowy.</value>
+    <value>Aby móc korzystać z narzędzia Package Manager, włącz tryb sieciowy.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
