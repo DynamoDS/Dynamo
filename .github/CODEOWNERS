@@ -1,0 +1,5 @@
+# Dynamo CODEOWNERS
+# Reviewer routing by area. The Eidos team owns the whole repository;
+# adjust per-area if ownership ever splits.
+
+* @DynamoDS/eidos
