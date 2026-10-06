@@ -178,6 +178,12 @@ For each new node, provide in `doc/distrib/NodeHelpFiles/`:
 - New user-facing strings **MUST** be added to appropriate `.resx` files
 - UI changes should be documented with screenshots
 
+### Central Package Management
+
+- NuGet package versions live only in `Directory.Packages.props` at the repo root
+- `PackageReference` entries in csproj files must omit `Version`; bump a dependency by editing the props file
+- Conditions selecting *which* package to reference (e.g. LibG Debug/Release in `DynamoCore.csproj`) stay in the csproj
+
 ## Security and Restrictions
 
 ### Security Rules

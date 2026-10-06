@@ -1,0 +1,102 @@
+<Project>
+  <!-- Central Package Management: all NuGet package versions live here.
+       To bump a dependency, change its version below — no csproj edits needed.
+       PackageReference entries in csproj files must omit the Version attribute
+       (use VersionOverride only for deliberate, documented exceptions).
+       Conditions that select WHICH package to reference (e.g. LibG Debug/Release
+       package selection in DynamoCore.csproj) stay in the csproj — only the
+       version number is centralized. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Dynamo-published packages -->
+    <PackageVersion Include="DynamoVisualProgramming.Analytics" Version="4.2.4.13713" />
+    <PackageVersion Include="DynamoVisualProgramming.AutodeskAssistant" Version="[0.3.9]" />
+    <PackageVersion Include="DynamoVisualProgramming.DynamoMCP" Version="[0.6.3]" />
+    <PackageVersion Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.6286" />
+    <PackageVersion Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6287" />
+    <PackageVersion Include="DynamoVisualProgramming.LibG_233_0_0_debug" Version="4.0.0.6287" />
+    <PackageVersion Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.8" />
+    
+    <!-- Microsoft / System -->
+    <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.8.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="3.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
+    <PackageVersion Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+    <PackageVersion Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
+    <PackageVersion Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageVersion Include="System.CodeDom" Version="6.0.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
+    <PackageVersion Include="System.ComponentModel.Composition" Version="8.0.0" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageVersion Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
+    <PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageVersion Include="System.Management" Version="8.0.0" />
+    <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
+    <PackageVersion Include="System.Resources.Extensions" Version="5.0.0" />
+    
+    <!-- Third-party -->
+    <PackageVersion Include="Autodesk.IDSDK" Version="1.2.10" />
+    <PackageVersion Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageVersion Include="Castle.Core" Version=" 5.1.1" />
+    <PackageVersion Include="CommandLineParser" Version="2.9.1" />
+    <PackageVersion Include="CsvHelper" Version="30.0.1" />
+    <PackageVersion Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
+    <PackageVersion Include="DiffPlex" Version="1.6.3" />
+    <PackageVersion Include="DocumentFormat.OpenXml" Version="2.12.3" />
+    <PackageVersion Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
+    <PackageVersion Include="DynamicLanguageRuntime" Version="1.2.2" />
+    <PackageVersion Include="FontAwesome5" Version="2.1.11" />
+    <PackageVersion Include="ForgeUnits.NET" Version="5.3.2" />
+    <PackageVersion Include="ForgeUnits.Schemas" Version="1.0.4" />
+    <PackageVersion Include="Greg" Version="3.0.2.8780" />
+    <PackageVersion Include="HelixToolkit" Version="2.24.0" />
+    <PackageVersion Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+    <PackageVersion Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+    <PackageVersion Include="HtmlSanitizer" Version="5.0.372" />
+    <PackageVersion Include="JUnitTestLogger" Version="1.1.0" />
+    <PackageVersion Include="JunitXml.TestLogger" Version="3.0.124" />
+    <PackageVersion Include="LaunchDarkly.ClientSdk" Version="5.1.0" />
+    <PackageVersion Include="LiveChartsCore" Version="2.0.0-rc3.3" />
+    <PackageVersion Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc3.3" />
+    <PackageVersion Include="Lucene.Net" Version="4.8.0-beta00016" />
+    <PackageVersion Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
+    <PackageVersion Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
+    <PackageVersion Include="MIConvexHull" Version="1.1.19.1019" />
+    <PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="14.12.0" />
+    <PackageVersion Include="Magick.NET.Core" Version="14.12.0" />
+    <PackageVersion Include="Markdig" Version="0.22.0" />
+    <PackageVersion Include="MimeMapping" Version="2.0.0" />
+    <PackageVersion Include="Mono.Cecil" Version="0.11.4" />
+    <PackageVersion Include="Moq" Version="4.18.4" />
+    <PackageVersion Include="NUnit" Version="3.13.3" />
+    <PackageVersion Include="NUnit.Analyzers" Version="3.3.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Perfolizer" Version="0.2.1" />
+    <PackageVersion Include="Prism.Core" Version="8.1.97" />
+    <PackageVersion Include="RestSharp" Version="112.0.0" />
+    <PackageVersion Include="RestSharp.Serializers.NewtonsoftJson" Version="106.12.0" />
+    <PackageVersion Include="SharpDX" Version="4.2.0" />
+    <PackageVersion Include="SharpDX.D3DCompiler" Version="4.2.0" />
+    <PackageVersion Include="SharpDX.DXGI" Version="4.2.0" />
+    <PackageVersion Include="SharpDX.Direct2D1" Version="4.2.0" />
+    <PackageVersion Include="SharpDX.Direct3D11" Version="4.2.0" />
+    <PackageVersion Include="SharpDX.Direct3D9" Version="4.2.0" />
+    <PackageVersion Include="SharpDX.Mathematics" Version="4.2.0" />
+    <PackageVersion Include="StarMath" Version="2.0.20.204" />
+    <PackageVersion Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+</Project>

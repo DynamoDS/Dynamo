@@ -15,8 +15,8 @@
     <AssemblyName>DynamoMSOfficeTests</AssemblyName>
   </PropertyGroup>
     <ItemGroup> 
-        <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="NUnit" ExcludeAssets="none" />
+        <PackageReference Include="NUnit3TestAdapter" />
         <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
             <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
             <Name>DSOffice</Name>
@@ -24,7 +24,7 @@
         </ProjectReference>
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj" />
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>

@@ -13,19 +13,19 @@
     <AssemblyName>PackageManagerTests</AssemblyName>
   </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-        <PackageReference Include="RestSharp" Version="112.0.0">
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="RestSharp">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Moq" Version="4.18.4" />
-        <PackageReference Include="Greg" Version="3.0.2.8780">
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Moq" />
+        <PackageReference Include="Greg">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="NUnit3TestAdapter" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoPackages\DynamoPackages.csproj">
