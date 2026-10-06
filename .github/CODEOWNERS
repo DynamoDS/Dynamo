@@ -1,0 +1,36 @@
+# Dynamo CODEOWNERS
+# Reviewer routing by area. Derived from commit activity (2024-10 → 2026-10)
+# and recent PR merge patterns; adjust as ownership changes.
+#
+# Note: entries use individual maintainers because DynamoDS has no public
+# team slugs visible to unauthenticated tooling. If teams are created
+# (e.g. @DynamoDS/eidos), prefer them over individual logins.
+
+# Agent guidance and CI for it — maintained by the agent-config owners
+/.claude/            @QilongTang @edwin-vasquez-ucaldas @kalunkuo
+/.github/            @jasonstratton
+/AGENTS.md           @QilongTang @edwin-vasquez-ucaldas @kalunkuo
+/CLAUDE.md           @QilongTang @edwin-vasquez-ucaldas @kalunkuo
+/.github/copilot-instructions.md @QilongTang @edwin-vasquez-ucaldas @kalunkuo
+
+# DesignScript engine runtime — low-traffic, high-blast-radius
+/src/Engine/         @aparajit-pratap @chubakueno
+
+# Core graph engine and scheduler
+/src/DynamoCore/    @RobertGlobant20 @ivaylo-matov @zeusongit
+
+# WPF UI layer
+/src/DynamoCoreWpf/  @RobertGlobant20 @ivaylo-matov @zeusongit
+
+# Node libraries
+/src/Libraries/      @RobertGlobant20 @ivaylo-matov @aparajit-pratap
+
+# Application hosts and sandbox
+/src/DynamoApplications/ @aparajit-pratap
+/src/DynamoSandbox/      @aparajit-pratap
+
+# Tests mirror the areas they cover
+/test/               @RobertGlobant20 @ivaylo-matov
+
+# Documentation and distributables
+/doc/                @johnpierson
