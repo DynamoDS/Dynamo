@@ -45,13 +45,13 @@ Tests are located in the `test/` directory. Use Visual Studio Test Explorer or d
 **Running a single test:**
 ```bash
 # Filter by test name (substring match)
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
 
 # Filter by NUnit category
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
 
 # Combine with & (AND) or | (OR)
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
 ```
 
 UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
@@ -88,7 +88,7 @@ UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `Dyna
   1. Add the API signature to the appropriate `PublicAPI.Unshipped.txt` file
   2. Use the format: `namespace.ClassName.MemberName -> ReturnType`
   3. Entries in `PublicAPI.Unshipped.txt` are moved to `PublicAPI.Shipped.txt` upon release
-- Existing PublicAPI files: DynamoCore, DynamoUtilities, DynamoCoreWpf
+- Existing PublicAPI files: DynamoCore, DynamoUtilities, DynamoCoreWpf, NodeServices
 
 ## Project Structure
 

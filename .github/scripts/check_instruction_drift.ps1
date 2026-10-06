@@ -30,16 +30,28 @@ if (-not (Test-Path $copilotPath)) { throw "Missing .github/copilot-instructions
 $agentsContent = Get-Content -Raw -Encoding UTF8 $agentsPath
 $copilotContent = Get-Content -Raw -Encoding UTF8 $copilotPath
 
-# Command lines we care about: dotnet/msbuild invocations, normalized for
-# trailing whitespace and CRLF so line-ending drift doesn't false-positive.
+# The authoritative set of projects carrying PublicAPI.*.txt files, derived
+# from the tree so a newly added project is recognized without editing this
+# script.
+$knownApiProjects = @(
+    Get-ChildItem -Path (Join-Path $repoRoot "src") -Directory |
+        Where-Object { Test-Path (Join-Path $_.FullName "PublicAPI.Unshipped.txt") } |
+        ForEach-Object { $_.Name }
+)
+
+# Command lines we care about: dotnet/msbuild invocations in fenced code
+# blocks and Markdown checklists, normalized for trailing whitespace and
+# CRLF so line-ending drift doesn't false-positive. Checklist entries wrap
+# the command in a code span ("- [ ] `dotnet ...`"), so strip the checkbox
+# marker and opening backtick, and stop the capture at the closing backtick.
 function Get-CommandLines {
     param([string]$content)
 
     $lines = $content -split "`r?`n"
     $commands = foreach ($line in $lines) {
         $trimmed = $line.TrimEnd()
-        if ($trimmed -match '^\s*(dotnet|msbuild)\s+\S') {
-            $trimmed.TrimStart()
+        if ($trimmed -match '^\s*(?:- \[[ x]\] )?`?(dotnet|msbuild)\s+([^`]*)') {
+            ($Matches[1] + ' ' + $Matches[2]).Trim()
         }
     }
     return $commands
@@ -66,26 +78,49 @@ foreach ($cmd in $missingInAgents) {
 # PublicAPI project list parity: both files enumerate which projects carry
 # PublicAPI.*.txt files. A new project added to one list but not the other is
 # exactly the kind of silent divergence this script exists to catch.
-# Matches both literal forms (PublicAPI.Unshipped.txt) and glob forms
-# (PublicAPI.{Shipped,Unshipped}.txt); collects every project named on a
-# matching line, not just the first.
+# The authoritative project set is the tree itself (src/*/PublicAPI.*.txt),
+# so derive it from disk rather than a hardcoded name list, then collect the
+# projects each instruction file mentions — from a parenthesized list
+# "(DynamoCore, DynamoCoreWpf, ...)", a bare list on the line, or a path
+# mention like src/DynamoCore/PublicAPI.Unshipped.txt.
 function Get-PublicApiProjects {
-    param([string]$content)
+    param(
+        [string]$content,
+        [string[]]$knownProjects
+    )
 
     $projects = @()
     foreach ($line in ($content -split "`r?`n")) {
-        if ($line -match 'PublicAPI\.\S*\.txt') {
-            # Longest-first alternation so DynamoCoreWpf is not consumed as DynamoCore.
-            foreach ($m in [regex]::Matches($line, '(DynamoCoreWpf|DynamoUtilities|NodeServices|DynamoCore)')) {
-                $projects += $m.Value
+        if ($line -notmatch 'PublicAPI') { continue }
+
+        # Parenthesized list following a PublicAPI mention:
+        # "...PublicAPI.{Shipped,Unshipped}.txt (DynamoCore, DynamoCoreWpf, ...)"
+        if ($line -match 'PublicAPI[^)]*\(([^)]+)\)') {
+            foreach ($p in ($Matches[1] -split ',')) {
+                $n = $p.Trim()
+                if ($knownProjects -contains $n) { $projects += $n }
+            }
+        }
+
+        # Path mentions: src/<Project>/PublicAPI.*.txt
+        foreach ($m in [regex]::Matches($line, 'src/(\w+)/PublicAPI')) {
+            $n = $m.Groups[1].Value
+            if ($knownProjects -contains $n) { $projects += $n }
+        }
+
+        # Bare list on a PublicAPI line: "Existing PublicAPI files: A, B, C"
+        if ($line -match 'PublicAPI[^:]*:\s*([A-Z]\w*(,\s*[A-Z]\w*)+)') {
+            foreach ($p in ($Matches[1] -split ',')) {
+                $n = $p.Trim()
+                if ($knownProjects -contains $n) { $projects += $n }
             }
         }
     }
     return $projects | Sort-Object -Unique
 }
 
-$agentsApiProjects = @(Get-PublicApiProjects -content $agentsContent)
-$copilotApiProjects = @(Get-PublicApiProjects -content $copilotContent)
+$agentsApiProjects = @(Get-PublicApiProjects -content $agentsContent -knownProjects $knownApiProjects)
+$copilotApiProjects = @(Get-PublicApiProjects -content $copilotContent -knownProjects $knownApiProjects)
 
 $apiMissingInCopilot = @($agentsApiProjects | Where-Object { $copilotApiProjects -notcontains $_ })
 $apiMissingInAgents = @($copilotApiProjects | Where-Object { $agentsApiProjects -notcontains $_ })

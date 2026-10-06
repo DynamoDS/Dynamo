@@ -7,6 +7,8 @@ on:
       - ".github/agents/**"
       - "AGENTS.md"
       - ".github/copilot-instructions.md"
+      - ".github/scripts/check_instruction_drift.ps1"
+      - ".github/workflows/validate_agent_skills.yml"
 
 env:
   SKILLS_DIR: .claude/skills
