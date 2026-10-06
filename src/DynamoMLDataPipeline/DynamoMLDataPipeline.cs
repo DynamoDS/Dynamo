@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -8,8 +10,6 @@ using Dynamo.Utilities;
 using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestSharp;
-using ContentType = RestSharp.DataFormat;
 
 namespace DynamoMLDataPipeline
 {
@@ -75,11 +75,10 @@ namespace DynamoMLDataPipeline
             return AuthTokenProvider.GetAccessToken();
         }
 
-        internal static void AddHeadersToPostRequest(RestRequest request, string token)
+        internal static void AddHeadersToPostRequest(HttpRequestMessage request, string token)
         {
-            request.AddHeader("Accept", "*/*");
-            request.AddHeader("Authorization", $"Bearer {token}");
-            request.AddHeader("Content-Type", "application/json");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         internal string ConstructCreateAssetRequestBody(string schemaNamespaceId, string binaryId, string operation)
@@ -137,26 +136,29 @@ namespace DynamoMLDataPipeline
             return bodyJSON;
         }
 
-        static public string StartFullfillment(RestClient client, string collectionId, string exchangeContainerId, string token)
+        static public string StartFullfillment(HttpClient client, string collectionId, string exchangeContainerId, string token)
         {
             var fulfillmentUrl = $"/v1/collections/{collectionId}/exchanges/{exchangeContainerId}/fulfillments:start";
-            RestRequest startFulfillmentRequest = new RestRequest(fulfillmentUrl);
+            var startFulfillmentRequest = new HttpRequestMessage(HttpMethod.Post, fulfillmentUrl);
             AddHeadersToPostRequest(startFulfillmentRequest, token);
-            var startFulfillmentResponse = client.ExecutePost(startFulfillmentRequest);
+            startFulfillmentRequest.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var startFulfillmentResponse = client.SendAsync(startFulfillmentRequest).Result;
 
-            dynamic responseBody = JObject.Parse(startFulfillmentResponse.Content);
+            var responseContent = startFulfillmentResponse.Content.ReadAsStringAsync().Result;
+            dynamic responseBody = JObject.Parse(responseContent);
             // We extract the fullfilment id from the response needed from the follow up API calls
             var fulfillmentId = responseBody["id"].Value;
 
             return fulfillmentId;
         }
 
-        static public void EndFullFillment(RestClient client, string collectionId, string exchangeContainerId, string fulfillmentId, string token)
+        static public void EndFullFillment(HttpClient client, string collectionId, string exchangeContainerId, string fulfillmentId, string token)
         {
             var endFulfillmentUrl = $"/v1/collections/{collectionId}/exchanges/{exchangeContainerId}/fulfillments/{fulfillmentId}:finish";
-            RestRequest endFulfillmentRequest = new RestRequest(endFulfillmentUrl);
+            var endFulfillmentRequest = new HttpRequestMessage(HttpMethod.Post, endFulfillmentUrl);
             AddHeadersToPostRequest(endFulfillmentRequest, token);
-            var endFulfillmentResponse = client.ExecutePost(endFulfillmentRequest);
+            endFulfillmentRequest.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var endFulfillmentResponse = client.SendAsync(endFulfillmentRequest).Result;
         }
 
         static public string ConvertDynToBase64(string filePath)
@@ -189,18 +191,19 @@ namespace DynamoMLDataPipeline
             return base64CompressedBuffer;
         }
 
-        void SendToMLDataPipeline(string filePath, RestClient client, string token)
+        void SendToMLDataPipeline(string filePath, HttpClient client, string token)
         {
             // STEP 1: CREATE A DATA EXCHANGE CONTAINER ---------------------            
             string exchangeBody = ConstructCreateExchangeRequestBody();
 
             var createExchangeURL = $"/v1/collections/{CollectionId}/exchanges";
-            RestRequest createExchangeRequest = new RestRequest(createExchangeURL);
-            createExchangeRequest.AddStringBody(exchangeBody, ContentType.Json);
+            var createExchangeRequest = new HttpRequestMessage(HttpMethod.Post, createExchangeURL);
+            createExchangeRequest.Content = new StringContent(exchangeBody, Encoding.UTF8, "application/json");
             AddHeadersToPostRequest(createExchangeRequest, token);
-            var exchangeRequestResponse = client.ExecutePost(createExchangeRequest);
+            var exchangeRequestResponse = client.SendAsync(createExchangeRequest).Result;
 
-            dynamic exchangeRequestResponseBody = JObject.Parse(exchangeRequestResponse.Content);
+            var exchangeResponseContent = exchangeRequestResponse.Content.ReadAsStringAsync().Result;
+            dynamic exchangeRequestResponseBody = JObject.Parse(exchangeResponseContent);
             // We extract the exchange container id, the collection id and the schemaNamespace id 
             // from the response - these will be consumed by the following API calls.
             ExchangeContainerId = exchangeRequestResponseBody["id"].Value;
@@ -219,31 +222,32 @@ namespace DynamoMLDataPipeline
             binaries.AddBinary(binaryAsset);
             string createBinaryBody = JsonConvert.SerializeObject(binaries);
 
-            RestRequest createBinaryRequest = new RestRequest(createBinaryAssetUrl);
-            createBinaryRequest.AddStringBody(createBinaryBody, ContentType.Json);
+            var createBinaryRequest = new HttpRequestMessage(HttpMethod.Post, createBinaryAssetUrl);
+            createBinaryRequest.Content = new StringContent(createBinaryBody, Encoding.UTF8, "application/json");
             AddHeadersToPostRequest(createBinaryRequest, token);
-            var createBinaryResponse = client.ExecutePost(createBinaryRequest);
+            var createBinaryResponse = client.SendAsync(createBinaryRequest).Result;
 
-            dynamic createBinaryResponseBody = JObject.Parse(createBinaryResponse.Content);
+            var createBinaryResponseContent = createBinaryResponse.Content.ReadAsStringAsync().Result;
+            dynamic createBinaryResponseBody = JObject.Parse(createBinaryResponseContent);
             var binaryUploadUrl = createBinaryResponseBody["binaries"][0]["uploadUrls"][0].Value;
 
             // STEP 4: UPLOAD BINARY ---------------------
             // We upload the binary to the AWS url returned by the previous step (createBinaryRequest)
-            var fileUploadClient = new RestClient();
-            RestRequest uploadBinaryRequest = new RestRequest(binaryUploadUrl);
-
-            // ADD THE FILE TO THE REQUEST
-            // Encode .dyn file to comperessed Base64
-            var base64CompressedBuffer = ConvertDynToBase64(filePath);
-
-            uploadBinaryRequest.AddHeader("Content-Type", ContentType.Binary);
-
-            uploadBinaryRequest.AddOrUpdateParameter("text/txt", base64CompressedBuffer, ParameterType.RequestBody);
-
-            var uploadBinaryResponse = fileUploadClient.ExecutePut(uploadBinaryRequest);
-            if (uploadBinaryResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            using (var fileUploadClient = new HttpClient())
             {
-                LogMessage.Info("Binary upload failed!");
+                var uploadBinaryRequest = new HttpRequestMessage(HttpMethod.Put, binaryUploadUrl);
+
+                // ADD THE FILE TO THE REQUEST
+                // Encode .dyn file to comperessed Base64
+                var base64CompressedBuffer = ConvertDynToBase64(filePath);
+
+                uploadBinaryRequest.Content = new StringContent(base64CompressedBuffer, Encoding.UTF8, "text/txt");
+
+                var uploadBinaryResponse = fileUploadClient.SendAsync(uploadBinaryRequest).Result;
+                if (uploadBinaryResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    LogMessage.Info("Binary upload failed!");
+                }
             }
 
             // STEP 4b: FINISH BINARY UPLOAD -------------------
@@ -257,11 +261,11 @@ namespace DynamoMLDataPipeline
             uploadedBinaries.AddBinary(uploadedBinaryAsset);
             string finishBinaryUploadBody = JsonConvert.SerializeObject(uploadedBinaries);
 
-            RestRequest finishBinaryUploadRequest = new RestRequest(finishBinaryUploadUrl);
-            finishBinaryUploadRequest.AddStringBody(finishBinaryUploadBody, ContentType.Json);
+            var finishBinaryUploadRequest = new HttpRequestMessage(HttpMethod.Post, finishBinaryUploadUrl);
+            finishBinaryUploadRequest.Content = new StringContent(finishBinaryUploadBody, Encoding.UTF8, "application/json");
             AddHeadersToPostRequest(finishBinaryUploadRequest, token);
-            var finishBinaryUploadResponse = client.ExecutePost(finishBinaryUploadRequest);
-            if (finishBinaryUploadResponse.IsSuccessful)
+            var finishBinaryUploadResponse = client.SendAsync(finishBinaryUploadRequest).Result;
+            if (finishBinaryUploadResponse.IsSuccessStatusCode)
             {
                 LogMessage.Info("Binary upload completed!");
             }
@@ -277,10 +281,10 @@ namespace DynamoMLDataPipeline
             // Construct request body for an insert operation, i.e. fulfilling an initial excahnge
             string syncAssetRequestBody = ConstructCreateAssetRequestBody(schemaNamespaceId, BinaryAssetGuid, "insert");
 
-            RestRequest syncAssetRequest = new RestRequest(syncAssetUrl);
-            syncAssetRequest.AddStringBody(syncAssetRequestBody, ContentType.Json);
+            var syncAssetRequest = new HttpRequestMessage(HttpMethod.Post, syncAssetUrl);
+            syncAssetRequest.Content = new StringContent(syncAssetRequestBody, Encoding.UTF8, "application/json");
             AddHeadersToPostRequest(syncAssetRequest, token);
-            var syncAssetResponse = client.ExecutePost(syncAssetRequest);
+            var syncAssetResponse = client.SendAsync(syncAssetRequest).Result;
 
             // STEP 6: END FULFILLMENT ---------------------
             EndFullFillment(client, CollectionId, ExchangeContainerId, fulfillmentId, token);
@@ -305,15 +309,18 @@ namespace DynamoMLDataPipeline
             // CollectionId created for Dynamo
             CollectionId = ProductionCollectionID;
 
-            var client = new RestClient(ProductionClientUrl);
-
-            try
+            using (var client = new HttpClient())
             {
-                SendToMLDataPipeline(filePath, client, token);
-            }
-            catch (Exception ex)
-            {
-                LogMessage.Error("Failed to share the workspace with ML data pipeline: " + ex.StackTrace);
+                client.BaseAddress = new Uri(ProductionClientUrl);
+                
+                try
+                {
+                    SendToMLDataPipeline(filePath, client, token);
+                }
+                catch (Exception ex)
+                {
+                    LogMessage.Error("Failed to share the workspace with ML data pipeline: " + ex.StackTrace);
+                }
             }
         }
     }

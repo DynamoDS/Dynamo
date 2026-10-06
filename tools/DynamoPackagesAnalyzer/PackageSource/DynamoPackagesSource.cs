@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Net.Http;
 using System.Web;
 using DynamoPackagesAnalyzer.Helper;
 using DynamoPackagesAnalyzer.Models;
@@ -6,8 +7,7 @@ using DynamoPackagesAnalyzer.Models.CommandLine;
 using DynamoPackagesAnalyzer.Models.Greg;
 using Greg.Responses;
 using Microsoft.Extensions.Configuration;
-using RestSharp;
-using RestSharp.Serializers.NewtonsoftJson;
+using Newtonsoft.Json;
 
 namespace DynamoPackagesAnalyzer.PackageSource
 {
@@ -17,7 +17,10 @@ namespace DynamoPackagesAnalyzer.PackageSource
     internal class DynamoPackagesSource
     {
         private readonly DynamoPackagesOptions options;
-        private static readonly IRestClient restClient = new RestClient(ConfigHelper.GetConfiguration()["DynamoPackagesURL"]).UseNewtonsoftJson();
+        private static readonly HttpClient httpClient = new HttpClient() 
+        { 
+            BaseAddress = new Uri(ConfigHelper.GetConfiguration()["DynamoPackagesURL"]) 
+        };
         private readonly IConfigurationRoot configuration;
         private static PackageHeaderCustom[] packages;
         private static readonly Mutex getPackagesMutex = new Mutex(false, "");
@@ -32,16 +35,17 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// Returns all the packages from dynamopackages.com except banned and deprecated
         /// </summary>
         /// <returns></returns>
-        internal static Task<PackageHeaderCustom[]> GetPackages()
+        internal static async Task<PackageHeaderCustom[]> GetPackages()
         {
             getPackagesMutex.WaitOne();
             if (packages == null)
             {
                 LogHelper.Log("Download DynamoPackages", "start");
-                RestRequest request = new RestRequest("packages/dynamo", Method.GET);
-                IRestResponse<Response<PackageHeaderCustom[]>> response = restClient.Execute<Response<PackageHeaderCustom[]>>(request);
+                var response = await httpClient.GetAsync("packages/dynamo");
                 ValidateResponse(response);
-                PackageHeaderCustom[] packages = response.Data.Content.Where(f => !f.deprecated && !f.banned).ToArray();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<Response<PackageHeaderCustom[]>>(responseContent);
+                PackageHeaderCustom[] packages = result.Content.Where(f => !f.deprecated && !f.banned).ToArray();
 
                 //method used in Dynamo\src\DynamoPackages\PackageManagerClient.cs:L97 to filter packages with wrong version numbers
                 for (int i = 0; i < packages.Length; i++)
@@ -64,7 +68,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
             }
             getPackagesMutex.ReleaseMutex();
 
-            return Task.FromResult(packages);
+            return packages;
         }
 
         /// <summary>
@@ -86,14 +90,15 @@ namespace DynamoPackagesAnalyzer.PackageSource
         private async Task<FileInfo> DownloadPackage(PackageHeaderCustom package)
         {
             PackageVersion version = GetLastVersion(package);
-            RestRequest request = new RestRequest($"download/{package._id}/{version.name}", Method.GET);
-            IRestResponse<Models.Response> response = await restClient.ExecuteAsync<Models.Response>(request);
+            var response = await httpClient.GetAsync($"download/{package._id}/{version.name}");
             ValidateResponse(response);
 
-            string output = Path.Combine(WorkspaceHelper.GetWorkspace().FullName, Path.GetFileName(response.ResponseUri.AbsolutePath));
+            string output = Path.Combine(WorkspaceHelper.GetWorkspace().FullName, 
+                response.RequestMessage?.RequestUri != null ? Path.GetFileName(response.RequestMessage.RequestUri.AbsolutePath) : $"package_{package._id}_{version.name}.zip");
             using (FileStream fileStream = new FileStream(output, FileMode.Create))
             {
-                fileStream.Write(response.RawBytes, 0, (int)response.ContentLength);
+                var bytes = await response.Content.ReadAsByteArrayAsync();
+                await fileStream.WriteAsync(bytes, 0, bytes.Length);
             }
 
             return new FileInfo(output);
@@ -155,26 +160,11 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="response"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        //private static void ValidateResponse<T>(RestResponse<Response<T>> response)
-        private static void ValidateResponse(IRestResponse<Models.Response> response)
+        private static void ValidateResponse(HttpResponseMessage response)
         {
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new InvalidOperationException(response.Data?.Message ?? $"HTTP status: {response.StatusDescription}");
-            }
-        }
-
-        /// <summary>
-        /// Validates the response to dynamopackages.com
-        /// </summary>
-        /// <param name="response"></param>
-        /// <exception cref="InvalidOperationException"></exception>
-        //private static void ValidateResponse<T>(RestResponse<Response<T>> response)
-        private static void ValidateResponse<T>(IRestResponse<Response<T>> response)
-        {
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new InvalidOperationException(response.Data?.Message ?? $"HTTP status: {response.StatusDescription}");
+                throw new InvalidOperationException($"HTTP status: {response.ReasonPhrase}");
             }
         }
     }
