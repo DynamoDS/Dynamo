@@ -73,12 +73,12 @@ jobs:
           }
 
       - name: Run ProtoTest
-        run: >
-          dotnet test ${{ github.workspace }}\Dynamo\test\Engine\ProtoTest\ProtoTest.csproj
-          --no-build -c Release
-          --filter "$env:TEST_CATEGORY_FILTER"
-          --logger "trx;LogFileName=prototest.trx"
-          --results-directory ${{ github.workspace }}\TestResults
+        run: |
+          dotnet test ${{ github.workspace }}\Dynamo\test\Engine\ProtoTest\ProtoTest.csproj `
+            --no-build -c Release `
+            --filter "$env:TEST_CATEGORY_FILTER" `
+            --logger "trx;LogFileName=prototest.trx" `
+            --results-directory ${{ github.workspace }}\TestResults
 
       - name: Publish test results
         uses: actions/upload-artifact@v4
