@@ -66,14 +66,18 @@ foreach ($cmd in $missingInAgents) {
 # PublicAPI project list parity: both files enumerate which projects carry
 # PublicAPI.*.txt files. A new project added to one list but not the other is
 # exactly the kind of silent divergence this script exists to catch.
+# Matches both literal forms (PublicAPI.Unshipped.txt) and glob forms
+# (PublicAPI.{Shipped,Unshipped}.txt); collects every project named on a
+# matching line, not just the first.
 function Get-PublicApiProjects {
     param([string]$content)
 
-    $projects = foreach ($line in ($content -split "`r?`n")) {
-        if ($line -match 'PublicAPI\.(Shipped|Unshipped)\.txt') {
-            # Collect bare project names mentioned on the line.
-            if ($line -match '(DynamoCore|DynamoCoreWpf|DynamoUtilities|NodeServices)') {
-                $Matches[1]
+    $projects = @()
+    foreach ($line in ($content -split "`r?`n")) {
+        if ($line -match 'PublicAPI\.\S*\.txt') {
+            # Longest-first alternation so DynamoCoreWpf is not consumed as DynamoCore.
+            foreach ($m in [regex]::Matches($line, '(DynamoCoreWpf|DynamoUtilities|NodeServices|DynamoCore)')) {
+                $projects += $m.Value
             }
         }
     }
