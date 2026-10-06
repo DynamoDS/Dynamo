@@ -859,6 +859,252 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString()));
         }
 
+        #region Python script ownership (open editor vs. outside changes)
+
+        private const string PythonNodeGuid = "3bcad14e-d086-4278-9e08-ed2759ef92f3";
+        private const string PythonNodeScript = "ok";
+        private const string AssistantScript = "OUT = 2";
+        private const string TypedText = "\n# typed in the editor";
+
+        private class OpenPythonEditor
+        {
+            public PythonNode Node;
+            public ScriptEditorWindow Window;
+            public ICSharpCode.AvalonEdit.TextEditor Code;
+            // Review requests the editor raised. Stands in for the Python Migration view extension.
+            public readonly List<PythonScriptConflictEventArgs> Reviews = new List<PythonScriptConflictEventArgs>();
+        }
+
+        private OpenPythonEditor OpenEditorOnPythonNode()
+        {
+            Open(@"core\python\python.dyn");
+            var nodeView = NodeViewWithGuid(PythonNodeGuid);
+            var result = new OpenPythonEditor { Node = (PythonNode)nodeView.ViewModel.NodeModel };
+            Assert.AreEqual(PythonNodeScript, result.Node.Script);
+
+            result.Node.ScriptConflictReviewRequested += (_, e) => result.Reviews.Add(e);
+            result.Window = EditPythonCode(nodeView, View);
+            Assert.IsNotNull(result.Window);
+            result.Code = FindCodeEditor(result.Window);
+            return result;
+        }
+
+        /// <summary>
+        /// The same write the assistant (DynamoMCP set_node_value) makes.
+        /// </summary>
+        private void WriteScriptContent(PythonNode node, string script)
+        {
+            ViewModel.ExecuteCommand(new Dynamo.Models.DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, node.GUID, "ScriptContent", script));
+            DispatcherUtil.DoEvents();
+        }
+
+        /// <summary>
+        /// Adds text the way typing does, so the editor's own undo history is kept.
+        /// </summary>
+        private static void TypeInEditor(ICSharpCode.AvalonEdit.TextEditor code, string text)
+        {
+            code.Document.Insert(code.Document.TextLength, text);
+            DispatcherUtil.DoEvents();
+        }
+
+        private static void ClickEditorButton(ScriptEditorWindow window, string buttonName)
+        {
+            var button = window.FindName(buttonName) as Button;
+            Assert.IsNotNull(button, buttonName);
+            button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+        }
+
+        [Test]
+        public void PythonEditor_WhenEditorIsSavedThenOutsideWriteIsShownInEditor()
+        {
+            var editor = OpenEditorOnPythonNode();
+
+            WriteScriptContent(editor.Node, AssistantScript);
+
+            Assert.AreEqual(AssistantScript, editor.Node.Script);
+            Assert.AreEqual(AssistantScript, editor.Code.Text);
+            Assert.IsTrue(editor.Window.IsSaved);
+            Assert.IsFalse(editor.Node.HasUnsavedEditorChanges);
+            CollectionAssert.IsEmpty(editor.Reviews);
+        }
+
+        [Test]
+        public void PythonEditor_SaveStoresTypedScript()
+        {
+            var editor = OpenEditorOnPythonNode();
+            TypeInEditor(editor.Code, TypedText);
+            Assert.IsTrue(editor.Node.HasUnsavedEditorChanges);
+
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+
+            Assert.AreEqual(PythonNodeScript + TypedText, editor.Node.Script);
+            Assert.IsFalse(editor.Node.HasUnsavedEditorChanges);
+            CollectionAssert.IsEmpty(editor.Reviews);
+        }
+
+        [Test]
+        public void PythonEditor_WhenEditorHasUnsavedEditsThenOutsideWriteIsBlockedAndConflictReviewRequested()
+        {
+            var editor = OpenEditorOnPythonNode();
+            TypeInEditor(editor.Code, TypedText);
+
+            WriteScriptContent(editor.Node, AssistantScript);
+
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+            Assert.AreEqual(PythonNodeScript + TypedText, editor.Code.Text);
+            Assert.IsTrue(editor.Node.HasUnsavedEditorChanges);
+
+            var review = editor.Reviews.Single();
+            Assert.AreEqual(PythonScriptReviewKind.AssistantConflict, review.Kind);
+            Assert.AreEqual(PythonNodeScript + TypedText, review.LeftCode);
+            Assert.AreEqual(AssistantScript, review.RightCode);
+        }
+
+        [Test]
+        public void PythonEditor_WhenConflictIsAcceptedThenEditorShowsAssistantScriptAndEditorUndoBringsTypingBack()
+        {
+            var editor = OpenEditorOnPythonNode();
+            TypeInEditor(editor.Code, TypedText);
+            WriteScriptContent(editor.Node, AssistantScript);
+
+            // What the review window's Accept does (see PythonScriptOwnershipTests in DynamoPythonTests):
+            // take ownership from the editor, then write the assistant script.
+            editor.Node.ScriptContentSaved = true;
+            WriteScriptContent(editor.Node, AssistantScript);
+
+            Assert.AreEqual(AssistantScript, editor.Node.Script);
+            Assert.AreEqual(AssistantScript, editor.Code.Text);
+            Assert.IsTrue(editor.Window.IsSaved);
+
+            editor.Code.Undo();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(PythonNodeScript + TypedText, editor.Code.Text);
+        }
+
+        [Test]
+        public void PythonEditor_WhenCanvasUndoChangesNodeThenSaveRequestsReviewAndDoesNotWrite()
+        {
+            var editor = OpenEditorOnPythonNode();
+            WriteScriptContent(editor.Node, AssistantScript);
+            TypeInEditor(editor.Code, TypedText);
+
+            ViewModel.UndoCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+            var review = editor.Reviews.Single();
+            Assert.AreEqual(PythonScriptReviewKind.EditorChangedUnderneath, review.Kind);
+            Assert.AreEqual(AssistantScript + TypedText, review.LeftCode);
+            Assert.AreEqual(PythonNodeScript, review.RightCode);
+        }
+
+        [Test]
+        public void PythonEditor_WhenChangedOutsideReviewIsAcceptedThenEditorLoadsNodeScript()
+        {
+            var editor = OpenEditorOnPythonNode();
+            WriteScriptContent(editor.Node, AssistantScript);
+            TypeInEditor(editor.Code, TypedText);
+            ViewModel.UndoCommand.Execute(null);
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+
+            Assert.IsTrue(editor.Reviews.Single().OnAccept());
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(PythonNodeScript, editor.Code.Text);
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+            Assert.IsTrue(editor.Window.IsSaved);
+
+            // The editor is in step with the node again, so the next Save does not ask.
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+            Assert.AreEqual(1, editor.Reviews.Count);
+        }
+
+        [Test]
+        public void PythonEditor_WhenChangedOutsideReviewIsRejectedThenEditorTextIsSavedOverNode()
+        {
+            var editor = OpenEditorOnPythonNode();
+            WriteScriptContent(editor.Node, AssistantScript);
+            TypeInEditor(editor.Code, TypedText);
+            ViewModel.UndoCommand.Execute(null);
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+
+            Assert.IsTrue(editor.Reviews.Single().OnReject());
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(AssistantScript + TypedText, editor.Node.Script);
+            Assert.IsTrue(editor.Window.IsSaved);
+        }
+
+        [Test]
+        public void PythonEditor_WhenNodeChangedOutsideThenRevertLoadsNodeScriptInsteadOfOverwritingIt()
+        {
+            var editor = OpenEditorOnPythonNode();
+            TypeInEditor(editor.Code, TypedText);
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+            TypeInEditor(editor.Code, TypedText);
+
+            // Undo the editor's own Save from the canvas while the editor has new unsaved edits.
+            ViewModel.UndoCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+
+            ClickEditorButton(editor.Window, "RevertScriptChangesButton");
+
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+            Assert.AreEqual(PythonNodeScript, editor.Code.Text);
+            CollectionAssert.IsEmpty(editor.Reviews);
+        }
+
+        [Test]
+        public void PythonEditor_SaveAfterMigrationDoesNotReportChangeOutsideEditor()
+        {
+            const string migratedScript = "OUT = 'migrated'";
+            var editor = OpenEditorOnPythonNode();
+
+#pragma warning disable CS0618 // MigrateCode is obsolete but still used by the migration assistant.
+            editor.Node.MigrateCode(migratedScript);
+#pragma warning restore CS0618
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(migratedScript, editor.Code.Text);
+
+            TypeInEditor(editor.Code, TypedText);
+            ClickEditorButton(editor.Window, "SaveScriptChangesButton");
+
+            Assert.AreEqual(migratedScript + TypedText, editor.Node.Script);
+            CollectionAssert.IsEmpty(editor.Reviews);
+        }
+
+        [Test]
+        public void PythonEditor_SaveAfterUndockKeepsUnsavedTextWithoutFalseConflict()
+        {
+            var editor = OpenEditorOnPythonNode();
+            TypeInEditor(editor.Code, TypedText);
+
+            editor.Window.DockWindow();
+            DispatcherUtil.DoEvents();
+            var editorTab = ViewModel.SideBarTabItems.First(x => x.Uid == editor.Node.GUID.ToString());
+            View.UndockWindow(editorTab);
+            DispatcherUtil.DoEvents();
+
+            var undocked = View.GetChildrenWindowsOfType<ScriptEditorWindow>().FirstOrDefault();
+            Assert.IsNotNull(undocked);
+            Assert.AreEqual(PythonNodeScript + TypedText, FindCodeEditor(undocked).Text);
+            Assert.AreEqual(PythonNodeScript, editor.Node.Script);
+
+            ClickEditorButton(undocked, "SaveScriptChangesButton");
+
+            Assert.AreEqual(PythonNodeScript + TypedText, editor.Node.Script);
+            CollectionAssert.IsEmpty(editor.Reviews);
+        }
+
+        #endregion
+
         /// <summary>
         /// This test evaluates the functionality of the Tab Folding Strategy
         /// Tab consists of 4 spaces and every tab yields a new folding
