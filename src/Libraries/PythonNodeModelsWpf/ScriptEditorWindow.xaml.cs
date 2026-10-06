@@ -43,9 +43,12 @@ namespace PythonNodeModelsWpf
         private readonly DynamoViewModel dynamoViewModel;
         private bool nodeWasModified = false;
         private string originalScript;
+        private string lastSyncedScript;
         internal FoldingManager foldingManager;
         private TabFoldingStrategy foldingStrategy;
         private int zoomScaleCacheValue;
+        private bool applyingExternalScript;
+        private bool editorReleased;
 
         private readonly double fontSizePreferencesSliderProportionValue = (FONT_MAX_SIZE - FONT_MIN_SIZE) / (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
 
@@ -119,6 +122,7 @@ namespace PythonNodeModelsWpf
             InitializeComponent();
             DataContext = this;
 
+            NodeModel.ScriptUpdateBlocked += OnExternalScriptUpdateBlocked;
             EngineSelectorComboBox.Visibility = Visibility.Visible;
             NodeModel.UserScriptWarned += WarnUserScript;
 
@@ -195,6 +199,7 @@ namespace PythonNodeModelsWpf
 
             editText.Text = propValue;
             originalScript = propValue;
+            lastSyncedScript = NodeModel.Script;
             CachedEngine = NodeModel.EngineName;
             EngineSelectorComboBox.ItemsSource = AvailableEngines;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
@@ -325,6 +330,12 @@ namespace PythonNodeModelsWpf
 
         private void EditTextOnTextChanged(object sender, EventArgs e)
         {
+            if (applyingExternalScript)
+            {
+                UpdateFoldings();
+                return;
+            }
+
             // Mark the script for saving
             if (IsSaved) IsSaved = false;
             UpdateFoldings();
@@ -479,11 +490,68 @@ namespace PythonNodeModelsWpf
                     EngineSelectorComboBox.SelectedItem = CachedEngine;
                 }
             }
+            else if(e.PropertyName == nameof(PythonNode.Script))
+            {
+                ApplyExternalScriptToEditor(NodeModel.Script);
+            }
+        }
+
+        private void ApplyExternalScriptToEditor(string script, bool force = false)
+        {
+            if (applyingExternalScript)
+                return;
+
+            if (!force && NodeModel.HasUnsavedEditorChanges)
+                return;
+
+            var next = script ?? string.Empty;
+            if (editText.Text == next && originalScript == next)
+            {
+                // Already showing the node script. Make sure it is not still marked as unsaved.
+                lastSyncedScript = next;
+                IsSaved = true;
+                return;
+            }
+
+            applyingExternalScript = true;
+            try
+            {
+                var caret = editText.CaretOffset;
+                var document = editText.Document;
+                // One undo group, so Ctrl+Z in the editor brings back the text that was replaced.
+                document.UndoStack.StartUndoGroup();
+                document.Replace(0, document.TextLength, next);
+                document.UndoStack.EndUndoGroup();
+                editText.CaretOffset = Math.Min(caret, editText.Text.Length);
+                originalScript = next;
+                lastSyncedScript = next;
+                IsSaved = true;
+            }
+            finally
+            {
+                applyingExternalScript = false;
+            }
+        }
+
+        private void OnExternalScriptUpdateBlocked(string proposedScript)
+        {
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (editorReleased)
+                    return;
+
+                // If no review window is available, the assistant still reports the refusal in chat.
+                NodeModel.RequestScriptConflictReview(PythonScriptReviewKind.AssistantConflict, editText.Text, proposedScript);
+            });
         }
 
         private void OnNodeModelCodeMigrated(object sender, PythonCodeMigrationEventArgs e)
         {
+            // Revert still goes back to the pre-migration code, but the node now holds the
+            // migrated code, so that is what the editor is based on. Without this, the next
+            // Save would see a change made "outside the editor" that is really the migration.
             originalScript = e.OldCode;
+            lastSyncedScript = e.NewCode;
             editText.Text = e.NewCode;
             if (CachedEngine != PythonEngineManager.PythonNet3EngineName)
             {
@@ -499,13 +567,17 @@ namespace PythonNodeModelsWpf
 
         private void SaveScript()
         {
-            originalScript = editText.Text;
+            if (NodeChangedUnderEditor())
+            {
+                RequestChangedUnderneathReview();
+                return;
+            }
+
             NodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
                 Dynamo.Logging.Categories.PythonOperations);
-            IsSaved = true;
             DismissPythonUpgradeBar();
         }
 
@@ -513,6 +585,16 @@ namespace PythonNodeModelsWpf
         {
             if (nodeWasModified)
             {
+                if (NodeChangedUnderEditor())
+                {
+                    // Revert means "drop my edits". The node changed since the editor last synced,
+                    // so load what it holds now rather than writing an older script over that change.
+                    LoadNodeIntoEditor();
+                    CachedEngine = NodeModel.EngineName;
+                    EngineSelectorComboBox.SelectedItem = CachedEngine;
+                    return;
+                }
+
                 editText.Text = originalScript;
                 CachedEngine = NodeModel.EngineName;
                 EngineSelectorComboBox.SelectedItem = CachedEngine;
@@ -522,18 +604,30 @@ namespace PythonNodeModelsWpf
 
         private void UpdateScript(string scriptText)
         {
+            // Clear dirty before the command. UpdateValueCore refuses writes while the
+            // editor is unsaved, so the editor's own Save/Run/Revert would otherwise be dropped.
+            IsSaved = true;
+
+            // Record the text first: the command raises a Script change, and ApplyExternalScriptToEditor
+            // must see it as this editor's own write (no reload, no extra undo entry).
+            originalScript = scriptText;
+            lastSyncedScript = scriptText;
+
             var command = new DynamoModel.UpdateModelValueCommand(
                 boundWorkspaceId, boundNodeId, propertyName, scriptText);
 
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
             nodeWasModified = true;
-            IsSaved = true;
-            NodeModel.OnNodeModified();
         }
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
+            if (NodeChangedUnderEditor())
+            {
+                RequestChangedUnderneathReview();
+                return;
+            }
             NodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
@@ -546,11 +640,72 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Actions.Run,
                 Dynamo.Logging.Categories.PythonOperations);
         }
+        
+        private void RequestChangedUnderneathReview()
+        {
+            var shown = NodeModel.RequestScriptConflictReview(
+                PythonScriptReviewKind.EditorChangedUnderneath,
+                editText.Text,
+                NodeModel.Script,
+                onAccept: LoadNodeIntoEditor,
+                onReject: SaveEditorOverNode);
+
+            if (!shown)
+            {
+                // Yes = Accept (load the node). No = Reject (keep the editor text).
+                var answer = Dynamo.Wpf.Utilities.MessageBoxService.Show(
+                    PythonNodeModels.Properties.Resources.PythonScriptChangedOutsideEditorMessage,
+                    PythonNodeModels.Properties.Resources.PythonScriptChangedOutsideEditorTitle,
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Warning);
+
+                if (answer == MessageBoxResult.Yes)
+                {
+                    LoadNodeIntoEditor();
+                }
+                else if (answer == MessageBoxResult.No)
+                {
+                    SaveEditorOverNode();
+                }
+            }
+        }
+        
+        private bool SaveEditorOverNode()
+        {
+            // Closed editor: nothing to save. False keeps the review open and tells the user.
+            if (editorReleased)
+                return false;
+
+            var text = editText.Text;
+            NodeModel.EngineName = CachedEngine;
+            UpdateScript(text);
+            return string.Equals(NodeModel.Script ?? string.Empty, text, StringComparison.Ordinal);
+        }
+        
+        private bool LoadNodeIntoEditor()
+        {
+            if (editorReleased)
+                return false;
+
+            ApplyExternalScriptToEditor(NodeModel.Script, force: true);
+            return true;
+        }
+        
+        private bool NodeChangedUnderEditor()
+            => !string.Equals(NodeModel.Script ?? string.Empty,
+                lastSyncedScript ?? string.Empty,
+                StringComparison.Ordinal);
 
         private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
         {
             if (NodeModel == null)
                 throw new NullReferenceException(nameof(NodeModel));
+
+            if (NodeChangedUnderEditor())
+            {
+                RequestChangedUnderneathReview();
+                return;
+            }
 
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
@@ -604,19 +759,42 @@ namespace PythonNodeModelsWpf
             // Dispose it only when the window is closed.
             if (!dynamoViewModel.DockedNodeWindows.Contains(Uid))
             {
-                completionProvider?.Dispose();
+                ReleaseEditor();
+            }
+        }
+        
+        private void ReleaseEditor()
+        {
+            if (editorReleased)
+                return;
+
+            editorReleased = true;
+
+            completionProvider?.Dispose();
+            if (NodeModel != null)
+            {
                 NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
                 NodeModel.UserScriptWarned -= WarnUserScript;
                 NodeModel.PropertyChanged -= OnNodeModelPropertyChanged;
-                this.Closed -= OnScriptEditorWindowClosed;
-                PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
-                dynamoViewModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+                NodeModel.ScriptUpdateBlocked -= OnExternalScriptUpdateBlocked;
+                NodeModel.ScriptContentSaved = true;
+            }
 
-                Analytics.TrackEvent(
-                    Dynamo.Logging.Actions.Close,
-                    Dynamo.Logging.Categories.PythonOperations);
+            Closed -= OnScriptEditorWindowClosed;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+            dynamoViewModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Close,
+                Dynamo.Logging.Categories.PythonOperations);
+
+            if (editText != null)
+            {
                 editText.TextChanged -= EditTextOnTextChanged;
+            }
+
+            if (foldingManager != null)
+            {
                 FoldingManager.Uninstall(foldingManager);
                 foldingManager = null;
             }
