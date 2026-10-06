@@ -529,7 +529,7 @@
     <value>点</value>
   </data>
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
-    <value>数値を入力する必要があります。</value>
+    <value>入力は数値である必要があります。</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>パレットから色を選択します</value>
