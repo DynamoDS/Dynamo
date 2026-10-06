@@ -1,0 +1,85 @@
+name: Run Engine Tests
+
+# Runs the DesignScript engine test suite (test/Engine/ProtoTest) on PRs
+# that touch the engine. Without this, engine regressions surface only in
+# the downstream Jenkins UI-test chain, hours after merge.
+#
+# The category filter defaults to SmokeTest (~1200 of the ~5300 tests) to
+# keep PR feedback fast; widen it via the workflow_dispatch input or by
+# changing the default once the suite's runtime on CI runners is known.
+
+on:
+  pull_request:
+    paths:
+      - "src/Engine/**"
+      - "test/Engine/**"
+      - ".github/workflows/run_engine_tests.yml"
+  workflow_dispatch:
+    inputs:
+      category_filter:
+        description: "NUnit category filter expression"
+        required: false
+        default: "Category=SmokeTest"
+
+env:
+  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category=SmokeTest' }}
+
+jobs:
+  run_engine_tests:
+    name: Engine Tests (ProtoTest)
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v7
+        with:
+          path: Dynamo
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
+
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Install dependencies for windows runtime
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
+
+      - name: Build DynamoCore with MSBuild for Windows
+        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
+
+      # All projects share one output path (bin/AnyCPU/Release), so
+      # FFITarget.dll — imported at runtime by ~50 ProtoTest files via
+      # import("FFITarget.dll") — is already next to ProtoTest.dll.
+      - name: Verify test assembly built
+        run: |
+          $dll = "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\ProtoTest.dll"
+          if (Test-Path $dll) {
+            Write-Output "Found $dll"
+          } else {
+            Write-Error "ProtoTest.dll not found at $dll — build may have failed to produce it"
+            exit 1
+          }
+
+      - name: Run ProtoTest
+        run: >
+          dotnet test ${{ github.workspace }}\Dynamo\test\Engine\ProtoTest\ProtoTest.csproj
+          --no-build -c Release
+          --filter "$env:TEST_CATEGORY_FILTER"
+          --logger "trx;LogFileName=prototest.trx"
+          --results-directory ${{ github.workspace }}\TestResults
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prototest-results
+          path: ${{ github.workspace }}\TestResults\*.trx
+          if-no-files-found: warn

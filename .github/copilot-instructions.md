@@ -56,6 +56,12 @@ dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondit
 
 UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
 
+Engine tests live in `test/Engine/ProtoTest` (DesignScript runtime; `SmokeTest` is the fast category — CI runs it on PRs touching `src/Engine/`):
+
+```bash
+dotnet test test/Engine/ProtoTest/ProtoTest.csproj --filter "Category=SmokeTest"
+```
+
 ## Code Style and Formatting
 
 ### Follow Existing Standards
