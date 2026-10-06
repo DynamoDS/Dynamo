@@ -7,6 +7,10 @@ name: Run Engine Tests
 # The category filter defaults to SmokeTest (~1200 of the ~5300 tests) to
 # keep PR feedback fast; widen it via the workflow_dispatch input or by
 # changing the default once the suite's runtime on CI runners is known.
+#
+# The filter excludes the "Failure" category: ~170 tests in this suite are
+# marked Category("Failure") — the repo's convention for known-failing
+# tests tracking engine defects. They fail by design and must not gate PRs.
 
 on:
   pull_request:
@@ -19,10 +23,10 @@ on:
       category_filter:
         description: "NUnit category filter expression"
         required: false
-        default: "Category=SmokeTest"
+        default: "Category=SmokeTest && Category!=Failure"
 
 env:
-  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category=SmokeTest' }}
+  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category=SmokeTest && Category!=Failure' }}
 
 jobs:
   run_engine_tests:
