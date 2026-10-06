@@ -23,10 +23,10 @@ on:
       category_filter:
         description: "NUnit category filter expression"
         required: false
-        default: "Category=SmokeTest && Category!=Failure"
+        default: "Category=SmokeTest&Category!=Failure"
 
 env:
-  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category=SmokeTest && Category!=Failure' }}
+  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category=SmokeTest&Category!=Failure' }}
 
 jobs:
   run_engine_tests:
