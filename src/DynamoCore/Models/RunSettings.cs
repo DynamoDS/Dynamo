@@ -27,9 +27,10 @@ namespace Dynamo.Models
         private bool runTypesEnabled;
 
         /// <summary>
-        /// This static property if is true will block running the graph in any Run Mode
+        /// When true, blocks running this workspace's graph in any run mode.
+        /// Used primarily by the file trust feature.
         /// </summary>
-        internal static bool ForceBlockRun { get; set; } = false;
+        internal bool ForceBlockRun { get; set; }
 
         /// <summary>
         /// Default milliseconds number for the period in periodic run.

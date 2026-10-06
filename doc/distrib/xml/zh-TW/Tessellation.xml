@@ -55,7 +55,7 @@
         <member name="T:Tessellation.UvScalingUtilities">
             <summary>用於在曲面上調整 UV 比例的公用程式函數。</summary>
         </member>
-        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+        <member name="F:Tessellation.UvScalingUtilities.NonUniformityThreshold">
             <summary>計算曲面的標準化 UV 比例係數，以處理非等向性參數空間。
                 比例可維持縱橫比，同時讓值維持在合理的數值範圍內。</summary>
             <param name="face">要為其計算比例係數的曲面。</param>

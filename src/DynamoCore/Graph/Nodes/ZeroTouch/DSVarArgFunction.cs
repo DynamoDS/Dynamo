@@ -7,6 +7,7 @@ using Dynamo.Engine;
 using Dynamo.Library;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Utils;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -166,28 +167,109 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
-            // All inputs are provided, then we should pack all inputs that
-            // belong to variable input parameter into a single array.
+            // A variadic zero-touch function foo(x1, ..., xn, params y) is invoked at
+            // runtime as foo(x1, ..., xn, {y1, ..., ym}) -- every variadic input is
+            // packed into a single array argument. Suppose paramCount == n + 1 and the
+            // node inputs are i1, ..., in, y1, ..., ym.
             if (!model.IsPartiallyApplied)
             {
-                var paramCount = Definition.Parameters.Count();
+                int variadicStart = Definition.Parameters.Count() - 1;
 
-                // Suppose a fucntion foo() with var args, its signature is:
-                //
-                //    foo(x1, x2, ..., xn, params y)
-                //
-                // so paramCount == n + 1 here, and suppose inputs are
-                //
-                //        i1, i2, ...., in, y1, y2, ..., ym
-                //
-                // Here we pack all var arguments in an array {y1, y2, ..., ym}
-                // (skipping the first n == paramCount - 1 inputs)
-                var argPack = AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList());
-                inputAstNodes = inputAstNodes.Take(paramCount - 1).ToList();
+                // When any port uses levels, per-port replication must be honored. AtLevel /
+                // replication-guide annotations are only consumed at function-call argument
+                // positions and are inert inside the packed ExprList literal, and DesignScript
+                // cannot call a params method with separate arguments. So we route through a
+                // generated wrapper whose formal parameters are the individual ports: the
+                // per-port AtLevel and the node's lacing replication guides land on the
+                // wrapper-call arguments (replicating exactly like a non-variadic node), and
+                // the wrapper body packs the already-replicated values per invocation. See
+                // DYN-10572. Graphs with no Use Levels keep the original pack-then-call path,
+                // so their behavior (including their lacing) is unchanged.
+                if (variadicStart >= 0 && variadicStart < inputAstNodes.Count
+                    && AnyPortUsesLevels(model, inputAstNodes.Count)
+                    && TryBuildReplicatingOutputAst(model, inputAstNodes, resultAst, variadicStart))
+                {
+                    return;
+                }
+
+                // Default path: pack all var arguments into an array {y1, ..., ym}
+                // (skipping the first n == paramCount - 1 inputs).
+                var argPack = AstFactory.BuildExprList(inputAstNodes.Skip(variadicStart).ToList());
+                inputAstNodes = inputAstNodes.Take(variadicStart).ToList();
                 inputAstNodes.Add(argPack);
             }
 
             base.BuildOutputAst(model, inputAstNodes, resultAst);
+        }
+
+        /// <summary>
+        /// Returns true when any port has Use Levels enabled. Those settings cannot survive
+        /// the default pack-then-call path (they are inert inside the packed ExprList), so the
+        /// node must route through the per-port replicating wrapper instead.
+        /// </summary>
+        private static bool AnyPortUsesLevels(NodeModel model, int inputCount)
+        {
+            for (int i = 0; i < inputCount; i++)
+            {
+                if (model.InPorts[i].UseLevels)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Emits a generated wrapper function that exposes every port as a separate formal
+        /// parameter and packs the variadic tail per invocation, then calls it with per-port
+        /// Use Levels and lacing replication guides applied to the individual arguments.
+        /// Returns false (leaving <paramref name="resultAst"/> untouched) if the wrapper
+        /// source cannot be parsed, so the caller falls back to the default pack path.
+        /// </summary>
+        private bool TryBuildReplicatingOutputAst(
+            NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst, int variadicStart)
+        {
+            // Build the call to the underlying function exactly as GetFunctionApplication
+            // would: Class.Function for member functions, the bare name for globals.
+            string callName = Definition.Type == FunctionType.GenericFunction
+                ? Definition.FunctionName
+                : Definition.ClassName + "." + Definition.FunctionName;
+
+            // Unique, deterministic per node + arity so repeated runs redefine the same
+            // wrapper (cache-stable) and distinct nodes never collide.
+            string wrapperName = "__vararg_" + model.GUID.ToString("N") + "_" + inputAstNodes.Count;
+
+            var paramNames = Enumerable.Range(0, inputAstNodes.Count).Select(i => "p" + i).ToList();
+            var prefixArgs = paramNames.Take(variadicStart);
+            var packedArg = "[" + string.Join(", ", paramNames.Skip(variadicStart)) + "]";
+            var innerArgs = string.Join(", ", prefixArgs.Append(packedArg));
+
+            string wrapperSource =
+                "def " + wrapperName + "(" + string.Join(", ", paramNames) + ")" +
+                " { return = " + callName + "(" + innerArgs + "); }";
+
+            FunctionDefinitionNode wrapperDef;
+            try
+            {
+                wrapperDef = ParserUtils.Parse(wrapperSource).Body
+                    .OfType<FunctionDefinitionNode>()
+                    .FirstOrDefault();
+            }
+            catch
+            {
+                return false;
+            }
+
+            if (wrapperDef == null)
+                return false;
+
+            resultAst.Add(wrapperDef);
+
+            // Per-port AtLevel / lacing replication guides land on the wrapper-call
+            // arguments, where they are honored just as on a non-variadic node.
+            model.UseLevelAndReplicationGuide(inputAstNodes);
+
+            var rhs = AstFactory.BuildFunctionCall(wrapperName, inputAstNodes);
+            AssignIdentifiersForFunctionCall(model, rhs, resultAst);
+            return true;
         }
     }
 }

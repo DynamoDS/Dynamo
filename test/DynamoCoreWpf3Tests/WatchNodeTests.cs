@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -483,7 +484,32 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(100, watchNode.Height);
         }
 
-        [Test]  
+        [Test]
+        public void WatchDictionaryWithColonInKey_ViewPathDisplaysFullKey()
+        {
+            // Arrange - dictionary keys containing ':' were previously displayed incorrectly because
+            // ViewPath split the Path string on ':' and returned only the last segment.
+            var keys = new[] { "Hope:", ":This Isn't Right:", "help" };
+            var values = new object[] { 2, 5, 1 };
+            var dict = Dictionary.ByKeysValues(keys, values);
+
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                dict,
+                null,
+                null,
+                "test_tag",
+                false);
+
+            // Assert that ViewPath of each child returns the full key, including any ':' characters.
+            // Use a set-based check to be independent of the dictionary iteration order.
+            Assert.AreEqual(3, watchVM.Children.Count);
+            var viewPaths = watchVM.Children.Select(c => c.ViewPath.Trim()).ToList();
+            CollectionAssert.Contains(viewPaths, "Hope:");
+            CollectionAssert.Contains(viewPaths, ":This Isn't Right:");
+            CollectionAssert.Contains(viewPaths, "help");
+        }
+
+        [Test]
         public void GetNodeLabelTree()
         {
             // Arrange

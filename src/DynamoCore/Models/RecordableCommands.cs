@@ -415,6 +415,7 @@ namespace Dynamo.Models
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
                 IsTemplate = false;
+                ForceBlockRun = false;
             }
 
             /// <summary>
@@ -428,6 +429,22 @@ namespace Dynamo.Models
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
                 IsTemplate = isTemplate;
+                ForceBlockRun = false;
+            }
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            /// <param name="isTemplate">Is Dynamo opening a template file?</param>
+            /// <param name="forceBlockRun">Should the file be opened in block run mode?</param>
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode, bool isTemplate, bool forceBlockRun)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = isTemplate;
+                ForceBlockRun = forceBlockRun;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -470,6 +487,7 @@ namespace Dynamo.Models
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
             internal bool IsTemplate { get; private set; }
+            internal bool ForceBlockRun { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -536,6 +554,20 @@ namespace Dynamo.Models
             {
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
+                ForceBlockRun = false;
+            }
+
+            /// <summary>
+            /// Insert Graph or Custom Node from a file path into the current Workspace
+            /// </summary>
+            /// <param name="filePath"></param>
+            /// <param name="forceManualExecutionMode"></param>
+            /// <param name="forceBlockRun"></param>
+            public InsertFileCommand(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+                ForceBlockRun = forceBlockRun;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -577,6 +609,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
+            internal bool ForceBlockRun { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -2457,6 +2490,13 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
+            /// Id of the group that should host the models.
+            /// Empty means “use the selected expanded group”.
+            /// </summary>
+            [DataMember]
+            public Guid HostGroupGuid { get; set; }
+
+            /// <summary>
             ///
             /// </summary>
             /// <param name="modelGuid"></param>
@@ -2475,11 +2515,42 @@ namespace Dynamo.Models
             /// <param name="modelGuid"></param>
             public AddModelToGroupCommand(IEnumerable<Guid> modelGuid) : base(modelGuid) { }
 
+            /// <summary>
+            /// Creates a command to add a model to a specific group.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the model to add.</param>
+            /// <param name="hostModelGuid">The guid of the host group. Empty uses the selected expanded group.</param>
+            public AddModelToGroupCommand(string modelGuid, string hostModelGuid) : base(new[] { Guid.Parse(modelGuid) })
+            {
+                HostGroupGuid = Guid.Parse(hostModelGuid);
+            }
+
+            /// <summary>
+            /// Creates a command to add a model to a specific group.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the model to add.</param>
+            /// <param name="hostModelGuid">The guid of the host group. Empty uses the selected expanded group.</param>
+            public AddModelToGroupCommand(Guid modelGuid, Guid hostModelGuid) : base(new[] { modelGuid })
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            /// <summary>
+            /// Creates a command to add models to a specific group.
+            /// </summary>
+            /// <param name="modelGuid">The guids of the models to add.</param>
+            /// <param name="hostModelGuid">The guid of the host group. Empty uses the selected expanded group.</param>
+            public AddModelToGroupCommand(IEnumerable<Guid> modelGuid, Guid hostModelGuid) : base(modelGuid)
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
             internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
-                return new AddModelToGroupCommand(modelGuids);
+                var hostGroupGuid = helper.ReadGuid(nameof(HostGroupGuid), Guid.Empty);
+                return new AddModelToGroupCommand(modelGuids, hostGroupGuid);
             }
 
             #endregion
@@ -2494,6 +2565,8 @@ namespace Dynamo.Models
             protected override void SerializeCore(XmlElement element)
             {
                 base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute(nameof(HostGroupGuid), HostGroupGuid);
             }
 
             #endregion

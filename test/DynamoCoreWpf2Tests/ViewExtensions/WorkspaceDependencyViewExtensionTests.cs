@@ -344,7 +344,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void GetExternalFilesShouldBailIfGraphExecuting()
         {
-            // Open test file to verify the external file references are not computed when RunEnabled is false. 
+            // Open test file to verify the external file references are not computed when RunEnabled is false.
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
@@ -355,6 +355,53 @@ namespace DynamoCoreWpfTests
             WorkspaceReferencesExtension.DependencyRegen(Model.CurrentWorkspace, true);
             results = Model.CurrentWorkspace.ExternalFiles;
             Assert.AreEqual(2, results.Count());
+        }
+
+        // The disabled-state tooltip on the Install Specified Version button in
+        // WorkspaceDependencyView.xaml binds to this resource key. If the key is dropped
+        // from the .resx, the XAML still parses but hover shows nothing.
+        [Test]
+        public void WhenInstallButtonResourceStringRequestedThenItResolvesToNonEmpty()
+        {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(Resources.InstallButtonNoNetworkModeToolTip));
+        }
+    }
+
+    [TestFixture]
+    public class WorkspaceDependencyViewExtensionNoNetworkModeTests : DynamoTestUIBase
+    {
+        private readonly WorkspaceDependencyViewExtension viewExtension = new WorkspaceDependencyViewExtension();
+
+        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                NoNetworkMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                ProcessMode = TaskProcessMode.Synchronous
+            };
+        }
+
+        // NoNetworkMode on the view is what drives the XAML DataTrigger that disables the
+        // Install Specified Version button. Asserting the property directly is intentional:
+        // WPF triggers do not fire until the visual tree is fully realized, which is not
+        // guaranteed in a headless NUnit run. See WhenNoNetworkModeThenWorkspaceReferencesInstallButtonIsDisabled
+        // in AGT tests for the UI-level assertion.
+        [Test]
+        public void WhenNoNetworkModeThenDependencyViewNoNetworkModeIsTrue()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.Loaded(loadedParams);
+
+            Assert.IsTrue(loadedParams.StartupParams.NoNetworkMode);
+            Assert.IsTrue(viewExtension.DependencyView.NoNetworkMode);
         }
     }
 }

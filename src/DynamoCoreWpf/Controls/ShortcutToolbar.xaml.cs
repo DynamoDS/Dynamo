@@ -77,7 +77,6 @@ namespace Dynamo.UI.Controls
 
         private void ShortcutToolbar_Loaded(object sender, RoutedEventArgs e)
         {
-            IsSaveButtonEnabled = false;
             IsExportMenuEnabled = false;
             IsLoginMenuEnabled = !DynamoViewModel.Model.NoNetworkMode;
             DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
@@ -237,19 +236,6 @@ namespace Dynamo.UI.Controls
             set
             {
                 Button saveButton = GetButton("OPEN");
-                if (saveButton != null)
-                {
-                    saveButton.IsEnabled = value;
-                    saveButton.Opacity = value ? 1 : 0.5;
-                }
-            }
-        }
-
-        internal bool IsSaveButtonEnabled
-        {
-            set
-            {
-                Button saveButton = GetButton("SAVE");
                 if (saveButton != null)
                 {
                     saveButton.IsEnabled = value;

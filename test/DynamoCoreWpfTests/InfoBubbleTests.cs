@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void TestIntSliderInfoState()
+        public void WhenIntegerSlider64OverflowsViaUpdateValueThenClampsWithoutInfo()
         {
             var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
@@ -187,12 +187,15 @@ namespace DynamoCoreWpfTests
             var param = new UpdateValueParams("Value", "9223372036854775808");
             slider.UpdateValue(param);
 
-            Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
+            // Typed overflow is rejected in the text box (Error bubble) — see
+            // InputValidationErrorBubbleTests.WhenIntegerSlider64OverflowsThenShowsRangeErrorNotStacked.
+            // This path updates the model directly, so the value is still clamped and no message is posted.
+            Assert.AreEqual(0, sliderNodeModel.Infos.Count);
             Assert.AreEqual(slider.Value, Int64.MaxValue);
 
             // After graph run, persistent info still displays
             model.CurrentWorkspace.RequestRun();
-            Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
+            Assert.AreEqual(0, sliderNodeModel.Infos.Count);
             Assert.AreEqual(slider.Value, Int64.MaxValue);
         }
 

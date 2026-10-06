@@ -462,5 +462,102 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(GroupStyleItem.DefaultGroupStyleItems.Count, restoredStylesCount);
         }
+
+        /// <summary>
+        /// Validates that the Group Style submenu wraps its content in a ScrollViewer,
+        /// capped at 200px, once enough styles are present to exceed that height.
+        /// </summary>
+        [Test]
+        public void GroupStyleSubmenu_ShowsScrollViewer_WhenStyleCountExceedsMaxHeight()
+        {
+            Open(@"UI\GroupTest.dyn");
+
+            var preferencesSettings = (View.DataContext as DynamoViewModel).PreferenceSettings;
+
+            // 4 default styles alone fit within 200px; add enough custom styles to force wrapping
+            for (int i = 0; i < 15; i++)
+            {
+                preferencesSettings.GroupStyleItemsList.Add(
+                    new GroupStyleItem { Name = "Custom " + i, HexColorString = "FFFF00", IsDefault = false });
+            }
+
+            var annotationView = NodeViewWithGuid("a432d63f-7a36-45ad-b30a-7924beb20e90");
+
+            annotationView.CreateAndAttachAnnotationPopup();
+            annotationView.GroupContextMenuPopup.IsOpen = true;
+            DispatcherUtil.DoEvents();
+
+            var stylesSubmenu = annotationView.GroupStyleSelectorGrid as Grid;
+            Assert.IsNotNull(stylesSubmenu, "Styles sub-menu grid not found.");
+
+            var border = stylesSubmenu.Children.OfType<Border>().FirstOrDefault();
+            var popup = stylesSubmenu.Children.OfType<Popup>().FirstOrDefault();
+            Assert.IsNotNull(border, "Sub-menu border not found.");
+            Assert.IsNotNull(popup, "Sub-menu popup not found.");
+
+            border.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(popup.IsOpen, "Popup did not open after MouseEnter.");
+            var wrapper = popup.Child as Border;
+            Assert.IsNotNull(wrapper, "Popup content is not a Border.");
+
+            var scrollViewer = wrapper.Child as ScrollViewer;
+            Assert.IsNotNull(scrollViewer, "Expected the group style list to be wrapped in a ScrollViewer.");
+            Assert.AreEqual(200, scrollViewer.MaxHeight, "ScrollViewer MaxHeight should be capped at 200.");
+
+            var stackPanel = scrollViewer.Content as StackPanel;
+            Assert.IsNotNull(stackPanel, "Could not find StackPanel inside ScrollViewer.");
+
+            var styleCount = stackPanel.Children
+                .OfType<Border>()
+                .Select(b => b.Child)
+                .OfType<StackPanel>()
+                .Count();
+            Assert.AreEqual(19, styleCount, "Expected 4 default + 15 custom styles.");
+
+            Assert.AreEqual(1, wrapper.Padding.Right, 0.001, "Right padding should shrink to make room for the scrollbar.");
+        }
+
+        /// <summary>
+        /// Validates that the Group Style submenu does NOT wrap its content in a ScrollViewer
+        /// when the default styles fit within the 200px max height.
+        /// </summary>
+        [Test]
+        public void GroupStyleSubmenu_DoesNotShowScrollViewer_WhenStyleCountFitsMaxHeight()
+        {
+            Open(@"UI\GroupTest.dyn");
+
+            var annotationView = NodeViewWithGuid("a432d63f-7a36-45ad-b30a-7924beb20e90");
+
+            annotationView.CreateAndAttachAnnotationPopup();
+            annotationView.GroupContextMenuPopup.IsOpen = true;
+            DispatcherUtil.DoEvents();
+
+            var stylesSubmenu = annotationView.GroupStyleSelectorGrid as Grid;
+            Assert.IsNotNull(stylesSubmenu, "Styles sub-menu grid not found.");
+
+            var border = stylesSubmenu.Children.OfType<Border>().FirstOrDefault();
+            var popup = stylesSubmenu.Children.OfType<Popup>().FirstOrDefault();
+            Assert.IsNotNull(border, "Sub-menu border not found.");
+            Assert.IsNotNull(popup, "Sub-menu popup not found.");
+
+            border.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(popup.IsOpen, "Popup did not open after MouseEnter.");
+            var wrapper = popup.Child as Border;
+            Assert.IsNotNull(wrapper, "Popup content is not a Border.");
+
+            Assert.IsInstanceOf<StackPanel>(wrapper.Child, "Group style list should not be wrapped in a ScrollViewer.");
+            Assert.AreEqual(10, wrapper.Padding.Right, 0.001, "Right padding should remain 10 when no scrollbar is present.");
+        }
+
     }
 }

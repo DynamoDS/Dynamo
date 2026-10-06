@@ -105,6 +105,23 @@ namespace Dynamo.Tests
 
 		}
 
+		[Test]
+		public void TestListJoinUseLevelsOnVariadicPort()
+		{
+			// DYN-10572: List.Join is a pure-variadic DSVarArgFunction (no non-variadic
+			// prefix). Use Levels on a variadic port (list1 = [3,4] @L1) is now honored:
+			// the per-port AtLevel replicates the join at level 1, exactly as it would on
+			// a non-variadic node, independently of the other port. Before the fix the
+			// level was silently dropped and the result was the flat [1,2,3,4]; honoring
+			// it replicates element-wise to [[1,3],[2,4]].
+			string testFilePath = Path.Combine(listTestFolder, "TestListJoinUseLevelsOnVariadicPort.dyn");
+
+			RunModel(testFilePath);
+
+			AssertPreviewValue("dddd11110000222200003333dddd4444",
+				new object[] { new object[] { 1, 3 }, new object[] { 2, 4 } });
+		}
+
 		#endregion
 
 		#region Test DiagonalLeftList  

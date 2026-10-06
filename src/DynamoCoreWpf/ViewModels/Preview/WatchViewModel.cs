@@ -48,6 +48,7 @@ namespace Dynamo.ViewModels
         private readonly Action<string> tagGeometry;
         private bool isCollection;
         private string valueType;
+        private string dictionaryKey;
 
         // Instance variable for the number of items in the list 
         private int numberOfItems;
@@ -100,17 +101,40 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns the last index of the Path, 
-        /// surrounded with square brackets.
+        /// Returns the last segment of <see cref="Path"/> for display.
+        /// For list items, the segment is returned as-is; for non-list items, the segment
+        /// is returned with surrounding spaces.
+        /// When this item is a dictionary child, returns the dictionary key directly
+        /// (without splitting on ':') so that keys containing ':' are displayed correctly.
         /// </summary>
         public string ViewPath
         {
             get
             {
+                if (dictionaryKey != null)
+                    return string.Format(NodeLabel == LIST ? "{0}" : " {0} ", dictionaryKey);
                 var splits = Path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
                 return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// When this item is a direct child of a dictionary, stores the dictionary key
+        /// so that <see cref="ViewPath"/> can return it without splitting on ':'.
+        /// Setting this property raises a change notification for <see cref="ViewPath"/>.
+        /// </summary>
+        internal string DictionaryKey
+        {
+            get => dictionaryKey;
+            set
+            {
+                if (dictionaryKey != value)
+                {
+                    dictionaryKey = value;
+                    RaisePropertyChanged(nameof(ViewPath));
+                }
             }
         }
 

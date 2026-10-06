@@ -520,7 +520,7 @@
     <value>曲面</value>
   </data>
   <data name="SelectionFacesOutputPortName" xml:space="preserve">
-    <value>表面</value>
+    <value>曲面</value>
   </data>
   <data name="SelectionPointOutputPortName" xml:space="preserve">
     <value>點</value>
@@ -529,7 +529,13 @@
     <value>點</value>
   </data>
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
-    <value>輸入必須為數字。</value>
+    <value>輸入內容必須是數字。</value>
+  </data>
+  <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
+    <value>輸入內容必須符合日期時間格式，並且是有效的日期/時間。</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>輸入內容必須是整數。</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>從調色板中選取顏色</value>
@@ -620,6 +626,9 @@
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>選取類型</value>
+  </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>上游未連接。請將節點連接到輸入埠，以提供預設值並設定資料類型。若要選擇沒有上游資料的類型，請關閉「自動偵測類型」，然後使用下拉式功能表。</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>如需數值的格式指定字，請參閱延伸的節點說明以取得更多資訊。

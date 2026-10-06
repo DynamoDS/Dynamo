@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Třída představující typ dat podporovaný aplikací Dynamo</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Třída představující typ dat podporovaný aplikací Dynamo</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Volitelný název, který přepíše název typu (`NUmber` místo `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>Formát drátu $typeid (například „autodesk.math:point3d-1.0.0“).
+            Null pro primitivní typy, které nepoužívají serializaci $typeid.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>Hierarchická úroveň, která se má zobrazit v uživatelském rozhraní</summary>
@@ -342,6 +346,11 @@
             <summary>Vrátí seznam objektů DataNodeDynamoTypes z objektu ArrayList objektů.</summary>
             <param name="list">Objekt ArrayList objektů, které chcete přeformátovat</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Zkontroluje, zda vstup Definovat data není použit (má hodnotu null nebo je prázdný seznam).</summary>
+            <param name="inputValue">Vstupní hodnota z grafu.</param>
+            <returns>True, pokud má být vstup považován za nepřipojený nebo nepoužitý.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Zkontrolujte, zda je vstupní objekt jedna hodnota nebo objekt ArrayList jedné úrovně.</summary>

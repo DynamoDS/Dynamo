@@ -965,60 +965,65 @@ namespace Dynamo.ViewModels
                 }
 
                 // Determine if there are any dependencies that have a newer dynamo version, (this includes the root package).
-                // We assume this means this package is compatibile with that dynamo version, but we should warn the user it
+                // We assume this means this package is compatible with that dynamo version, but we should warn the user it
                 // may not work with the current version of Dynamo.
 
-                //wrap in try catch as it's possible version info could be missing. If so, we install the package and log an error.
-                try
+                // If the compatibility matrix already indicates compatibility, skip the engine_version heuristic.
+                // Only perform engine_version based warnings when compatibility is not explicitly true.
+                if (compatible != true)
                 {
-                    var dynamoVersion = Version.Parse(DynamoModel.Version);
-                    var futureDeps = newPackageHeaders.Where(dep => Version.Parse(dep.engine_version) > dynamoVersion);
-                    // also identify packages that have a dynamo engine version less than 3.x as a special case,
-                    // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
-                    // This check will return empty if the current major version is not 3.
-                    var preDYN4Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 4 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
-
-                    // If any of the required packages use a newer version of Dynamo, show a dialog to the user
-                    // allowing them to cancel the package download
-                    if (futureDeps.Any())
+                    //wrap in try catch as it's possible version info could be missing. If so, we install the package and log an error.
+                    try
                     {
-                        var res = MessageBoxService.Show(ViewModelOwner,
-                            $"{string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
-                            string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
+                        var dynamoVersion = Version.Parse(DynamoModel.Version);
+                        var futureDeps = newPackageHeaders.Where(dep => Version.Parse(dep.engine_version) > dynamoVersion);
+                        // also identify packages that have a Dynamo engine version from a different major version as a special case,
+                        // as different major Dynamo versions may use different runtime frameworks - these packages may not be compatible.
+                        // This check will return empty if the current major version does not require this validation.
+                        var preDYNDeps = newPackageHeaders.Where(dep => Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
+
+                        // If any of the required packages use a newer version of Dynamo, show a dialog to the user
+                        // allowing them to cancel the package download
+                        if (futureDeps.Any())
+                        {
+                            var res = MessageBoxService.Show(ViewModelOwner,
+                                $"{string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
+                                string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
+                                //this message has a url link so we use the rich text box version of the message box.
+                                showRichTextBox: true,
+                                MessageBoxButton.OKCancel,
+                                MessageBoxImage.Warning);
+                            if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
+                            {
+                                return;
+                            }
+                        }
+
+                        //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
+                        //allowing them to cancel the package download
+                        if (preDYNDeps.Any())
+                        {
+                            var res = MessageBoxService.Show(ViewModelOwner,
+                            $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
+                            string.Format(Resources.PackageUseOlderDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                             //this message has a url link so we use the rich text box version of the message box.
                             showRichTextBox: true,
                             MessageBoxButton.OKCancel,
                             MessageBoxImage.Warning);
-                        if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
-                        {
-                            return;
+                            if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
+                            {
+                                return;
+                            }
                         }
                     }
-
-                    //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
-                    //allowing them to cancel the package download
-                    if (preDYN4Deps.Any())
+                    catch (ArgumentException ex)
                     {
-                        var res = MessageBoxService.Show(ViewModelOwner,
-                        $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
-                        string.Format(Resources.PackageUseOlderDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
-                        //this message has a url link so we use the rich text box version of the message box.
-                        showRichTextBox: true,
-                        MessageBoxButton.OKCancel,
-                        MessageBoxImage.Warning);
-                        if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
-                        {
-                            return;
-                        }
+                        DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
                     }
-                }
-                catch (ArgumentException ex)
-                {
-                    DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
-                }
-                catch (FormatException ex)
-                {
-                    DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
+                    catch (FormatException ex)
+                    {
+                        DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
+                    }
                 }
 
                 // add custom path to custom package folder list
@@ -1143,16 +1148,61 @@ namespace Dynamo.ViewModels
         /// <param name="downloadPath">package download path</param>
         internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
-            Package dynPkg;
-            if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
+            string stagingDirectory = null;
+            try
             {
+                if (!packageDownloadHandle.TryPrepareInstallation(DynamoViewModel.Model, out var dynPkg, out stagingDirectory))
+                {
+                    packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+                    return;
+                }
+
+                var packagesRoot = string.IsNullOrEmpty(downloadPath)
+                    ? DynamoViewModel.Model.PathManager.DefaultPackagesDirectory
+                    : downloadPath;
+
+                if (Directory.Exists(dynPkg.CustomNodeDirectory))
+                {
+                    var incomingInfo = new PackageInfo(dynPkg.Name, new Version(dynPkg.VersionName));
+                    if (DynamoViewModel.Model.CustomNodeManager.TryGetConflictingPackageCustomNodeInfo(
+                            dynPkg.CustomNodeDirectory,
+                            DynamoModel.IsTestMode,
+                            incomingInfo,
+                            out var conflictingExisting))
+                    {
+                        var existingDyfDir = Path.GetDirectoryName(conflictingExisting.Path);
+                        var installedPkg = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(
+                            p => string.Equals(p.CustomNodeDirectory, existingDyfDir, StringComparison.OrdinalIgnoreCase));
+
+                        if (installedPkg == null)
+                        {
+                            packageDownloadHandle.Error(Resources.MessagePackageInstallCancelledDueToCustomNodeConflict);
+                            return;
+                        }
+
+                        var userChoseReplace =
+                            PackageManagerExtension.PackageLoader.OnConflictingPackageLoaded(installedPkg, dynPkg);
+
+                        if (!userChoseReplace)
+                        {
+                            packageDownloadHandle.Error(Resources.MessagePackageInstallCancelledDueToCustomNodeConflict);
+                            return;
+                        }
+
+                        PackageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
+                        packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                        packageDownloadHandle.ErrorString = Resources.MessagePackageInstallRestartToCompleteCustomNodeReplace;
+                        return;
+                    }
+                }
+
+                PackageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
             }
-            else
+            finally
             {
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+                PackageDownloadHandle.DiscardStagingDirectory(stagingDirectory, DynamoViewModel.Model.Logger);
             }
         }
 

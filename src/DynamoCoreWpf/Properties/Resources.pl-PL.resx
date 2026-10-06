@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Aby móc korzystać z narzędzia Package Manager, włącz tryb sieciowy.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -552,7 +555,7 @@ Bez obaw, będziesz mieć możliwość zapisania pracy.</value>
     <value>_Główny obszar roboczy</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Otwórz...</value>
+    <value>_Otwórz plik</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>O_twórz ostatnie pliki</value>
@@ -1145,6 +1148,12 @@ Można później ponownie pobrać pakiet.</value>
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Nie można wczytać nieprawidłowego pakietu.</value>
+  </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Anulowano instalację z powodu konfliktu węzłów niestandardowych.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Uruchom ponownie dodatek Dynamo, aby usunąć pakiet powodujący konflikt.</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nie można odnaleźć węzła z tym identyfikatorem.</value>
@@ -2055,6 +2064,12 @@ Czy chcesz zainstalować najnowszą aktualizację dodatku Dynamo?</value>
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Nie zostanie dodana nowa karta, ponieważ to rozszerzenie już występuje na pasku bocznym rozszerzeń.</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Brak dostępu do pakietu/rozszerzenia {0}, ponieważ nie zainstalowano zestawu SDK formatu Autodesk ADP na komputer (nie znaleziono {1}), przez co nie można sprawdzić poprawności tokenów MCP. Każde żądanie zostanie odrzucone z komunikatem o błędzie 401 protokołu HTTP.</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Pakiet/rozszerzenie {0} nie jest oferowane, ponieważ pakiet Autodesk Identity (IDSDK) w tym procesie nie może sprawdzić poprawności tokenów MCP (biblioteka {1} nie eksportuje elementu {2}); każde żądanie zostanie odrzucone z kodem błędu HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>Nie można wczytać {1}.
@@ -3634,7 +3649,7 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
     <value>_Plik</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Szablon</value>
+    <value>Z szablonu…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Obszarów roboczych nie można zapisać bezpośrednio w folderze szablonów. Wybierz inny folder, aby zapisać plik.
@@ -3808,6 +3823,9 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Podano nieprawidłową ścieżkę pliku. Jeśli plik jest zarchiwizowany, należy go rozpakować przed otwarciem.\n{0}</value>
+  </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>Ten plik nie jest już dostępny. Być może został przeniesiony lub usunięty albo zmieniono jego nazwę.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Zablokuj grupę</value>

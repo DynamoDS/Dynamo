@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Eine Klasse, die einen von Dynamo unterstützten DataType darstellt</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Eine Klasse, die einen von Dynamo unterstützten DataType darstellt</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Optionaler Name zum Überschreiben des Typnamens (`Number` anstelle von `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>Drahtformat $typeid (z. B. "autodesk.math:point3d-1.0.0").
+            Null für primitive Typen, die keine $typeid-Serialisierung verwenden.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>Die in der Benutzeroberfläche anzuzeigende hierarchische Ebene</summary>
@@ -342,6 +346,11 @@
             <summary>Gibt eine Liste von DataNodeDynamoTypes aus einer ArrayList von Objekten zurück</summary>
             <param name="list">ArrayList der neu zu formatierenden Objekte</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Prüft, ob die Define Data-Eingabe nicht verwendet wurde (null oder leere Liste).</summary>
+            <param name="inputValue">Der Eingabewert aus dem Diagramm.</param>
+            <returns>True, wenn die Eingabe als nicht verbunden oder nicht verwendet behandelt werden soll.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Überprüft, ob das Eingabeobjekt ein einzelner Wert oder eine ArrayList mit einer einzigen Ebene ist.</summary>

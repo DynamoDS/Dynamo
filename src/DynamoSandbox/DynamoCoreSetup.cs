@@ -73,7 +73,7 @@ namespace DynamoSandbox
                     return;
                 StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
 
-                splashScreen = new Dynamo.UI.Views.SplashScreen();
+                splashScreen = new Dynamo.UI.Views.SplashScreen(enableSignInButton: true, noNetworkMode: noNetworkMode);
                 splashScreen.DynamicSplashScreenReady += LoadDynamoView;
                 splashScreen.Show();
                 app.Run();

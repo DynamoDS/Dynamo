@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -1144,7 +1145,12 @@ namespace Dynamo.Models
         /// <returns></returns>
         internal PathManager CreatePathManager(IStartConfiguration config)
         {
-            var pathManagerParams = new PathManagerParams();
+            var pathManagerParams = new PathManagerParams
+            {
+                // Always supply HostPath so TraverseForExecutableAssembly can locate host
+                // assemblies on the call stack even when version is not explicitly provided.
+                HostPath = config.DynamoHostPath
+            };
 
             var version = config.HostAnalyticsInfo.HostVersion;
             if (version != null)
@@ -1152,9 +1158,11 @@ namespace Dynamo.Models
                 // Use host versions if provided
                 pathManagerParams.MajorFileVersion = version.Major;
                 pathManagerParams.MinorFileVersion = version.Minor;
-
-                Dynamo.Core.PathManager.Initialize(pathManagerParams);
             }
+
+            // Always initialize so the singleton is created with host context before
+            // Instance is first accessed. Initialize is a no-op if already set.
+            Dynamo.Core.PathManager.Initialize(pathManagerParams);
 
             if (!config.StartInTestMode)
             {
@@ -1883,6 +1891,10 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+
+            // Capture before locale swap so reset logs/saves compare against the value from DynamoSettings.xml.
+            var persistedTemplatePath = PreferenceSettings.TemplateFilePath;
+
             var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
 
             //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
@@ -1899,9 +1911,36 @@ namespace Dynamo.Models
                 }
             }
 
+            if (Core.PathManager.ShouldResetPersistedTemplatesPath(PreferenceSettings.TemplateFilePath, pathManager.DefaultTemplatesDirectory))
+            {
+                PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Log($"Configured template path {persistedTemplatePath} is not available; falling back to {PreferenceSettings.TemplateFilePath}");
+                }
+            }
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
-            UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
+            if (!UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath))
+            {
+                // The preferred templates location could not be used, so the default stays
+                // in effect. This previously failed silently and only surfaced downstream as
+                // a null templates directory. See DYN-10661.
+                Logger?.Log("Could not use templates location '" + PreferenceSettings.TemplateFilePath +
+                    "'. Falling back to '" + pathManager.TemplatesDirectory + "'.", LogLevel.File);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+                {
+                    PreferenceSettings.AddTrustedLocation(PreferenceSettings.TemplateFilePath);
+                }
+
+                if (!string.Equals(persistedTemplatePath, PreferenceSettings.TemplateFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+                }
+            }
         }
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
         {
@@ -2167,20 +2206,31 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            OpenFileFromPathCore(filePath, forceManualExecutionMode, forceBlockRun: false);
+        }
+
+        /// <summary>
+        /// Opens a Dynamo workspace from a path to a file on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        internal void OpenFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        {
 
             Exception ex;
             string fileContents;
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun: forceBlockRun);
             }
             else
             {
                 // These kind of exceptions indicate that file is not accessible
                 if (ex is IOException || ex is UnauthorizedAccessException)
                 {
-                    throw ex;
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
                 XmlDocument xmlDoc;
@@ -2188,33 +2238,46 @@ namespace Dynamo.Models
                 // When Json opening failed, either this file is corrupted or file might be XML
                 if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                 {
-                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                    return;
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, forceBlockRun: forceBlockRun);
                 }
                 else
                 {
-                    throw ex;
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
             }
         }
 
         /// <summary>
         /// Opens a Dynamo workspace from a path to a template on disk.
+        /// Supports JSON workspaces and legacy XML-format graphs
         /// </summary>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
+            Exception ex;
+            string fileContents;
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
+                return;
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible
-                if (ex is IOException || ex is UnauthorizedAccessException || ex is JsonReaderException)
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    throw ex;
+                }
+
+                XmlDocument xmlDoc;
+
+                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                {
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, isTemplate: true);
+                    return;
+                }
+                else
                 {
                     throw ex;
                 }
@@ -2228,13 +2291,23 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode"></param>
         public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            InsertFileFromPathCore(filePath, forceManualExecutionMode, forceBlockRun: false);
+        }
+
+        /// <summary>
+        /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="forceManualExecutionMode"></param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        internal void InsertFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        {
             Exception ex;
             string fileContents;
 
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
+                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun);
             }
             else
             {
@@ -2250,7 +2323,6 @@ namespace Dynamo.Models
                     if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                     {
                         InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                        return;
                     }
                 }
                 else
@@ -2293,11 +2365,14 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
         /// <returns>True if workspace was opened successfully</returns>
-        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
+                var workspaceOpened = false;
+
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
@@ -2305,7 +2380,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, forceBlockRun, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -2313,10 +2388,11 @@ namespace Dynamo.Models
                             OnComputeModelDeserialized();
 
                             SetPeriodicEvaluation(ws);
+                            workspaceOpened = true;
                         }
                     }
                 }
-                return true;
+                return workspaceOpened;
             }
             catch (Exception e)
             {
@@ -2327,7 +2403,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        private void InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceBlockRun = false)
         {
             try
             {
@@ -2337,19 +2413,11 @@ namespace Dynamo.Models
                 fileContents = GuidUtility.UpdateWorkspaceGUIDs(fileContents);
 
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
-                if (dynamoPreferences != null)
+                if (dynamoPreferences != null && OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, forceBlockRun, out WorkspaceModel ws))
                 {
-                    if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
-                    {
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, out WorkspaceModel ws))
-                        {
-                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
-
-                            InsertWorkspace(ws, viewInfo);
-                        }
-                    }
+                    ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    InsertWorkspace(ws, viewInfo);
                 }
-                return true;
             }
             catch (Exception e)
             {
@@ -2367,8 +2435,9 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
+        /// <param name="isTemplate">When true, marks the opened workspace as a template (for example when opened via <see cref="OpenTemplateFromPath"/>).</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening.</param>
+        private void OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
@@ -2390,19 +2459,22 @@ namespace Dynamo.Models
                         WorkspaceModel ws;
                         if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
                         {
+                            ws.IsTemplate = isTemplate;
+                            if (ws is HomeWorkspaceModel homeWs && homeWs.RunSettings != null)
+                            {
+                                homeWs.RunSettings.ForceBlockRun = forceBlockRun;
+                            }
                             OpenWorkspace(ws);
-
                             // Set up workspace cameras here
                             OnWorkspaceOpening(xmlDoc);
                             SetPeriodicEvaluation(ws);
                         }
                     }
                 }
-                return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                Logger.Log(ex);
             }
         }
 
@@ -2440,6 +2512,15 @@ namespace Dynamo.Models
             }
         }
 
+        private void NotifyLegacyTraceDataWarningIfNeeded(WorkspaceModel workspace)
+        {
+            if (IsTestMode || IsHeadless)
+                return;
+
+            if (workspace?.ContainsLegacyTraceData == true)
+                OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+        }
+
         private void OpenWorkspace(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -2463,6 +2544,7 @@ namespace Dynamo.Models
             AddWorkspace(ws);
             CurrentWorkspace = ws;
             OnWorkspaceOpened(ws);
+            NotifyLegacyTraceDataWarningIfNeeded(ws);
         }
 
         private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
@@ -2542,6 +2624,7 @@ namespace Dynamo.Models
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
           bool isTemplate,
+          bool forceBlockRun,
           out WorkspaceModel workspace)
         {
             if (!string.IsNullOrEmpty(filePath))
@@ -2573,13 +2656,6 @@ namespace Dynamo.Models
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
-            if (!IsTestMode && !IsHeadless)
-            {
-                if (workspace.ContainsLegacyTraceData)
-                {
-                    OnRequestNotification(Resources.LegacyTraceDataWarning, true);
-                }
-            }
 
             if (workspace is HomeWorkspaceModel homeWorkspace)
             {
@@ -2591,16 +2667,24 @@ namespace Dynamo.Models
 
                 if (string.IsNullOrEmpty(workspace.FileName))
                 {
-                    workspace.HasUnsavedChanges = true;
+                    workspace.MarkAsIndependentlyModified();
                 }
 
-                RunType runType;
-                if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
-                    runType = RunType.Manual;
-                int runPeriod;
-                if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
-                    runPeriod = RunSettings.DefaultRunPeriod;
+                RunType runType = RunType.Manual;
+                if (homeWorkspace.HasRunWithoutCrash
+                    && !forceManualExecutionMode
+                    && Enum.TryParse(dynamoPreferences.RunType, false, out RunType parsedRunType))
+                {
+                    runType = parsedRunType;
+                }
+                int runPeriod = RunSettings.DefaultRunPeriod;
+                if (Int32.TryParse(dynamoPreferences.RunPeriod, out int parserRunPeriod))
+                {
+                    runPeriod = parserRunPeriod;
+                }
+
                 homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
+                homeWorkspace.RunSettings.ForceBlockRun = forceBlockRun;
 
                 RegisterHomeWorkspace(homeWorkspace);
             }
@@ -2674,7 +2758,7 @@ namespace Dynamo.Models
 
             if (resolvedDummyNode)
             {
-                currentWorkspace.HasUnsavedChanges = false;
+                currentWorkspace.MarkAsSaved();
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
                 // the Dependency table is regenerated in the WorkspaceDependencyView extension.
                 currentWorkspace.OnDummyNodesReloaded();
@@ -2706,10 +2790,6 @@ namespace Dynamo.Models
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
 
             var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsLegacyTraceData);
-            if (!IsTestMode && !IsHeadless)
-            {
-                if (containsLegacyTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
-            }
 
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
@@ -2727,6 +2807,12 @@ namespace Dynamo.Models
                 IsTestMode,
                 LinterManager
                );
+
+            // ContainsLegacyTraceData is only set on the workspace for the JSON path (in
+            // SerializationConverters). For XML files it is computed here but never assigned, so
+            // the centralized NotifyLegacyTraceDataWarningIfNeeded check in OpenWorkspace never
+            // fires. Propagate it so legacy XML graphs also surface the warning.
+            newWorkspace.ContainsLegacyTraceData = containsLegacyTraceData;
 
             RegisterHomeWorkspace(newWorkspace);
 
@@ -2923,40 +3009,100 @@ namespace Dynamo.Models
             }
         }
 
-        internal void AddToGroup(List<ModelBase> modelsToAdd)
+        /// <summary>
+        /// Adds models to a group.
+        /// When <paramref name="hostGroupGuid"/> is empty, uses the selected expanded group
+        /// (existing canvas behavior). When a host id is provided, uses that group even if
+        /// it is not selected. The host must exist and be expanded.
+        /// </summary>
+        /// <param name="modelsToAdd">Nodes or notes to add to the group.</param>
+        /// <param name="hostGroupGuid">Optional destination group id. Empty uses selection.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the host is missing, is not a group, is collapsed, no destination group can be resolved,
+        /// or none of the models ended up in the host group.
+        /// </exception>
+        internal void AddToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid = default)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
-            var selectedGroups = workspaceAnnotations
-                .Where(x => x.IsSelected && x.IsExpanded);
+            AnnotationModel hostGroup;
 
-            // If multiple groups are selected, chances are that we
-            // have a group that contains a nested group.
-            // If this is the case we want to make sure that we add the
-            // node to the parent folder.
-            var selectedGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
-                selectedGroups.FirstOrDefault();
-
-            if (selectedGroup != null)
+            if (hostGroupGuid != Guid.Empty)
             {
-                foreach (var model in modelsToAdd)
+                // Explicit host: do not require selection - MCP path
+                hostGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
+                if (hostGroup == null)
                 {
-                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToTargetAnnotationModel(model);
+                    throw new InvalidOperationException("Cannot add to group: the host id does not match an existing group.");
+                }
+
+                if (!hostGroup.IsExpanded)
+                {
+                    throw new InvalidOperationException("Cannot add to group: the host group is collapsed.");
+                }
+            }
+            else
+            {
+                var selectedGroups = workspaceAnnotations
+                    .Where(x => x.IsSelected && x.IsExpanded);
+
+                // If multiple groups are selected, chances are that we
+                // have a group that contains a nested group.
+                // If this is the case we want to make sure that we add the
+                // node to the parent folder.
+                hostGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
+                    selectedGroups.FirstOrDefault();
+
+                if (hostGroup == null)
+                {
+                    throw new InvalidOperationException("Cannot add to group: no selected expanded group was found.");
                 }
             }
 
+            foreach (var model in modelsToAdd)
+            {
+                CurrentWorkspace.RecordGroupModelBeforeUngroup(hostGroup);
+                hostGroup.AddToTargetAnnotationModel(model);
+            }
+
+            // Already-grouped models count as success (idempotent). Wrong ids are
+            // rejected in AddToGroupImpl. If nothing is in the host after this loop,
+            // the add did not happen.
+            if (!modelsToAdd.Any(model => model != null && hostGroup.Nodes.Any(node => node.GUID == model.GUID)))
+            {
+                throw new InvalidOperationException("Cannot add to group: none of the models were added to the host group.");
+            }
         }
 
         /// <summary>
         /// Add a list of annotations to the host group on model level.
+        /// Only a single level of nesting is allowed, matching the canvas:
+        /// the host must not already belong to another group, and none of the
+        /// groups being added may themselves contain nested groups
         /// </summary>
         /// <param name="modelsToAdd">List of annotation models.</param>
         /// <param name="hostGroupGuid">Host annotation guid.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the host is already nested, or a group being added already contains groups.
+        /// </exception>
         internal void AddGroupsToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
+
+            // Cannot nest into a group that is already inside another group
+            if (workspaceAnnotations.ContainsModel(selectedGroup))
+            {
+                throw new InvalidOperationException("Cannot add group to group: the host group is already nested.");
+            }
+
+            var groupsToAdd = modelsToAdd.OfType<AnnotationModel>().ToList();
+
+            // Cannot nest a group that already nested groups
+            if (groupsToAdd.Any(g => g.HasNestedGroups))
+            {
+                throw new InvalidOperationException("Cannot add group to group: a group being added already contains nested groups.");
+            }
 
             var modelsToModify = new List<ModelBase>();
             modelsToModify.AddRange(modelsToAdd);
@@ -3546,7 +3692,7 @@ namespace Dynamo.Models
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
-            CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.MarkAsSaved();
             CurrentWorkspace.Name = "";
 
             // Clear workspace metadata properties when creating new workspace

@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Dynamo에서 지원하는 DataType을 나타내는 클래스</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Dynamo에서 지원하는 DataType을 나타내는 클래스</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Type 이름을 재지정할 선택적 Name(`long` 대신 Number`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>와이어 형식 $typeid(예: "autodesk.math:point3d-1.0.0").
+            $typeid 직렬화를 사용하지 않는' 기본체 유형의 경우 null.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>UI에 표시할 계층 레벨</summary>
@@ -342,6 +346,11 @@
             <summary>객체의 ArrayList에서 DataNodeDynamoTypes 리스트를 반환합니다.</summary>
             <param name="list">형식을 다시 지정할 객체의 ArrayList</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>데이터 정의 입력이 사용되지 않는지(null 또는 빈 리스트) 확인합니다.</summary>
+            <param name="inputValue">그래프의 입력 값입니다.</param>
+            <returns>입력을 연결되지 않았거나 사용되지 않은 상태로 처리해야 하는 경우 True입니다.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>입력 객체가 단일 값인지 또는 단일 레벨 ArrayList인지 확인합니다.</summary>

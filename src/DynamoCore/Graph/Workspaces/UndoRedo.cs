@@ -34,25 +34,93 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Determine if undo operation is currently possible.
+        ///     Determine if undo operation is currently possible. Always false while an undo
+        ///     action group opened by <see cref="BeginUndoActionGroup"/> is still open.
         /// </summary>
         public bool CanUndo
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanUndo);
+                return (null != undoRecorder && undoRecorder.CanUndo && !undoRecorder.IsCoalescingScopeOpen);
             }
         }
 
         /// <summary>
-        ///     Determine if redo operation is currently possible.
+        ///     Determine if redo operation is currently possible. Always false while an undo
+        ///     action group opened by <see cref="BeginUndoActionGroup"/> is still open.
         /// </summary>
         public bool CanRedo
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanRedo);
+                return (null != undoRecorder && undoRecorder.CanRedo && !undoRecorder.IsCoalescingScopeOpen);
             }
+        }
+
+        /// <summary>
+        /// True while an undo action group opened by <see cref="BeginUndoActionGroup"/> is still open.
+        /// Undo and redo are unavailable while a group is open.
+        /// </summary>
+        public bool IsUndoActionGroupOpen
+        {
+            get
+            {
+                return (null != undoRecorder && undoRecorder.IsCoalescingScopeOpen);
+            }
+        }
+
+        /// <summary>
+        /// Opens an undo action group that stays open until the returned object is disposed, so that
+        /// every change recorded in the meantime is reverted by a SINGLE undo.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Individual workspace operations keep recording exactly as they do outside a group, each
+        /// one landing on the undo stack as usual; disposing the returned object merges everything
+        /// they recorded into a single undo step. That is what an automation client (for example an
+        /// assistant applying a batch of edits in response to a single user request) needs so the
+        /// user can reverse the whole batch with one undo rather than one undo per internal
+        /// operation. The number of internal undo steps an operation occupies is an implementation
+        /// detail and varies per operation, so it is not something a client can compensate for by
+        /// counting.
+        /// </para>
+        /// <para>
+        /// The caller MUST dispose the returned object. While a group is open, undo and redo do
+        /// nothing and <see cref="CanUndo"/> and <see cref="CanRedo"/> report false, so a group
+        /// that is never closed leaves undo unavailable for the rest of the session. Callers that
+        /// cannot use a <c>using</c> block — because the group spans several separate calls — must
+        /// hold the object and dispose it on every exit path, including error paths. Disposing it
+        /// more than once is safe.
+        /// </para>
+        /// <para>
+        /// A group in which nothing was recorded leaves the undo stack untouched, so opening and
+        /// closing one around a read-only operation costs nothing.
+        /// </para>
+        /// </remarks>
+        /// <returns>
+        /// An object that closes the group when disposed. Disposing it more than once is safe.
+        /// </returns>
+        public IDisposable BeginUndoActionGroup()
+        {
+            if (null == undoRecorder)
+            {
+                return NoOpUndoActionGroup.Instance;
+            }
+
+            return undoRecorder.BeginCoalescingScope();
+        }
+
+        /// <summary>
+        /// Returned by <see cref="BeginUndoActionGroup"/> when there is no recorder to open a group
+        /// on, so that callers can always dispose the result unconditionally.
+        /// </summary>
+        private sealed class NoOpUndoActionGroup : IDisposable
+        {
+            internal static readonly NoOpUndoActionGroup Instance = new NoOpUndoActionGroup();
+
+            private NoOpUndoActionGroup() { }
+
+            public void Dispose() { }
         }
 
         internal void Undo()
@@ -60,6 +128,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
             {
                 undoRecorder.Undo();
+                UpdateHasUnsavedChangesFromSavedStateAffectingDepth();
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
                 // Request run for every undo action
@@ -72,6 +141,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
             {
                 undoRecorder.Redo();
+                UpdateHasUnsavedChangesFromSavedStateAffectingDepth();
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
                 // Request run for every redo action
@@ -83,6 +153,31 @@ namespace Dynamo.Graph.Workspaces
         {
             if (null != undoRecorder)
                 undoRecorder.Clear();
+
+            savedUndoDepth = 0;
+        }
+
+        /// <summary>
+        /// Marks this workspace as having no unsaved changes, and remembers the current
+        /// position in the undo history so that Undo/Redo back to this exact point can
+        /// correctly report the workspace as clean again, rather than leaving Undo unable
+        /// to ever clear the one-way dirty flag (DYN-10717).
+        /// </summary>
+        internal void MarkAsSaved()
+        {
+            // A save clears both undo-tracked and independently-flagged (administrative)
+            // dirty state. independentDirtyFlag must be reset explicitly here
+            independentDirtyFlag = false;
+            HasUnsavedChanges = false;
+            savedUndoDepth = undoRecorder?.SavedStateAffectingUndoDepth ?? 0;
+        }
+
+        private void UpdateHasUnsavedChangesFromSavedStateAffectingDepth()
+        {
+            // OR in independentDirtyFlag rather than overwriting: the undo stack being back
+            // at its saved position only means undo-tracked content is clean again
+            bool undoDepthIndicatesUnsaved = undoRecorder.SavedStateAffectingUndoDepth != savedUndoDepth;
+            HasUnsavedChanges = undoDepthIndicatesUnsaved || independentDirtyFlag;
         }
 
         // See RecordModelsForModification below for more details.
@@ -106,7 +201,12 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="models">The models to be recorded for undo.</param>
         /// <param name="recorder"></param>
-        internal static void RecordModelsForModification(List<ModelBase> models, UndoRedoRecorder recorder)
+        /// <param name="markAsModified">
+        /// Whether this recording represents a real content change that should mark the
+        /// workspace dirty. Pass false for recordings that exist purely to make an incidental
+        /// action (like a selection change) undoable (DYN-10717).
+        /// </param>
+        internal static void RecordModelsForModification(List<ModelBase> models, UndoRedoRecorder recorder, bool markAsModified = true)
         {
             if (null == recorder)
                 return;
@@ -116,7 +216,7 @@ namespace Dynamo.Graph.Workspaces
             using (recorder.BeginActionGroup())
             {
                 foreach (var model in models)
-                    recorder.RecordModificationForUndo(model);
+                    recorder.RecordModificationForUndo(model, markAsModified);
             }
         }
 
@@ -852,6 +952,15 @@ namespace Dynamo.Graph.Workspaces
         {
             RaisePropertyChanged("CanUndoRedoCommand");
         }
+
+        // Explicit implementation (rather than matching the public/implicit style of
+        // the other IUndoRedoRecorderClient members above) so this stays an internal
+        // implementation detail of the undo/dirty-flag wiring, not new public API.
+        void IUndoRedoRecorderClient.MarkAsModified()
+        {
+            HasUnsavedChanges = true;
+        }
+
         /// <summary>
         /// Returns model by GUID
         /// </summary>

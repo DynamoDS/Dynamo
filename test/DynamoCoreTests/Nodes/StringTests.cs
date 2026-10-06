@@ -99,6 +99,32 @@ namespace Dynamo.Tests
             AssertPreviewValue("a105ad39-9b1c-44aa-a2cb-37866ea48dd0", new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
         }
 
+        [Test]
+        public void TestConcatStringUseLevelsOnVariadicPort()
+        {
+            // DYN-10572: per-port Use Levels must take effect on variadic ports of a
+            // DSVarArgFunction. Here string0 = "hello", string1 = ["a","b"] with
+            // UseLevels @L1 on string1; the @L1 must replicate concat over the list.
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestConcatStringUseLevels.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("aaaa1111-0000-2222-0000-3333aaaa4444", new string[] { "helloa", "hellob" });
+        }
+
+        [Test]
+        public void TestConcatStringNestedListRankIndependence()
+        {
+            // DYN-10572: each variadic port's Use Levels / replication setting must be
+            // honored independently of the other ports' rank. Two 1D lists with
+            // UseLevels @L1 on both ports must replicate in parallel under Auto lacing.
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestConcatStringNestedListIndependence.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("bbbb1111-0000-2222-0000-3333bbbb4444", new string[] { "ac", "bd" });
+        }
+
         #endregion
 
         #region substring test cases  
@@ -198,6 +224,21 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
             AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "first.second");
 
+        }
+
+        [Test]
+        public void TestJoinStringUseLevelsOnVariadicPort()
+        {
+            // DYN-10572: String.Join has both a non-variadic prefix port (separator)
+            // and variadic ports. The separator (prefix port) broadcasts unchanged while
+            // Use Levels on a variadic port (string1 = ["a","b"] @L1) replicates the join,
+            // confirming the prefix port passes through correctly and per-port Use Levels
+            // is honored on the variadic ports.
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestJoinStringUseLevelsOnVariadicPort.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("cccc11110000222200003333cccc4444", new string[] { "x-a", "x-b" });
         }
 
         #endregion

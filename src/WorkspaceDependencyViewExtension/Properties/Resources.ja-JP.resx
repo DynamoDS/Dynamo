@@ -147,6 +147,9 @@
   <data name="InstallButtonText" xml:space="preserve">
     <value>指定のバージョンをインストール</value>
   </data>
+  <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
+    <value>パッケージをインストールできるようにするには、ネットワーク モードを有効にします。</value>
+  </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>インストール済みのバージョンを保持</value>
   </data>

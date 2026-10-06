@@ -104,7 +104,8 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.LoadPackages(new List<Package> {pkg});
 
-            Assert.IsTrue(loader.RequestedExtensions.Count() == 2);
+            //3 = the DSPythonNet3 and DynamoMCP extensions from the built-in packages, plus SampleExtension loaded above.
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 3);
             Assert.IsTrue(extensionLoad);
             Assert.IsTrue(extensionAdd);
             Assert.IsTrue(extensionReady);
@@ -595,12 +596,148 @@ namespace Dynamo.PackageManager.Tests
             var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
             {
                 Console.WriteLine($"val {x.Value}, name {x.Value.Name}, pkginfo {x.Value.PackageInfo}, packagemember {x.Value.IsPackageMember}");
-                return x.Value.PackageInfo.Equals(packageInfo);
+                return x.Value.PackageInfo != null && x.Value.PackageInfo.Equals(packageInfo);
             }
             ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x=>x.Value.IsPackageMember == true));
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+            loader.RequestLoadCustomNodeDirectory -= reqLoadCNDelegate;
+        }
+
+        [Test]
+        public void DecliningStagedCustomNodeConflictPackageDoesNotCommitAndRemovesStaging()
+        {
+            // Load test packages - EvenOdd has a custom node that EvenOdd2 duplicates by GUID
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) =>
+                CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+            loader.RequestLoadCustomNodeDirectory += reqLoadCNDelegate;
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            });
+
+            var evenOddInstalled = loader.LocalPackages.FirstOrDefault(p => p.Name == "EvenOdd");
+            Assert.IsNotNull(evenOddInstalled);
+            var prefs = CurrentDynamoModel.PreferenceSettings;
+            var evenOddRoot = evenOddInstalled.RootDirectory;
+            var uninstallListedEvenOddBefore = prefs.PackageDirectoriesToUninstall.Contains(evenOddRoot);
+
+            // Simulate a downloaded package, zip EvenOdd2, then unzip like PackageDownloadHandle
+            var evenOdd2Source = Path.Combine(PackagesDirectory, "EvenOdd2");
+            var compressor = new MutatingFileCompressor();
+            var zipFile = compressor.Zip(new RealDirectoryInfo(new DirectoryInfo(evenOdd2Source)));
+            var downloadHandle = new PackageDownloadHandle { DownloadPath = zipFile.Name };
+
+            var packagesInstallRoot = Path.Combine(TempFolder, "decline_install_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(packagesInstallRoot);
+
+            Assert.IsTrue(downloadHandle.TryPrepareInstallation(CurrentDynamoModel, out var stagedPkg, out var stagingDir));
+            Assert.IsTrue(Directory.Exists(stagingDir));
+
+            // Precheck: same rule as PackageManagerClientViewModel before CompleteInstallation
+            var incomingInfo = new PackageInfo("EvenOdd2", new System.Version(1, 0, 0));
+            Assert.IsTrue(CurrentDynamoModel.CustomNodeManager.TryGetConflictingPackageCustomNodeInfo(
+                stagedPkg.CustomNodeDirectory,
+                false,
+                incomingInfo,
+                out var conflicting));
+            Assert.AreEqual("EvenOdd", conflicting.PackageInfo.Name);
+
+            // User chose No: do not commit, remove staging
+            PackageDownloadHandle.DiscardStagingDirectory(stagingDir, CurrentDynamoModel.Logger);
+
+            var committedPath = Path.Combine(packagesInstallRoot, "EvenOdd2");
+            Assert.IsFalse(Directory.Exists(stagingDir));
+            Assert.AreEqual(uninstallListedEvenOddBefore, prefs.PackageDirectoriesToUninstall.Contains(evenOddRoot));
+
+            // Without CompleteInstallation, EvenOdd2 would not appear under packagesInstallRoot
+            Assert.IsFalse(Directory.Exists(committedPath));
+            var zipFileControl = compressor.Zip(new RealDirectoryInfo(new DirectoryInfo(evenOdd2Source)));
+            var downloadHandleControl = new PackageDownloadHandle { DownloadPath = zipFileControl.Name };
+            Assert.IsTrue(downloadHandleControl.TryPrepareInstallation(CurrentDynamoModel, out var stagedPkgControl, out var stagingDirControl));
+            PackageDownloadHandle.CompleteInstallation(stagedPkgControl, stagingDirControl, packagesInstallRoot);
+            PackageDownloadHandle.DiscardStagingDirectory(stagingDirControl, CurrentDynamoModel.Logger);
+            Assert.IsTrue(Directory.Exists(committedPath));
+            Assert.IsTrue(File.Exists(Path.Combine(committedPath, "pkg.json")));
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+            loader.RequestLoadCustomNodeDirectory -= reqLoadCNDelegate;
+        }
+
+        [Test]
+        public void AcceptingStagedCustomNodeConflictPackageCommitsAndMarksExistingForUninstall()
+        {
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) =>
+                CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+            loader.RequestLoadCustomNodeDirectory += reqLoadCNDelegate;
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            });
+
+            var evenOddInstalled = loader.LocalPackages.FirstOrDefault(p => p.Name == "EvenOdd");
+
+            Assert.IsNotNull(evenOddInstalled);
+
+            var prefs = CurrentDynamoModel.PreferenceSettings;
+            var evenOddRoot = evenOddInstalled.RootDirectory;
+
+            // Isolate uninstall-list assertion for this test
+            prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(evenOddRoot));
+
+            var evenOdd2Source = Path.Combine(PackagesDirectory, "EvenOdd2");
+            var compressor = new MutatingFileCompressor();
+            var zipFile = compressor.Zip(new RealDirectoryInfo(new DirectoryInfo(evenOdd2Source)));
+            var downloadHandle = new PackageDownloadHandle { DownloadPath = zipFile.Name };
+
+            var packagesInstallRoot = Path.Combine(TempFolder, "accept_install_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(packagesInstallRoot);
+
+            Assert.IsTrue(downloadHandle.TryPrepareInstallation(CurrentDynamoModel, out var stagedPkg, out var stagingDir));
+            var incomingInfo = new PackageInfo("EvenOdd2", new System.Version(1, 0, 0));
+            Assert.IsTrue(CurrentDynamoModel.CustomNodeManager.TryGetConflictingPackageCustomNodeInfo(
+                stagedPkg.CustomNodeDirectory,
+                false,
+                incomingInfo,
+                out _));
+
+            // User chose Yes, same as ConflictingCustomNodePackageLoaded handler — mark existing for removal after restart
+            evenOddInstalled.MarkForUninstall(prefs);
+            // Commit to disk
+            PackageDownloadHandle.CompleteInstallation(stagedPkg, stagingDir, packagesInstallRoot);
+            PackageDownloadHandle.DiscardStagingDirectory(stagingDir, CurrentDynamoModel.Logger);
+
+            var committedPath = Path.Combine(packagesInstallRoot, "EvenOdd2");
+
+            Assert.IsTrue(Directory.Exists(committedPath));
+            Assert.IsTrue(File.Exists(Path.Combine(committedPath, "pkg.json")));
+            Assert.IsFalse(Directory.Exists(stagingDir));
+            Assert.IsTrue(prefs.PackageDirectoriesToUninstall.Contains(evenOddRoot));
 
             loader.PackagesLoaded -= libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
@@ -627,7 +764,7 @@ namespace Dynamo.PackageManager.Tests
             var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
             {
                 Console.WriteLine($"val{x.Value}, name{x.Value.Name}, pkginfo{x.Value.PackageInfo}, packagemember{x.Value.IsPackageMember}");
-                return x.Value.PackageInfo.Equals(packageInfo);
+                return x.Value.PackageInfo != null && x.Value.PackageInfo.Equals(packageInfo);
             }
             ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
@@ -637,7 +774,7 @@ namespace Dynamo.PackageManager.Tests
             var cninst = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(matchingNodes.FirstOrDefault().Key, null, true);
             this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(cninst);
 
-            matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo != null && x.Value.PackageInfo.Equals(packageInfo)).ToList();
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x => x.Value.IsPackageMember == true));
 
@@ -1294,6 +1431,7 @@ namespace Dynamo.PackageManager.Tests
             var packageDirectories = pathManager.PackagesDirectories;
             var defaultUserDefinitions = pathManager.DefaultUserDefinitions;
             var userDefinitions = pathManager.DefinitionDirectories;
+            var commonDefinitions = Path.Combine(pathManager.CommonDataDirectory, PathManager.DefinitionsDirectoryName);
 
             // Assert
             const string ExpectedToken = @"%BuiltInPackages%";
@@ -1302,9 +1440,12 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(packageDirectories.Contains(ExpectedToken));
             Assert.IsTrue(packageDirectories.Contains(PathManager.BuiltinPackagesDirectory));
             Assert.AreNotEqual(ExpectedToken, defaultUserDefinitions);
-            Assert.AreEqual(2, userDefinitions.Count());
+            Assert.IsTrue(Directory.Exists(commonDefinitions),
+                "Shipped definitions folder should be copied to the DynamoCore output directory during build.");
+            Assert.AreEqual(3, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(ExpectedToken));
             Assert.IsTrue(userDefinitions.Contains(PathManager.BuiltinPackagesDirectory));
+            Assert.IsTrue(userDefinitions.Contains(commonDefinitions));
         }
 
         [Test]

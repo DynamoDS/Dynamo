@@ -36,6 +36,13 @@ namespace Dynamo.WorkspaceDependency
 
         private readonly IPackageInstaller packageInstaller;
 
+        /// <summary>
+        /// Indicates whether Dynamo was started in no-network mode. When true, the
+        /// Install Specified Version button in this extension is disabled and shows
+        /// a tooltip explaining that Network Mode must be enabled to install packages.
+        /// </summary>
+        public bool NoNetworkMode { get; private set; }
+
         private Boolean hasDependencyIssue = false;
 
         /// <summary>
@@ -139,6 +146,10 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="p">ViewLoadedParams</param>
         public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension, ViewLoadedParams p)
         {
+            // NoNetworkMode must be set before InitializeComponent so the XAML DataTrigger
+            // that disables the Install button reads the correct value on first evaluation.
+            // A plain CLR property has no change notification, so the trigger only fires once.
+            NoNetworkMode = p.StartupParams.NoNetworkMode;
             InitializeComponent();
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
@@ -226,8 +237,8 @@ namespace Dynamo.WorkspaceDependency
                     info.Version = new Version(targetInfo.VersionName);
                     info.State = PackageDependencyState.Loaded;
                     info.Path = targetInfo.RootDirectory;
-                    // Mark the current workspace dirty for save
-                    currentWorkspace.HasUnsavedChanges = true;
+                    // Mark the current workspace dirty for save.
+                    currentWorkspace.MarkAsIndependentlyModified();
                     dependencyViewExtension.DependencyRegen(currentWorkspace);
                 }
             }

@@ -1,4 +1,5 @@
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using System;
@@ -192,6 +193,15 @@ namespace Dynamo.Wpf.Utilities
             else if (sender is DynamoModel dm)
             {
                 model = dm;
+            }
+
+            // In no-network mode we must not upload crash reports. The CER tool transmits crash
+            // dumps to Autodesk, which would violate the no-network guarantee, so we skip it and
+            // leave the local crash artifacts in place instead.
+            if (model?.NoNetworkMode == true)
+            {
+                model.Logger?.LogWarning("CER crash report upload was skipped because Dynamo is running in no-network mode.", WarningLevel.Mild);
+                return false;
             }
 
             string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?

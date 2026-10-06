@@ -39,10 +39,10 @@ $excludedFiles = @(
     "JUnit.TestLogger.dll",
     "LaunchDarkly.*",
     "LibG*.dll",
-    "libiconv.dll",         # https://jira.autodesk.com/browse/DYN-7069
-    "libintl.dll",          # https://jira.autodesk.com/browse/DYN-7069
-    "libHarfBuzzSharp.dll", # https://jira.autodesk.com/browse/DYN-6598
-    "libSkiaSharp.dll",     # https://jira.autodesk.com/browse/DYN-6598
+    "libiconv.dll",         # https://autodesk.atlassian.net/browse/DYN-7069
+    "libintl.dll",          # https://autodesk.atlassian.net/browse/DYN-7069
+    "libHarfBuzzSharp.dll", # https://autodesk.atlassian.net/browse/DYN-6598
+    "libSkiaSharp.dll",     # https://autodesk.atlassian.net/browse/DYN-6598
     "LiveChartsCore*.dll",
     "Lucene.Net*.dll",
     "MIConvexHull.dll",
@@ -73,7 +73,24 @@ $excludedFiles = @(
     "DSPythonNet3.resources.dll",
     "DSPythonNet3Extension.dll",
     "DSPythonNet3Empty.dll",
-    "DSPythonNet3Wheels.dll"
+    "DSPythonNet3Wheels.dll",
+    # DynamoMCP built-in package (DYN-10553) — versioned independently of Dynamo, signed in its own pipeline.
+    "MCPExtension.dll",
+    "MCPServer.dll",
+    "ModelContextProtocol*.dll",
+    "JsonSchema.Net.dll",
+    "JsonPointer.Net.dll",
+    "Json.More.dll",
+    "BigGustave.dll",
+    "Humanizer.dll",
+    "SharpGLTF*.dll",
+    "DynamoPlayer.*.dll",
+    # AutodeskAssistant built-in package (DYN-10450) — versioned independently of Dynamo, signed in its own pipeline.
+    "AutodeskAssistantViewExtension.dll",
+    "AutodeskAssistantViewExtension.resources.dll",
+    "AdpSDKCSharpWrapper.dll",
+    "Analytics.NET.ADP.dll",
+    "Analytics.NET.Core.dll"
 )
 $noVersion = @()
 $wrongVersion = @()

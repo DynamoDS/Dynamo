@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>サインインできるようにするには、ネットワーク モードを有効にします。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Package Manager を使用できるようにするには、ネットワーク モードを有効にします。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -552,7 +555,7 @@
     <value>ホーム ワークスペース(_H)</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>開く(_O)...</value>
+    <value>ファイルを開く(_O)</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>最近使用したファイルを開く(_R)</value>
@@ -1145,6 +1148,12 @@
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>無効なパッケージのロードに失敗しました。</value>
+  </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>カスタム ノードの競合により、インストールがキャンセルされました。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>競合するパッケージを削除するには、Dynamo を再起動してください。</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>この ID のノードが見つかりませんでした。</value>
@@ -2055,6 +2064,12 @@
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Autodesk ADP Desktop SDK がインストールされていない({1} が見つからない)ことが原因で、MCP トークンを検証できないため、パッケージ/拡張機能 {0} は提供されません。すべての要求は HTTP 401 で拒否されます。</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>このプロセスの Autodesk Identity (IDSDK)は MCP トークンを検証できない({1} が {2} を書き出さない)ため、パッケージ/拡張機能 {0} は提供されません。すべての要求は HTTP 401 で拒否されます。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} をロードできません。
@@ -3634,7 +3649,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ファイル(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>テンプレート(_T)</value>
+    <value>テンプレートから...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>テンプレート フォルダにはワークスペースを直接保存できません。ファイルを保存するには、別のフォルダを選択してください。
@@ -3808,6 +3823,9 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>指定されたファイル パスが無効です。ファイルがアーカイブされている場合は、開く前に必ず解凍してください。\n{0}</value>
+  </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>このファイルは使用できなくなりました。移動、名前変更、または削除が行われた可能性があります。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>グループをフリーズ</value>

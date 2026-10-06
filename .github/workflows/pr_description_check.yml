@@ -10,7 +10,7 @@ jobs:
     
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       
     - name: Extract Description
       id: extract_description

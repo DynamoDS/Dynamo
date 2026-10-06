@@ -45,13 +45,13 @@ Tests are located in the `test/` directory. Use Visual Studio Test Explorer or d
 **Running a single test:**
 ```bash
 # Filter by test name (substring match)
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
 
 # Filter by NUnit category
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
 
 # Combine with & (AND) or | (OR)
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
 ```
 
 UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
@@ -88,7 +88,7 @@ UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `Dyna
   1. Add the API signature to the appropriate `PublicAPI.Unshipped.txt` file
   2. Use the format: `namespace.ClassName.MemberName -> ReturnType`
   3. Entries in `PublicAPI.Unshipped.txt` are moved to `PublicAPI.Shipped.txt` upon release
-- Existing PublicAPI files: DynamoCore, DynamoUtilities, DynamoCoreWpf
+- Existing PublicAPI files: DynamoCore, DynamoUtilities, DynamoCoreWpf, NodeServices
 
 ## Project Structure
 
@@ -210,11 +210,35 @@ Alert contributors if changes include:
 
 ## Agent Skills and Templates
 
-For detailed task workflows, rules, and templates, see `.agents/README.md`:
+For detailed task workflows, rules, and templates, see `.claude/README.md`:
 
-- **Skills**: each in `.agents/skills/<name>/SKILL.md` -- dynamo-codebase-patterns, dynamo-content-designer, dynamo-dotnet-expert, dynamo-dotnet-janitor, dynamo-ecosystem-reviewer, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket, dynamo-skill-writer, dynamo-unit-testing, dynamo-ux-designer, dynamo-webview-component-scaffold
-- **Rules**: `.agents/rules/` -- dynamo-core-rules
+- **Skills**: each in `.claude/skills/<name>/SKILL.md` -- dynamo-codebase-patterns, dynamo-content-designer, dynamo-dotnet-expert, dynamo-dotnet-janitor, dynamo-ecosystem-reviewer, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket, dynamo-skill-writer, dynamo-unit-testing, dynamo-ux-designer, dynamo-webview-component-scaffold
 - **Templates**: bundled inside skill folders as `template.md` (Jira)
+
+## Debugging Quick Start
+
+- **Logs**: `DynamoLogger` writes `dynamoLog_<guid>.txt` to `%AppData%\Dynamo\Dynamo Core\<major>.<minor>\Logs\` (headless/CLI runs use the version-less parent). The in-app log viewer is under View > Log. `DynamoModel.Logger` (`src/DynamoCore/Models/DynamoModel.cs`) is the logging surface: `Log`, `LogWarning`, `LogError`, `LogInfo`.
+- **Attach a debugger**: launch `DynamoSandbox` (or `DynamoSandbox.exe` from `bin\AnyCPU\Debug`) and attach VS to the process. `--NoNetworkMode` disables network surfaces for repro isolation (see [no-network-mode.md](../doc/distrib/no-network-mode.md)).
+- **Node evaluation issues**: first breakpoints are `EngineController` (`src/DynamoCore/Engine/EngineController.cs`) for run/execution and `AstBuilder` (`src/DynamoCore/Engine/CodeGeneration/AstBuilder.cs`) for graph-to-DS compilation.
+- **Common failures**: build breaks after SDK/dependency bumps are usually NuGet source issues — `dynamo-nuget.config` points at the `team-dynamo-nuget` Artifactory feed; a 403 there is a credentials gate, not a code problem. WPF/UI projects only build on Windows (`Dynamo.All.sln`); on Linux/macOS build `DynamoCore.sln` with `/p:Platform=NET_Linux`.
+
+## Blast Radius
+
+- **Public API**: `src/*/PublicAPI.{Shipped,Unshipped}.txt` (DynamoCore, DynamoCoreWpf, DynamoUtilities, NodeServices) — Roslyn analyzers RS0016/RS0017 fail the build on undeclared changes. Breaking changes require an issue + SemVer.
+- **Published NuGet packages** (from `tools/NuGet/template-nuget/`): `DynamoVisualProgramming.Core`, `.DynamoCoreNodes`, `.DynamoServices`, `.DynamoSamples`, `.Tests`, `.WpfUILibrary`, `.ZeroTouchLibrary`. Changes to `src/DynamoCore`, `src/DynamoCoreWpf`, or `src/Libraries` land in these packages and reach external consumers (e.g. DynamoRevit, downstream package authors).
+- **Graph file format**: `.dyn` files are a public contract — schema documented in `doc/dyn-file-spec.md` (JSON Schema: `doc/dyn-file-spec.json`). Changes to node serialization (`NodeModel` constructors, `AlsoKnownAs` handling) affect every saved graph.
+- **Cross-boundary edits**: `src/Engine/` (DesignScript runtime) changes ripple into every evaluation path; `src/Libraries/` node changes require matching `doc/distrib/NodeHelpFiles/` entries; `extern/` submodules pin native dependencies (LibG/ASM) — version bumps there are coordinated PRs across csproj files (see DYN-10825 for the pattern).
+
+## After Changes — Proof Checklist
+
+Run what matches your change; all commands work on Windows, `DynamoCore.sln` ones also on Linux:
+- [ ] `dotnet build src/DynamoCore.sln -c Release` — after any `src/DynamoCore*`, `src/Engine/`, or `src/Libraries/` change
+- [ ] `msbuild src/Dynamo.All.sln /p:Configuration=Release` — after WPF/UI changes (Windows only)
+- [ ] `dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"` — after engine/core changes
+- [ ] `dotnet test test/Libraries/<Project>Tests/<Project>Tests.csproj --filter "Category=UnitTests"` — after node-library changes
+- [ ] New public member → added to the project's `PublicAPI.Unshipped.txt`
+- [ ] New node → `.dyn` + `.md` + `.jpg` under `doc/distrib/NodeHelpFiles/`
+- [ ] User-facing string → moved to a `.resx` file
 
 ## Important Documentation
 

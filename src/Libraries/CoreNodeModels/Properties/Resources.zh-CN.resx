@@ -531,6 +531,12 @@
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
     <value>输入值必须为数值。</value>
   </data>
+  <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
+    <value>输入必须与日期时间格式匹配，并且是有效的日期/时间。</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>输入必须为整数。</value>
+  </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>从选项板中选择颜色</value>
   </data>
@@ -620,6 +626,9 @@
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>选择类型</value>
+  </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>无上游连接。将节点连接到输入端口以提供默认值并设置数据类型。要选择不含上游数据的类型，请禁用“自动检测类型”，然后使用下拉菜单。</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>数字值的格式说明符，请参见扩展节点帮助以获取详细信息。

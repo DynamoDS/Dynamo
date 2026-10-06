@@ -573,6 +573,83 @@ namespace Dynamo.Tests
             Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckBlocksTemplateRootAndChildren()
+        {
+            var templateRoot = Path.Combine(TempFolder, "templates");
+            var localizedTemplateDirectory = Path.Combine(templateRoot, "en-US");
+
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(templateRoot, "Template.dyn"), localizedTemplateDirectory));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(localizedTemplateDirectory, "Template.dyn"), localizedTemplateDirectory));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(templateRoot, "fr-FR", "Template.dyn"), localizedTemplateDirectory));
+        }
+
+        /// <summary>
+        /// DYN-10661: Save/SaveAs threw ArgumentNullException when the templates directory
+        /// was null, because the check was a bare path.Contains(templatesDirectory).
+        /// The check must treat an unknown templates directory as "not a template path".
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckDoesNotThrowWhenTemplateDirectoryIsUnknown()
+        {
+            var savePath = Path.Combine(TempFolder, "Workspace.dyn");
+
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(savePath, null));
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(savePath, string.Empty));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckAllowsPathsOutsideTemplateRoot()
+        {
+            var templateRoot = Path.Combine(TempFolder, "templates");
+            var localizedTemplateDirectory = Path.Combine(templateRoot, "en-US");
+
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "templates-other", "Template.dyn"), localizedTemplateDirectory));
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "Template.dyn"), localizedTemplateDirectory));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckUsesCustomTemplateFolderAsRoot()
+        {
+            var customTemplateDirectory = Path.Combine(TempFolder, "CustomTemplates");
+
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customTemplateDirectory, "Template.dyn"), customTemplateDirectory));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customTemplateDirectory, "Nested", "Template.dyn"), customTemplateDirectory));
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "Template.dyn"), customTemplateDirectory));
+
+            // Custom path whose parent happens to be named "templates" should not climb to the parent
+            var customUnderTemplatesParent = Path.Combine(TempFolder, "templates", "CustomTemplates");
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "templates", "other.dyn"), customUnderTemplatesParent));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customUnderTemplatesParent, "Template.dyn"), customUnderTemplatesParent));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanOpenLegacyXmlTemplateAsNewWorkspace()
+        {
+            var templatePath = Path.Combine(TestDirectory, @"core\math", "Round.dyn");
+
+            ViewModel.Model.OpenTemplateFromPath(templatePath);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(ViewModel.Model.CurrentWorkspace.FileName));
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.IsTemplate);
+            Assert.AreEqual(3, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+        }
+
         /// <summary>
         /// This test validates that when a template is opened as a new workspace, it does not save the template (replacing it with new changes)
         /// The Business Rule says that we should not allow the user to modify templates and save them in the defined templates folder.

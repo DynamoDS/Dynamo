@@ -215,7 +215,19 @@ namespace Dynamo.Core
 
         public IEnumerable<string> DefinitionDirectories
         {
-            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
+            get
+            {
+                var definitionDirectories = RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)).ToList();
+                var commonDefinitionsDirectory = Path.Combine(commonDataDir, DefinitionsDirectoryName);
+
+                if (Directory.Exists(commonDefinitionsDirectory) &&
+                    !definitionDirectories.Contains(commonDefinitionsDirectory, StringComparer.OrdinalIgnoreCase))
+                {
+                    definitionDirectories.Add(commonDefinitionsDirectory);
+                }
+
+                return definitionDirectories;
+            }
         }
 
         [Obsolete("This property will be removed in a future version of Dynamo.", false)]
@@ -506,9 +518,11 @@ namespace Dynamo.Core
         /// 2) If a host directory is configured, first non-system, non-test assembly on
         ///    the current managed call stack that resides outside the DynamoCore directory.
         ///    Skipped when no host directory is set (e.g. standalone Sandbox).
-        /// 3) DynamoCore assembly location (preferred over external process assemblies).
-        /// 4) Entry assembly location.
-        /// 5) Current process main module path.
+        /// 3) If no host directory is configured, first non-system, non-test assembly
+        ///    on the current managed call stack that resides outside the DynamoCore directory.
+        /// 4) DynamoCore assembly location (preferred over external process assemblies).
+        /// 5) Entry assembly location.
+        /// 6) Current process main module path.
         /// </summary>
         /// <returns>
         /// The file path of the assembly used to determine the data directory version.
@@ -565,18 +579,62 @@ namespace Dynamo.Core
                 }
             }
 
-            // Option 3: Prefer DynamoCore assembly over external process assemblies
+            // Option 3: When there is no configured host directory yet, still try
+            // to discover a likely host integration assembly on the current call stack.
+            if (string.IsNullOrEmpty(hostApplicationDirectory))
+            {
+                var currentAssembly = typeof(PathManager).Assembly;
+                var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
+
+                foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+                {
+                    var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                    if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                        continue;
+
+                    var assemblyName = assembly.GetName().Name;
+                    if (string.IsNullOrEmpty(assemblyName))
+                        continue;
+
+                    if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        continue;
+                    }
+
+                    // Without a configured host directory, only consider likely
+                    // Dynamo integration assemblies to avoid selecting framework
+                    // assemblies (e.g. WPF/.NET) that can carry unrelated versions
+                    // such as 10.0 for Sandbox startup.
+                    if (assemblyName.IndexOf("Dynamo", StringComparison.OrdinalIgnoreCase) < 0)
+                        continue;
+
+                    var candidatePath = assembly.Location;
+
+                    // Skip assemblies that live in the same directory as DynamoCore.
+                    if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
+                        continue;
+
+                    if (HasNonZeroFileVersion(candidatePath))
+                        return candidatePath;
+                }
+            }
+
+            // Option 4: Prefer DynamoCore assembly over external process assemblies
             // (e.g. testhost.exe, dotnet.exe) which may carry unrelated versions.
             var dynamoCoreAssemblyPath = Assembly.GetExecutingAssembly().Location;
             if (HasNonZeroFileVersion(dynamoCoreAssemblyPath))
                 return dynamoCoreAssemblyPath;
 
-            // Option 4: Use the process entry assembly when available and versioned.
+            // Option 5: Use the process entry assembly when available and versioned.
             var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
             if (HasNonZeroFileVersion(entryAssemblyPath))
                 return entryAssemblyPath;
 
-            // Option 5: Use the current process main module path as a hosted fallback.
+            // Option 6: Use the current process main module path as a hosted fallback.
             var processMainModulePath = TryGetCurrentProcessMainModulePath();
             if (HasNonZeroFileVersion(processMainModulePath))
                 return processMainModulePath;
@@ -696,20 +754,109 @@ namespace Dynamo.Core
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
+        /// <summary>
+        /// Returns true when the directory exists and contains at least one .dyn file.
+        /// </summary>
+        /// <param name="directoryPath">The template directory path to validate.</param>
+        internal static bool IsValidTemplatesDirectory(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
+                return false;
+
+            try
+            {
+                return Directory.EnumerateFiles(directoryPath, "*.dyn").Any();
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// True when the path looks like a Dynamo install's shipped templates folder
+        /// (…/templates/&lt;locale&gt;). User-chosen custom folders do not match this shape.
+        /// </summary>
+        internal static bool IsInstallRootedTemplatesDirectory(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+                return false;
+
+            try
+            {
+                var trimmed = directoryPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var locale = Path.GetFileName(trimmed);
+                if (!Configurations.SupportedLocaleDic.Values.Contains(locale))
+                    return false;
+
+                var templatesFolderName = Path.GetFileName(Path.GetDirectoryName(trimmed));
+                return string.Equals(templatesFolderName, Configurations.TemplatesAsString, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// True when a persisted template path should be replaced with the current install default.
+        /// Missing/empty folders and previous-install templates\&lt;locale&gt; paths are stale;
+        /// a user-chosen folder that still contains .dyn files is not.
+        /// </summary>
+        internal static bool ShouldResetPersistedTemplatesPath(string persistedPath, string currentDefaultPath)
+        {
+            if (string.IsNullOrEmpty(persistedPath))
+                return true;
+
+            if (!IsValidTemplatesDirectory(persistedPath))
+                return true;
+
+            if (!IsInstallRootedTemplatesDirectory(persistedPath))
+                return false;
+
+            return !AreTemplateDirectoriesEqual(persistedPath, currentDefaultPath);
+        }
+
+        private static bool AreTemplateDirectoriesEqual(string first, string second)
+        {
+            if (string.IsNullOrEmpty(first) || string.IsNullOrEmpty(second))
+                return false;
+
+            try
+            {
+                return PathHelper.AreDirectoryPathsEqual(first, second);
+            }
+            catch (Exception)
+            {
+                return string.Equals(first, second, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         internal bool UpdatePreferenceItemPath(PreferenceItem item, string newLocation)
         {
-            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newLocation) == null;
-            if (!isValidFolder)
+            if (string.IsNullOrEmpty(newLocation))
                 return false;
 
             switch (item)
             {
                 case PreferenceItem.Backup:
+                    if (PathHelper.CreateFolderIfNotExist(newLocation) != null)
+                        return false;
                     backupDirectory = newLocation;
                     break;
                 case PreferenceItem.Templates:
+                    // Do not create this folder. A stale persisted path must stay invalid
+                    // so startup can fall back to the current install's shipped templates.
+                    if (!Directory.Exists(newLocation))
+                        return false;
                     templatesDirectory = newLocation;
                     break;
+                default:
+                    return false;
             }
             return true;
         }
@@ -811,6 +958,13 @@ namespace Dynamo.Core
             commonDataDir = GetCommonDataFolder();
 
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
+
+            // Seed the active templates directory with the default so it is never null.
+            // A preferred location supplied later through UpdatePreferenceItemPath may be
+            // rejected (unwritable %ProgramData%, unavailable network share, invalid path),
+            // and callers must still get a usable path rather than null. See DYN-10661.
+            templatesDirectory = defaultTemplatesDirectory;
+
             rootDirectories = new List<string> { userDataDir };
 
             nodeDirectories = new HashSet<string>

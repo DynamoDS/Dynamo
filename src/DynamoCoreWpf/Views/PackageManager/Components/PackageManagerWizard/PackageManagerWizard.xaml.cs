@@ -66,6 +66,7 @@ namespace Dynamo.UI.Views
         internal Action<string, string> RequestShowDialog;
         internal Action RequestCancelUpload;
         internal Action<int, int, string> RequestUploadProgress;
+        internal Action RequestNavigateToInstalledPackages;
 
         private PackageUpdateRequest previousPackageDetails;
 
@@ -107,6 +108,7 @@ namespace Dynamo.UI.Views
             RequestShowDialog = ShowDialog;
             RequestCancelUpload = CancelUpload;
             RequestUploadProgress = UploadProgress;
+            RequestNavigateToInstalledPackages = NavigateToInstalledPackages;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -226,6 +228,11 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
+            // Defense in depth: the Package Manager is disabled in no-network mode so this wizard is
+            // normally unreachable, but harden the WebView2 surface anyway if it is ever shown.
+            WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties,
+                publishPackageViewModel?.DynamoViewModel?.Model?.NoNetworkMode ?? false);
+
             // Pre-generate the html temp file
             string tempFilePath = GetFileFromRelativePath(htmlRelativeFilePath);
 
@@ -269,7 +276,8 @@ namespace Dynamo.UI.Views
                             RequestApplicationLoaded,
                             RequestShowDialog,
                             RequestCancelUpload,
-                            RequestUploadProgress));
+                            RequestUploadProgress,
+                            RequestNavigateToInstalledPackages));
 
                 }
                 catch (Exception ex)
@@ -543,23 +551,30 @@ namespace Dynamo.UI.Views
             var jsonSerializer = Newtonsoft.Json.JsonSerializer.Create(jsonSerializerSettings);
             var rootObj = JObject.FromObject(payload, jsonSerializer);
 
-            // Include payload.versions[*].compatibility_matrix for the "Copy from" dropdown.
-            try
+            if (rootObj["payload"] is JObject payloadObj)
             {
-                var header = await TryGetPackageHeaderAsync(vm);
-                if (header != null)
+                // Present with safe defaults so the frontend always has a consistent shape
+                payloadObj["versions"] = new JArray();
+                payloadObj["maintainers"] = new JArray();
+
+                try
                 {
-                    if (rootObj["payload"] is JObject payloadObj)
+                    var header = await TryGetPackageHeaderAsync(vm);
+                    if (header != null)
                     {
                         payloadObj["versions"] = header.versions != null
-                            ? JToken.FromObject(header.versions, jsonSerializer)
+                                ? JToken.FromObject(header.versions, jsonSerializer)
+                                : new JArray();
+
+                        payloadObj["maintainers"] = header.maintainers != null
+                            ? JToken.FromObject(header.maintainers, jsonSerializer)
                             : new JArray();
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                LogMessage(ex);
+                catch (Exception ex)
+                {
+                    LogMessage(ex);
+                }
             }
 
             var jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);
@@ -998,6 +1013,22 @@ namespace Dynamo.UI.Views
         {
             SendUploadProgress(currentFile, totalFiles, currentFileName);
         }
+
+        /// <summary>
+        /// A request from the front-end to switch to the Installed Packages tab after publishing a new version.
+        /// No-ops unless the session was started with Publish Version from that tab.
+        /// </summary>
+        internal void NavigateToInstalledPackages()
+        {
+            if (publishPackageViewModel?.IsNewVersion != true) return;
+
+            Dispatcher.Invoke(() =>
+            {
+                var packageManagerView = Window.GetWindow(this) as PackageManagerView;
+                packageManagerView?.Navigate(
+                    Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab);
+            });
+        }
         #endregion
 
         #region Utility
@@ -1237,6 +1268,7 @@ namespace Dynamo.UI.Views
         readonly Action<string, string> RequestShowDialog;
         readonly Action RequestCancelUpload;
         readonly Action<int, int, string> RequestUploadProgress;
+        readonly Action RequestNavigateToInstalledPackages;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -1255,7 +1287,8 @@ namespace Dynamo.UI.Views
             Action requestApplicationLoaded,
             Action<string, string> requestShowDialog,
             Action requestCancelUpload,
-            Action<int, int, string> requestUploadProgress)
+            Action<int, int, string> requestUploadProgress,
+            Action requestNavigateToInstalledPackages)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -1274,6 +1307,7 @@ namespace Dynamo.UI.Views
             RequestShowDialog = requestShowDialog;
             RequestCancelUpload = requestCancelUpload;
             RequestUploadProgress = requestUploadProgress;
+            RequestNavigateToInstalledPackages = requestNavigateToInstalledPackages;
         }
 
         [DynamoJSInvokable]
@@ -1378,6 +1412,12 @@ namespace Dynamo.UI.Views
         public void UploadProgress(int currentFile, int totalFiles, string currentFileName)
         {
             RequestUploadProgress(currentFile, totalFiles, currentFileName);
+        }
+
+        [DynamoJSInvokable]
+        public void NavigateToInstalledPackages()
+        {
+            RequestNavigateToInstalledPackages();
         }
     }
 

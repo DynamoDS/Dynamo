@@ -41,6 +41,11 @@ namespace Dynamo.Graph.Workspaces
 
         private bool graphRunInProgress;
 
+        // Set when a cancellation is requested for the run currently in progress,
+        // and cleared at the start and end of every run. Written and read from
+        // different threads, hence volatile.
+        private volatile bool runCancelledByUser;
+
         /// <summary>
         /// A flag which indicates whether Dynamo is currently running a graph.
         /// This flag is set to true when execution starts and is set to false
@@ -513,6 +518,84 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Computes the external file references by inspecting evaluated output values from
+        /// this workspace's running engine (only possible for a home workspace, not e.g. a
+        /// custom node workspace, hence this override).
+        /// </summary>
+        private protected override List<INodeLibraryDependencyInfo> ComputeExternalFileReferences()
+        {
+            var externalFiles = new Dictionary<object, DependencyInfo>();
+
+            // If an execution is in progress we'll have to wait for it to be done before we can gather the
+            // external file references as this implementation relies on the output values of each node.
+            // instead just bail to avoid blocking the UI.
+            if (RunSettings.RunEnabled && !RunSettings.ForceBlockRun)
+            {
+                foreach (var node in Nodes)
+                {
+                    CollectExternalFileReferencesForNode(node, externalFiles);
+                }
+            }
+
+            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// Checks each output port of the given node for a file path value, recording any
+        /// found as an external file reference.
+        /// </summary>
+        private void CollectExternalFileReferencesForNode(NodeModel node, Dictionary<object, DependencyInfo> externalFiles)
+        {
+            externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
+
+            // Check for the file path string value at each of the output ports of all nodes in the workspace.
+            var outputIdentifierNames = node.OutPorts.Select(port => node.GetAstIdentifierForOutputIndex(port.Index)?.Name);
+            foreach (var id in outputIdentifierNames)
+            {
+                var mirror = EngineController.GetMirror(id);
+                var data = mirror?.GetData().Data;
+
+                if (data is string dataString && dataString.Contains(@"\"))
+                {
+                    RecordExternalFileReference(node, dataString, serializedDependencyInfo, externalFiles);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records the given output value as an external file reference, either because it
+        /// exists on disk, or -- if not -- because it matches a previously serialized
+        /// dependency for this node.
+        /// </summary>
+        private void RecordExternalFileReference(NodeModel node, string dataString, DependencyInfo serializedDependencyInfo, Dictionary<object, DependencyInfo> externalFiles)
+        {
+            // Check if the value exists on disk
+            DynamoUtilities.PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+            if (fileExists)
+            {
+                var externalFilePath = System.IO.Path.GetFullPath(dataString);
+                var externalFileName = System.IO.Path.GetFileName(dataString);
+
+                if (!externalFiles.ContainsKey(externalFilePath))
+                {
+                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                }
+
+                externalFiles[externalFilePath].AddDependent(node.GUID);
+                externalFiles[externalFilePath].Size = fileSize;
+            }
+            // Read the serialized value for that node.
+            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+            {
+                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                {
+                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                }
+                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+            }
+        }
+
+        /// <summary>
         /// Called when the RequestSilenceNodeModifiedEvents event is emitted from a Node
         /// </summary>
         /// <param name="node">The node itself</param>
@@ -735,13 +818,30 @@ namespace Dynamo.Graph.Workspaces
             //set the node execution preview to false;
             OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
 
+            // Take the cancellation state for this run and clear it straight away,
+            // so listeners all see the same value and nothing carries into the next run.
+            bool wasCancelled = runCancelledByUser;
+            runCancelledByUser = false;
+            EngineController?.ResetCancellation();
+
+            if (wasCancelled)
+            {
+                // Cancelling tears down and rebuilds the DesignScript VM, so nothing
+                // compiled survives. Mark the whole graph dirty the same way a VM reset
+                // does, otherwise the next run sends a partial graph to an empty VM.
+                foreach (var node in Nodes)
+                {
+                    node.MarkNodeAsModified();
+                }
+            }
+
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true, nodesWithInfos, null)
-                : new EvaluationCompletedEventArgs(true, nodesWithInfos, task.Exception);
+                ? new EvaluationCompletedEventArgs(true, nodesWithInfos, null, wasCancelled)
+                : new EvaluationCompletedEventArgs(true, nodesWithInfos, task.Exception, wasCancelled);
 
             EvaluationCount ++;
 
@@ -789,6 +889,11 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
+            // Clear any cancellation left over from before, so it cannot abort
+            // the run we are about to start.
+            runCancelledByUser = false;
+            EngineController.ResetCancellation();
+
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -832,6 +937,22 @@ namespace Dynamo.Graph.Workspaces
                 var e = new EvaluationCompletedEventArgs(false);
                 OnEvaluationCompleted(e);
             }
+        }
+
+        /// <summary>
+        /// Asks the engine to stop the graph evaluation that is currently running.
+        /// Does nothing when no evaluation is in progress, and does nothing extra
+        /// when called repeatedly during the same evaluation.
+        /// Returns immediately: the evaluation stops at the next point the engine
+        /// checks, which can be some time later if a single node is busy.
+        /// </summary>
+        internal void CancelRun()
+        {
+            if (!GraphRunInProgress) return;
+            if (EngineController == null) return;
+
+            runCancelledByUser = true;
+            EngineController.RequestCancellation();
         }
 
         /// <summary>
@@ -925,10 +1046,10 @@ namespace Dynamo.Graph.Workspaces
                 cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
             // This method is intended to be called only during opening of an existing workspace
-            // and therefore if the workspace is set as dirty on account of CBN precompilation, 
+            // and therefore if the workspace is set as dirty on account of CBN precompilation,
             // the workspace should be reverted to a clean state as it's undesirable to have unsaved
             // changes for a workspace that is newly opened.
-            HasUnsavedChanges = false;
+            MarkAsSaved();
         }
 
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)

@@ -185,6 +185,12 @@
         <KeyBinding Key="F1" Command="{Binding Path=DataContext.ShowNodeDocumentationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Home" Command="{Binding Path=DataContext.GoToLeftMostNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="End" Command="{Binding Path=DataContext.GoToRightMostNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="Left"
+                    Command="{Binding ElementName=_this, Path=ToggleLibrarySidebarCommand}"
+                    Modifiers="Control+Shift" />
+        <KeyBinding Key="Right"
+                    Command="{Binding ElementName=_this, Path=ToggleExtensionsSidebarCommand}"
+                    Modifiers="Control+Shift" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -315,22 +321,20 @@
                                       Command="{Binding NewHomeWorkspaceCommand}"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuNewHomeWorkSpace}"
                                       InputGestureText="Ctrl + N" />
+                            <MenuItem Name="newFromTemplateMenuItem"
+                                      Command="{Binding ShowOpenTemplateDialogCommand}"
+                                      CommandParameter="Template"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
+                                      InputGestureText="Ctrl + T" />
                             <MenuItem Name="newFuncButton"
                                       Command="{Binding ShowNewFunctionDialogCommand}"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuNewCustomNode}"
                                       InputGestureText="Ctrl + Shift + N" />
                         </MenuItem>
-                        <MenuItem Name="openButton" Header="{x:Static p:Resources.DynamoViewFileMenuOpen}">
-                            <MenuItem Name="openFileMenuItem"
-                                      Command="{Binding ShowOpenDialogAndOpenResultCommand}"
-                                      Header="{x:Static p:Resources.DynamoViewFileMenuOpenFile}"
-                                      InputGestureText="Ctrl + O" />
-                            <MenuItem Name="openTemplateMenuItem"
-                                      Command="{Binding ShowOpenTemplateDialogCommand}"
-                                      CommandParameter="Template"
-                                      Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
-                                      InputGestureText="Ctrl + T" />
-                        </MenuItem>
+                        <MenuItem Name="openButton"
+                                  Command="{Binding ShowOpenDialogAndOpenResultCommand}"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuOpen}"
+                                  InputGestureText="Ctrl + O" />
                         <MenuItem Name="insertButton"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
@@ -349,12 +353,12 @@
                                   Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuSave}"
                                   InputGestureText="Ctrl + S"
-                                  IsEnabled="False" />
+                                  IsEnabled="{Binding CanSaveWorkspace}" />
                         <MenuItem Name="saveButton"
                                   Command="{Binding ShowSaveDialogAndSaveResultCommand}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuSaveAs}"
                                   InputGestureText="Ctrl + Shift + S"
-                                  IsEnabled="False" />
+                                  IsEnabled="{Binding CanSaveWorkspaceAs}" />
                         <Separator />
                         <MenuItem Name="importLibrary"
                                   Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
@@ -566,14 +570,6 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=ConsoleHeight, Converter={StaticResource ConsoleHeightToBoolConverter}, Mode=TwoWay}" />
 
-                        <MenuItem Click="ToggleLibrarySidebarMenuItem_Click"
-                                  Header="{x:Static p:Resources.DynamoViewViewMenuShowLibrarySidebar}"
-                                  InputGestureText="Ctrl + Shift + Left" />
-
-                        <MenuItem Click="ToggleExtensionsSidebarMenuItem_Click"
-                                  Header="{x:Static p:Resources.DynamoViewViewMenuShowExtensionsSidebar}"
-                                  InputGestureText="Ctrl + Shift + Right" />
-
                         <MenuItem Name="connectorMenu" Header="{x:Static p:Resources.DynamoViewViewMenuConnector}">
                             <MenuItem Name="ShowHideConnectorsMenuItem"
                                       Header="{x:Static p:Resources.DynamoViewViewMenuShowConnectors}"
@@ -617,13 +613,64 @@
                               IsEnabled="True">
                         <MenuItem Name="publishSelected"
                                   Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishNodes}" />
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishNodes}"
+                                  ToolTipService.ShowOnDisabled="True">
+                            <MenuItem.ToolTip>
+                                <ToolTip>
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlacementTarget.DataContext.NoNetworkMode, RelativeSource={RelativeSource Self}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToolTip.Style>
+                                </ToolTip>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                         <MenuItem Name="publishCurrent"
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}" />
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}"
+                                  ToolTipService.ShowOnDisabled="True">
+                            <MenuItem.ToolTip>
+                                <ToolTip>
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlacementTarget.DataContext.NoNetworkMode, RelativeSource={RelativeSource Self}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToolTip.Style>
+                                </ToolTip>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                         <MenuItem Name="showPM"
                                   Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPackageManager}" />
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPackageManager}"
+                                  ToolTipService.ShowOnDisabled="True">
+                            <MenuItem.ToolTip>
+                                <ToolTip>
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlacementTarget.DataContext.NoNetworkMode, RelativeSource={RelativeSource Self}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToolTip.Style>
+                                </ToolTip>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Name="HelpMenu"

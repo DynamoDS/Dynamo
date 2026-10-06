@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Класс, представляющий элемент DataType, поддерживаемый Dynamo</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Класс, представляющий элемент DataType, поддерживаемый Dynamo</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Необязательное имя для переопределения имени типа (`Number` вместо `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>Формат провода $typeid (например, autodesk.math:point3d-1.0.0).
+            Null для типов примитивов, которые не используют сериализацию $typeid.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>Иерархический уровень, который требуется отобразить в пользовательском интерфейсе</summary>
@@ -342,6 +346,11 @@
             <summary>Возврат списка DataNodeDynamoTypes из списка объектов ArrayList</summary>
             <param name="list">Список объектов ArrayList для переформатирования</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Проверка того, является ли входной параметр Define Data неиспользуемым (нулевым или пустым списком).</summary>
+            <param name="inputValue">Входное значение из графа.</param>
+            <returns>Принимает значение True, если входные данные следует считать неприсоединенными или неиспользуемыми.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Проверьте, является ли входной объект отдельным значением или одноуровневым списком ArrayList.</summary>

@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Activez le mode réseau pour pouvoir vous connecter.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Activez le mode réseau pour pouvoir utiliser le gestionnaire de packages.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -552,7 +555,7 @@ Pas d'inquiétude, vous aurez la possibilité d'enregistrer votre travail.</valu
     <value>_Espace de travail d'accueil</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Ouvrir...</value>
+    <value>_Ouvrir un fichier</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>O_uvrir les fichiers récents</value>
@@ -1145,6 +1148,12 @@ Vous pouvez toujours télécharger une nouvelle fois le package.</value>
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Echec du chargement d'un package incorrect.</value>
+  </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Installation annulée en raison d'un conflit de noeuds personnalisés.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Redémarrez Dynamo pour supprimer le package en conflit.</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Aucun noeud ne correspond à cet ID.</value>
@@ -2054,6 +2063,12 @@ Voulez-vous installer la dernière mise à jour de Dynamo?</value>
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Aucun nouvel onglet n'a été ajouté, car l'extension figure déjà dans la barre latérale des extensions.</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Package/Extension: {0} non proposé car Autodesk ADP Desktop SDK n'est pas installé ({1} est introuvable), il est donc impossible de valider les jetons MCP; toutes les requêtes seraient rejetées avec le code HTTP 401.</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/extension {0} non proposé, car Autodesk Identity (IDSDK) ne peut pas valider les jetons MCP dans ce processus ({1} n'exporte pas {2}); toutes les requêtes seraient rejetées avec un code HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>Impossible de charger {1}.
@@ -3628,7 +3643,7 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>_Fichier</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Gabarit</value>
+    <value>À partir d'un gabarit...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Les espaces de travail ne peuvent pas être enregistrés directement dans le dossier Gabarits. Veuillez choisir un autre dossier pour enregistrer votre fichier.
@@ -3802,6 +3817,9 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Le chemin d'accès fourni est incorrect. Si le fichier est archivé, assurez-vous de l'extraire avant de l'ouvrir.\n{0}</value>
+  </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>Ce fichier n'est plus disponible. Il a peut-être été déplacé, renommé ou supprimé.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Geler le groupe</value>

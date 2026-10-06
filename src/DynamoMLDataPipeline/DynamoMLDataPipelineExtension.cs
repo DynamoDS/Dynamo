@@ -25,6 +25,14 @@ namespace DynamoMLDataPipeline
             DynamoMLDataPipeline = new DynamoMLDataPipeline();
             DynamoMLDataPipeline.DynamoVersion = sp.DynamoVersion;
 
+            // In no-network mode, do not wire the auth providers used for data upload. This is
+            // defensive symmetry: the pipeline never transmits without user action, and the
+            // AuthProvider is already null when no-network mode is on (IDSDK is not constructed).
+            if (sp.NoNetworkMode)
+            {
+                return;
+            }
+
             if (sp.AuthProvider is IOAuth2AccessTokenProvider tokenProvider)
             {
                 DynamoMLDataPipeline.AuthTokenProvider = tokenProvider;

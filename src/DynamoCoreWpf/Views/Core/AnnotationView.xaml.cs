@@ -457,7 +457,7 @@ namespace Dynamo.Nodes
 
             if (groupTextBox.ActualHeight > 0 && groupTextBox.ActualWidth > 0)
             {
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             }
         }
 
@@ -589,7 +589,7 @@ namespace Dynamo.Nodes
             SetTextHeight();
             if (groupDescriptionTextBox.ActualHeight > 0 && groupDescriptionTextBox.ActualWidth > 0)
             {
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             }
 
         }
@@ -619,13 +619,13 @@ namespace Dynamo.Nodes
             if (xAdjust >= ViewModel.Width - ViewModel.AnnotationModel.WidthAdjustment)
             {
                 ViewModel.AnnotationModel.WidthAdjustment += e.HorizontalChange;
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
             }
 
             if (yAdjust >= ViewModel.Height - ViewModel.AnnotationModel.HeightAdjustment)
             {
                 ViewModel.AnnotationModel.HeightAdjustment += e.VerticalChange;
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+                ViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
 
             }
         }
@@ -2007,6 +2007,7 @@ namespace Dynamo.Nodes
                 Foreground = _blue300Brush,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Right,
+                RenderTransformOrigin = new Point(0.5, 0.5),
                 RenderTransform = new ScaleTransform(1, 1.5)
             };
 
@@ -2041,6 +2042,7 @@ namespace Dynamo.Nodes
                 popup.PlacementTarget = border;
                 popup.IsOpen = true;
                 border.Background = _nodeContextMenuBackgroundHighlight;
+                arrow.Foreground = Brushes.White;
             };
 
             border.MouseLeave += (s, e) =>
@@ -2050,6 +2052,7 @@ namespace Dynamo.Nodes
                 {
                     popup.IsOpen = false;
                     border.Background = Brushes.Transparent;
+                    arrow.Foreground = _blue300Brush;
                 }
             };
 
@@ -2185,11 +2188,31 @@ namespace Dynamo.Nodes
                 stack.Children.Add(border);
             }
 
+            // Hardcoded to fit ~10 items. Calculating dynamically adds noise
+            // with little benefit since item height rarely changes.
+            const int maxHeight = 200;
+            stack.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            bool needsScroll = stack.DesiredSize.Height > maxHeight;
+
+            UIElement content;
+            if (needsScroll)
+            {
+                content = new ScrollViewer
+                {
+                    MaxHeight = maxHeight,
+                    Content = stack,
+                };
+            }
+            else
+            {
+                content = stack;
+            }
+
             return new Border
             {
                 Background = _midGreyBrush,
-                Padding = new Thickness(10),
-                Child = stack
+                Padding = new Thickness(10,10,!needsScroll ? 10 : 1,10),
+                Child = content
             };
         }
 

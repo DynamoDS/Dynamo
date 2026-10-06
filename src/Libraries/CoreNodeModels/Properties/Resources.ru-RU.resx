@@ -531,6 +531,12 @@
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
     <value>Ввод должен быть числовым.</value>
   </data>
+  <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
+    <value>Входные данные должны быть в формате даты и времени и представлять собой допустимое значение даты и времени.</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>Входные данные должны быть целым числом.</value>
+  </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>Выберите цвет на палитре</value>
   </data>
@@ -620,6 +626,9 @@
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Выберите типы</value>
+  </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Нет соединения на стороне источника. Подключите узел к порту ввода, чтобы задать значение по умолчанию и тип данных. Чтобы выбрать тип без данных на стороне источника, отключите параметр «Автоопределение типа» и используйте раскрывающееся меню.</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Спецификатор формата для числовых значений, дополнительные сведения см. в расширенной справке по узлу.

@@ -531,6 +531,12 @@
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
     <value>Vstup musí být číslo.</value>
   </data>
+  <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
+    <value>Vstup musí mít správný formát data a času a musí se jednat o platné datum/čas.</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>Vstup musí být celé číslo.</value>
+  </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>Vyberte barvu z palety.</value>
   </data>
@@ -620,6 +626,9 @@ V pracovních postupech generativního návrhu by tento uzel měl být použit k
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Vybrat typy</value>
+  </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Žádné nadřazené připojení. Připojením uzlu ke vstupnímu portu zadejte výchozí hodnotu a nastavte datový typ. Chcete-li vybrat typ bez nadřazených dat, vypněte možnost Automatická detekce typu a použijte rozevírací nabídku.</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Specifikátor formátu pro číselné hodnoty, další informace najdete v nápovědě k rozšířenému uzlu.

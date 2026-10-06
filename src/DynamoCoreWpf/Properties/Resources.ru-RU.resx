@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Включите сетевой режим, чтобы иметь возможность входить в систему.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Включите сетевой режим, чтобы использовать Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -552,7 +555,7 @@
     <value>_Начальная страница рабочего пространства</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Открыть...</value>
+    <value>_Открыть файл</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>Откры_ть последние файлы</value>
@@ -1145,6 +1148,12 @@
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Не удалось загрузить недопустимый пакет.</value>
+  </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Установка отменена из-за конфликта пользовательских узлов.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Перезапустите Dynamo, чтобы удалить конфликтующий пакет.</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Не удается найти узел с таким идентификатором.</value>
@@ -2055,6 +2064,12 @@
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Новая вкладка не добавляется, т. к. расширение уже присутствует на боковой панели расширений.</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>Пакет/расширение {0} не предлагается, так как комплект Autodesk ADP Desktop SDK не установлен (не удалось найти {1}), поэтому маркеры MCP не могут быть проверены; каждый запрос будет отклонен с кодом HTTP 401.</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Пакет/расширение {0} не предоставляется, так как Autodesk Identity (IDSDK) в этом процессе не может проверить маркеры MCP ({1} не экспортирует {2}); каждый запрос будет отклонен с кодом HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>Невозможно загрузить {1}.
@@ -3634,7 +3649,7 @@
     <value>_Файл</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Шаблон</value>
+    <value>Из шаблона...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Рабочие пространства невозможно сохранить непосредственно в папке шаблонов. Выберите другую папку для сохранения файла.
@@ -3808,6 +3823,9 @@
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Указан неверный путь к файлу. Если файл находится в архиве, перед открытием его следует извлечь.\n{0}</value>
+  </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>Этот файл больше не доступен. Возможно, он перемещен, переименован или удален.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Заморозить группу</value>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dynamo.Controls;
@@ -82,6 +83,108 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(preferences.HomePageSettings.Count, 2);
+        }
+
+        [Test]
+        public void HandleMissingFilePathRemovesPathFromAuthoritativeRecentFiles()
+        {
+            // Arrange
+            var missingPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.dyn");
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            startPage.RecentFiles.Add(new StartPageListItem(missingPath) { ContextData = missingPath });
+            vm.RecentFiles.Add(missingPath);
+
+            Assert.IsFalse(File.Exists(missingPath));
+            Assert.IsTrue(vm.RecentFiles.Contains(missingPath));
+            Assert.IsTrue(vm.Model.PreferenceSettings.RecentFiles.Contains(missingPath));
+
+            // Act
+            var wasMissing = startPage.HandleMissingFilePath(missingPath, false);
+
+            // Assert
+            Assert.IsTrue(wasMissing);
+            Assert.IsFalse(startPage.RecentFiles.Any(file =>
+                string.Equals(file.ContextData, missingPath, StringComparison.OrdinalIgnoreCase)));
+            Assert.IsFalse(vm.RecentFiles.Contains(missingPath));
+            Assert.IsFalse(vm.Model.PreferenceSettings.RecentFiles.Contains(missingPath));
+        }
+
+        [Test]
+        public void WalkDirectoryTreeExcludesFolderWithNoDynFiles()
+        {
+            // Arrange
+            var rootPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+            var emptyFolderPath = Path.Combine(rootPath, "DynamoPlayer");
+            Directory.CreateDirectory(emptyFolderPath);
+            File.WriteAllText(Path.Combine(emptyFolderPath, "readme.txt"), string.Empty);
+
+            try
+            {
+                var vm = View.DataContext as DynamoViewModel;
+                var startPage = new StartPageViewModel(vm, true);
+                var rootEntity = new SampleFileEntry("root", rootPath);
+
+                // Act
+                startPage.WalkDirectoryTree(new DirectoryInfo(rootPath), rootEntity);
+
+                // Assert - a folder with no .dyn files anywhere below it must not be
+                // surfaced as a sample entry, otherwise it renders as an openable card (DYN-10736).
+                Assert.IsTrue(rootEntity.Children == null || !rootEntity.Children.Any());
+            }
+            finally
+            {
+                Directory.Delete(rootPath, true);
+            }
+        }
+
+        [Test]
+        public void WalkDirectoryTreeIncludesFolderWithNestedDynFile()
+        {
+            // Arrange
+            var rootPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+            var parentFolderPath = Path.Combine(rootPath, "Revit");
+            var nestedFolderPath = Path.Combine(parentFolderPath, "DynamoPlayer");
+            Directory.CreateDirectory(nestedFolderPath);
+            File.WriteAllText(Path.Combine(nestedFolderPath, "sample.dyn"), string.Empty);
+
+            try
+            {
+                var vm = View.DataContext as DynamoViewModel;
+                var startPage = new StartPageViewModel(vm, true);
+                var rootEntity = new SampleFileEntry("root", rootPath);
+
+                // Act
+                startPage.WalkDirectoryTree(new DirectoryInfo(rootPath), rootEntity);
+
+                // Assert - the folder holding the nested .dyn is still surfaced, even though
+                // the .dyn file itself lives one level deeper.
+                var parentEntity = rootEntity.Children?.FirstOrDefault(c => c.FileName == "Revit");
+                Assert.IsNotNull(parentEntity);
+                Assert.IsNotNull(parentEntity.Children);
+                Assert.IsTrue(parentEntity.Children.Any(c => c.FileName == "DynamoPlayer"));
+            }
+            finally
+            {
+                Directory.Delete(rootPath, true);
+            }
+        }
+
+        [Test]
+        public void IsSampleGraphPathExcludesDirectoriesAndUnsupportedFiles()
+        {
+            // Arrange
+var testDirectory = GetTestDirectory(ExecutingDirectory);
+var directoryPath = testDirectory;
+var dynPath = Path.Combine(testDirectory, "core", "nodeLocationTest.dyn");
+var unrelatedPath = Path.Combine(testDirectory, "readme.txt");
+
+            // Assert
+            Assert.IsTrue(Directory.Exists(directoryPath));
+            Assert.IsFalse(HomePage.IsSampleGraphPath(directoryPath),
+                "A directory path must not be treated as an openable graph (DYN-10736).");
+            Assert.IsTrue(HomePage.IsSampleGraphPath(dynPath));
+            Assert.IsFalse(HomePage.IsSampleGraphPath(unrelatedPath));
         }
 
         #endregion

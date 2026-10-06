@@ -531,6 +531,12 @@
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
     <value>A entrada deve ser numérica.</value>
   </data>
+  <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
+    <value>A entrada deve corresponder ao formato de data e hora e ser uma data/hora válida.</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>A entrada deve ser um número inteiro.</value>
+  </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>Selecione uma cor na paleta</value>
   </data>
@@ -620,6 +626,9 @@ Nos fluxos de trabalho do Projeto generativo, esse nó deve ser usado para contr
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Selecionar tipos</value>
+  </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Nenhuma conexão a montante. Conecte um nó à porta de entrada para fornecer um valor padrão e definir o tipo dos dados. Para escolher um tipo sem dados a montante, desative a Detecção automática de tipo e use o menu suspenso.</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Especificador de formato para valores numéricos, consulte a ajuda do nó estendido para obter mais informações.

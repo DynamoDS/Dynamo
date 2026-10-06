@@ -83,7 +83,7 @@ namespace Dynamo.Graph.Workspaces
         {
             Debug.WriteLine("Creating a custom node workspace...");
 
-            HasUnsavedChanges = false;
+            MarkAsSaved();
 
             CustomNodeId = Guid.Parse(info.ID);
             Category = info.Category;
@@ -101,7 +101,7 @@ namespace Dynamo.Graph.Workspaces
 
             if (args.PropertyName == "Category" || args.PropertyName == "Description")
             {
-                HasUnsavedChanges = true;
+                MarkAsIndependentlyModified();
                 OnInfoChanged();
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
+using Dynamo.Graph.Workspaces;
 using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -127,6 +128,61 @@ namespace DynamoCoreWpfTests
                 .Any(engine => string.Equals(engine, expectedEngine, StringComparison.Ordinal));
 
             Assert.IsTrue(match, $"Expected at least one Python node with engine '{expectedEngine}' in '{Path.GetFileName(dyfPath)}'.");
+        }
+
+        [Test]
+        public void ClosingGraphWithCPython3NodesLeavesNoWorkspaceWithUnsavedChanges()
+        {
+            // Turn auto-migration notifications off so they don't interfere with the assertion.
+            Assert.IsNotNull(Model.PreferenceSettings, "Model.PreferenceSettings must be initialized.");
+            Model.PreferenceSettings.ShowPythonAutoMigrationNotifications = false;
+
+            // Assert that the Python Migration view extension is loaded,
+            Assert.IsTrue(View.viewExtensionManager.ViewExtensions.Any(e => e != null && e.Name == "Python Migration"),
+                "Python Migration view extension is not loaded.");
+
+            var pythonDir = Path.Combine(GetTestDirectory(ExecutingDirectory), "core", "python");
+            var childPath = Path.Combine(pythonDir, "CNWithCPython_Child.dyf");
+            var parentPath = Path.Combine(pythonDir, "CNWithCPython_Parent.dyf");
+            var graphPath = Path.Combine(pythonDir, "WithNestedCPythonCustomNodes.dyn");
+
+            Assert.IsTrue(File.Exists(childPath), "Missing test file: " + childPath);
+            Assert.IsTrue(File.Exists(parentPath), "Missing test file: " + parentPath);
+            Assert.IsTrue(File.Exists(graphPath), "Missing test file: " + graphPath);
+
+            // Both custom nodes contain CPython3 nodes before loading.
+            AssertDyfContainsPythonNodesWithEngine(childPath, PythonEngineManager.CPython3EngineName);
+            AssertDyfContainsPythonNodesWithEngine(parentPath, PythonEngineManager.CPython3EngineName);
+
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(childPath, true, out _));
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(parentPath, true, out _));
+
+            // Open the graph to trigger the in-memory CPython3 -> PythonNet3 migration.
+            Open(graphPath);
+
+            // Assert that the custom node Python nodes were actually migrated in memory.
+            var migratedPyNodes = ViewModel.Model.CustomNodeManager.LoadedWorkspaces
+                .SelectMany(ws => ws.Nodes.OfType<PythonNode>())
+                .ToList();
+            Assert.IsTrue(migratedPyNodes.Any(), "Expected CPython custom node workspaces to be loaded.");
+            Assert.IsTrue(
+                migratedPyNodes.All(n => n.EngineName == PythonEngineManager.PythonNet3EngineName),
+                "Custom node Python nodes were not auto-migrated to PythonNet3.");
+
+            // Close the host graph (creates a fresh, empty home workspace).
+            // The custom node workspaces remain cached in CustomNodeManager.
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            // Assert that no workspace - home or any cached custom node definition  report unsaved changes.
+            var dirtyWorkspaces = Model.Workspaces
+                .Concat(ViewModel.Model.CustomNodeManager.LoadedWorkspaces.Cast<WorkspaceModel>())
+                .Where(ws => ws.HasUnsavedChanges)
+                .Select(ws => ws.Name)
+                .ToList();
+
+            Assert.IsEmpty(dirtyWorkspaces,
+                "These workspaces still report HasUnsavedChanges after closing the graph: "
+                + string.Join(", ", dirtyWorkspaces));
         }
     }
 }

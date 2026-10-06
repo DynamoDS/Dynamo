@@ -19,6 +19,8 @@ using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using DynamoMLDataPipeline;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.UI.GuidedTour;
+using DynamoCoreWpfTests.Utility;
 
 
 namespace DynamoCoreWpfTests
@@ -90,12 +92,13 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void OpeningWorkspaceWithTclsrustWarning()
+        public void OpeningWorkspaceWithTrustWarning()
         {
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
             Open(@"core\CustomNodes\TestAdd.dyn");
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
+            Assert.IsTrue(ViewModel.HomeSpace.RunSettings.ForceBlockRun);
 
             // Close workspace
             Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
@@ -103,6 +106,7 @@ namespace DynamoCoreWpfTests
 
             // Asert that the warning popup is closed, when the workspace is closed.
             Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
+            Assert.IsFalse(ViewModel.HomeSpace.RunSettings.ForceBlockRun);
             DynamoModel.IsTestMode = true;
         }
 
@@ -132,6 +136,92 @@ namespace DynamoCoreWpfTests
 
             //assert that save button is still enabled
             Assert.IsTrue(View.saveButton.IsEnabled);
+        }
+
+        /// <summary>
+        /// Asserts that the File menu's Save/Save As MenuItems are bound to the expected commands
+        /// and that IsEnabled reflects the live CanExecute() -- this is the actual regression
+        /// surface for DYN-10717 (the menu items had a hardcoded IsEnabled="False" in XAML that
+        /// never tracked CanExecute at all).
+        /// </summary>
+        private void AssertSaveMenuItemsReflectCanExecute()
+        {
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand, View.saveThisButton.Command,
+                "saveThisButton is not bound to ShowSaveDialogIfNeededAndSaveResultCommand");
+            Assert.AreSame(ViewModel.ShowSaveDialogAndSaveResultCommand, View.saveButton.Command,
+                "saveButton is not bound to ShowSaveDialogAndSaveResultCommand");
+
+            var expectedSave = ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null);
+            var expectedSaveAs = ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null);
+
+            Assert.AreEqual(expectedSave, View.saveThisButton.IsEnabled,
+                $"saveThisButton.IsEnabled ({View.saveThisButton.IsEnabled}) does not reflect ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute() ({expectedSave})");
+            Assert.AreEqual(expectedSaveAs, View.saveButton.IsEnabled,
+                $"saveButton.IsEnabled ({View.saveButton.IsEnabled}) does not reflect ShowSaveDialogAndSaveResultCommand.CanExecute() ({expectedSaveAs})");
+        }
+
+        [Test]
+        public void WhenDynamoLaunchesThenSaveAsIsEnabledButSaveIsDisabledUntilDirty()
+        {
+            // Regression test for DYN-10717: Save/Save As enablement is driven by a shared CanExecute (menu, hotkey, toolbar all in sync), with "Save" additionally gated on the workspace's dirty flag.
+            Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+            Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
+
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+
+            Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
+        }
+
+        [Test]
+        public void WhenLastWorkspaceIsClosedThenSaveMenuItemsAreDisabled()
+        {
+            // Regression test for DYN-10717: closing the only open workspace shows the Start Page, where Save/Save As are intentionally disabled (this is not the bug; the bug was menu/hotkey/toolbar disagreeing with each other).
+            var wasTestMode = DynamoModel.IsTestMode;
+            try
+            {
+                DynamoModel.IsTestMode = false;
+                ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = wasTestMode;
+            }
+
+            Assert.IsTrue(ViewModel.ShowStartPage);
+            Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+            Assert.IsFalse(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
+        }
+
+        [Test]
+        public void WhenGuidedTourIsActiveThenSaveMenuItemsAreDisabledUntilExit()
+        {
+            // Regression test for DYN-10717: Save/Save As must be disabled while a guided tour is active (via GuideFlowEvents.IsAnyGuideActive), and re-enabled once it ends.
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+            Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+            Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
+
+            try
+            {
+                GuideFlowEvents.OnGuidedTourStart("test");
+
+                Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+                Assert.IsFalse(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+                AssertSaveMenuItemsReflectCanExecute();
+            }
+            finally
+            {
+                GuideFlowEvents.OnGuidedTourFinish("test");
+            }
+
+            Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+            Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
         }
 
         [Test]

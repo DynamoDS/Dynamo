@@ -1,5 +1,6 @@
 ﻿using Dynamo;
 using Dynamo.PackageManager;
+using Dynamo.Wpf.Properties;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.PackageManager
@@ -36,5 +37,14 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         #endregion
+
+        // The disabled-state tooltip on the Packages menu items in DynamoView.xaml
+        // binds to this resource key via {x:Static p:Resources.PackageManagerNoNetworkModeToolTip}.
+        // If the key is dropped from the .resx, the XAML still parses but hover shows nothing.
+        [Test]
+        public void WhenNoNetworkModeTooltipResourceRequestedThenItResolvesToNonEmpty()
+        {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(Resources.PackageManagerNoNetworkModeToolTip));
+        }
     }
 }

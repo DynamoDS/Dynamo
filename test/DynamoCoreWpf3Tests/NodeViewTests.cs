@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -16,12 +17,24 @@ using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using ProtoCore.AST.AssociativeAST;
 
 namespace DynamoCoreWpfTests
 {
     public class NodeViewTests : DynamoTestUIBase
     {
         // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
+        private class DefaultValueInputTypeNode : NodeModel
+        {
+            internal DefaultValueInputTypeNode()
+            {
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("integer", "integer", AstFactory.BuildIntNode(1))));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("number", "number", AstFactory.BuildDoubleNode(1.0))));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("boolean", "boolean", AstFactory.BuildBooleanNode(true))));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("text", "text", AstFactory.BuildStringNode("value"))));
+                RegisterAllPorts();
+            }
+        }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -359,6 +372,16 @@ namespace DynamoCoreWpfTests
             var port = inPorts[0].PortModel;
             var type = port.GetInputPortType();
             Assert.AreEqual("System.Drawing.Bitmap", type);
+        }
+
+        [Test]
+        public void InputPortType_NodeModelNodeWithoutInPortTypes_FallsBackToDefaultValueType()
+        {
+            var node = new DefaultValueInputTypeNode();
+
+            CollectionAssert.AreEqual(
+                new[] { "int", "double", "bool", "string" },
+                node.InPorts.Select(port => port.GetInputPortType()));
         }
 
         [Test]

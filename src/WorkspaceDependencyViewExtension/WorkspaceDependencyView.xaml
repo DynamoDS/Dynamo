@@ -247,12 +247,37 @@
                                 FontSize="11">
                             </TextBlock>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Style="{StaticResource SmallTextButton}"
-                                    Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
+                                <Button Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
                                     Name="DownloadPackageButton"
                                     Click="DownloadPackage"
                                     Margin="10"
-                                    Content="{x:Static w:Resources.InstallButtonText}"/>
+                                    Content="{x:Static w:Resources.InstallButtonText}"
+                                    ToolTipService.ShowOnDisabled="True">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource SmallTextButton}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NoNetworkMode, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            <ToolTip.Style>
+                                                <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Setter Property="Content" Value="{x:Static w:Resources.InstallButtonNoNetworkModeToolTip}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToolTip.Style>
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
                                 <Button Style="{StaticResource SmallTextButton}"
                                     Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
                                     Name="KeepLocalPackageButton"

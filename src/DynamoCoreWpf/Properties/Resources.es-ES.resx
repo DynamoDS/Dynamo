@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Active el modo de red para poder iniciar sesión.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Active el modo de red para poder utilizar Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -552,7 +555,7 @@ No se preocupe; tendrá la opción de guardar su trabajo.</value>
     <value>_Espacio de trabajo de inicio</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Abrir...</value>
+    <value>_Abrir archivo</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>A_brir archivos recientes</value>
@@ -1145,6 +1148,12 @@ Siempre puede volver a descargar el paquete.</value>
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>No se ha podido cargar un paquete no válido.</value>
+  </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>La instalación se ha cancelado debido a un conflicto de nodos personalizados.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Reinicie Dynamo para eliminar el paquete en conflicto.</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No se ha podido encontrar ningún nodo con ese ID</value>
@@ -2055,6 +2064,12 @@ Para instalar la actualización más reciente, hay que cerrar Dynamo y todas las
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>No se ha añadido ninguna ficha nueva, ya que la extensión ya está presente en la barra lateral de extensiones.</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>El paquete/extensión {0} no está disponible porque no se ha instalado el SDK de escritorio de ADP de Autodesk (no se ha podido encontrar {1}), por lo que no es posible validar los tokens MCP; se rechazarán todas las solicitudes con HTTP 401.</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>El paquete o la extensión {0} no se ofrecen porque Autodesk Identity (IDSDK) no puede validar tokens MCP en este proceso ({1} no exporta {2}). Toda solicitud se rechazaría y mostraría el error HTTP 401.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} no se puede cargar.
@@ -3634,7 +3649,7 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>_Archivo</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Plantilla</value>
+    <value>Desde plantilla...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Los espacios de trabajo no se pueden guardar en la carpeta de plantillas. Elija otra carpeta para guardar el archivo.
@@ -3808,6 +3823,9 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Se ha especificado una ruta de archivo no válida. En caso de que se haya guardado el archivo, asegúrese de extraerlo antes de abrirlo.\n{0}</value>
+  </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>Este archivo ya no está disponible. Es posible que se haya desplazado, renombrado o suprimido.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Inmovilizar grupo</value>

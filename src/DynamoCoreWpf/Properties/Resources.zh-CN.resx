@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>启用网络模式以便能够登录。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>启用网络模式以便能够使用 Package Manager。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -552,7 +555,7 @@
     <value>主工作空间(_H)</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>打开(_O)...</value>
+    <value>打开文件(_O)</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>打开最近使用的文件(_R)</value>
@@ -1145,6 +1148,12 @@
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>无法加载无效的软件包。</value>
+  </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>由于自定义节点冲突，安装已取消。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>重新启动 Dynamo 以删除冲突的软件包。</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>找不到具有该 ID 的任何节点。</value>
@@ -2054,6 +2063,12 @@
   </data>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>添加了新选项卡，因为该扩展已经显示在扩展侧栏上。</value>
+  </data>
+  <data name="ExtensionNotOfferedAdpWrapperMissing" xml:space="preserve">
+    <value>软件包/扩展 {0} 未提供，因为未安装 Autodesk ADP Desktop SDK (找不到 {1})，因此无法验证 MCP 令牌；每个请求都会被拒绝，并返回 HTTP 401。</value>
+  </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>不提供软件包/扩展{0}因为此过程中的 Autodesk Identity （IDSDK） 无法验证 MCP 令牌（{1} 不会导出{2}）;HTTP 401 会拒绝每个请求。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>无法加载 {1}。
@@ -3632,7 +3647,7 @@
     <value>文件(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>模板(_T)</value>
+    <value>从模板…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>工作空间无法直接保存到“Templates”文件夹。请选择其他文件夹以保存文件。
@@ -3806,6 +3821,9 @@
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>提供的文件路径无效。如果文件已存档，请确保在打开之前将其解压缩。\n{0}</value>
+  </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>此文件不再可用。它可能已被移动、重命名或删除。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>冻结组</value>

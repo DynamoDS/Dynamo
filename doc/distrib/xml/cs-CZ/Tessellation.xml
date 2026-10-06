@@ -55,7 +55,7 @@
         <member name="T:Tessellation.UvScalingUtilities">
             <summary>Pomocné funkce pro změnu měřítka UV u povrchů.</summary>
         </member>
-        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+        <member name="F:Tessellation.UvScalingUtilities.NonUniformityThreshold">
             <summary>Vypočítá normalizované faktory měřítka UV povrchu pro zpracování anizotropních parametrických prostorů.
                 Změna měřítka zachovává poměr stran a hodnoty udržuje v rozumném číselném rozsahu.</summary>
             <param name="face">Povrch, pro který se vypočítají faktory měřítka.</param>

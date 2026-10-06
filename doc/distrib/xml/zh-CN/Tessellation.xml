@@ -55,7 +55,7 @@
         <member name="T:Tessellation.UvScalingUtilities">
             <summary>用于曲面上 UV 缩放的实用程序函数。</summary>
         </member>
-        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+        <member name="F:Tessellation.UvScalingUtilities.NonUniformityThreshold">
             <summary>为曲面计算规格化 UV 比例因子以处理各向异性参数空间。
                 缩放将保留纵横比，同时将值保持在合理的数值范围内。</summary>
             <param name="face">要计算比例因子的曲面。</param>

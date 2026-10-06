@@ -19,6 +19,7 @@ namespace CoreNodeModels.Input
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("StringInputNodeDescription", typeof(Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
@@ -336,6 +337,8 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(element, context); //Base implementation must be called
 
+            ClearErrorsAndWarnings();
+
             foreach (
                 XmlNode subNode in
                     element.ChildNodes.Cast<XmlNode>()
@@ -343,6 +346,9 @@ namespace CoreNodeModels.Input
             {
                 Value = subNode.Attributes[0].Value;
             }
+
+            // Value's equality guard can skip notify, force UI to drop uncommitted invalid text
+            RaisePropertyChanged(nameof(Value));
         }
 
         #endregion

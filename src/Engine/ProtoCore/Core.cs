@@ -170,7 +170,100 @@ namespace ProtoCore
         /// This flag is set true when we recompile CBNs after function definitions are compiled.
         /// </summary>
         internal bool IsCodeBlockNodeFirstPass { get; set; }
-        
+
+        /// <summary>
+        /// A global function call inside a code block node that could not be resolved while its
+        /// containing function definition was compiled during the first pass. Function bodies are
+        /// only compiled in the first pass, where "function not found" warnings are suppressed so
+        /// that forward references to functions defined later or in sibling CBNs do not warn. Such
+        /// candidates are buffered here and re-checked once every definition has been registered,
+        /// so genuinely undefined calls are still reported. See DYN-10693.
+        /// </summary>
+        internal class DeferredFunctionResolution
+        {
+            internal string FunctionName { get; set; }
+            internal List<Type> ArgumentTypes { get; set; }
+            internal string Message { get; set; }
+            internal string FileName { get; set; }
+            internal int Line { get; set; }
+            internal int Column { get; set; }
+            internal GraphNode GraphNode { get; set; }
+        }
+
+        /// <summary>
+        /// Buffer of unresolved function calls encountered while compiling code block node function
+        /// bodies during the first pass. These are re-evaluated (see
+        /// <see cref="LogUnresolvedDeferredFunctionWarnings"/>) after all function definitions are
+        /// registered. See DYN-10693.
+        /// <para>
+        /// This is transient scratch space filled and drained within a single CBN precompilation.
+        /// Like the rest of the precompilation state on this shared core (for example the
+        /// <see cref="IsParsingCodeBlockNode"/> / <see cref="IsCodeBlockNodeFirstPass"/> flags and
+        /// <c>ResetForPrecompilation</c>), it relies on CBN compilation being sequential on a given
+        /// core; it is deliberately not synchronized, and adding a lock here alone would not make the
+        /// wider operation thread-safe.
+        /// </para>
+        /// </summary>
+        internal IList<DeferredFunctionResolution> DeferredFunctionResolutions { get; } = new List<DeferredFunctionResolution>();
+
+        /// <summary>
+        /// Emits or defers a "function not found" warning for an unresolved global function call.
+        /// The warning is logged immediately outside code block node compilation, or during a CBN's
+        /// second pass. During a CBN's first pass a call inside a function body is deferred and
+        /// re-checked later (see <see cref="LogUnresolvedDeferredFunctionWarnings"/>), because the
+        /// callee might be defined later in this CBN or in a sibling CBN not yet compiled; a
+        /// top-level call is left to be re-checked when the statements are recompiled in the second
+        /// pass. This is shared by the associative and imperative code generators. See DYN-10693.
+        /// </summary>
+        internal void LogOrDeferFunctionNotFound(string functionName, IEnumerable<Type> argumentTypes,
+            int line, int column, GraphNode graphNode, int globalProcIndex)
+        {
+            var message = string.Format(Properties.Resources.kMethodNotFound, functionName);
+            if (!(IsParsingCodeBlockNode && IsCodeBlockNodeFirstPass))
+            {
+                BuildStatus.LogWarning(BuildData.WarningID.FunctionNotFound, message,
+                    CurrentDSFileName, line, column, graphNode);
+            }
+            else if (globalProcIndex != Constants.kGlobalScope)
+            {
+                DeferredFunctionResolutions.Add(new DeferredFunctionResolution
+                {
+                    FunctionName = functionName,
+                    ArgumentTypes = new List<Type>(argumentTypes),
+                    Message = message,
+                    FileName = CurrentDSFileName,
+                    Line = line,
+                    Column = column,
+                    GraphNode = graphNode
+                });
+            }
+        }
+
+        /// <summary>
+        /// Re-evaluates the supplied unresolved function-call candidates now that every function
+        /// definition has been registered, logging a <see cref="BuildData.WarningID.FunctionNotFound"/>
+        /// warning for each one that still cannot be resolved. Candidates that now resolve are
+        /// legitimate forward references and are silently discarded. See DYN-10693.
+        /// </summary>
+        /// <param name="candidates">The deferred candidates captured during the first pass.</param>
+        internal void LogUnresolvedDeferredFunctionWarnings(IEnumerable<DeferredFunctionResolution> candidates)
+        {
+            if (candidates == null)
+                return;
+
+            var searchBlock = CodeBlockList.Count > 0 ? CodeBlockList[0] : null;
+            foreach (var candidate in candidates)
+            {
+                var procNode = ProtoCore.Utils.CoreUtils.GetFunctionBySignature(
+                    candidate.FunctionName, candidate.ArgumentTypes, searchBlock);
+                if (procNode == null)
+                {
+                    BuildStatus.LogWarning(BuildData.WarningID.FunctionNotFound, candidate.Message,
+                        candidate.FileName, candidate.Line, candidate.Column, candidate.GraphNode);
+                }
+            }
+        }
+
         // THe ImportModuleHandler owned by the temporary core used in Graph UI precompilation
         // needed to detect if the same assembly is not being imported more than once
         public ImportModuleHandler ImportHandler { get; set; }

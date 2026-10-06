@@ -161,10 +161,27 @@ namespace Dynamo.UI.Views
         bool enableSignInButton;
 
         /// <summary>
-        /// Splash Screen Constructor. 
+        /// Stores whether Dynamo was started in no-network mode. When true, the splash screen's
+        /// WebView2 surface is initialized with hardened Edge command-line switches that suppress
+        /// the runtime's background networking. The splash screen is the first WebView2 surface
+        /// created at startup, so the flag must be supplied at construction time.
+        /// </summary>
+        private readonly bool noNetworkMode;
+
+        /// <summary>
+        /// Splash Screen Constructor.
         /// <paramref name="enableSignInButton"/> Indicates if the SignIn Button will be enabled(default) or not.
         /// </summary>
-        public SplashScreen(bool enableSignInButton = true)
+        public SplashScreen(bool enableSignInButton = true) : this(enableSignInButton, false)
+        {
+        }
+
+        /// <summary>
+        /// Splash Screen Constructor.
+        /// </summary>
+        /// <param name="enableSignInButton">Indicates if the SignIn Button will be enabled(default) or not.</param>
+        /// <param name="noNetworkMode">Indicates if Dynamo was started in no-network mode. When true, the splash WebView2 surface suppresses Edge background networking.</param>
+        public SplashScreen(bool enableSignInButton, bool noNetworkMode)
         {
             InitializeComponent();
 
@@ -184,6 +201,7 @@ namespace Dynamo.UI.Views
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
+            this.noNetworkMode = noNetworkMode;
             currentCloseMode = CloseMode.ByOther;
         }
 
@@ -403,6 +421,10 @@ namespace Dynamo.UI.Views
             {
                 UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(SplashScreen)) : webBrowserUserDataFolder.FullName
             };
+
+            // When running in no-network mode, harden the Edge runtime before it is created so the
+            // splash screen - the first WebView2 surface shown - does not emit background traffic.
+            WebView2Utilities.ApplyNoNetworkPolicy(webView.CreationProperties, noNetworkMode);
 
             //ContentRendered ensures that the webview2 component is visible.
             try
