@@ -36,7 +36,7 @@ shouldn't see a bug fix for a bug they never could have hit.
 ## Security-fix identification
 
 Look for: CVE references, fixes tagged as closing a CA2327/CA2328/CA2329/CA2330 analyzer
-violation (see `.claude/rules/dynamo-core-rules.md`), credential/secret-handling fixes,
+violation (see `AGENTS.md` Key Conventions), credential/secret-handling fixes,
 injection-class fixes, or anything the PR itself explicitly calls a security fix. When in
 doubt, ask the requester rather than silently bucketing it as a plain Bug Fix — security
 fixes get their own `#### Security Fixes` section.
