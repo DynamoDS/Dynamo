@@ -13,11 +13,11 @@
     <AssemblyName>ViewExtensionLibraryTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Moq" Version="4.18.4"/>
-    <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none"/>
+    <PackageReference Include="Moq"/>
+    <PackageReference Include="NUnit" ExcludeAssets="none"/>
 	<PackageRefence Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" ExcludeAssets="all" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" ExcludeAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">

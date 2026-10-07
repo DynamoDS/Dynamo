@@ -46,7 +46,7 @@
     <EmbeddedResource Include="Docs\zh-TW\LinterViewHelpDoc.html" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FontAwesome5" Version="2.1.11" />
+    <PackageReference Include="FontAwesome5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

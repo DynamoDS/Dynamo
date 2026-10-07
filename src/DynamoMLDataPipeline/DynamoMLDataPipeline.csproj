@@ -9,9 +9,9 @@
 	<AssemblyName>DynamoMLDataPipeline</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="112.0.0" />
-        <PackageReference Include="Greg" Version="3.0.2.8780" />
+		<PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="RestSharp" />
+        <PackageReference Include="Greg" />
   </ItemGroup>
   <ItemGroup>
 	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj">

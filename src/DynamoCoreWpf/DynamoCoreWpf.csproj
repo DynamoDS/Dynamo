@@ -479,39 +479,39 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="HelixToolkit" Version="2.24.0" />
-      <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
-      <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
-      <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6287" />
-    <PackageReference Include="FontAwesome5" Version="2.1.11" />
-    <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="112.0.0" />
-    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-    <PackageReference Include="SharpDX" Version="4.2.0" />
-    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
+      <PackageReference Include="HelixToolkit" />
+      <PackageReference Include="HelixToolkit.Core.Wpf" />
+      <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" />
+    <PackageReference Include="FontAwesome5" />
+    <PackageReference Include="AvalonEdit" CopyXML="true" />
+    <PackageReference Include="Greg" />
+    <PackageReference Include="Microsoft.Web.WebView2" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="RestSharp" />
+    <PackageReference Include="Cyotek.Drawing.BitmapFont" />
+    <PackageReference Include="SharpDX" />
+    <PackageReference Include="SharpDX.D3DCompiler">
 	  <IncludeAssets>none</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0">
+	<PackageReference Include="SharpDX.Direct2D1">
 	  <IncludeAssets>none</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
-	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
-	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
-	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
+	<PackageReference Include="SharpDX.Direct3D11" />
+	<PackageReference Include="SharpDX.Direct3D9" />
+	<PackageReference Include="SharpDX.DXGI" />
+	<PackageReference Include="SharpDX.Mathematics" />
+	<PackageReference Include="System.Reflection.MetadataLoadContext" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
-      <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
+      <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
+    <PackageReference Include="Prism.Core" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\InPorts.xaml.cs" />
@@ -2216,10 +2216,11 @@
       * ExcludeAssets="all"      -> files only, no compile/runtime refs (preserves MCPServer's isolated ALC)
       * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_DynamoMCP)
     Hard-pinned to an exact version so a transitive bump can't pull a DynamoMCP built against a
-    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release for this line.
+    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release by editing the
+    DynamoVisualProgramming.DynamoMCP entry in Directory.Packages.props (the version no longer lives here).
   -->
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.DynamoMCP" Version="[0.6.3]" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.DynamoMCP" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <!--
     The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_DynamoMCP)\bin IS
@@ -2241,10 +2242,11 @@
       * ExcludeAssets="all"      -> files only, no compile/runtime refs
       * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_AutodeskAssistant)
     Hard-pinned to an exact version so a transitive bump can't pull an AA built against a
-    different DynamoVisualProgramming.* API. Bump in lockstep with the AA release for this line.
+    different DynamoVisualProgramming.* API. Bump in lockstep with the AA release by editing the
+    DynamoVisualProgramming.AutodeskAssistant entry in Directory.Packages.props (the version no longer lives here).
   -->
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.AutodeskAssistant" Version="[0.3.9]" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.AutodeskAssistant" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <!--
     The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_AutodeskAssistant)\bin IS
