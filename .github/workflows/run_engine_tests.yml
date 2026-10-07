@@ -34,7 +34,6 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read
-      checks: write
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v7
@@ -80,8 +79,27 @@ jobs:
             --logger "trx;LogFileName=prototest.trx" `
             --results-directory ${{ github.workspace }}\TestResults
 
+      # dotnet test exits 0 even when the filter matches zero tests (e.g. a
+      # typo'd category or a missing NUnit adapter), which would make the gate
+      # silently pass. Parse the TRX and fail unless tests actually ran.
+      - name: Verify tests executed
+        if: always()
+        run: |
+          $trx = Get-ChildItem "${{ github.workspace }}\TestResults\*.trx" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $trx) {
+            Write-Error "No TRX found in ${{ github.workspace }}\TestResults — dotnet test produced no results"
+            exit 1
+          }
+          [xml]$report = Get-Content $trx.FullName
+          $executed = [int]$report.TestRun.ResultSummary.Counters.executed
+          if ($executed -eq 0) {
+            Write-Error "Filter '$env:TEST_CATEGORY_FILTER' matched 0 tests — refusing to pass an empty test run"
+            exit 1
+          }
+          Write-Output "TRX $($trx.Name): $executed tests executed"
+
       - name: Publish test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: prototest-results
