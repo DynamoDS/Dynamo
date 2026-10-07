@@ -13,7 +13,7 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001">
+    <PackageReference Include="Microsoft.Office.Interop.Excel">
         <ExcludeAssets>all</ExcludeAssets>
         <GeneratePathProperty>true</GeneratePathProperty>
     </PackageReference>
@@ -31,7 +31,7 @@
         <Isolated>False</Isolated>
         <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="false" />
+	  <PackageReference Include="DocumentFormat.OpenXml" CopyXML="false" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

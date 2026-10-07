@@ -2019,7 +2019,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open File.
+        ///   Looks up a localized string similar to _Open....
         /// </summary>
         public static string DynamoViewFileMenuOpen {
             get {

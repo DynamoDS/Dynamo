@@ -43,8 +43,8 @@
     <None Remove="Resources\zoom-out_hover.png" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="FontAwesome5" Version="2.1.11" />
-	<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+	<PackageReference Include="FontAwesome5" />
+	<PackageReference Include="AvalonEdit" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">

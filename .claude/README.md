@@ -1,7 +1,9 @@
 # Dynamo Claude Configuration
 
-Skills and rules for AI-assisted development in the Dynamo repo.
+Skills for AI-assisted development in the Dynamo repo.
 Canonical source of truth for Claude Code, claude.com, and Copilot (via generated wrappers).
+
+Always-on rules live in the root `AGENTS.md` (single source of truth, loaded by every tool).
 
 ## Directory structure
 
@@ -11,20 +13,12 @@ Canonical source of truth for Claude Code, claude.com, and Copilot (via generate
 ├── skills/          # Canonical agent skills (agentskills.io format)
 │   └── <name>/
 │       └── SKILL.md
-├── rules/           # Always-on coding rules
-│   └── <rule-name>.md
-├── agents/          # Additional tracked agent configuration/assets
-├── agent-memory/    # Tracked shared memory/context files
 └── README.md        # This file
 ```
 
 ## Skills
 
 Reusable prompts following the [agentskills.io](https://agentskills.io/specification) format. Each skill lives in `skills/<name>/SKILL.md`. In Claude Code they are auto-triggered by description or invoked explicitly. To upload to claude.com, ZIP the skill directory and upload via Settings > Capabilities.
-
-## Rules
-
-Always-on guardrails in `rules/` applied across all sessions.
 
 ## Cross-tool parity
 
