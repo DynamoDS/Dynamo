@@ -555,7 +555,7 @@ Keine Sorge: Sie erhalten die Möglichkeit, Ihre Arbeit zu speichern.</value>
     <value>_Start-Arbeitsbereich</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>Datei _öffnen</value>
+    <value>_Öffnen...</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>_Zuletzt verwendete Dateien öffnen</value>
