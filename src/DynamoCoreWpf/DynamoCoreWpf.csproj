@@ -2216,7 +2216,8 @@
       * ExcludeAssets="all"      -> files only, no compile/runtime refs (preserves MCPServer's isolated ALC)
       * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_DynamoMCP)
     Hard-pinned to an exact version so a transitive bump can't pull a DynamoMCP built against a
-    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release for this line.
+    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release by editing the
+    DynamoVisualProgramming.DynamoMCP entry in Directory.Packages.props (the version no longer lives here).
   -->
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.DynamoMCP" GeneratePathProperty="true" ExcludeAssets="all" />
@@ -2241,7 +2242,8 @@
       * ExcludeAssets="all"      -> files only, no compile/runtime refs
       * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_AutodeskAssistant)
     Hard-pinned to an exact version so a transitive bump can't pull an AA built against a
-    different DynamoVisualProgramming.* API. Bump in lockstep with the AA release for this line.
+    different DynamoVisualProgramming.* API. Bump in lockstep with the AA release by editing the
+    DynamoVisualProgramming.AutodeskAssistant entry in Directory.Packages.props (the version no longer lives here).
   -->
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.AutodeskAssistant" GeneratePathProperty="true" ExcludeAssets="all" />

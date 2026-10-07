@@ -58,7 +58,7 @@ Key relationships: `DynamoCore` is the graph model and execution engine. `Dynamo
 - NUnit for all tests. Do not introduce xUnit or MSTest.
 - Test naming: `WhenConditionThenExpectedBehavior`. One behavior per test, Arrange-Act-Assert.
 - User-facing strings in `.resx` files.
-- NuGet package versions live only in `Directory.Packages.props` (Central Package Management). `PackageReference` entries in csproj files must omit `Version`; bump a dependency by editing the props file. Conditions selecting *which* package to reference (e.g. LibG Debug/Release in `DynamoCore.csproj`) stay in the csproj.
+- NuGet package versions for `PackageReference` projects live only in `Directory.Packages.props` (Central Package Management); legacy `packages.config` projects (e.g. `tools/DSTestCaseConverter`) are outside CPM and keep their versions locally. `PackageReference` entries in csproj files must omit `Version`; bump a dependency by editing the props file. Conditions selecting *which* package to reference (e.g. LibG Debug/Release in `DynamoCore.csproj`) stay in the csproj.
 - No files > 50 MB.
 - Preserve existing line endings when editing — do not convert. The `.editorconfig` specifies LF, but many files have CRLF from Windows development. New files should follow `.editorconfig` (LF); the Write tool on macOS may need explicit attention.
 

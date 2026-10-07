@@ -180,7 +180,8 @@ For each new node, provide in `doc/distrib/NodeHelpFiles/`:
 
 ### Central Package Management
 
-- NuGet package versions live only in `Directory.Packages.props` at the repo root
+- NuGet package versions for `PackageReference` projects live only in `Directory.Packages.props` at the repo root
+- Legacy `packages.config` projects (e.g. `tools/DSTestCaseConverter`) are outside CPM and keep their versions locally
 - `PackageReference` entries in csproj files must omit `Version`; bump a dependency by editing the props file
 - Conditions selecting *which* package to reference (e.g. LibG Debug/Release in `DynamoCore.csproj`) stay in the csproj
 

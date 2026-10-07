@@ -1,5 +1,7 @@
 <Project>
-  <!-- Central Package Management: all NuGet package versions live here.
+  <!-- Central Package Management: NuGet package versions for all PackageReference
+       projects live here. Legacy packages.config projects (e.g. tools/DSTestCaseConverter)
+       are outside CPM and keep their versions locally.
        To bump a dependency, change its version below — no csproj edits needed.
        PackageReference entries in csproj files must omit the Version attribute
        (use VersionOverride only for deliberate, documented exceptions).
