@@ -136,8 +136,8 @@ namespace DynamoCoreWpfTests
             var pythonNet3MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
-            Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(true, pythonNet3MenuItem.IsChecked);
+            Assert.IsFalse(ironPython2MenuItem.IsChecked);
+            Assert.IsTrue(pythonNet3MenuItem.IsChecked);
             DispatcherUtil.DoEvents();
         }
 
@@ -704,15 +704,15 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedEngineVersionOnOpen, engineVersionOnOpen);
             CollectionAssert.AreEqual(expectedEngineMenuItems, engineMenuItems.Cast<MenuItem>().Select(x => x.Header));
             Assert.AreEqual(expectedEngineVersionAfterChange, engineVersionAfterChange);
-            Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(true, pythonNet3MenuItem.IsChecked);
+            Assert.IsFalse(ironPython2MenuItem.IsChecked);
+            Assert.IsTrue(pythonNet3MenuItem.IsChecked);
 
             // Act
             nodeModel.EngineName = PythonEngineManager.IronPython2EngineName;
 
             // Assert
-            Assert.AreEqual(true, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(false, pythonNet3MenuItem.IsChecked);
+            Assert.IsTrue(ironPython2MenuItem.IsChecked);
+            Assert.IsFalse(pythonNet3MenuItem.IsChecked);
             DispatcherUtil.DoEvents();
         }
 
@@ -821,7 +821,7 @@ namespace DynamoCoreWpfTests
             var pynode = nodeModel as PythonNode;
             Assert.AreEqual(pynode.EngineName, PythonEngineManager.IronPython2EngineName);
 
-            Assert.AreEqual(pynode.State, Dynamo.Graph.Nodes.ElementState.Warning);
+            Assert.AreEqual(Dynamo.Graph.Nodes.ElementState.Warning, pynode.State);
             DispatcherUtil.DoEvents();
             var nodeView = NodeViewWithGuid(nodeModel.GUID.ToString());
             
@@ -850,7 +850,7 @@ namespace DynamoCoreWpfTests
 
             var editorTab = ViewModel.SideBarTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString());
             Assert.IsNotNull(editorTab);
-            Assert.AreEqual(editorTab.Header.ToString(), "Python Script");
+            Assert.AreEqual("Python Script", editorTab.Header.ToString());
 
             // Undock editor tab from right side panel.
             View.UndockWindow(editorTab);
