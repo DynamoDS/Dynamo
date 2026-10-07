@@ -505,9 +505,10 @@ namespace PythonNodeModelsWpf
                 return;
 
             var next = script ?? string.Empty;
-            if (editText.Text == next && originalScript == next)
+            if (editText.Text == next)
             {
-                // Already showing the node script. Make sure it is not still marked as unsaved.
+                // Already showing the node script (for example this editor's own Save).
+                // Keep the Revert target as it is, and make sure the editor is not marked unsaved.
                 lastSyncedScript = next;
                 IsSaved = true;
                 return;
@@ -610,8 +611,13 @@ namespace PythonNodeModelsWpf
 
             // Record the text first: the command raises a Script change, and ApplyExternalScriptToEditor
             // must see it as this editor's own write (no reload, no extra undo entry).
-            originalScript = scriptText;
+            // originalScript is not changed here: Revert still goes back to the script the editor started from.
             lastSyncedScript = scriptText;
+
+            var scriptChanged = !string.Equals(
+                NodeModel.Script ?? string.Empty,
+                scriptText ?? string.Empty,
+                StringComparison.Ordinal);
 
             var command = new DynamoModel.UpdateModelValueCommand(
                 boundWorkspaceId, boundNodeId, propertyName, scriptText);
@@ -619,6 +625,11 @@ namespace PythonNodeModelsWpf
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
             nodeWasModified = true;
+
+            if (!scriptChanged)
+            {
+                NodeModel.OnNodeModified();
+            }
         }
 
         private void OnRunClicked(object sender, RoutedEventArgs e)

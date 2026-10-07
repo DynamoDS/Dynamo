@@ -53,7 +53,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.node = node;
             this.accept = accept;
             this.reject = reject;
-            nodeScriptAtOpen = node.Script ?? string.Empty;
+            nodeScriptAtOpen = e.Kind == PythonScriptReviewKind.AssistantReview
+                ? e.RightCode
+                : node.Script ?? string.Empty;
             WindowTitle = string.Format(CultureInfo.CurrentCulture, titleFormat, node.Name);
 
             diffModel = new SideBySideDiffBuilder().BuildDiffModel(e.LeftCode, e.RightCode, false);
