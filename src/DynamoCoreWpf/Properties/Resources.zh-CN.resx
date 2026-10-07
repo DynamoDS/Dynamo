@@ -555,7 +555,7 @@
     <value>主工作空间(_H)</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>打开文件(_O)</value>
+    <value>打开(_O)...</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>打开最近使用的文件(_R)</value>

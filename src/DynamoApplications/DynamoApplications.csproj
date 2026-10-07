@@ -14,7 +14,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="CommandLineParser" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
