@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6287"/>
     
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
