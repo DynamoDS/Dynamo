@@ -79,7 +79,7 @@ Comments explain *why*, not what.
 |---|--------|
 | TFM | net10.0 (full UI: win-x64 only) |
 | Test framework | NUnit |
-| Build / test | root `AGENTS.md` § Build Commands (full UI: `Dynamo.All.sln`, Windows; engine: `DynamoCore.sln`) |
+| Build / test | root `AGENTS.md` § Build Commands and § After Changes — Proof Checklist (full UI: `Dynamo.All.sln`, Windows; core: `DynamoCore.sln`) |
 | IDE | Visual Studio 2022 |
 
 ---
