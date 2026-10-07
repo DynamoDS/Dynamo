@@ -53,15 +53,7 @@ A structured briefing following the sections below. Skip sections that don't app
 
 Dynamo is a visual programming tool accessible to non-programmers and programmers alike. Users can visually script behavior, define custom logic, and script using textual programming languages. C# + WPF, .NET 10. Core engine (`DynamoCore.sln`) is cross-platform; full UI (`Dynamo.All.sln`) is Windows-only.
 
-**Build:**
-```bash
-# Full (Windows)
-dotnet restore src/Dynamo.All.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
-msbuild src/Dynamo.All.sln /p:Configuration=Release
-
-# Core only (cross-platform)
-dotnet build src/DynamoCore.sln -c Release
-```
+**Build and test:** use the commands in root `AGENTS.md` § Build Commands and § After Changes — Proof Checklist — the single source, kept in sync with `.github/copilot-instructions.md` by `check_instruction_drift.ps1`. The full UI build (`Dynamo.All.sln`) is Windows-only; `DynamoCore.sln` also builds on Linux.
 
 **Test:** NUnit. `dotnet test` or Visual Studio Test Explorer.
 
