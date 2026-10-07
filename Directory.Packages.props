@@ -35,7 +35,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageVersion Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
+    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
     <PackageVersion Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <PackageVersion Include="System.CodeDom" Version="6.0.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
@@ -86,10 +86,10 @@
     <PackageVersion Include="NUnit" Version="3.13.3" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Perfolizer" Version="0.2.1" />
     <PackageVersion Include="Prism.Core" Version="8.1.97" />
-    <PackageVersion Include="RestSharp" Version="112.0.0" />
+    <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="RestSharp.Serializers.NewtonsoftJson" Version="106.12.0" />
     <PackageVersion Include="SharpDX" Version="4.2.0" />
     <PackageVersion Include="SharpDX.D3DCompiler" Version="4.2.0" />
