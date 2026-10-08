@@ -193,7 +193,7 @@
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        FontSize="20px"
                        Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                       Text="{x:Static p:Resources.PythonMigrationAssistantWindowTitle}" 
+                       Text="{Binding WindowTitle}" 
                        TextWrapping="Wrap" />
         </DockPanel>
 
