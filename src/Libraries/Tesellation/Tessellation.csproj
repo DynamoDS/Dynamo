@@ -14,10 +14,10 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MIConvexHull" version="1.1.19.1019" CopyPDB="true" />
-	<PackageReference Include="StarMath" version="2.0.20.204" CopyPDB="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6287" />
-    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+    <PackageReference Include="MIConvexHull" CopyPDB="true" />
+	<PackageReference Include="StarMath" CopyPDB="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" />
+    <PackageReference Include="System.Resources.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="MIConvexHull.xml" />

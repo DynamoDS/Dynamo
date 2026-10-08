@@ -11,15 +11,15 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="Greg" Version="3.0.2.8780" />
-        <PackageReference Include="Magick.NET.Core" Version="14.12.0" />
-        <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.12.0" />
-        <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6287"/>
+        <PackageReference Include="CommandLineParser" />
+        <PackageReference Include="Greg" />
+        <PackageReference Include="Magick.NET.Core" />
+        <PackageReference Include="Magick.NET-Q8-AnyCPU" />
+        <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0"/>
         
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="112.0.0" />
-        <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="RestSharp" />
+        <PackageReference Include="System.Drawing.Common" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

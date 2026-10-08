@@ -555,7 +555,7 @@ No se preocupe; tendrá la opción de guardar su trabajo.</value>
     <value>_Espacio de trabajo de inicio</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Abrir archivo</value>
+    <value>_Abrir...</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>A_brir archivos recientes</value>

@@ -181,8 +181,9 @@ function Get-PEExportedName {
     Resolves the AdskIdentitySDK.dll to inspect.
 .DESCRIPTION
     Resolution order: an explicit -DllPath, then a recursive search of -Path, then the repository's
-    default build-output folders, then the Autodesk.IDSDK NuGet package version referenced by
-    DynamoCore.csproj. Returns $null when nothing is found so the caller can fail loudly.
+    default build-output folders, then the Autodesk.IDSDK NuGet package version declared in
+    Directory.Packages.props (or, on branches that predate Central Package Management, in
+    DynamoCore.csproj). Returns $null when nothing is found so the caller can fail loudly.
 .OUTPUTS
     System.String - the resolved DLL path, or $null when it cannot be found.
 #>
@@ -225,20 +226,27 @@ function Resolve-IdsdkDll {
 
     # Fall back to the NuGet package the build would restore, so the guard is still meaningful
     # for a developer who has restored but not yet built.
-    $csproj = Join-Path $repoRoot 'src/DynamoCore/DynamoCore.csproj'
-    if (Test-Path -LiteralPath $csproj) {
-        $match = Select-String -LiteralPath $csproj -Pattern 'Include="Autodesk\.IDSDK"\s+Version="([^"]+)"' |
-            Select-Object -First 1
-        if ($match) {
-            $version = $match.Matches[0].Groups[1].Value
-            $packagesRoot = if ($env:NUGET_PACKAGES) { $env:NUGET_PACKAGES } else { Join-Path $HOME '.nuget/packages' }
-            $candidate = Join-Path $packagesRoot "autodesk.idsdk/$version/build/filesToInclude/$DllName"
-            if (Test-Path -LiteralPath $candidate -PathType Leaf) {
-                # Deferred rather than written here: anything this function writes to the output
-                # stream would be captured into its return value alongside the path.
-                $script:fallbackNotice = "::notice::No build output found - falling back to the restored Autodesk.IDSDK $version package."
-                return (Resolve-Path -LiteralPath $candidate).Path
-            }
+    # The version lives in Directory.Packages.props under Central Package Management; branches
+    # that predate it still carry the version on the PackageReference in DynamoCore.csproj.
+    $versionSources = @(
+        @{ File = (Join-Path $repoRoot 'Directory.Packages.props'); Pattern = '<PackageVersion\s+Include="Autodesk\.IDSDK"\s+Version="([^"]+)"' },
+        @{ File = (Join-Path $repoRoot 'src/DynamoCore/DynamoCore.csproj'); Pattern = 'Include="Autodesk\.IDSDK"\s+Version="([^"]+)"' }
+    )
+    $match = $null
+    foreach ($source in $versionSources) {
+        if (-not (Test-Path -LiteralPath $source.File)) { continue }
+        $match = Select-String -LiteralPath $source.File -Pattern $source.Pattern | Select-Object -First 1
+        if ($match) { break }
+    }
+    if ($match) {
+        $version = $match.Matches[0].Groups[1].Value
+        $packagesRoot = if ($env:NUGET_PACKAGES) { $env:NUGET_PACKAGES } else { Join-Path $HOME '.nuget/packages' }
+        $candidate = Join-Path $packagesRoot "autodesk.idsdk/$version/build/filesToInclude/$DllName"
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
+            # Deferred rather than written here: anything this function writes to the output
+            # stream would be captured into its return value alongside the path.
+            $script:fallbackNotice = "::notice::No build output found - falling back to the restored Autodesk.IDSDK $version package."
+            return (Resolve-Path -LiteralPath $candidate).Path
         }
     }
 
@@ -293,8 +301,8 @@ if ($missing.Count -gt 0) {
         "",
         "MCP token validation will fail for EVERY request, breaking Autodesk Assistant and all MCP",
         "features at runtime - this is exactly the regression that shipped in Dynamo 4.2.0 (DYN-10773).",
-        "The MCP entry points require IDSDK 1.17.0 or newer; the Autodesk.IDSDK package reference in",
-        "src/DynamoCore/DynamoCore.csproj must be at least 1.2.9.",
+        "The MCP entry points require IDSDK 1.17.0 or newer; the Autodesk.IDSDK package version in",
+        "Directory.Packages.props must be at least 1.2.9.",
         "",
         "Do NOT 'fix' this by comparing file versions: the broken 1.2.6 DLL (1.16.5.1) has a HIGHER",
         "version than a known-good one (Revit's 1.16.4.7). Only the export table is trustworthy."
