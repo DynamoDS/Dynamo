@@ -4,13 +4,13 @@ name: Run Engine Tests
 # that touch the engine. Without this, engine regressions surface only in
 # the downstream Jenkins UI-test chain, hours after merge.
 #
-# The category filter defaults to SmokeTest (~1200 of the ~5300 tests) to
-# keep PR feedback fast; widen it via the workflow_dispatch input or by
-# changing the default once the suite's runtime on CI runners is known.
-#
-# The filter excludes the "Failure" category: ~170 tests in this suite are
-# marked Category("Failure") — the repo's convention for known-failing
-# tests tracking engine defects. They fail by design and must not gate PRs.
+# The default filter runs the full suite (~5200 tests) except the "Failure"
+# category: ~190 tests in this suite are marked Category("Failure") — the
+# repo's convention for known-failing tests tracking engine defects. They
+# fail by design and must not gate PRs. The smoke subset ran in 12s and the
+# full suite adds only ~1 minute over the ~3.5-minute build, so there is
+# no need to gate on SmokeTest only. Narrow via the workflow_dispatch
+# input if a faster signal is ever needed.
 
 on:
   pull_request:
@@ -23,10 +23,10 @@ on:
       category_filter:
         description: "NUnit category filter expression"
         required: false
-        default: "Category=SmokeTest&Category!=Failure"
+        default: "Category!=Failure"
 
 env:
-  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category=SmokeTest&Category!=Failure' }}
+  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category!=Failure' }}
 
 jobs:
   run_engine_tests:
