@@ -147,6 +147,7 @@
                                     <Image Name="nodeModifiedByAIIcon"
                                            Source="/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png"
                                            ToolTip="{x:Static p:Resources.Title_ModifiedByAI}"
+                                           AutomationProperties.Name="{x:Static p:Resources.Title_ModifiedByAI}"
                                            Width="14"
                                            Height="14"
                                            Margin="0 0 4 0"
@@ -158,10 +159,9 @@
                                              Width="6"
                                              Height="6"
                                              Margin="0 0 6 0"
-                                             HorizontalAlignment="Right"
                                              VerticalAlignment="Center"
                                              Fill="{StaticResource Blue300Brush}"
-                                             Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                             Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" />
                                 </StackPanel>
                             </DockPanel>
                         </DataTemplate>
