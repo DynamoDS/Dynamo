@@ -20,6 +20,9 @@ Dynamo is a visual programming tool accessible to non-programmers and programmer
 dotnet restore src/Dynamo.All.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
 msbuild src/Dynamo.All.sln /p:Configuration=Release
 
+# CI parity (what build_dynamo_all.yml runs) — PublicAPI analyzers become errors
+msbuild src/Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true
+
 # Core only (cross-platform, Windows)
 dotnet restore src/DynamoCore.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
 msbuild src/DynamoCore.sln /p:Configuration=Release
@@ -28,6 +31,10 @@ msbuild src/DynamoCore.sln /p:Configuration=Release
 dotnet restore src/DynamoCore.sln --runtime=linux-x64 -p:Configuration=Release -p:Platform=NET_Linux -p:DotNet=net10.0
 dotnet build src/DynamoCore.sln -c Release /p:Platform=NET_Linux
 ```
+
+**Static analysis (the lint step):** Dynamo has no separate linter. Static checks are the Roslyn analyzers the build runs — security rules CA2327/CA2328/CA2329/CA2330 are always errors; PublicAPI rules RS0016/RS0017 are errors only with the CI flags above (a plain local build only warns). Formatting rules live in `.editorconfig`. Run the CI-parity build before opening a PR.
+
+**CI vs local:** `build_dynamo_all.yml` (Windows) runs the CI-parity build; `build_dynamo_core.yml` builds `DynamoCore.sln` on Linux but runs no tests there — `dotnet test` currently discovers no tests on Linux. Run `dotnet test` on Windows.
 
 ## Architecture
 
@@ -145,18 +152,19 @@ For each new node, add to `doc/distrib/NodeHelpFiles/`:
 
 ## Blast Radius
 
-- **Public API**: `src/*/PublicAPI.{Shipped,Unshipped}.txt` (DynamoCore, DynamoCoreWpf, DynamoUtilities, NodeServices) — Roslyn analyzers RS0016/RS0017 fail the build on undeclared changes. Breaking changes require an issue + SemVer.
+- **Public API**: `src/*/PublicAPI.{Shipped,Unshipped}.txt` (DynamoCore, DynamoCoreWpf, DynamoUtilities, NodeServices) — Roslyn analyzers RS0016/RS0017 fail **CI** on undeclared changes (CI passes `/warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true`; a plain local build only warns). Breaking changes require an issue + SemVer.
 - **Published NuGet packages** (from `tools/NuGet/template-nuget/`): `DynamoVisualProgramming.Core`, `.DynamoCoreNodes`, `.DynamoServices`, `.DynamoSamples`, `.Tests`, `.WpfUILibrary`, `.ZeroTouchLibrary`. Changes to `src/DynamoCore`, `src/DynamoCoreWpf`, or `src/Libraries` land in these packages and reach external consumers (e.g. DynamoRevit, downstream package authors).
 - **Graph file format**: `.dyn` files are a public contract — schema documented in `doc/dyn-file-spec.md` (JSON Schema: `doc/dyn-file-spec.json`). Changes to node serialization (`NodeModel` constructors, `AlsoKnownAs` handling) affect every saved graph.
 - **Cross-boundary edits**: `src/Engine/` (DesignScript runtime) changes ripple into every evaluation path; `src/Libraries/` node changes require matching `doc/distrib/NodeHelpFiles/` entries; `extern/` submodules pin native dependencies (LibG/ASM) — version bumps there are coordinated PRs across csproj files (see DYN-10825 for the pattern).
 
 ## After Changes — Proof Checklist
 
-Run what matches your change; all commands work on Windows, `DynamoCore.sln` ones also on Linux:
+Run what matches your change. Builds work on Windows (and `DynamoCore.sln` on Linux); run the `dotnet test` lines on Windows:
 - [ ] `dotnet build src/DynamoCore.sln -c Release` — after any `src/DynamoCore*`, `src/Engine/`, or `src/Libraries/` change
 - [ ] `msbuild src/Dynamo.All.sln /p:Configuration=Release` — after WPF/UI changes (Windows only)
+- [ ] `msbuild src/Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true` — before opening a PR (what CI runs; fails on undeclared public API)
 - [ ] `dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"` — after engine/core changes
-- [ ] `dotnet test test/Libraries/<Project>Tests/<Project>Tests.csproj --filter "Category=UnitTests"` — after node-library changes
+- [ ] `dotnet test test/Libraries/<TestDir>/<TestProject>.csproj --filter "Category=UnitTests"` — after node-library changes (names vary: `ls test/Libraries`, e.g. `NodeServicesTest/DynamoServicesTests.csproj`)
 - [ ] New public member → added to the project's `PublicAPI.Unshipped.txt`
 - [ ] New node → `.dyn` + `.md` + `.jpg` under `doc/distrib/NodeHelpFiles/`
 - [ ] User-facing string → moved to a `.resx` file
