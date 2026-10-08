@@ -2094,6 +2094,10 @@ Do you want to install the latest Dynamo update?</value>
   <data name="Periodic" xml:space="preserve">
     <value>Periodic</value>
   </data>
+  <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
+    <value>Clear AI Highlights</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Copy Contents</value>
     <comment>Context menu item</comment>
