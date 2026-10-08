@@ -273,6 +273,39 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("GraphNodes", sanitized);
         }
 
+        [Test]
+        public void RecentlyModifiedByAIMarkerTest()
+        {
+            Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
+
+            var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
+            var node = hwm.Nodes.First();
+            var gridNode = new GridNodeViewModel(node);
+
+            var raised = new List<string>();
+            gridNode.PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            try
+            {
+                // Not marked by default
+                Assert.IsFalse(gridNode.IsRecentlyModifiedByAI);
+
+                // Assistant marks the node: row shows the marker
+                node.IsRecentlyModifiedByAI = true;
+                Assert.IsTrue(gridNode.IsRecentlyModifiedByAI);
+                Assert.AreEqual(1, raised.Count(p => p == nameof(GridNodeViewModel.IsRecentlyModifiedByAI)));
+
+                // Transient: clearing the flag hides the marker again
+                node.IsRecentlyModifiedByAI = false;
+                Assert.IsFalse(gridNode.IsRecentlyModifiedByAI);
+                Assert.AreEqual(2, raised.Count(p => p == nameof(GridNodeViewModel.IsRecentlyModifiedByAI)));
+            }
+            finally
+            {
+                gridNode.Dispose();
+            }
+        }
+
         #region EnablePersistExtensions Tests
         /// <summary>
         /// Test if the Extension loads correctly when remembered
