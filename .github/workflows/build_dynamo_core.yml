@@ -17,7 +17,7 @@ jobs:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
           global-json-file: Dynamo/global.json
@@ -47,7 +47,7 @@ jobs:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
           global-json-file: Dynamo/global.json
@@ -76,7 +76,7 @@ jobs:
         with:
           path: Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
           global-json-file: Dynamo/global.json
