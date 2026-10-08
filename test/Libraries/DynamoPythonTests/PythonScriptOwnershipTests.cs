@@ -11,7 +11,7 @@ namespace DynamoPythonTests
     /// <summary>
     /// Model-level tests for who owns a Python node's script while its editor is open,
     /// and for the Accept / Reject actions of the before/after review window.
-    /// Editor (UI) behavior is covered in PythonScriptOwnershipTests.
+    /// Editor (UI) behavior is covered in PythonNodeCustomizationTests.
     /// </summary>
     [TestFixture]
     [Category("UnitTests")]
