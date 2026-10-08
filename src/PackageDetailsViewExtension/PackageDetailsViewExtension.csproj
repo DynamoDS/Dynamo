@@ -14,9 +14,9 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="Greg" Version="3.0.2.8780" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<PackageReference Include="RestSharp" Version="112.0.0" />
+	<PackageReference Include="Greg" />
+	<PackageReference Include="Newtonsoft.Json" />
+	<PackageReference Include="RestSharp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

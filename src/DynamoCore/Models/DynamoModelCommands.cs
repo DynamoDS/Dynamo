@@ -82,12 +82,26 @@ namespace Dynamo.Models
         private void RunCancelImpl(RunCancelCommand command)
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;
-            if (model != null)
-                model.Run();
+            if (model == null)
+                return;
+
+            if (command.CancelRun)
+            {
+                model.CancelRun();
+                return;
+            }
+
+            model.Run();
         }
 
         private void ForceRunCancelImpl(ForceRunCancelCommand command)
         {
+            if (command.CancelRun)
+            {
+                (CurrentWorkspace as HomeWorkspaceModel)?.CancelRun();
+                return;
+            }
+
             ForceRun();
         }
 
@@ -685,6 +699,11 @@ namespace Dynamo.Models
                 return;
 
             var modelsToGroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
+            if (modelsToGroup.Contains(null))
+            {
+                throw new InvalidOperationException( "Cannot add to group: one or more model ids were not found.");
+            }
+
             if (modelsToGroup.OfType<NodeModel>().Any())
             {
                 var nodeModels = modelsToGroup.OfType<NodeModel>();
@@ -697,7 +716,7 @@ namespace Dynamo.Models
                 }
             }
 
-            AddToGroup(modelsToGroup);
+            AddToGroup(modelsToGroup, command.HostGroupGuid);
         }
 
         private void AddGroupsToGroupImpl(AddGroupToGroupCommand command)

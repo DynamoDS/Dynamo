@@ -1167,5 +1167,45 @@ OUT = {modName}.value";
             Assert.IsNotNull(restoredNode);
             Assert.IsTrue(restoredNode.HasCustomInputPortProperties(0));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        [Category("RegressionTests")]
+        public void PythonScriptEdit_UndoThenRun_EvaluatesRestoredScript()
+        {
+            // Arrange: manual run mode, so only nodes marked modified re-evaluate on Run.
+            (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
+
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
+            var nodeId = pythonNode.GUID.ToString();
+
+            const string firstScript = "OUT = 'first'";
+            const string secondScript = "OUT = 'second'";
+
+            // First script, run: output matches.
+            // OnNodeModified mirrors what the script editor's Save and DynamoMCP's write do
+            // after writing ScriptContent; the command on its own does not mark the node modified.
+            UpdatePythonNodeContent(pythonNode, firstScript);
+            pythonNode.OnNodeModified();
+            RunCurrentModel();
+            AssertPreviewValue(nodeId, "first");
+
+            // Second script (the assistant's edit), run: output matches.
+            UpdatePythonNodeContent(pythonNode, secondScript);
+            pythonNode.OnNodeModified();
+            RunCurrentModel();
+            AssertPreviewValue(nodeId, "second");
+
+            // Act: undo the second edit, then run.
+            ViewModel.UndoCommand.Execute(null);
+            Assert.AreEqual(firstScript, pythonNode.Script, "Undo should restore the previous script text.");
+
+            RunCurrentModel();
+
+            // Assert: the run evaluated the restored script, not the cached result of the undone one.
+            AssertPreviewValue(nodeId, "first");
+        }
     }
 }

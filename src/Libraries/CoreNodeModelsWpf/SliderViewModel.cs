@@ -17,24 +17,31 @@ namespace CoreNodeModelsWpf
     {
         private SliderBase<T> model;
 
+        // These text setters intentionally discard the value. Bindings are TwoWay so
+        // ValidateWithoutUpdate() can run; DynamoTextBox writes the model via
+        // UpdateModelValueCommand. Implementing these would double-commit on every edit.
         public string MaxText
         {
-            get { return SliderBase<T>.ConvertNumberToString(model.Max); }
+            get => SliderBase<T>.ConvertNumberToString(model.Max);
+            set => _ = value;
         }
 
         public string MinText
         {
-            get { return SliderBase<T>.ConvertNumberToString(model.Min); }
+            get => SliderBase<T>.ConvertNumberToString(model.Min);
+            set => _ = value;
         }
 
         public string StepText
         {
-            get { return SliderBase<T>.ConvertNumberToString(model.Step); }
+            get => SliderBase<T>.ConvertNumberToString(model.Step);
+            set => _ = value;
         }
 
         public string ValueText
         {
-            get { return SliderBase<T>.ConvertNumberToString(model.Value); }
+            get => SliderBase<T>.ConvertNumberToString(model.Value);
+            set => _ = value;
         }
 
         public T Max

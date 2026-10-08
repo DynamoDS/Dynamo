@@ -331,12 +331,10 @@
                                       Header="{x:Static p:Resources.DynamoViewFileMenuNewCustomNode}"
                                       InputGestureText="Ctrl + Shift + N" />
                         </MenuItem>
-                        <MenuItem Name="openButton" Header="{x:Static p:Resources.DynamoViewFileMenuOpen}">
-                            <MenuItem Name="openFileMenuItem"
-                                      Command="{Binding ShowOpenDialogAndOpenResultCommand}"
-                                      Header="{x:Static p:Resources.DynamoViewFileMenuOpenFile}"
-                                      InputGestureText="Ctrl + O" />
-                        </MenuItem>
+                        <MenuItem Name="openButton"
+                                  Command="{Binding ShowOpenDialogAndOpenResultCommand}"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuOpen}"
+                                  InputGestureText="Ctrl + O" />
                         <MenuItem Name="insertButton"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
