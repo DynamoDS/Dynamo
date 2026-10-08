@@ -34,6 +34,56 @@ namespace PythonNodeModels
         }
     }
 
+    /// <summary>
+    /// Why the before/after Python review window was opened.
+    /// Left is what the user has now, right is the incoming change.
+    /// Accept takes the incoming change; Reject keeps the left.
+    /// </summary>
+    internal enum PythonScriptReviewKind
+    {        
+        AssistantConflict,
+        AssistantReview,
+        EditorChangedUnderneath
+    }
+
+    /// <summary>
+    /// Data for the before/after Python review window.
+    /// </summary>
+    internal sealed class PythonScriptConflictEventArgs : EventArgs
+    {
+        public PythonScriptReviewKind Kind { get; }
+
+        /// <summary>Left-hand (Before) text: what the user has now. See <see cref="PythonScriptReviewKind"/>.</summary>
+        public string LeftCode { get; }
+
+        /// <summary>Right-hand (After) text: the incoming change that Accept takes.</summary>
+        public string RightCode { get; }
+
+        /// <summary>
+        /// Editor-owned actions for <see cref="PythonScriptReviewKind.EditorChangedUnderneath"/>.
+        /// True closes the window. False leaves it open (nothing was applied).
+        /// Null for the assistant kinds; the review window builds those itself.
+        /// </summary>
+        public Func<bool> OnAccept { get; }
+
+        /// <summary>See <see cref="OnAccept"/>.</summary>
+        public Func<bool> OnReject { get; }
+
+        public PythonScriptConflictEventArgs(
+            PythonScriptReviewKind kind,
+            string leftCode,
+            string rightCode,
+            Func<bool> onAccept = null,
+            Func<bool> onReject = null)
+        {
+            Kind = kind;
+            LeftCode = leftCode ?? string.Empty;
+            RightCode = rightCode ?? string.Empty;
+            OnAccept = onAccept;
+            OnReject = onReject;
+        }
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
         private string engine = string.Empty;
@@ -404,7 +454,22 @@ namespace PythonNodeModels
 
             if (name == "ScriptContent")
             {
-                script = value;
+                if (script == value)
+                {
+                    return true;
+                }
+
+                if (HasUnsavedEditorChanges)
+                {
+                    // Returning true only means this property is handled, not that Script changed.
+                    // Tell the open editor so it can show a conflict; a later Save must not
+                    // overwrite this proposed text with no warning.
+                    NotifyScriptUpdateBlocked(value);
+                    return true;
+                }
+
+                Script = value;
+                OnNodeModified();
                 return true;
             }
 
@@ -429,6 +494,71 @@ namespace PythonNodeModels
         //  Boolean to check if script content is saved or not.
         /// </summary>
         internal bool ScriptContentSaved = true;
+
+        /// <summary>
+        /// True while an open script editor for this node holds unsaved edits.
+        /// DynamoMCP also uses the presence of this property as a version probe:
+        /// older Dynamo cannot refresh an open editor from the node.
+        /// </summary>
+        [JsonIgnore]
+        public bool HasUnsavedEditorChanges => !ScriptContentSaved;
+
+        /// <summary>
+        /// Records that an outside write was refused, and tells the open editor
+        /// to show the conflict window.
+        /// </summary>
+        public void NotifyScriptUpdateBlocked(string proposedScript)
+        {
+            ScriptUpdateBlocked?.Invoke(proposedScript ?? string.Empty);
+        }
+
+        /// <summary>
+        /// Shows a non-blocking before/after for an assistant script that is already stored on the node.
+        /// Accept keeps it. Reject restores <paramref name="previousScript"/> if the node still holds
+        /// <paramref name="newScript"/> and the editor has no unsaved edits.
+        /// </summary>
+        public void NotifyScriptChangeReview(string previousScript, string newScript)
+        {
+            RequestScriptConflictReview(PythonScriptReviewKind.AssistantReview, previousScript, newScript);
+        }
+
+        /// <summary>
+        /// Fires when an outside script write is refused because the open editor has unsaved typing.
+        /// The argument is the proposed script that was not applied.
+        /// </summary>
+        internal event Action<string> ScriptUpdateBlocked;
+
+        /// <summary>
+        /// Raised to open the before/after review window.
+        /// The Python Migration view extension opens a diff; it does not run the 2-to-3 migrator.
+        /// </summary>
+        internal event EventHandler<PythonScriptConflictEventArgs> ScriptConflictReviewRequested;
+
+        /// <summary>
+        /// Asks the Python Migration view extension to show a before/after review.
+        /// </summary>
+        /// <param name="kind">Why the review is shown; decides what Accept and Reject do.</param>
+        /// <param name="leftCode">Before text.</param>
+        /// <param name="rightCode">After text: what Accept applies.</param>
+        /// <param name="onAccept">Editor-owned Accept, for <see cref="PythonScriptReviewKind.EditorChangedUnderneath"/> only.</param>
+        /// <param name="onReject">Editor-owned Reject, for <see cref="PythonScriptReviewKind.EditorChangedUnderneath"/> only.</param>
+        /// <returns>False when nothing is listening (the view extension is not loaded), so the caller can fall back.</returns>
+        internal bool RequestScriptConflictReview(
+            PythonScriptReviewKind kind,
+            string leftCode,
+            string rightCode,
+            Func<bool> onAccept = null,
+            Func<bool> onReject = null)
+        {
+            var handler = ScriptConflictReviewRequested;
+            if (handler == null)
+            {
+                return false;
+            }
+
+            handler.Invoke(this, new PythonScriptConflictEventArgs(kind, leftCode, rightCode, onAccept, onReject));
+            return true;
+        }
 
         // Event triggered when this node is edited.
         internal event Action<string> EditNode;
@@ -504,8 +634,10 @@ namespace PythonNodeModels
                 var scriptChanged = script != restoredScript;
                 script = restoredScript;
 
+                // Announce the restored script so an open editor can refresh or want
                 if (context == SaveContext.Undo && scriptChanged)
                 {
+                    RaisePropertyChanged(nameof(Script));
                     OnNodeModified();
                 }
             }
