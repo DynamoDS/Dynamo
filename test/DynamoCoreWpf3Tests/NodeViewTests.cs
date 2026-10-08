@@ -690,6 +690,14 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphOneSource.Split('/').Last(), "frozen-64px.png");
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphTwoSource.Split('/').Last(), "hidden-64px.png");
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphThreeSource.Split('/').Last(), "alert-64px.png");
+
+            nodeViewModelWarningWarningFrozenHidden.IsRecentlyModifiedByAI = true;
+            var aiBorder = nodeViewModelWarningWarningFrozenHidden.GetBorderColor();
+
+            Assert.AreEqual("#FFD5BCF7", aiBorder.ToString());
+            Assert.AreEqual("frozen-64px.png", nodeViewModelWarningWarningFrozenHidden.ImgGlyphOneSource.Split('/').Last());
+            Assert.AreEqual("hidden-64px.png", nodeViewModelWarningWarningFrozenHidden.ImgGlyphTwoSource.Split('/').Last());
+            Assert.AreEqual("alert-64px.png", nodeViewModelWarningWarningFrozenHidden.ImgGlyphThreeSource.Split('/').Last());
         }
 
         [Test]

@@ -369,7 +369,43 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
+        ///   Looks up a localized string similar to {0} - Resolve Conflict with External Changes.
+        /// </summary>
+        public static string PythonScriptChangedOutsideEditorWindowTitle {
+            get {
+                return ResourceManager.GetString("PythonScriptChangedOutsideEditorWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Resolve Conflict with Unsaved Edits.
+        /// </summary>
+        public static string PythonScriptConflictWindowTitle {
+            get {
+                return ResourceManager.GetString("PythonScriptConflictWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed..
+        /// </summary>
+        public static string PythonScriptReviewNothingChangedMessage {
+            get {
+                return ResourceManager.GetString("PythonScriptReviewNothingChangedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Review Assistant Changes.
+        /// </summary>
+        public static string PythonScriptReviewWindowTitle {
+            get {
+                return ResourceManager.GetString("PythonScriptReviewWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reject.
         /// </summary>
         public static string RejectButton {
             get {

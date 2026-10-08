@@ -1,8 +1,8 @@
+using Dynamo.PythonMigration.Differ;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Logging;
-using Dynamo.PythonMigration.MigrationAssistant;
 
 namespace Dynamo.PythonMigration.Controls
 {
@@ -11,14 +11,14 @@ namespace Dynamo.PythonMigration.Controls
     /// </summary>
     public partial class BaseDiffViewer : Window
     {
-        private PythonMigrationAssistantViewModel ViewModel { get; set; }
+        private ICodeDiffHost ViewModel { get; set; }
 
         // we would like to match initial text wrapping of code inside diff view
         // to that of the code inside the script editor window as much as possible
         private int scriptEditorWindowDefaultWidth = 600;
         private int differAdditionalWidthPerPanel = 20;
 
-        internal BaseDiffViewer(PythonMigrationAssistantViewModel viewModel) : base()
+        internal BaseDiffViewer(ICodeDiffHost viewModel) : base()
         {
             ViewModel = viewModel;
             DataContext = viewModel;
@@ -53,30 +53,44 @@ namespace Dynamo.PythonMigration.Controls
 
         private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
         {
-            ViewModel.ChangeCode();
-            this.Close();
-            // Record if changes are accepted and if there are proposed changes
-            Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Migration,
-                Dynamo.Logging.Categories.PythonOperations,
-                "Accept",
-                Convert.ToInt32(ViewModel.CurrentViewModel.HasChanges));
+            // False: nothing was done, the host told the user why, and the window stays open.
+            if (!ViewModel.ChangeCode())
+            {
+                return;
+            }
+
+            Close();
+            TrackDiffChoice("Accept");
         }
 
         private void OnRejectButtonClicked(object sender, RoutedEventArgs e)
         {
-            this.Close();
-            Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Migration,
-                Dynamo.Logging.Categories.PythonOperations,
-                "Reject",
-                Convert.ToInt32(ViewModel.CurrentViewModel.HasChanges));
+            if (!ViewModel.RejectCode())
+            {
+                return;
+            }
+
+            Close();
+            TrackDiffChoice("Reject");
         }
 
         // Handles Close button 'X' 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void TrackDiffChoice(string choice)
+        {
+            if (!ViewModel.TrackAsMigration)
+            {
+                return;
+            }
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Migration,
+                Dynamo.Logging.Categories.PythonOperations,
+                choice,
+                Convert.ToInt32(ViewModel.CurrentViewModel.HasChanges));
         }
 
         private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)

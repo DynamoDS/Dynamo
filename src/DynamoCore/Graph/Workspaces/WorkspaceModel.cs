@@ -1054,6 +1054,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// True only while an AI-driven edit (from DynamoMCP) is actively changing this workspace.
+        /// MCP sets this around its own tool calls. While it is true, a node modification does not
+        /// clear <see cref="NodeModel.IsRecentlyModifiedByAI"/>. While it is false, a person editing
+        /// a node clears that highlight. This flag does not turn the highlight on, and it is never
+        /// saved to the .dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAIEditInProgress { get; set; }
+
+        /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
         public bool HasUnsavedChanges
@@ -1665,6 +1675,7 @@ namespace Dynamo.Graph.Workspaces
         protected virtual void RegisterNode(NodeModel node)
         {
             node.Modified += NodeModified;
+            node.EditedWhileFrozen += ClearAIHighlightOnFrozenEdit;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -1674,6 +1685,15 @@ namespace Dynamo.Graph.Workspaces
                 functionNode.Controller.SyncWithDefinitionStart += OnSyncWithDefinitionStart;
                 functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
             }
+        }
+
+        private void ClearAIHighlightOnFrozenEdit(NodeModel node)
+        {
+            if (node.IsTransient || IsAIEditInProgress)
+            {
+                return;
+            }
+            node.IsRecentlyModifiedByAI = false;
         }
 
         protected virtual void OnToggleNodeFreeze(NodeModel obj)
@@ -1694,6 +1714,10 @@ namespace Dynamo.Graph.Workspaces
             if (node.IsTransient)
             {
                 return;
+            }
+            if (!IsAIEditInProgress)
+            {
+                node.IsRecentlyModifiedByAI = false;
             }
 
             HasUnsavedChanges = true;
@@ -1743,6 +1767,7 @@ namespace Dynamo.Graph.Workspaces
             }
             node.ConnectorAdded -= OnConnectorAdded;
             node.UpdateASTCollection -= OnToggleNodeFreeze;
+            node.EditedWhileFrozen -= ClearAIHighlightOnFrozenEdit;
             node.Modified -= NodeModified;
             node.Dispose();
         }
