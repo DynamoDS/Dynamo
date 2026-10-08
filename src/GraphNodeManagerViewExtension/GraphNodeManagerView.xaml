@@ -138,9 +138,22 @@
                                     Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                                     Margin="3 0 0 0"
                                     DockPanel.Dock="Left"></TextBlock>
-                                <!-- Blue Dot signifying Renamed Nodes -->
-                                <Grid 
+                                <!-- AI Assistant icon and Blue Dot -->
+                                <StackPanel
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
                                     DockPanel.Dock="Right">
+                                    <!-- AI Assistant icon signifying nodes created/modified by the AI Assistant -->
+                                    <Image Name="nodeModifiedByAIIcon"
+                                           Source="/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png"
+                                           ToolTip="{x:Static p:Resources.Title_ModifiedByAI}"
+                                           Width="14"
+                                           Height="14"
+                                           Margin="0 0 4 0"
+                                           VerticalAlignment="Center"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           Visibility="{Binding IsRecentlyModifiedByAI, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" />
+                                    <!-- Blue Dot signifying Renamed Nodes -->
                                     <Ellipse Name="nodeRenamedBlueDot"
                                              Width="6"
                                              Height="6"
@@ -149,7 +162,7 @@
                                              VerticalAlignment="Center"
                                              Fill="{StaticResource Blue300Brush}"
                                              Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                </Grid>
+                                </StackPanel>
                             </DockPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
