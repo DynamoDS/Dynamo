@@ -22,8 +22,8 @@
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.CodeDom" Version="6.0.0" />
-    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.CodeDom" />
+    <PackageReference Include="System.Reflection.Emit" />
   </ItemGroup>
   <ItemGroup>
       <Compile Remove="LexUtils.cs" />

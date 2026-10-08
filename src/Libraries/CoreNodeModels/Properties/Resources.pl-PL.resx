@@ -532,10 +532,10 @@
     <value>Wartość wejściowa musi być wartością numeryczną.</value>
   </data>
   <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
-    <value>The input must match the Date Time format and be a valid date/time.</value>
+    <value>Dane wejściowe muszą być zgodne z formatem daty i godziny, a także być prawidłową datą/godziną.</value>
   </data>
   <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
-    <value>The input must be an integer.</value>
+    <value>Dane wejściowe muszą być liczbą całkowitą.</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>Wybierz kolor z palety</value>

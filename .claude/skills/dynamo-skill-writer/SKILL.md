@@ -122,7 +122,7 @@ Run dotnet test to execute tests.
 
 ✅ Executable:
 ```bash
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTest"
+dotnet test test/Libraries/CoreNodesTests/CoreNodesTests.csproj --filter "Name~MyTest"
 ```
 
 ### Code examples over prose

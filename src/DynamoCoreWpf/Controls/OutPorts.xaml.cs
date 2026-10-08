@@ -189,9 +189,11 @@ namespace Dynamo.UI.Controls
             {
                 Name = "NodeAutoCompleteMarkerLabel",
                 FontSize = 12,
-                Width = 25,
-                Height = 25,
-                Margin = new Thickness(-3, -3, 0, 0),
+                Padding = new Thickness(0),
+                Width = 20,
+                Height = 20,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
                 Content = "✨"
             };
 

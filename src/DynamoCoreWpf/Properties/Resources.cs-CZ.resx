@@ -555,7 +555,7 @@ Nebojte se, budete mít možnost uložit svou práci.</value>
     <value>_Domovský pracovní prostor</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Open File</value>
+    <value>_Otevřít...</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>Otevřít _historii souborů</value>

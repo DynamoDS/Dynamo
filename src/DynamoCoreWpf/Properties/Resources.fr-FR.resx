@@ -555,7 +555,7 @@ Pas d'inquiétude, vous aurez la possibilité d'enregistrer votre travail.</valu
     <value>_Espace de travail d'accueil</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Open File</value>
+    <value>_Ouvrir...</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>O_uvrir les fichiers récents</value>

@@ -555,7 +555,7 @@ Bez obaw, będziesz mieć możliwość zapisania pracy.</value>
     <value>_Główny obszar roboczy</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Open File</value>
+    <value>_Otwórz...</value>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>O_twórz ostatnie pliki</value>
