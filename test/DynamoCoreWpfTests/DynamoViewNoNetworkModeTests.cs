@@ -1,6 +1,9 @@
+using System;
+using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using TestServices;
 
@@ -99,6 +102,39 @@ namespace DynamoCoreWpfTests
                 "added");
 
             Assert.IsFalse(shouldDisable);
+        }
+
+        [Test]
+        public void AssistantTabCannotBeAddedViaSideBarWhenNoNetworkModeIsEnabled()
+        {
+            // Simulates the code path where an extension calls AddToExtensionsSideBar() after
+            // initial load (e.g. from IExtensionStorageAccess.WorkspaceOpened), which bypasses
+            // the DisableExtensionWhenNoNetworkMode guard in DynamoLoadedViewExtensionHandler.
+            // AddOrFocusExtensionControl must block these late attempts in NoNetworkMode.
+            //
+            // This is specifically exercising NoNetworkMode, not the IDSDK gate: the fixture's
+            // DynamoModel has no AuthProvider configured, so AuthenticationManager.IsIDSDKInitialized()
+            // is unconditionally true (see AuthenticationManager.IsIDSDKInitialized) and can't be
+            // the reason AddOrFocusExtensionControl returns Blocked here.
+            var stubExtension = new StubViewExtension(DynamoView.AutodeskAssistantExtensionId);
+            var result = View.AddOrFocusExtensionControl(stubExtension, null);
+
+            Assert.AreEqual(DynamoView.ExtensionControlResult.Blocked, result);
+            Assert.IsFalse(ViewModel.SideBarTabItems
+                .OfType<System.Windows.Controls.TabItem>()
+                .Any(t => string.Equals(t.Uid, DynamoView.AutodeskAssistantExtensionId,
+                    StringComparison.OrdinalIgnoreCase)));
+        }
+
+        private class StubViewExtension : IViewExtension
+        {
+            public StubViewExtension(string uniqueId) { UniqueId = uniqueId; }
+            public string UniqueId { get; }
+            public string Name => "Stub";
+            public void Startup(ViewStartupParams p) { }
+            public void Loaded(ViewLoadedParams p) { }
+            public void Shutdown() { }
+            public void Dispose() { }
         }
     }
 }

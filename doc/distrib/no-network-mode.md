@@ -62,6 +62,25 @@ The SplashScreen is the first WebView2 surface shown and is constructed **before
 starts. Surfaces created after the model exists (HomePage, Library, DocumentationBrowser) read
 `NoNetworkMode` from the model / `ViewStartupParams`.
 
+### Isolated profile folder for no-network launches
+
+The Edge browser process is keyed by its **user data folder**, and WebView2 refuses to create two
+environments on the same folder with different `AdditionalBrowserArguments`. When a default-args
+`msedgewebview2.exe` process is already holding a folder — most commonly **another Dynamo instance
+running in normal mode**, but also a lingering process from a prior launch — creating a hardened
+no-network environment on that same folder fails with HRESULT `0x8007139F` (`ERROR_INVALID_STATE`).
+This affects every WebView2 surface, not just the ones sharing `GetTempDirectory` (SplashScreen,
+HomePage, PackageManagerWizard); the Library and DocumentationBrowser surfaces derive their own
+per-extension folders and collide the same way across instances.
+
+`ApplyNoNetworkPolicy` therefore also **redirects the profile** in no-network mode: it rewrites
+`CoreWebView2CreationProperties.UserDataFolder` to an isolated sibling via
+`WebView2Utilities.GetNoNetworkUserDataFolder` (the folder name gets a `-NoNetwork` suffix, e.g.
+`…\WebView2` → `…\WebView2-NoNetwork`). Because every startup surface already calls
+`ApplyNoNetworkPolicy` right after setting its `UserDataFolder`, the isolation is centralized in one
+place and the hardened and default profiles never share a folder. WebView2 creates the isolated
+folder on first use.
+
 ## Known limitations (out of process scope)
 
 These are OS-managed and cannot be controlled by an in-process gate:

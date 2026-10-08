@@ -22,17 +22,17 @@
 	  </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
     <ItemGroup>
-        <PackageReference Include="HelixToolkit" Version="2.24.0" />
-        <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
-        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
-        <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
-	  <PackageReference Include="SharpDX" Version="4.2.0" CopyPDB="true" />
-	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" CopyPDB="true" />
-	  <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" CopyPDB="true" />
-	  <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" CopyPDB="true" />
-	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" CopyPDB="true" />
-	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" CopyPDB="true" />
-	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" CopyPDB="true" />  
+        <PackageReference Include="HelixToolkit" />
+        <PackageReference Include="HelixToolkit.Core.Wpf" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" />
+        <PackageReference Include="Cyotek.Drawing.BitmapFont" CopyMetaData="true" />
+	  <PackageReference Include="SharpDX" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.D3DCompiler" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Direct2D1" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Direct3D11" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Direct3D9" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.DXGI" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Mathematics" CopyPDB="true" />  
   </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">

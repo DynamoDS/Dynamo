@@ -262,7 +262,7 @@ namespace Dynamo
             yield return Path.Combine(TempFolder, "2.0");
         }
 
-        private static void CreateMockPreferenceSettingsFile(string filePath, string packageDir)
+        private static void CreateMockPreferenceSettingsFile(string filePath, string packageDir, string templateFilePath = null)
         {
             var settings = new PreferenceSettings
             {
@@ -270,6 +270,7 @@ namespace Dynamo
                 //need to mock this because PreferenceSettings.SelectedPackagePathForInstall uses an event to get UserDataFolder from PathManager
                 SelectedPackagePathForInstall = packageDir,
                 IronPythonResolveTargetVersion = new Version(2,4,0).ToString(),
+                TemplateFilePath = templateFilePath ?? string.Empty,
             };
             settings.Save(filePath);
         }
@@ -414,6 +415,55 @@ namespace Dynamo
 
             // Assert that new ironPythonTargetVersion is not equal to the old version.
             Assert.That(targetMigrator.PreferenceSettings.IronPythonResolveTargetVersion, Is.Not.EqualTo(sourcePrefs.IronPythonResolveTargetVersion));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenTemplateFilePathIsSetDuringMigrationThenItIsReset()
+        {
+            string userDataDir;
+            CreateMockDirectoriesAndFiles(out userDataDir);
+
+            var sourceVersionDir = Path.Combine(userDataDir, "1.3");
+            var settingsFilePath = Path.Combine(sourceVersionDir, "DynamoSettings.xml");
+            var staleTemplatePath = Path.Combine(TempFolder, "old-sandbox", "templates", "en-US");
+
+            CreateMockPreferenceSettingsFile(settingsFilePath, sourceVersionDir, staleTemplatePath);
+
+            var mockPathManager = new Mock<IPathManager>();
+            var currentVersionDir = Path.Combine(userDataDir, "2.0");
+            mockPathManager.Setup(x => x.UserDataDirectory).Returns(() => currentVersionDir);
+
+            var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
+                mockPathManager.Object);
+
+            var sourcePrefs = PreferenceSettings.Load(settingsFilePath);
+            Assert.AreEqual(staleTemplatePath, sourcePrefs.TemplateFilePath);
+            Assert.IsTrue(string.IsNullOrEmpty(targetMigrator.PreferenceSettings.TemplateFilePath));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenValidCustomTemplatePathExistsThenMigrationPreservesIt()
+        {
+            string userDataDir;
+            CreateMockDirectoriesAndFiles(out userDataDir);
+
+            var customTemplates = Path.Combine(TempFolder, "custom-templates");
+            Directory.CreateDirectory(customTemplates);
+            File.WriteAllText(Path.Combine(customTemplates, "MyTemplate.dyn"), "{}");
+
+            var sourceVersionDir = Path.Combine(userDataDir, "1.3");
+            var settingsFilePath = Path.Combine(sourceVersionDir, "DynamoSettings.xml");
+            CreateMockPreferenceSettingsFile(settingsFilePath, sourceVersionDir, customTemplates);
+
+            var mockPathManager = new Mock<IPathManager>();
+            mockPathManager.Setup(x => x.UserDataDirectory).Returns(() => Path.Combine(userDataDir, "2.0"));
+
+            var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
+                mockPathManager.Object);
+
+            Assert.AreEqual(customTemplates, targetMigrator.PreferenceSettings.TemplateFilePath);
         }
     }
 }

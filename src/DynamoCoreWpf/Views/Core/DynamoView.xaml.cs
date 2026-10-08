@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -435,11 +436,6 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
         {
-            if (!(saveThisButton is null))
-            {
-                saveThisButton.IsEnabled = enable;
-                saveButton.IsEnabled = enable;
-            }
             if (!(exportMenu is null))
             {
                 exportMenu.IsEnabled = enable;
@@ -449,7 +445,6 @@ namespace Dynamo.Controls
             {
                 shortcutBar.IsNewButtonEnabled = enable;
                 shortcutBar.IsOpenButtonEnabled = enable;
-                shortcutBar.IsSaveButtonEnabled = enable;
                 shortcutBar.IsLoginMenuEnabled = enable;
                 shortcutBar.IsExportMenuEnabled = enable;
                 shortcutBar.IsNotificationCenterEnabled = enable;
@@ -471,19 +466,12 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            if (!(saveThisButton is null))
-            {
-                saveThisButton.IsEnabled = true;
-                saveButton.IsEnabled = true;
-            }
-
             if (!(exportMenu is null))
             {
                 exportMenu.IsEnabled = true;
             }
             if (!(shortcutBar is null))
             {
-                ShortcutBar.IsSaveButtonEnabled = true;
                 shortcutBar.IsExportMenuEnabled = true;
             }
 
@@ -529,70 +517,108 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        /// Result of <see cref="AddOrFocusExtensionControl"/>, distinguishing a genuinely blocked
+        /// extension (NoNetworkMode/IDSDK) from one that was simply already open.
+        /// </summary>
+        internal enum ExtensionControlResult
+        {
+            Added,
+            AlreadyPresent,
+            Blocked
+        }
+
+        /// <summary>
         /// Adds an extension control or if it already exists it makes sure it is focused.
         /// The control may be added as a window or a tab in the extension bar depending on settings.
         /// </summary>
         /// <param name="viewExtension">View extension adding the content</param>
         /// <param name="content">Control being added</param>
-        /// <returns>True if the control was added, false if it already existed</returns>
-        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
+        internal ExtensionControlResult AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
+            // Order matters. DisableExtensionWhenIDSDKNotInitialized reads
+            // IDSDKManager.IsIDSDKInitialized, whose getter calls Initialize() as a side effect —
+            // and that is what maps AdskIdentitySDK.dll into the process. The MCP probe can only
+            // return a definitive answer once the module is mapped, so it must run after it;
+            // otherwise it reports Unknown and fails open. Same reasoning as the comment in
+            // DynamoLoadedViewExtensionHandler.
+            if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened") ||
+                DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened") ||
+                DisableExtensionWhenMcpTokenValidationUnavailable(viewExtension.UniqueId, viewExtension.Name))
+                return ExtensionControlResult.Blocked;
+
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
             var tab = FindExtensionTab(viewExtension);
             var addExtensionControl = window == null && tab == null;
 
             if (addExtensionControl)
             {
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
-                // Create default settings if they do not currently exist
-                if (settings == null)
-                {
-                    settings = new ViewExtensionSettings()
-                    {
-                        Name = viewExtension.Name,
-                        UniqueId = viewExtension.UniqueId,
-                        DisplayMode = ViewExtensionDisplayMode.DockRight
-                    };
-                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
-                }
-
-                if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
-                {
-                    settings.IsOpen = true;
-                }
-
-                if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
-                {
-                    window = AddExtensionWindow(viewExtension, content, settings.WindowSettings);
-                }
-                else
-                {
-                    tab = AddExtensionTab(viewExtension, content);
-                }
+                CreateExtensionControl(viewExtension, content);
             }
             else
             {
-                // Set focus on the existing control
-                if (window != null)
-                {
-                    window.Focus();
-                }
-                else if (tab != null)
-                {
-                    // Make sure the extension bar is visible
-                    if (ExtensionsCollapsed)
-                    {
-                        ToggleExtensionBarCollapseStatus();
-                    }
-
-                    tabDynamic.SelectedItem = tab;
-                }
+                FocusExtensionControl(window, tab);
             }
 
-            return addExtensionControl;
+            return addExtensionControl ? ExtensionControlResult.Added : ExtensionControlResult.AlreadyPresent;
         }
 
-        private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
+        /// <summary>
+        /// Creates a new extension control (as a floating window or a tab, per its settings)
+        /// for a view extension that isn't currently open.
+        /// </summary>
+        private void CreateExtensionControl(IViewExtension viewExtension, UIElement content)
+        {
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
+            // Create default settings if they do not currently exist
+            if (settings == null)
+            {
+                settings = new ViewExtensionSettings()
+                {
+                    Name = viewExtension.Name,
+                    UniqueId = viewExtension.UniqueId,
+                    DisplayMode = ViewExtensionDisplayMode.DockRight
+                };
+                this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
+            }
+
+            if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
+            {
+                settings.IsOpen = true;
+            }
+
+            if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
+            {
+                AddExtensionWindow(viewExtension, content, settings.WindowSettings);
+            }
+            else
+            {
+                AddExtensionTab(viewExtension, content);
+            }
+        }
+
+        /// <summary>
+        /// Sets focus on an already-open extension control, whether it's a floating window
+        /// or a tab (making sure the extension bar is visible first, for the tab case).
+        /// </summary>
+        private void FocusExtensionControl(ExtensionWindow window, TabItem tab)
+        {
+            if (window != null)
+            {
+                window.Focus();
+            }
+            else if (tab != null)
+            {
+                // Make sure the extension bar is visible
+                if (ExtensionsCollapsed)
+                {
+                    ToggleExtensionBarCollapseStatus();
+                }
+
+                tabDynamic.SelectedItem = tab;
+            }
+        }
+
+        private void AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
         {
             ExtensionWindow window;
             if (windowSettings == null)
@@ -637,8 +663,6 @@ namespace Dynamo.Controls
             window.Show();
 
             ExtensionWindows.Add(viewExtension.Name, window);
-
-            return window;
         }
 
         private void ExtensionWindow_Closing(object sender, CancelEventArgs e)
@@ -665,7 +689,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
+        private void AddExtensionTab(IViewExtension viewExtension, UIElement content)
         {
             // creates a new tab item
             var tab = new TabItem();
@@ -688,8 +712,6 @@ namespace Dynamo.Controls
             dynamoViewModel.SideBarTabItems.Insert(dynamoViewModel.SideBarTabItems.Count, tab);
 
             tabDynamic.SelectedItem = tab;
-
-            return tab;
         }
         private void UpdateNodeIcons_Click(object sender, RoutedEventArgs e)
         {
@@ -1414,8 +1436,24 @@ namespace Dynamo.Controls
                         continue;
                     }
 
+                    // The extension is still allowed to run Loaded() below, so any UI it registers
+                    // (menu items, toolbar buttons) stays visible; only the automatic re-open of a
+                    // previously-open panel is skipped. Extensions that depend on IDSDK are expected to
+                    // gate their own entry points via ViewLoadedParams.IsIDSDKInitialized.
+                    //
+                    // The IDSDK check runs first and, as a side effect, forces IDSDK initialization —
+                    // so it must run before Loaded(). The MCP token-validation check is re-evaluated
+                    // immediately before the re-open decision instead, since its Unknown state is
+                    // deliberately re-probed on each call: if Loaded() is what causes the ADP wrapper
+                    // to finish mapping, that must be reflected before deciding whether to re-open.
+                    var idsdkNotInitialized = DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "re-opened");
+
                     ext.Loaded(loadedParams);
-                    ReOpenSavedExtensionOnDynamoStartup(ext);
+
+                    if (!idsdkNotInitialized && !DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name))
+                    {
+                        ReOpenSavedExtensionOnDynamoStartup(ext);
+                    }
                 }
                 catch (Exception exc)
                 {
@@ -2505,7 +2543,13 @@ namespace Dynamo.Controls
                                 sampleFiles.Add(path);
                             }
                         }
-                        SamplesMenu.Items.Add(dirItem);
+
+                        // Skip folders with no sample graphs directly under them so the Samples
+                        // menu does not show empty, unopenable submenus (DYN-10736).
+                        if (dirItem.Items.Count > 0)
+                        {
+                            SamplesMenu.Items.Add(dirItem);
+                        }
                     }
                 }
 
@@ -3408,6 +3452,90 @@ namespace Dynamo.Controls
                  string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)))
             {
                 Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Prevents the Autodesk Assistant and MCP View extensions from being (re-)opened when
+        /// Autodesk Identity (IDSDK) is not initialized, so the native "Create Assistant" call chain
+        /// that requires Identity never fires and cannot cascade into a series of error dialogs.
+        /// Loaded() itself still runs regardless, so the extension can register its own UI.
+        /// </summary>
+        internal bool DisableExtensionWhenIDSDKNotInitialized(string extensionId, string extensionName, string action)
+        {
+            if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
+                !dynamoViewModel.IsIDSDKInitialized(showWarning: false))
+            {
+                Log($"Package/Extension {extensionName} not {action} because Autodesk Identity (IDSDK) is not initialized");
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Prevents the Autodesk Assistant and MCP View extensions from being (re-)opened when
+        /// Autodesk Identity (IDSDK) in this process cannot validate MCP bearer tokens, so the user
+        /// is not led into a panel where every MCP tool call is rejected with HTTP 401 (DYN-10773).
+        /// <para>
+        /// Deliberately shaped like <see cref="DisableExtensionWhenIDSDKNotInitialized"/> rather than
+        /// <see cref="DisableExtensionWhenNoNetworkMode"/>: <c>Startup()</c> and <c>Loaded()</c> still
+        /// run, so an extension keeps whatever UI it registers and can present its own disabled state.
+        /// Only opening the panel — and the automatic re-open of a previously-open one — is blocked.
+        /// </para>
+        /// <para>
+        /// Blocks only on a definitive <see cref="McpTokenValidationAvailability.Unavailable"/>.
+        /// <see cref="McpTokenValidationAvailability.Unknown"/> — IDSDK not mapped into the process,
+        /// so nothing can be concluded — deliberately fails open.
+        /// </para>
+        /// <para>
+        /// Two distinct causes reach the blocking branch, and they are logged differently
+        /// (DYN-10778): an IDSDK that does not export the MCP validation entry point, and an ADP
+        /// Desktop SDK that is not installed at all, so <c>AdpSDKIdentityWrapper.dll</c> — the
+        /// library DynamoMCP actually P/Invokes — never resolves. The second is invisible to the
+        /// export probe, because IDSDK itself is healthy in that case.
+        /// </para>
+        /// </summary>
+        /// <param name="extensionId">Unique id of the extension being considered.</param>
+        /// <param name="extensionName">Display name, used only for the log line.</param>
+        /// <returns>True when the extension's panel must not be opened.</returns>
+        internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName)
+        {
+            if (!string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            // Read the verdict and its cause in one evaluation. Asking for them separately would
+            // run two probes, and the states that matter here are deliberately not cached, so the
+            // second could disagree with the first — logging a cause that no longer applies, or
+            // withholding an extension on a verdict a re-check would have failed open on.
+            var (availability, reason) = IdsdkMcpTokenValidation.GetStatus();
+
+            if (availability == McpTokenValidationAvailability.Unavailable)
+            {
+                // The two causes need different guidance: one is an out-of-date Identity Manager,
+                // the other a missing ADP Desktop SDK install. Reporting the export message for a
+                // wrapper that is not on disk at all would send the reader after the wrong thing.
+                Log(reason == McpTokenValidationUnavailableReason.AdpWrapperMissing
+                    ? string.Format(
+                        CultureInfo.CurrentCulture,
+                        Res.ExtensionNotOfferedAdpWrapperMissing,
+                        extensionName,
+                        IdsdkMcpTokenValidation.AdpWrapperModuleName)
+                    : string.Format(
+                        CultureInfo.CurrentCulture,
+                        Res.ExtensionNotOfferedMcpTokenValidationUnavailable,
+                        extensionName,
+                        IdsdkMcpTokenValidation.IdsdkModuleName,
+                        IdsdkMcpTokenValidation.McpValidateTokenExport));
 
                 return true;
             }

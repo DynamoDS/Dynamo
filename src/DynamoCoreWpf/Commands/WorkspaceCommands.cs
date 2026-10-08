@@ -31,6 +31,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showAllWiresCommand;
         private DelegateCommand hideAllWiresCommand;
         private DelegateCommand unpinAllPreviewBubblesCommand;
+        private DelegateCommand clearAIChangedHighlightsCommand;
 
         #endregion
 
@@ -288,6 +289,20 @@ namespace Dynamo.ViewModels
                 if (unpinAllPreviewBubblesCommand == null)
                     unpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
                 return unpinAllPreviewBubblesCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to clear all AI changed highlights within the workspace
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ClearAIChangedHighlightsCommand
+        {
+            get
+            {
+                if (clearAIChangedHighlightsCommand == null)
+                    clearAIChangedHighlightsCommand = new DelegateCommand(ClearAIChangedHighlights, CanClearAIChangedHighlights);
+                return clearAIChangedHighlightsCommand;
             }
         }
         #endregion

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -410,7 +411,7 @@ namespace DynamoCoreWpfTests
 
             var dockedExtension = new GuidedTourSidePanelTestViewExtension();
             var added = View.AddOrFocusExtensionControl(dockedExtension, new UserControl());
-            Assert.IsTrue(added);
+            Assert.AreEqual(DynamoView.ExtensionControlResult.Added, added);
 
             var hasAddedExtensionTab = ViewModel.SideBarTabItems.OfType<TabItem>().Any(tab =>
                 tab.Tag is IViewExtension extension &&

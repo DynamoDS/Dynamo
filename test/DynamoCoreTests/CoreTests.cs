@@ -854,6 +854,266 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
+        /// <summary>
+        /// Regression test for DYN-10717: dragging/resizing a node, note, or group changes
+        /// what would be written to the saved file (X/Y/Width/Height), but previously never
+        /// marked the workspace dirty. RecordModelsForModification is the shared entry point
+        /// every drag-completion/resize code path funnels through (StateMachine's node drag,
+        /// AnnotationViewModel's group/note resize, etc.), so exercising it directly here
+        /// covers all of them without needing WPF-level drag simulation.
+        /// </summary>
+        [Test]
+        public void TestFileDirtyOnNodeModification()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+
+            // Passed as ModelBase[] (not List<ModelBase>) to unambiguously call the public
+            // RecordModelsForModification(IEnumerable<ModelBase>) overload, which opens its
+            // own action group -- the internal List<ModelBase> overload is an exact-type
+            // match that C# would otherwise prefer, and it assumes a group is already open.
+            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// Regression test for DYN-10717: undoing the single change made since the file was
+        /// opened/saved must clear HasUnsavedChanges again -- Undo previously never reset
+        /// this one-way flag at all, so Save stayed enabled forever after the first edit even
+        /// if the user undid it back to the exact saved state. Redoing that change should
+        /// mark it dirty again.
+        /// </summary>
+        [Test]
+        public void TestUndoRedoRestoresHasUnsavedChangesToSavedState()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            var newPosition = $"{node.X + 100};{node.Y}";
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, node.GUID, nameof(NodeModel.Position), newPosition));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            // Undo the only change made since open -- back to the saved state, so clean again.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            // Redo re-applies the change -- dirty again.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// Regression test for DYN-10717: undoing only one of two changes must not clear
+        /// HasUnsavedChanges, since the workspace is still not back at the exact undo-stack
+        /// depth it was at when last saved/opened.
+        /// </summary>
+        [Test]
+        public void TestUndoingOneOfTwoChangesStaysDirty()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Take(2).ToList();
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, nodes[0].GUID, nameof(NodeModel.Position), $"{nodes[0].X + 10};{nodes[0].Y}"));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, nodes[1].GUID, nameof(NodeModel.Position), $"{nodes[1].X + 10};{nodes[1].Y}"));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            // Undo only the second change -- still dirty, since we're not back at the saved depth.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// Regression test for a PR review comment on DYN-10717: HasUnsavedChanges can be set
+        /// directly by workspace-level/administrative code paths that never go through the
+        /// tagged undo-recording system (e.g. a unit-conversion node's selected units,
+        /// geometry scale factor, active linter, or custom graph metadata). Undoing an
+        /// unrelated, separately-tracked edit back to the exact saved undo-stack depth must
+        /// not silently wipe out that independent dirty signal.
+        /// </summary>
+        [Test]
+        public void TestIndependentDirtyFlagSurvivesUnrelatedUndo()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            // Simulate a workspace-level/administrative change that doesn't go through the
+            // tagged undo-recording system (e.g. LinterViewModel.ActiveLinter, GeometryScalingPopup).
+            CurrentDynamoModel.CurrentWorkspace.MarkAsIndependentlyModified();
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+
+            // Even though the tagged/tracked edit was fully undone (back to the saved
+            // undo-depth), the independent administrative dirty flag must keep the
+            // workspace marked unsaved.
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
+        /// DYN-10756: the point of WorkspaceModel.BeginUndoActionGroup is that a client applying
+        /// a batch of edits in one go can have the user reverse the whole batch with a single
+        /// undo, rather than one undo per operation the batch happened to be made of.
+        /// </summary>
+        [Test]
+        public void WhenUndoActionGroupSpansTwoEditsThenOneUndoRevertsBothOfThem()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var guids = workspace.Nodes.Take(2).Select(node => node.GUID).ToList();
+            var originalPositions = guids.Select(guid => NodePosition(guid)).ToList();
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                foreach (var guid in guids)
+                {
+                    MoveNodeBy(guid, 100);
+                }
+            }
+
+            Assert.AreNotEqual(originalPositions[0], NodePosition(guids[0]));
+            Assert.AreNotEqual(originalPositions[1], NodePosition(guids[1]));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+
+            Assert.AreEqual(originalPositions[0], NodePosition(guids[0]));
+            Assert.AreEqual(originalPositions[1], NodePosition(guids[1]));
+
+            // Both edits were reverted by that single undo, leaving nothing further to undo --
+            // the batch occupies one undo step, not one per edit.
+            Assert.IsFalse(workspace.CanUndo);
+        }
+
+        /// <summary>
+        /// DYN-10756: undo and redo would move an action group that is about to be merged, so
+        /// they are unavailable while an undo action group is open. The workspace has to report
+        /// that through CanUndo/CanRedo so that UI bound to them disables itself, and has to
+        /// become available again once the group is disposed.
+        /// </summary>
+        [Test]
+        public void WhenUndoActionGroupIsOpenThenWorkspaceReportsItAndRefusesUndo()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var guid = workspace.Nodes.First().GUID;
+            MoveNodeBy(guid, 100);
+            var movedPosition = NodePosition(guid);
+
+            Assert.IsFalse(workspace.IsUndoActionGroupOpen);
+            Assert.IsTrue(workspace.CanUndo);
+
+            var actionGroup = workspace.BeginUndoActionGroup();
+
+            Assert.IsTrue(workspace.IsUndoActionGroupOpen);
+            Assert.IsFalse(workspace.CanUndo);
+            Assert.IsFalse(workspace.CanRedo);
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreEqual(movedPosition, NodePosition(guid)); // Undo was refused.
+
+            actionGroup.Dispose();
+
+            Assert.IsFalse(workspace.IsUndoActionGroupOpen);
+            Assert.IsTrue(workspace.CanUndo);
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreNotEqual(movedPosition, NodePosition(guid));
+        }
+
+        /// <summary>
+        /// DYN-10756: creating a node and then editing it is the typical shape of a batch an
+        /// automation client applies inside an undo action group. The merged group then holds a
+        /// creation and a modification of the same node, and redoing it must bring the node back
+        /// with the edit applied rather than silently leave it out.
+        /// </summary>
+        [Test]
+        public void WhenNodeCreatedThenEditedInUndoActionGroupThenRedoRecreatesTheEditedNode()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(
+                    Guid.Empty, cbn.GUID, "Code", "42;"));
+            }
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.IsFalse(workspace.Nodes.Any(n => n.GUID == cbn.GUID));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+
+            var recreated = workspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault(n => n.GUID == cbn.GUID);
+            Assert.IsNotNull(recreated);
+            Assert.AreEqual("42;", recreated.Code);
+        }
+
+        /// <summary>
+        /// DYN-10756: a batch that creates two nodes, connects them and then moves the first one
+        /// leaves that node's creation and its move in one merged group. Redo has to recreate the
+        /// node before the connector that depends on it, or the connector finds no node to attach
+        /// to and is silently dropped.
+        /// </summary>
+        [Test]
+        public void WhenConnectedNodeIsMovedInUndoActionGroupThenRedoRecreatesTheConnector()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var source = new CodeBlockNodeModel("42;", 0, 0, CurrentDynamoModel.LibraryServices, workspace.ElementResolver);
+            var target = new CodeBlockNodeModel("x;", 200, 0, CurrentDynamoModel.LibraryServices, workspace.ElementResolver);
+
+            using (workspace.BeginUndoActionGroup())
+            {
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(source, 0, 0, false, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(target, 200, 0, false, false));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                    source.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+                CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                    target.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+                MoveNodeBy(source.GUID, 100);
+            }
+
+            Assert.AreEqual(1, workspace.Connectors.Count());
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreEqual(0, workspace.Nodes.Count());
+            Assert.AreEqual(0, workspace.Connectors.Count());
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
+
+            Assert.AreEqual(2, workspace.Nodes.Count());
+            var connector = workspace.Connectors.SingleOrDefault();
+            Assert.IsNotNull(connector);
+            Assert.AreEqual(source.GUID, connector.Start.Owner.GUID);
+            Assert.AreEqual(target.GUID, connector.End.Owner.GUID);
+        }
+
+        private void MoveNodeBy(Guid nodeGuid, double offsetX)
+        {
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First(n => n.GUID == nodeGuid);
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(
+                Guid.Empty, nodeGuid, nameof(NodeModel.Position), $"{node.X + offsetX};{node.Y}"));
+        }
+
+        private string NodePosition(Guid nodeGuid)
+        {
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First(n => n.GUID == nodeGuid);
+            return $"{node.X};{node.Y}";
+        }
+
         // SaveImage
 
         //[Test]

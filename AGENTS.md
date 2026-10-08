@@ -20,6 +20,9 @@ Dynamo is a visual programming tool accessible to non-programmers and programmer
 dotnet restore src/Dynamo.All.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
 msbuild src/Dynamo.All.sln /p:Configuration=Release
 
+# CI parity (what build_dynamo_all.yml runs) — PublicAPI analyzers become errors
+msbuild src/Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true
+
 # Core only (cross-platform, Windows)
 dotnet restore src/DynamoCore.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
 msbuild src/DynamoCore.sln /p:Configuration=Release
@@ -28,6 +31,10 @@ msbuild src/DynamoCore.sln /p:Configuration=Release
 dotnet restore src/DynamoCore.sln --runtime=linux-x64 -p:Configuration=Release -p:Platform=NET_Linux -p:DotNet=net10.0
 dotnet build src/DynamoCore.sln -c Release /p:Platform=NET_Linux
 ```
+
+**Static analysis (the lint step):** Dynamo has no separate linter. Static checks are the Roslyn analyzers the build runs — security rules CA2327/CA2328/CA2329/CA2330 are always errors; PublicAPI rules RS0016/RS0017 are errors only with the CI flags above (a plain local build only warns). Formatting rules live in `.editorconfig`. Run the CI-parity build before opening a PR.
+
+**CI vs local:** `build_dynamo_all.yml` (Windows) runs the CI-parity build; `build_dynamo_core.yml` builds `DynamoCore.sln` on Linux but runs no tests there — `dotnet test` currently discovers no tests on Linux. Run `dotnet test` on Windows.
 
 ## Architecture
 
@@ -54,10 +61,11 @@ Key relationships: `DynamoCore` is the graph model and execution engine. `Dynamo
 - Follow [Dynamo Coding Standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards) and [Naming Standards](https://github.com/DynamoDS/Dynamo/wiki/Naming-Standards).
 - XML documentation required on all public methods and properties.
 - New public APIs must be added to `PublicAPI.Unshipped.txt` (format: `namespace.ClassName.MemberName -> ReturnType`).
-- Security analyzers CA2327/CA2329/CA2330/CA2328 are errors.
-- NUnit for all tests. Do not introduce xUnit or MSTest.
-- Test naming: `WhenConditionThenExpectedBehavior`. One behavior per test, Arrange-Act-Assert.
+- Security analyzers CA2327/CA2329/CA2330/CA2328 are errors. Never commit secrets, API keys, or credentials.
+- NUnit for all tests. Do not introduce xUnit or MSTest. NUnit packages: `NUnit`, `NUnit3TestAdapter`, `NUnit.Analyzers`.
+- Test naming: `WhenConditionThenExpectedBehavior` for new tests (the legacy suite predates this convention — match the surrounding file's style when extending old tests). One behavior per test, Arrange-Act-Assert.
 - User-facing strings in `.resx` files.
+- NuGet package versions for `PackageReference` projects live only in `Directory.Packages.props` (Central Package Management); legacy `packages.config` projects (e.g. `tools/DSTestCaseConverter`) are outside CPM and keep their versions locally. `PackageReference` entries in csproj files must omit `Version`; bump a dependency by editing the props file. Conditions selecting *which* package to reference (e.g. LibG Debug/Release in `DynamoCore.csproj`) stay in the csproj.
 - No files > 50 MB.
 - Preserve existing line endings when editing — do not convert. The `.editorconfig` specifies LF, but many files have CRLF from Windows development. New files should follow `.editorconfig` (LF); the Write tool on macOS may need explicit attention.
 
@@ -65,13 +73,13 @@ Key relationships: `DynamoCore` is the graph model and execution engine. `Dynamo
 
 ```bash
 # Filter by test name (substring match)
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
 
 # Filter by NUnit category
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
 
 # Combine with & (AND) or | (OR)
-dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
+dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
 ```
 
 UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
@@ -123,6 +131,7 @@ Use `[AlsoKnownAs("OldName")]` to preserve backward compatibility when renaming 
 
 ## Commits and PRs
 
+- Commit message: short summary (50 chars max), blank line, detailed body (72 char wrap). Optionally reference Jira: `DYN-1234`.
 - PR title must include Jira ticket: `DYN-1234 concise summary`.
 - Fill all sections of `.github/PULL_REQUEST_TEMPLATE.md`. Release Notes is mandatory — use `N/A` if not user-facing (minimum 6 words otherwise).
 - Do not introduce breaking API changes without filing an issue and following [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions).
@@ -134,25 +143,50 @@ For each new node, add to `doc/distrib/NodeHelpFiles/`:
 - A `.md` documentation file
 - A `.jpg` visual preview
 
+## Debugging Quick Start
+
+- **Logs**: `DynamoLogger` writes `dynamoLog_<guid>.txt` to `%AppData%\Dynamo\Dynamo Core\<major>.<minor>\Logs\` (headless/CLI runs use the version-less parent). The in-app log viewer is under View > Log. `DynamoModel.Logger` (`src/DynamoCore/Models/DynamoModel.cs`) is the logging surface: `Log`, `LogWarning`, `LogError`, `LogInfo`.
+- **Attach a debugger**: launch `DynamoSandbox` (or `DynamoSandbox.exe` from `bin\AnyCPU\Debug`) and attach VS to the process. `--NoNetworkMode` disables network surfaces for repro isolation (see [no-network-mode.md](doc/distrib/no-network-mode.md)).
+- **Node evaluation issues**: first breakpoints are `EngineController` (`src/DynamoCore/Engine/EngineController.cs`) for run/execution and `AstBuilder` (`src/DynamoCore/Engine/CodeGeneration/AstBuilder.cs`) for graph-to-DS compilation.
+- **Common failures**: build breaks after SDK/dependency bumps are usually NuGet source issues — `dynamo-nuget.config` points at the `team-dynamo-nuget` Artifactory feed; a 403 there is a credentials gate, not a code problem. WPF/UI projects only build on Windows (`Dynamo.All.sln`); on Linux/macOS build `DynamoCore.sln` with `/p:Platform=NET_Linux`.
+
+## Blast Radius
+
+- **Public API**: `src/*/PublicAPI.{Shipped,Unshipped}.txt` (DynamoCore, DynamoCoreWpf, DynamoUtilities, NodeServices) — Roslyn analyzers RS0016/RS0017 fail **CI** on undeclared changes (CI passes `/warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true`; a plain local build only warns). Breaking changes require an issue + SemVer.
+- **Published NuGet packages** (from `tools/NuGet/template-nuget/`): `DynamoVisualProgramming.Core`, `.DynamoCoreNodes`, `.DynamoServices`, `.DynamoSamples`, `.Tests`, `.WpfUILibrary`, `.ZeroTouchLibrary`. Changes to `src/DynamoCore`, `src/DynamoCoreWpf`, or `src/Libraries` land in these packages and reach external consumers (e.g. DynamoRevit, downstream package authors).
+- **Graph file format**: `.dyn` files are a public contract — schema documented in `doc/dyn-file-spec.md` (JSON Schema: `doc/dyn-file-spec.json`). Changes to node serialization (`NodeModel` constructors, `AlsoKnownAs` handling) affect every saved graph.
+- **Cross-boundary edits**: `src/Engine/` (DesignScript runtime) changes ripple into every evaluation path; `src/Libraries/` node changes require matching `doc/distrib/NodeHelpFiles/` entries; `extern/` submodules pin native dependencies (LibG/ASM) — version bumps there are coordinated PRs across csproj files (see DYN-10825 for the pattern).
+
+## After Changes — Proof Checklist
+
+Run what matches your change. Builds work on Windows (and `DynamoCore.sln` on Linux); run the `dotnet test` lines on Windows:
+- [ ] `dotnet build src/DynamoCore.sln -c Release` — after any `src/DynamoCore*`, `src/Engine/`, or `src/Libraries/` change
+- [ ] `msbuild src/Dynamo.All.sln /p:Configuration=Release` — after WPF/UI changes (Windows only)
+- [ ] `msbuild src/Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true` — before opening a PR (what CI runs; fails on undeclared public API)
+- [ ] `dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"` — after engine/core changes
+- [ ] `dotnet test test/Libraries/<TestDir>/<TestProject>.csproj --filter "Category=UnitTests"` — after node-library changes (names vary: `ls test/Libraries`, e.g. `NodeServicesTest/DynamoServicesTests.csproj`)
+- [ ] New public member → added to the project's `PublicAPI.Unshipped.txt`
+- [ ] New node → `.dyn` + `.md` + `.jpg` under `doc/distrib/NodeHelpFiles/`
+- [ ] User-facing string → moved to a `.resx` file
+
 ## Detailed Guidance
 
-Read `.claude/` for comprehensive skills, rules, and templates:
+Read `.claude/` for comprehensive skills and templates:
 
 - **Skills** (task workflows): `.claude/skills/<skill-name>/SKILL.md`
   - `dynamo-codebase-patterns` -- Discover and enforce Dynamo-specific architectural patterns
-  - `dynamo-content-designer` -- Technical content for docs, guides, and release notes
+  - `dynamo-content-designer` -- Technical content for docs, guides, and tutorials
   - `dynamo-dotnet-expert` -- C#/.NET patterns, testing, PublicAPI
   - `dynamo-dotnet-janitor` -- Janitorial cleanup and modernization for C#/.NET code
   - `dynamo-ecosystem-reviewer` -- Cross-repo compatibility and platform constraints review
   - `dynamo-jira-ticket` -- creating/refining Jira tickets (includes template.md)
   - `dynamo-onboarding` -- Dynamo architecture, ecosystem, debugging
   - `dynamo-pr-description` -- PR descriptions matching Dynamo template (uses `.github/PULL_REQUEST_TEMPLATE.md`)
+  - `dynamo-release-notes` -- Curate, sweep, draft, cross-check, and publish the GitHub wiki Release-Notes page for a Dynamo release
   - `dynamo-skill-writer` -- Author and maintain Dynamo agent skills
   - `dynamo-unit-testing` -- NUnit test writing following Dynamo patterns
   - `dynamo-ux-designer` -- UX planning and Weave-aligned interface design guidance
   - `dynamo-webview-component-scaffold` -- Scaffold Dynamo WebView2 view-extension repos
-- **Rules** (constraints): `.claude/rules/`
-  - `dynamo-core-rules.md` -- .NET/Dynamo constraints
 
 ## Important Links
 

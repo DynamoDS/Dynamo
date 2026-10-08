@@ -96,7 +96,7 @@ namespace Dynamo.Graph.Workspaces
             var nodesFromIDs = workspace.Nodes.Where(node => IDSToSave.Contains(node.GUID));
             //access the presetsCollection and add a new state based on the current selection
             var newpreset = AddPresetCore(workspace, name, description, nodesFromIDs);
-            workspace.HasUnsavedChanges = true;
+            workspace.MarkAsIndependentlyModified();
             return newpreset;
         }
 

@@ -39,10 +39,10 @@ $excludedFiles = @(
     "JUnit.TestLogger.dll",
     "LaunchDarkly.*",
     "LibG*.dll",
-    "libiconv.dll",         # https://jira.autodesk.com/browse/DYN-7069
-    "libintl.dll",          # https://jira.autodesk.com/browse/DYN-7069
-    "libHarfBuzzSharp.dll", # https://jira.autodesk.com/browse/DYN-6598
-    "libSkiaSharp.dll",     # https://jira.autodesk.com/browse/DYN-6598
+    "libiconv.dll",         # https://autodesk.atlassian.net/browse/DYN-7069
+    "libintl.dll",          # https://autodesk.atlassian.net/browse/DYN-7069
+    "libHarfBuzzSharp.dll", # https://autodesk.atlassian.net/browse/DYN-6598
+    "libSkiaSharp.dll",     # https://autodesk.atlassian.net/browse/DYN-6598
     "LiveChartsCore*.dll",
     "Lucene.Net*.dll",
     "MIConvexHull.dll",
@@ -81,8 +81,11 @@ $excludedFiles = @(
     "JsonSchema.Net.dll",
     "JsonPointer.Net.dll",
     "Json.More.dll",
+    "BigGustave.dll",
+    "Humanizer.dll",
+    "SharpGLTF*.dll",
     "DynamoPlayer.*.dll",
-    # DynamoAssistant built-in package (DYN-10450) — versioned independently of Dynamo, signed in its own pipeline.
+    # AutodeskAssistant built-in package (DYN-10450) — versioned independently of Dynamo, signed in its own pipeline.
     "AutodeskAssistantViewExtension.dll",
     "AutodeskAssistantViewExtension.resources.dll",
     "AdpSDKCSharpWrapper.dll",

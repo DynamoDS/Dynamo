@@ -397,6 +397,97 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void FunctionCall_ThrowsWarning_WhenUnresolvedCallInsideFunctionBody()
+        {
+            // Regression test for DYN-10693: an unresolved function call inside a function
+            // definition body must be reported when the graph is opened, just like an
+            // unresolved call at the code block top level. Previously the warning was
+            // silently suppressed because function bodies were only compiled in the first
+            // pass (where the "function not found" warning is deliberately gated off).
+            var cbn = OpenSingleFunctionCbn("testfunction_nodefn_in_body.dyn", expectedNodeCount: 1);
+
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning
+                && x.Message.Contains("MissingFunc")));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WhenForwardReferenceInsideFunctionBody()
+        {
+            // Regression guard for DYN-10693: a call inside a function definition body to a
+            // function defined in another code block node is a valid forward reference and
+            // must not raise a "function not found" warning once all definitions are compiled.
+            var cbn = OpenSingleFunctionCbn("testfunction_forwardref_in_body.dyn", expectedNodeCount: 2);
+
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WhenForwardReferenceWithinSameCodeBlock()
+        {
+            // Regression guard for DYN-10693: a function body that calls another function defined
+            // later in the same code block node is a valid forward reference and must not warn.
+            var cbn = OpenSingleFunctionCbn("testfunction_forwardref_samecbn.dyn", expectedNodeCount: 1);
+
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_KeepsWarning_WhenCodeBlockIsEditedAfterUnresolvedCallInBody()
+        {
+            // Regression test for DYN-10693: editing a code block node that redefines the same
+            // function must not lose the "function not found" warning raised for an unresolved
+            // call inside the function body. The previously compiled definition stayed active on
+            // the precompilation core, so the redefinition was skipped and its body was never
+            // traversed, silently dropping the warning on every recompile after the first.
+            var cbn = OpenSingleFunctionCbn("testfunction_nodefn_in_body.dyn", expectedNodeCount: 1);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            cbn.SetCodeContent("def tostr(x)\n{\nreturn = MissingFunc(x);\n};\ntostr(2.718);",
+                CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning
+                && x.Message.Contains("MissingFunc")));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WhenForwardReferenceInSameCodeBlockIsEdited()
+        {
+            // Regression guard for DYN-10693: recompiling a code block node that redefines its own
+            // functions must not report a valid forward reference between them as unresolved.
+            var cbn = OpenSingleFunctionCbn("testfunction_forwardref_samecbn.dyn", expectedNodeCount: 1);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+
+            cbn.SetCodeContent("def a()\n{\nreturn = b();\n};\ndef b()\n{\nreturn = 43;\n};\na();",
+                CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        // Opens a graph under core\dsevaluation and returns the code block node with the well-known
+        // guid used by the function-warning test fixtures. Shared by the DYN-10693 regression tests.
+        private CodeBlockNodeModel OpenSingleFunctionCbn(string dynFileName, int expectedNodeCount)
+        {
+            OpenModelInManualMode(Path.Combine(TestDirectory, "core", "dsevaluation", dynFileName));
+            Assert.AreEqual(expectedNodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("fc9995f7-4e98-4e9d-81d3-877f9fe6a329"));
+            Assert.IsNotNull(cbn);
+            return cbn;
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ImperativeFunctionCall_ThrowsWarning_WithoutFunctionDef()
         {
             string openPath = Path.Combine(TestDirectory,
@@ -2020,6 +2111,53 @@ var06 = g;
             // Second undo removes the creation.
             CurrentDynamoModel.CurrentWorkspace.Undo();
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+        }
+
+        #endregion
+
+        #region Undo action groups (DYN-10756)
+
+        /// <summary>
+        /// Regression test for a PR review comment on DYN-10756: a code change that drops a
+        /// connector takes UpdateModelValue down ModelModificationUndoHelper's rebuild path,
+        /// which pops the action group its own constructor pushed and re-forms it together with
+        /// the connector changes. An open undo action group must therefore not stop that group
+        /// from reaching the undo stack -- it would otherwise pop an unrelated earlier group, or
+        /// fail outright with nothing on the stack to pop.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCodeChangeDropsConnectorInsideUndoActionGroupThenUndoRestoresBoth()
+        {
+            var source = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(source, "a = 1;\nb = 2;");
+
+            var target = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(target, "x;");
+
+            // Connect the source's second output, so that dropping that output from the code
+            // drops the connector along with it.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                source.GUID, 1, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                target.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            Assert.AreEqual(2, source.OutPorts.Count);
+            Assert.AreEqual(1, target.InPorts[0].Connectors.Count);
+
+            using (CurrentDynamoModel.CurrentWorkspace.BeginUndoActionGroup())
+            {
+                UpdateCodeBlockNodeContent(source, "a = 1;");
+            }
+
+            Assert.AreEqual(1, source.OutPorts.Count);
+            Assert.AreEqual(0, target.InPorts[0].Connectors.Count);
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            // The code change and the connector it dropped are both reverted by that one undo.
+            Assert.AreEqual(2, source.OutPorts.Count);
+            Assert.AreEqual(1, target.InPorts[0].Connectors.Count);
         }
 
         #endregion

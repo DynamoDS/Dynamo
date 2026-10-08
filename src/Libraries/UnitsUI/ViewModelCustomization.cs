@@ -148,7 +148,7 @@ namespace UnitsUI
         private void OnSwitchUnitsButtonClick(object obj)
         {
             dynamoConvertModel.SwitchUnitsDropdownValues();
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            nodeViewModel.WorkspaceViewModel.Model.MarkAsIndependentlyModified();
         }
 
         private bool CanSwitchUnitsButton(object obj)

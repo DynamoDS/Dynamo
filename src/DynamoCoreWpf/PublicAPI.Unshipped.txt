@@ -1,3 +1,6 @@
+Dynamo.Wpf.Extensions.ViewLoadedParams.IsIDSDKInitialized.get -> bool
+static Dynamo.Wpf.Properties.Resources.ExtensionNotOfferedAdpWrapperMissing.get -> string
+static Dynamo.Wpf.Properties.Resources.ExtensionNotOfferedMcpTokenValidationUnavailable.get -> string
 Dynamo.Controls.NetworkStatusIconConverter
 Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -21,6 +24,8 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstal
 Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
+Dynamo.ViewModels.DynamoViewModel.CanSaveWorkspace.get -> bool
+Dynamo.ViewModels.DynamoViewModel.CanSaveWorkspaceAs.get -> bool
 Dynamo.ViewModels.DynamoViewModel.NoNetworkMode.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
@@ -33,6 +38,8 @@ Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> b
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
+Dynamo.ViewModels.WorkspaceViewModel.GetGroupCollapsed(System.Guid groupId) -> bool
+Dynamo.ViewModels.WorkspaceViewModel.SetGroupCollapsed(System.Guid groupId, bool collapsed) -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
@@ -41,6 +48,7 @@ Dynamo.Wpf.Utilities.DynamoWebView2.ConfigureSettings(bool enableZoomControl = f
 Dynamo.UI.Views.SplashScreen.SplashScreen(bool enableSignInButton, bool noNetworkMode) -> void
 static Dynamo.Wpf.Utilities.WebView2Utilities.ApplyNoNetworkPolicy(Microsoft.Web.WebView2.Wpf.CoreWebView2CreationProperties creationProperties, bool noNetworkMode, System.Action<string> logFn = null) -> void
 static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkBrowserArguments(bool noNetworkMode) -> string
+static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkUserDataFolder(string userDataFolder) -> string
 static readonly Dynamo.Wpf.Utilities.WebView2Utilities.NoNetworkAdditionalBrowserArguments -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.set -> void
@@ -52,6 +60,7 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.UI.Controls.CodeBlockEditor.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
+override Dynamo.UI.Controls.CodeBlockEditor.OnIsKeyboardFocusWithinChanged(System.Windows.DependencyPropertyChangedEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnSelectionChanged(System.Windows.Controls.SelectionChangedEventArgs e) -> void
 static Dynamo.PackageManager.UI.PackageManagerTabControl.GetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element) -> bool
 static Dynamo.PackageManager.UI.PackageManagerTabControl.SetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element, bool value) -> void
@@ -59,6 +68,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.ShowWithCheckbox(System.Windows.Window
 static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
 static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
+static Dynamo.Wpf.Properties.Resources.ContextMenuClearAIChangedHighlights.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
@@ -82,3 +92,6 @@ static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImportedRestartMessag
 static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsResetSuccess.get -> string
 static Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText.get -> string
 static readonly Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndWhenSelectedProperty -> System.Windows.DependencyProperty
+Dynamo.ViewModels.NodeViewModel.IsRecentlyModifiedByAI.get -> bool
+Dynamo.ViewModels.NodeViewModel.IsRecentlyModifiedByAI.set -> void
+Dynamo.ViewModels.WorkspaceViewModel.ClearAIChangedHighlightsCommand.get -> Dynamo.UI.Commands.DelegateCommand

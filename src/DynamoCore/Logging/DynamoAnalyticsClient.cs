@@ -126,7 +126,14 @@ namespace Dynamo.Logging
             var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? Configurations.DynamoAsString : hostAnalyticsInfo.HostName;
             var appversion = hostAnalyticsInfo.HostVersion?.ToString();
 
-            hostInfo = new HostContextInfo() { ParentId = hostAnalyticsInfo.ParentId, SessionId = hostAnalyticsInfo.SessionId };
+            // A host that doesn't pass its own ADP session (e.g. Dynamo for Revit) still owns the ADP
+            // host session, so mark Dynamo as hosted whenever a host name is supplied (DYN-10960).
+            hostInfo = new HostContextInfo()
+            {
+                ParentId = hostAnalyticsInfo.ParentId,
+                SessionId = hostAnalyticsInfo.SessionId,
+                IsHosted = !string.IsNullOrEmpty(hostAnalyticsInfo.HostName)
+            };
 
             string buildId = String.Empty, releaseId = String.Empty;
             if (Version.TryParse(DynamoModel.Version, out Version version))

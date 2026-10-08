@@ -286,12 +286,25 @@ namespace Dynamo.Graph.Workspaces
         private string author = "None provided";
         private string description;
         private bool hasUnsavedChanges;
+
+        /// <summary>
+        /// Tracks whether something marked this workspace dirty independently of the
+        /// undo-stack depth tracking (e.g. workspace-level/administrative state such as a
+        /// unit-conversion node's selected units, geometry scale factor, active linter, or
+        /// custom graph metadata -- none of which go through the tagged undo-recording
+        /// system). UpdateHasUnsavedChangesFromSavedStateAffectingDepth() ORs this in rather
+        /// than letting undo-depth comparisons blindly overwrite it, so an unrelated
+        /// undo/redo can never silently discard a real, independently-flagged unsaved change
+        /// (DYN-10717).
+        /// </summary>
+        private bool independentDirtyFlag;
         private bool isReadOnly;
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
         internal readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private int savedUndoDepth;
         private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
@@ -306,7 +319,7 @@ namespace Dynamo.Graph.Workspaces
         private List<INodeLibraryDependencyInfo> externalFileReferences;
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
         private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
-        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
+        private protected readonly Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
@@ -430,7 +443,7 @@ namespace Dynamo.Graph.Workspaces
         internal virtual void OnSaved()
         {
             LastSaved = DateTime.Now;
-            HasUnsavedChanges = false;
+            MarkAsSaved();
 
             if (Saved != null)
                 Saved();
@@ -991,61 +1004,15 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Computes the external file references if the Workspace Model is a HomeWorkspaceModel and graph is not running.
+        /// Computes the external file references for this workspace. The base implementation
+        /// returns an empty list; only <see cref="HomeWorkspaceModel"/> overrides this, since
+        /// computing references relies on inspecting evaluated output values from a running
+        /// engine, which other workspace types (e.g. custom nodes) don't have.
         /// </summary>
         /// <returns></returns>
-        private List<INodeLibraryDependencyInfo> ComputeExternalFileReferences()
+        private protected virtual List<INodeLibraryDependencyInfo> ComputeExternalFileReferences()
         {
-            var externalFiles = new Dictionary<object, DependencyInfo>();
-
-            // If an execution is in progress we'll have to wait for it to be done before we can gather the
-            // external file references as this implementation relies on the output values of each node.
-            //instead just bail to avoid blocking the UI.
-            if (this is HomeWorkspaceModel homeWorkspaceModel && homeWorkspaceModel.RunSettings.RunEnabled && !homeWorkspaceModel.RunSettings.ForceBlockRun)
-            {
-                foreach (var node in nodes)
-                {
-                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
-
-                    // Check for the file path string value at each of the output ports of all nodes in the workspace. 
-                    foreach (var port in node.OutPorts)
-                    {
-                        var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
-                        var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
-                        var data = mirror?.GetData().Data;
-
-                        if (data is string dataString && dataString.Contains(@"\"))
-                        {
-                            // Check if the value exists on disk
-                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
-                            if (fileExists)
-                            {
-                                var externalFilePath = Path.GetFullPath(dataString);
-                                var externalFileName = Path.GetFileName(dataString);
-
-                                if (!externalFiles.ContainsKey(externalFilePath))
-                                {
-                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
-                                }
-
-                                externalFiles[externalFilePath].AddDependent(node.GUID);
-                                externalFiles[externalFilePath].Size = fileSize;
-                            }
-                            // Read the serialized value for that node.
-                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
-                            {
-                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
-                                {
-                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
-                                }
-                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+            return new List<INodeLibraryDependencyInfo>();
         }
 
         /// <summary>
@@ -1087,6 +1054,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// True only while an AI-driven edit (from DynamoMCP) is actively changing this workspace.
+        /// MCP sets this around its own tool calls. While it is true, a node modification does not
+        /// clear <see cref="NodeModel.IsRecentlyModifiedByAI"/>. While it is false, a person editing
+        /// a node clears that highlight. This flag does not turn the highlight on, and it is never
+        /// saved to the .dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAIEditInProgress { get; set; }
+
+        /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
         public bool HasUnsavedChanges
@@ -1098,6 +1075,7 @@ namespace Dynamo.Graph.Workspaces
                     if (!File.Exists(this.FileName)) // but the filename is invalid
                     {
                         this.fileName = string.Empty;
+                        independentDirtyFlag = true;
                         hasUnsavedChanges = true;
                     }
                 }
@@ -1109,6 +1087,19 @@ namespace Dynamo.Graph.Workspaces
                 hasUnsavedChanges = value;
                 RaisePropertyChanged("HasUnsavedChanges");
             }
+        }
+
+        /// <summary>
+        /// Marks this workspace as having unsaved changes due to a workspace-level or
+        /// administrative change that is not tracked by the undo/redo system. Unlike
+        /// setting <see cref="HasUnsavedChanges"/> directly, this ensures the flag cannot be
+        /// silently cleared by an unrelated Undo/Redo operation that returns the undo stack
+        /// to its last-saved position (DYN-10717).
+        /// </summary>
+        public void MarkAsIndependentlyModified()
+        {
+            independentDirtyFlag = true;
+            HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -1451,7 +1442,7 @@ namespace Dynamo.Graph.Workspaces
             FileName = info.FileName;
             Zoom = info.Zoom;
 
-            HasUnsavedChanges = false;
+            MarkAsSaved();
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
@@ -1684,6 +1675,7 @@ namespace Dynamo.Graph.Workspaces
         protected virtual void RegisterNode(NodeModel node)
         {
             node.Modified += NodeModified;
+            node.EditedWhileFrozen += ClearAIHighlightOnFrozenEdit;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -1693,6 +1685,15 @@ namespace Dynamo.Graph.Workspaces
                 functionNode.Controller.SyncWithDefinitionStart += OnSyncWithDefinitionStart;
                 functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
             }
+        }
+
+        private void ClearAIHighlightOnFrozenEdit(NodeModel node)
+        {
+            if (node.IsTransient || IsAIEditInProgress)
+            {
+                return;
+            }
+            node.IsRecentlyModifiedByAI = false;
         }
 
         protected virtual void OnToggleNodeFreeze(NodeModel obj)
@@ -1713,6 +1714,10 @@ namespace Dynamo.Graph.Workspaces
             if (node.IsTransient)
             {
                 return;
+            }
+            if (!IsAIEditInProgress)
+            {
+                node.IsRecentlyModifiedByAI = false;
             }
 
             HasUnsavedChanges = true;
@@ -1762,6 +1767,7 @@ namespace Dynamo.Graph.Workspaces
             }
             node.ConnectorAdded -= OnConnectorAdded;
             node.UpdateASTCollection -= OnToggleNodeFreeze;
+            node.EditedWhileFrozen -= ClearAIHighlightOnFrozenEdit;
             node.Modified -= NodeModified;
             node.Dispose();
         }
