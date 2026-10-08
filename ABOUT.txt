@@ -368,8 +368,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-AngleSharp v.0.14.0: Copyright (c) 2013 - 2019 AngleSharp
-AngleSharp.CSS v.0.14.2: Copyright © 2013-2020 AngleSharp
+AngleSharp v.1.7.2: Copyright (c) 2013 - 2019 AngleSharp
+AngleSharp.CSS v.1.0.2: Copyright © 2013-2020 AngleSharp
 The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -596,7 +596,7 @@ Xceed Extended WPF Toolkit v.5.0.103
 Microsoft Public License
 https://github.com/xceedsoftware/wpftoolkit/blob/0ed4ed84152d6a3e2a627f2ef05f82627fdaf3fc/license.md
 
-Microsoft.Web.WebView2 v.1.0.4258.31
+Microsoft.Web.WebView2 v.1.0.2478.35
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

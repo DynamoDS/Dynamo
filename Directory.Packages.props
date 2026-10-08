@@ -35,7 +35,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageVersion Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageVersion Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
     <PackageVersion Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <PackageVersion Include="System.CodeDom" Version="6.0.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
