@@ -61,29 +61,17 @@ dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitT
 dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
 ```
 
-UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
+UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpf2Tests`, and `DynamoCoreWpf3Tests`.
 
 ## Code Style and Formatting
 
-### Follow Existing Standards
+### Standards, XML Documentation and Analyzers
 
 - **Coding Standards**: Follow the [Dynamo Coding Standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
 - **Naming Standards**: Follow the [Dynamo Naming Standards](https://github.com/DynamoDS/Dynamo/wiki/Naming-Standards)
-- **EditorConfig**: The repository includes `.editorconfig` with formatting rules:
-  - Use spaces (4-space indentation)
-  - LF line endings
-  - UTF-8 encoding
-  - Trim trailing whitespace
-  - Insert final newline
-
-### XML Documentation
-
+- **EditorConfig**: The repository includes `.editorconfig` with formatting rules: spaces (4-space indentation), LF line endings, UTF-8 encoding, trim trailing whitespace, insert final newline
 - All public methods and properties **MUST** have XML documentation comments
 - Use clear, concise descriptions that explain what the method does, its parameters, and return values
-
-### Code Analysis
-
-- The project uses Roslyn analyzers with specific rules enabled
 - RS0016/RS0017 are errors in CI (`/warnAsError:RS0016,RS0017`) and warnings in a plain local build
 - Security analyzers are configured with error severity (CA2327, CA2329, CA2330, CA2328)
 
@@ -91,10 +79,7 @@ UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `Dyna
 
 - **RS0016 Mitigation**: All new public APIs must be declared in `PublicAPI.Unshipped.txt` files
 - Public API files are located in project directories (e.g., `src/DynamoCore/PublicAPI.Unshipped.txt`)
-- When adding new public types, methods, or properties:
-  1. Add the API signature to the appropriate `PublicAPI.Unshipped.txt` file
-  2. Use the format: `namespace.ClassName.MemberName -> ReturnType`
-  3. Entries in `PublicAPI.Unshipped.txt` are moved to `PublicAPI.Shipped.txt` upon release
+- When adding new public types, methods, or properties, add the API signature to the appropriate `PublicAPI.Unshipped.txt` file in the format `namespace.ClassName.MemberName -> ReturnType`; entries are moved to `PublicAPI.Shipped.txt` upon release
 - Existing PublicAPI files: DynamoCore, DynamoUtilities, DynamoCoreWpf, NodeServices
 
 ## Project Structure
@@ -117,6 +102,8 @@ Dynamo/
 └── extern/                       # External dependencies
 ```
 
+Area READMEs (layout, entry points, tests, contracts): [`src/DynamoCore/README.md`](../src/DynamoCore/README.md), [`src/Engine/README.md`](../src/Engine/README.md), [`src/Libraries/README.md`](../src/Libraries/README.md).
+
 ## Contribution Guidelines
 
 ### Pull Requests
@@ -138,41 +125,11 @@ Dynamo/
 
 ### Node Registration Patterns
 
-**Zero-touch** (static methods) — preferred for pure computation. Place static methods in a class under `src/Libraries/`. Namespace becomes the library category. Use XML `<search>` tags for keywords:
-
-```csharp
-/// <summary>Brief description.</summary>
-/// <returns name="result">Output description.</returns>
-/// <search>keyword1,keyword2</search>
-public static double MyFunction(double x) { ... }
-```
-
-**Explicit NodeModel** — required for custom UI, dynamic ports, or multi-output nodes. Inherit from `NodeModel` in `src/Libraries/CoreNodeModels/`. Requires two constructors — a `[JsonConstructor]` private one and a public parameterless one:
-
-```csharp
-[NodeName("Display Name"), NodeCategory("Category.Sub")]
-[IsDesignScriptCompatible]
-public class MyNode : NodeModel
-{
-    [JsonConstructor]
-    private MyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
-        : base(inPorts, outPorts) { }
-
-    public MyNode() { /* AddPorts(); RegisterAllPorts(); */ }
-
-    public override IEnumerable<AssociativeNode> BuildOutputAst(
-        List<AssociativeNode> inputAstNodes) { ... }
-}
-```
-
-Use `[AlsoKnownAs("OldName")]` when renaming nodes to preserve backward compatibility.
-
-### Required Documentation for New Nodes
-
-For each new node, provide in `doc/distrib/NodeHelpFiles/`:
-- A `.dyn` file (sample graph demonstrating usage)
-- A `.md` file (markdown documentation)
-- A `.jpg` file (visual preview/screenshot)
+- **Zero-touch** (static methods) — preferred for pure computation. Place static methods in a class under `src/Libraries/`. Namespace becomes the library category. Use XML `<search>` tags for keywords.
+- **Explicit NodeModel** — required for custom UI, dynamic ports, or multi-output nodes. Inherit from `NodeModel` in `src/Libraries/CoreNodeModels/`. Requires two constructors — a `[JsonConstructor]` private one and a public parameterless one.
+- Use `[AlsoKnownAs("OldName")]` when renaming nodes to preserve backward compatibility.
+- Full code examples (attributes, constructors, `BuildOutputAst`): [`AGENTS.md` § Node Registration Patterns](../AGENTS.md#node-registration-patterns).
+- **New nodes**: provide a `.dyn` file (sample graph demonstrating usage), a `.md` file (markdown documentation) and a `.jpg` file (visual preview/screenshot) in `doc/distrib/NodeHelpFiles/`.
 
 ### Localization
 
@@ -194,32 +151,27 @@ For each new node, provide in `doc/distrib/NodeHelpFiles/`:
 - **DO NOT** introduce new network connections without explicit documentation and no-network mode testing
 - **DO NOT** add data collection without proper user consent checks and documentation
 - Security analyzer warnings for XML-related vulnerabilities (CA2327, CA2329, CA2330, CA2328) are treated as errors
-
-### File Size Limits
-
-- Code changes should contain no files larger than 50 MB
-- The check_file_size.yml workflow validates this
+- Code changes should contain no files larger than 50 MB (validated by the `check_file_size.yml` workflow)
 
 ## Agent Skills and Templates
 
 For detailed task workflows, rules, and templates, see `.claude/README.md`:
 
-- **Skills**: each in `.claude/skills/<name>/SKILL.md` -- dynamo-codebase-patterns, dynamo-content-designer, dynamo-dotnet-expert, dynamo-dotnet-janitor, dynamo-ecosystem-reviewer, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket, dynamo-skill-writer, dynamo-unit-testing, dynamo-ux-designer, dynamo-webview-component-scaffold
+- **Skills**: each in `.claude/skills/<name>/SKILL.md` -- dynamo-codebase-patterns, dynamo-content-designer, dynamo-dotnet-expert, dynamo-dotnet-janitor, dynamo-ecosystem-reviewer, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket, dynamo-release-notes, dynamo-skill-writer, dynamo-unit-testing, dynamo-ux-designer, dynamo-webview-component-scaffold
 - **Templates**: bundled inside skill folders as `template.md` (Jira)
 
 ## Debugging Quick Start
 
-- **Logs**: `DynamoLogger` writes `dynamoLog_<guid>.txt` to `%AppData%\Dynamo\Dynamo Core\<major>.<minor>\Logs\` (headless/CLI runs use the version-less parent). The in-app log viewer is under View > Log. `DynamoModel.Logger` (`src/DynamoCore/Models/DynamoModel.cs`) is the logging surface: `Log`, `LogWarning`, `LogError`, `LogInfo`.
-- **Attach a debugger**: launch `DynamoSandbox` (or `DynamoSandbox.exe` from `bin\AnyCPU\Debug`) and attach VS to the process. `--NoNetworkMode` disables network surfaces for repro isolation (see [no-network-mode.md](../doc/distrib/no-network-mode.md)).
-- **Node evaluation issues**: first breakpoints are `EngineController` (`src/DynamoCore/Engine/EngineController.cs`) for run/execution and `AstBuilder` (`src/DynamoCore/Engine/CodeGeneration/AstBuilder.cs`) for graph-to-DS compilation.
-- **Common failures**: build breaks after SDK/dependency bumps are usually NuGet source issues — `dynamo-nuget.config` points at the `team-dynamo-nuget` Artifactory feed; a 403 there is a credentials gate, not a code problem. WPF/UI projects only build on Windows (`Dynamo.All.sln`); on Linux/macOS build `DynamoCore.sln` with `/p:Platform=NET_Linux`.
+- Logs go to `%AppData%\Dynamo\Dynamo Core\<major>.<minor>\Logs\` (logging surface: `DynamoModel.Logger`); debug by attaching VS to `DynamoSandbox`, with `--NoNetworkMode` for repro isolation (see [no-network-mode.md](../doc/distrib/no-network-mode.md)). First breakpoints for node evaluation: `EngineController` and `AstBuilder` under `src/DynamoCore/Engine/`.
+- A 403 from the `team-dynamo-nuget` Artifactory feed (`dynamo-nuget.config`) is a credentials gate, not a code problem.
+- Full detail (log file names, viewer, common failures): [`AGENTS.md` § Debugging Quick Start](../AGENTS.md#debugging-quick-start).
 
 ## Blast Radius
 
-- **Public API**: `src/*/PublicAPI.{Shipped,Unshipped}.txt` (DynamoCore, DynamoCoreWpf, DynamoUtilities, NodeServices) — Roslyn analyzers RS0016/RS0017 fail **CI** on undeclared changes (CI passes `/warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true`; a plain local build only warns). Breaking changes require an issue + SemVer.
-- **Published NuGet packages** (from `tools/NuGet/template-nuget/`): `DynamoVisualProgramming.Core`, `.DynamoCoreNodes`, `.DynamoServices`, `.DynamoSamples`, `.Tests`, `.WpfUILibrary`, `.ZeroTouchLibrary`. Changes to `src/DynamoCore`, `src/DynamoCoreWpf`, or `src/Libraries` land in these packages and reach external consumers (e.g. DynamoRevit, downstream package authors).
-- **Graph file format**: `.dyn` files are a public contract — schema documented in `doc/dyn-file-spec.md` (JSON Schema: `doc/dyn-file-spec.json`). Changes to node serialization (`NodeModel` constructors, `AlsoKnownAs` handling) affect every saved graph.
-- **Cross-boundary edits**: `src/Engine/` (DesignScript runtime) changes ripple into every evaluation path; `src/Libraries/` node changes require matching `doc/distrib/NodeHelpFiles/` entries; `extern/` submodules pin native dependencies (LibG/ASM) — version bumps there are coordinated PRs across csproj files (see DYN-10825 for the pattern).
+- **Public API**: `src/*/PublicAPI.{Shipped,Unshipped}.txt` (DynamoCore, DynamoCoreWpf, DynamoUtilities, NodeServices) — RS0016/RS0017 fail **CI** on undeclared changes; a plain local build only warns. Breaking changes require an issue + SemVer.
+- **Published contracts**: `src/DynamoCore`, `src/DynamoCoreWpf` and `src/Libraries` ship in the `DynamoVisualProgramming.*` NuGet packages (`tools/NuGet/template-nuget/`) to external consumers; `.dyn` files are a public format (`doc/dyn-file-spec.md`), so node serialization changes affect every saved graph.
+- **Cross-boundary edits**: `src/Engine/` changes ripple into every evaluation path; `src/Libraries/` node changes require matching `doc/distrib/NodeHelpFiles/` entries; `extern/` (LibG/ASM) version bumps are coordinated PRs across csproj files.
+- Full detail (package list, JSON Schema, the DYN-10825 pattern): [`AGENTS.md` § Blast Radius](../AGENTS.md#blast-radius).
 
 ## After Changes — Proof Checklist
 
@@ -242,4 +194,4 @@ Run what matches your change. Builds work on Windows (and `DynamoCore.sln` on Li
 - [Zero-Touch Plugin Development](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development)
 - [Developer Resources](https://developer.dynamobim.org/)
 - [Dynamo Samples](https://github.com/DynamoDS/DynamoSamples)
-- [Contributing Guide](CONTRIBUTING.md)
+- [Contributing Guide](../CONTRIBUTING.md)
