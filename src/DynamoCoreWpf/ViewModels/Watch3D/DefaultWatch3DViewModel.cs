@@ -805,17 +805,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RaisePropertyChanged("LeftClickCommand");
         }
 
-        private bool CanTogglePan(object parameter)
+        private static bool CanTogglePan(object parameter)
         {
-            return !IsCodeBlockEditorActive();
-        }
-
-        /// <summary>
-        /// Graph navigation shortcuts should not run while a code block is being edited.
-        /// </summary>
-        protected bool IsCodeBlockEditorActive()
-        {
-            return viewModel is DynamoViewModel dynamoViewModel && dynamoViewModel.IsCodeBlockEditorActive;
+            return true;
         }
 
         private void ToggleOrbit(object parameter)
@@ -831,7 +823,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void ToggleCanNavigateBackground(object parameter)
         {
-            if (!Active || IsCodeBlockEditorActive())
+            if (!Active)
                 return;
 
             CanNavigateBackground = !CanNavigateBackground;
