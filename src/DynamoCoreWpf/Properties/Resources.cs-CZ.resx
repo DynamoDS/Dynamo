@@ -252,6 +252,9 @@
   <data name="ContextCreateGroupFromSelection" xml:space="preserve">
     <value>Vytvořit skupinu</value>
   </data>
+  <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
+    <value>Clear AI Highlights</value>
+  </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Kopírovat obsah</value>
   </data>

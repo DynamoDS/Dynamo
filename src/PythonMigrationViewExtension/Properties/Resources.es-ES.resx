@@ -194,6 +194,9 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
   <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
     <value>Asistente de migración</value>
   </data>
+  <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
+    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+  </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
   </data>
@@ -219,7 +222,7 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
     <value>Aceptar</value>
   </data>
   <data name="RejectButton" xml:space="preserve">
-    <value>Cancelar</value>
+    <value>Rechazar</value>
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Cambiar vista</value>
@@ -235,5 +238,14 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
     <value>{0} nodos de CPython y {1} definiciones de nodos personalizados se han convertido automáticamente a PythonNet3 para ejecutarse en Dynamo 4.0. Ya no se admite CPython.</value>
+  </data>
+  <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
+    <value>{0} - Review Assistant Changes</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
+    <value>{0} - Resolve Conflict with External Changes</value>
+  </data>
+  <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
+    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
   </data>
 </root>
