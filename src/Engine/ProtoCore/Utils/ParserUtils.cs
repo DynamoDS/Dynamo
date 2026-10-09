@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.Utils
@@ -80,6 +81,42 @@ namespace ProtoCore.Utils
                 node.Accept(c);
                 return c.nodes;
             }
+        }
+
+        public class AssemblyDetector : AstTraversal
+        {
+            private ClassTable classTable;
+
+            private AssemblyDetector(ClassTable classTable)
+            {
+                this.classTable = classTable;
+            }
+
+            public static void GetAssemblyFromCodeBlock(ClassTable classTable, IEnumerable<Node> astNodes)
+            {
+                var assemblyDetector = new AssemblyDetector(classTable);
+                var assocNodes = astNodes.OfType<AssociativeNode>();
+                //assocNodes.Select(astNode => astNode.Accept(assemblyDetector));
+                assocNodes.ElementAt(0).Accept(assemblyDetector);
+            }
+
+            public override bool VisitIdentifierListNode(IdentifierListNode node)
+            {
+                var className = node.LeftNode.ToString();
+                var assembly = CoreUtils.GetAssemblyFromClassName(classTable, className);
+
+                //if (node.RightNode is FunctionCallNode)
+                //    return VisitFunctionCallNode(node.RightNode as FunctionCallNode);
+
+                return VisitAllChildren(node);
+            }
+
+            //public override bool VisitFunctionCallNode(FunctionCallNode node)
+            //{
+            //    var methodName = node.Function.Name;
+
+            //    return true;
+            //}
         }
 
         public static IEnumerable<Node> FindExprListNodes(CodeBlockNode node)
