@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -12,7 +10,7 @@ namespace Dynamo.Tests
     /// <summary>
     /// Undo and redo count as the person touching a node: they clear
     /// <see cref="NodeModel.IsRecentlyModifiedByAI"/> on every node they change (value, name,
-    /// lacing, preview, freeze and position edits), and never bring it back.
+    /// lacing, preview, freeze and position edits).
     /// </summary>
     [TestFixture]
     class AIHighlightUndoRedoTests : DynamoModelTestBase
@@ -56,11 +54,6 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo));
         }
 
-        private NodeModel FindNode(Guid guid)
-        {
-            return CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == guid);
-        }
-
         [Test]
         [Category("UnitTests")]
         [TestCase("Name", "Renamed")]
@@ -68,7 +61,7 @@ namespace Dynamo.Tests
         [TestCase("IsVisible", "false")]
         [TestCase("IsFrozen", "true")]
         [TestCase("Position", "300;200")]
-        public void UndoClearsHighlightAndRedoDoesNotBringItBack(string property, string value)
+        public void UndoAndRedoBothClearHighlight(string property, string value)
         {
             var node = AddAddNode();
 
@@ -78,13 +71,16 @@ namespace Dynamo.Tests
             Undo();
             Assert.IsFalse(node.IsRecentlyModifiedByAI, "undo should clear the highlight");
 
+            // Turn it back on so redo has something to clear.
+            node.IsRecentlyModifiedByAI = true;
+
             Redo();
-            Assert.IsFalse(node.IsRecentlyModifiedByAI, "redo should not bring the highlight back");
+            Assert.IsFalse(node.IsRecentlyModifiedByAI, "redo should clear the highlight");
         }
 
         [Test]
         [Category("UnitTests")]
-        public void UndoClearsHighlightForAValueEdit()
+        public void UndoAndRedoBothClearHighlightForAValueEdit()
         {
             var node = AddNode(new DoubleInput { Value = "1" });
 
@@ -92,10 +88,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(node.IsRecentlyModifiedByAI);
 
             Undo();
-            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsFalse(node.IsRecentlyModifiedByAI, "undo should clear the highlight");
+
+            // Turn it back on so redo has something to clear.
+            node.IsRecentlyModifiedByAI = true;
 
             Redo();
-            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsFalse(node.IsRecentlyModifiedByAI, "redo should clear the highlight");
         }
 
         [Test]
