@@ -1,6 +1,11 @@
 This tool requires analyzebinaries experimental feature of upgrade-assistant enabled
 https://github.com/dotnet/upgrade-assistant#experimental-features
 
+Recommended version for this tool to work: 0.4.421302
+
+Command to install upgrade-assitant with the suggested version:
+dotnet tool install -g upgrade-assistant --version
+
 This tool has three operation modes:
 
 1. zipfile
@@ -56,7 +61,6 @@ DynamoPackagesURL: The URL to list and download packages from
 
 SarifFileName: The upgrade-assistant result file name
 
-Workspace: (default: %temp%\DynamoDS) when null, the default value is used, it can be any directory with read and write permissions, this workspace is used to download
- the packages and unzip them as part pof the analysis.
+Workspace: (default: %temp%\DynamoDS) when null, the default value is used, it can be any directory with read and write permissions, this workspace is used to download the packages and unzip them as part of the analysis.
 
 ProcessTimeOut: (default: 2) Defines the time to wait in minutes for a upgrade-assistant instace to end in case of the instace not being able to finish by itself.
