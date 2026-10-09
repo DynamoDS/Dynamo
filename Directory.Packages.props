@@ -15,8 +15,8 @@
 
   <ItemGroup>
     <!-- Dynamo-published packages -->
-    <PackageVersion Include="DynamoVisualProgramming.Analytics" Version="4.2.4.13713" />
-    <PackageVersion Include="DynamoVisualProgramming.AutodeskAssistant" Version="[0.3.9]" />
+    <PackageVersion Include="DynamoVisualProgramming.Analytics" Version="4.2.4.13791" />
+    <PackageVersion Include="DynamoVisualProgramming.AutodeskAssistant" Version="[0.3.10]" />
     <PackageVersion Include="DynamoVisualProgramming.DynamoMCP" Version="[0.6.3]" />
     <PackageVersion Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.6466" />
     <PackageVersion Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6465" />
