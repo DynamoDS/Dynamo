@@ -1,0 +1,107 @@
+name: Run Engine Tests
+
+# Runs the DesignScript engine test suite (test/Engine/ProtoTest) on PRs
+# that touch the engine. Without this, engine regressions surface only in
+# the downstream Jenkins UI-test chain, hours after merge.
+#
+# The default filter runs the full suite (~5200 tests) except the "Failure"
+# category: ~190 tests in this suite are marked Category("Failure") — the
+# repo's convention for known-failing tests tracking engine defects. They
+# fail by design and must not gate PRs. The smoke subset ran in 12s and the
+# full suite adds only ~1 minute over the ~3.5-minute build, so there is
+# no need to gate on SmokeTest only. Narrow via the workflow_dispatch
+# input if a faster signal is ever needed.
+
+on:
+  pull_request:
+    paths:
+      - "src/Engine/**"
+      - "test/Engine/**"
+      - ".github/workflows/run_engine_tests.yml"
+  workflow_dispatch:
+    inputs:
+      category_filter:
+        description: "NUnit category filter expression"
+        required: false
+        default: "Category!=Failure"
+
+env:
+  TEST_CATEGORY_FILTER: ${{ github.event.inputs.category_filter || 'Category!=Failure' }}
+
+jobs:
+  run_engine_tests:
+    name: Engine Tests (ProtoTest)
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v7
+        with:
+          path: Dynamo
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
+
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3
+
+      - name: Install dependencies for windows runtime
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
+
+      - name: Build DynamoCore with MSBuild for Windows
+        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
+
+      # All projects share one output path (bin/AnyCPU/Release), so
+      # FFITarget.dll — imported at runtime by ~50 ProtoTest files via
+      # import("FFITarget.dll") — is already next to ProtoTest.dll.
+      - name: Verify test assembly built
+        run: |
+          $dll = "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\ProtoTest.dll"
+          if (Test-Path $dll) {
+            Write-Output "Found $dll"
+          } else {
+            Write-Error "ProtoTest.dll not found at $dll — build may have failed to produce it"
+            exit 1
+          }
+
+      - name: Run ProtoTest
+        run: |
+          dotnet test ${{ github.workspace }}\Dynamo\test\Engine\ProtoTest\ProtoTest.csproj `
+            --no-build -c Release `
+            --filter "$env:TEST_CATEGORY_FILTER" `
+            --logger "trx;LogFileName=prototest.trx" `
+            --results-directory ${{ github.workspace }}\TestResults
+
+      # dotnet test exits 0 even when the filter matches zero tests (e.g. a
+      # typo'd category or a missing NUnit adapter), which would make the gate
+      # silently pass. Parse the TRX and fail unless tests actually ran.
+      - name: Verify tests executed
+        if: always()
+        run: |
+          $trx = Get-ChildItem "${{ github.workspace }}\TestResults\*.trx" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $trx) {
+            Write-Error "No TRX found in ${{ github.workspace }}\TestResults — dotnet test produced no results"
+            exit 1
+          }
+          [xml]$report = Get-Content $trx.FullName
+          $executed = [int]$report.TestRun.ResultSummary.Counters.executed
+          if ($executed -eq 0) {
+            Write-Error "Filter '$env:TEST_CATEGORY_FILTER' matched 0 tests — refusing to pass an empty test run"
+            exit 1
+          }
+          Write-Output "TRX $($trx.Name): $executed tests executed"
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: prototest-results
+          path: ${{ github.workspace }}\TestResults\*.trx
+          if-no-files-found: warn
