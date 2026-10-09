@@ -610,6 +610,11 @@
                               IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
                               Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
+                    <!--  Clear AI Highlights  -->
+                        <MenuItem x:Name="ClearAIHighlightsMenuItem"
+                                  Command="{Binding Path=ClearAIChangedHighlightsCommand}"
+                                  Header="{x:Static p:Resources.ContextMenuClearAIChangedHighlights}" />
+                    
                     <!--  Align Menu  -->
                     <controls:ParentMenuItem  x:Name="Align" Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}">
                         <MenuItem Command="{Binding AlignSelectedCommand}"

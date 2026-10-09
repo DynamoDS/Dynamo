@@ -97,6 +97,7 @@
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
+    <SolidColorBrush x:Key="NodeAIChangedOverlayColor" Color="#D5BCF7" />
 
     <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7" />
 

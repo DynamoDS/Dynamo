@@ -1018,6 +1018,26 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private bool isRecentlyModifiedByAI;
+
+        /// <summary>
+        /// A flag indicating whether this node was recently created, modified, or moved by
+        /// an AI-Assistant-driven edit. This is purely a canvas review aid — it does not affect
+        /// execution, is never written to the .dyn file, and clearing it does not mark the
+        /// workspace as having unsaved changes.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsRecentlyModifiedByAI
+        {
+            get => isRecentlyModifiedByAI;
+            set
+            {
+                if (isRecentlyModifiedByAI == value) return;
+                isRecentlyModifiedByAI = value;
+                RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+            }
+        }
+
         /// <summary>
         /// A flag indicating whether the node is in transient mode.
         /// When a node is in transient mode, the node will not participate in execution,
@@ -1496,14 +1516,24 @@ namespace Dynamo.Graph.Nodes
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
+
+        /// <summary>
+        /// Raised when a frozen node is edited. Frozen nodes do not raise <see cref="Modified"/>,
+        /// because that would schedule a run. Listeners can still react to the edit itself.
+        /// </summary>
+        internal event Action<NodeModel> EditedWhileFrozen;
+
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (!RaisesModificationEvents || IsFrozen)
+            if (!RaisesModificationEvents)
                 return;
-
+            if (IsFrozen)
+            {
+                EditedWhileFrozen?.Invoke(this);
+                return;
+            }
             MarkNodeAsModified(forceExecute);
-            var handler = Modified;
-            if (handler != null) handler(this);
+            Modified?.Invoke(this);
         }
 
         /// <summary>

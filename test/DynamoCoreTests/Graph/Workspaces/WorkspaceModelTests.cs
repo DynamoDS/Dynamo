@@ -1,16 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 using CoreNodeModels.Input;
+using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Xml;
 
 namespace Dynamo.Tests
 {
@@ -24,6 +29,18 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(TestDirectory, folder, fileName);
             OpenModel(examplePath);
+        }
+
+        private NodeModel AddNumberNode(WorkspaceModel workspace)
+        {
+            var home = workspace as HomeWorkspaceModel;
+            if (home != null)
+            {
+                home.RunSettings.RunType = RunType.Manual;
+            }
+            var node = new DoubleInput();
+            workspace.AddAndRegisterNode(node, false);
+            return node;
         }
 
         [Test]
@@ -377,6 +394,150 @@ namespace Dynamo.Tests
             // Assert: workspace is now empty
             Assert.AreEqual(0, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UserEditClearsAIHighlightAndMarksGraphUnsaved()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var node = AddNumberNode(workspace);
+
+            node.IsRecentlyModifiedByAI = true;
+            workspace.IsAIEditInProgress = false;
+            workspace.HasUnsavedChanges = false;
+
+            node.OnNodeModified();
+
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsTrue(workspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EditDuringAICallDoesNotChangeTheHighlight()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var node = AddNumberNode(workspace);
+
+            // Already highlighted: an edit in the agent window must leave it on.
+            node.IsRecentlyModifiedByAI = true;
+            workspace.IsAIEditInProgress = true;
+            workspace.HasUnsavedChanges = false;
+            node.OnNodeModified();
+            Assert.IsTrue(node.IsRecentlyModifiedByAI);
+            Assert.IsTrue(workspace.HasUnsavedChanges);
+
+            // Not highlighted: the same edit must not turn it on.
+            // MCP is the only thing that turns a highlight on.
+            node.IsRecentlyModifiedByAI = false;
+            workspace.HasUnsavedChanges = false;
+            node.OnNodeModified();
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsTrue(workspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UserEditClearsOnlyTheEditedNode()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var edited = AddNumberNode(workspace);
+            var other = new DoubleInput();
+            workspace.AddAndRegisterNode(other, false);
+
+            edited.IsRecentlyModifiedByAI = true;
+            other.IsRecentlyModifiedByAI = true;
+            workspace.IsAIEditInProgress = false;
+
+            edited.OnNodeModified();
+
+            Assert.IsFalse(edited.IsRecentlyModifiedByAI);
+            Assert.IsTrue(other.IsRecentlyModifiedByAI);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TransientNodeEditDoesNotClearHighlightOrMarkUnsaved()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var node = AddNumberNode(workspace);
+
+            node.IsRecentlyModifiedByAI = true;
+            node.IsTransient = true;
+            workspace.IsAIEditInProgress = false;
+            workspace.HasUnsavedChanges = false;
+
+            node.OnNodeModified();
+
+            Assert.IsTrue(node.IsRecentlyModifiedByAI);
+            Assert.IsFalse(workspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangingTheHighlightDoesNotMarkTheGraphUnsaved()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var node = AddNumberNode(workspace);
+            workspace.HasUnsavedChanges = false;
+
+            node.IsRecentlyModifiedByAI = true;
+            Assert.IsFalse(workspace.HasUnsavedChanges);
+
+            node.IsRecentlyModifiedByAI = false;
+            Assert.IsFalse(workspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoDoesNotRestoreTheHighlight()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var node = AddNumberNode(workspace);
+
+            node.IsRecentlyModifiedByAI = true;
+
+            var document = new XmlDocument();
+            var undoXml = node.Serialize(document, SaveContext.Undo);
+
+            // The undo snapshot must not contain the highlight.
+            Assert.IsNull(undoXml.Attributes["isRecentlyModifiedByAI"]);
+
+            node.IsRecentlyModifiedByAI = false;
+            node.Deserialize(undoXml, SaveContext.Undo);
+
+            // Restoring that snapshot must not turn the highlight back on.
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIHighlightIsNotSavedToTheGraphFile()
+        {
+            var property = typeof(NodeModel).GetProperty(nameof(NodeModel.IsRecentlyModifiedByAI));
+            Assert.IsNotNull(property.GetCustomAttribute<JsonIgnoreAttribute>());
+
+            var workspaceProperty = typeof(WorkspaceModel).GetProperty(nameof(WorkspaceModel.IsAIEditInProgress));
+            Assert.IsNotNull(workspaceProperty.GetCustomAttribute<JsonIgnoreAttribute>());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EditingAFrozenNodeClearsTheAiHighlightWithoutRunning()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var node = (DoubleInput)AddNumberNode(workspace);
+
+            node.IsRecentlyModifiedByAI = true;
+            node.IsFrozen = true;
+            workspace.IsAIEditInProgress = false;
+            workspace.HasUnsavedChanges = false;
+
+            node.Value = "1";
+
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsFalse(workspace.HasUnsavedChanges);
         }
     }
 }

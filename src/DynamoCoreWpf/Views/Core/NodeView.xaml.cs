@@ -186,6 +186,7 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeOptionsButtonBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeOptionsButtonBackground"] as SolidColorBrush;
         private static SolidColorBrush nodeHoverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal300Brush"] as SolidColorBrush;
         private static SolidColorBrush nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
+        private static SolidColorBrush nodeAIChangedOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAIChangedOverlayColor"] as SolidColorBrush;
 
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
@@ -841,6 +842,27 @@ namespace Dynamo.Controls
             });
             nodeColorOverlayZoomIn.SetBinding(Rectangle.StyleProperty, sZoomFadeOutPreviewStyleBinding);
 
+            // Node color overlay for "recently changed by AI" state
+            var nodeAIChangedColorOverlayZoomIn = new Rectangle
+            {
+                Name = "nodeAIChangedColorOverlayZoomIn",
+                Margin = new Thickness(-8),
+                Fill = nodeAIChangedOverlayColor,
+                IsHitTestVisible = false,
+            };
+            Grid.SetRow(nodeAIChangedColorOverlayZoomIn, 1);
+            Grid.SetRowSpan(nodeAIChangedColorOverlayZoomIn, 4);
+            Grid.SetColumnSpan(nodeAIChangedColorOverlayZoomIn, 3);
+            Canvas.SetZIndex(nodeAIChangedColorOverlayZoomIn, 6);
+
+            nodeAIChangedColorOverlayZoomIn.SetBinding(UIElement.VisibilityProperty, new Binding("IsRecentlyModifiedByAI")
+            {
+                Converter = boolToVisibilityCollapsedConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+            nodeAIChangedColorOverlayZoomIn.SetBinding(Rectangle.StyleProperty, sZoomFadeOutPreviewStyleBinding);
+
             // Node color overlay when zoomed In for Transient state
             var nodeTransientColorOverlayZoomIn = new Rectangle
             {
@@ -1118,6 +1140,7 @@ namespace Dynamo.Controls
             grid.Children.Add(warningBar);
             grid.Children.Add(PresentationGrid);
             grid.Children.Add(centralGrid);
+            grid.Children.Add(nodeAIChangedColorOverlayZoomIn);
 
             this.Content = grid;
 

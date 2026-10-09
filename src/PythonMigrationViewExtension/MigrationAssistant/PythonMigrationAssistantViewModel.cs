@@ -15,7 +15,7 @@ using PythonNodeModels;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
-    internal class PythonMigrationAssistantViewModel : NotificationObject
+    internal class PythonMigrationAssistantViewModel : NotificationObject, ICodeDiffHost
     {
         private readonly string disableMigrationAssistantWarningFileName = @"MigrationAssistantWarningSetting.txt";
         private readonly string warningDismissPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Dynamo\");
@@ -27,6 +27,21 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         private readonly Func<string, string> codeConverter;
         private IDiffViewViewModel currentViewModel;
         private SideBySideDiffModel diffModel;
+
+        /// <summary>
+        /// Title shown on the shared diff window.
+        /// </summary>
+        public string WindowTitle => Properties.Resources.PythonMigrationAssistantWindowTitle;
+
+        /// <summary>
+        /// This host is the 2-to-3 migrator, so Accept/Reject may be logged as Migration.
+        /// </summary>
+        public bool TrackAsMigration => true;
+
+        /// <summary>
+        /// Reject on the migrator just closes the window. No code is changed.
+        /// </summary>
+        public bool RejectCode() => true;
 
         /// <summary>
         /// The original Python 2 code
@@ -112,13 +127,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         /// <summary>
         /// Replaces the code in the Python node with the code changes made by the Migration Assistant.
+        /// Always returns true: the window closes, as before (also when the disclaimer is declined).
         /// </summary>
-        public void ChangeCode()
+        public bool ChangeCode()
         {
             if (CurrentViewModel.DiffState == State.NoChanges)
             {
                 PythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
-                return;
+                return true;
             }
 
             if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantDisclaimerDismissFile()))
@@ -126,13 +142,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 var warningMessage = new MigrationAssistantDisclaimer(this);
                 warningMessage.ShowDialog();
                 if (!warningMessage.DisclaimerAccepted)
-                    return;
+                    return true;
             }
 
             SavePythonMigrationBackup();
 
             PythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
             PythonNode.MigrateCode(this.NewCode);
+            return true;
         }
 
         #endregion
@@ -175,7 +192,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         #region View mode
 
-        internal void ChangeViewModel(ViewMode viewMode)
+        public void ChangeViewModel(ViewMode viewMode)
         {
             switch (viewMode)
             {
