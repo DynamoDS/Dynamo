@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Dynamo.Configuration;
-using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager;
 using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Interfaces;
@@ -26,7 +25,6 @@ namespace DynamoCoreWpfTests
     public class GraphNodeManagerAIMarkerTests : DynamoTestUIBase
     {
         private const string AIIconName = "nodeModifiedByAIIcon";
-        private bool oldEnablePersistance = false;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -38,9 +36,11 @@ namespace DynamoCoreWpfTests
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
-            string settingDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), "settings");
-            string viewExtSettingFilePath = Path.Combine(settingDirectory, "DynamoSettings-ViewExtension.xml");
-            PreferenceSettings.DynamoTestPath = viewExtSettingFilePath;
+            // Work on a private copy so the test never rewrites the shared settings file
+            string source = Path.Combine(GetTestDirectory(ExecutingDirectory), "settings", "DynamoSettings-ViewExtension.xml");
+            string settingsPath = Path.Combine(TempFolder, "DynamoSettings-ViewExtension.xml");
+            File.Copy(source, settingsPath, true);
+            PreferenceSettings.DynamoTestPath = settingsPath;
 
             return new DynamoModel.DefaultStartConfiguration()
             {
@@ -48,21 +48,8 @@ namespace DynamoCoreWpfTests
                 StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
                 ProcessMode = TaskProcessMode.Synchronous,
-                Preferences = PreferenceSettings.Load(viewExtSettingFilePath)
+                Preferences = PreferenceSettings.Load(settingsPath)
             };
-        }
-
-        [SetUp]
-        public void Setup()
-        {
-            oldEnablePersistance = ViewModel.PreferenceSettings.EnablePersistExtensions;
-            ViewModel.PreferenceSettings.EnablePersistExtensions = false;
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-            ViewModel.PreferenceSettings.EnablePersistExtensions = oldEnablePersistance;
         }
 
         [Test]
@@ -76,13 +63,11 @@ namespace DynamoCoreWpfTests
 
             Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
 
-            var hwm = ViewModel.CurrentSpace as HomeWorkspaceModel;
-            var node = hwm.Nodes.First();
+            var node = ViewModel.CurrentSpace.Nodes.First();
             var grid = viewExt.ManagerView.NodesInfoDataGrid;
 
             // Not marked by default: icon is in the row but collapsed
             var icon = GetAIIcon(grid, node.GUID);
-            Assert.IsNotNull(icon, "AI icon was not rendered in the node's row.");
             Assert.AreEqual(Visibility.Collapsed, icon.Visibility);
 
             // The image source resolves to a real bitmap
@@ -103,22 +88,30 @@ namespace DynamoCoreWpfTests
 
         private static Image GetAIIcon(DataGrid grid, Guid nodeGuid)
         {
-            var item = grid.Items.OfType<GridNodeViewModel>().FirstOrDefault(n => n.NodeGuid == nodeGuid);
-            if (item == null) return null;
-
             Image icon = null;
+            string lastStep = "not started";
+
             DispatcherUtil.DoEventsLoop(() =>
             {
+                var item = grid.Items.OfType<GridNodeViewModel>().FirstOrDefault(n => n.NodeGuid == nodeGuid);
+                if (item == null) { lastStep = "node not in grid.Items"; return false; }
+
                 grid.ScrollIntoView(item);
                 grid.UpdateLayout();
 
                 var row = grid.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
-                icon = row == null
-                    ? null
-                    : WpfUtilities.ChildrenOfType<Image>(row).FirstOrDefault(i => i.Name == AIIconName);
-                return icon != null;
-            });
+                if (row == null)
+                {
+                    lastStep = $"row not realized (grid.IsVisible={grid.IsVisible}, ActualHeight={grid.ActualHeight})";
+                    return false;
+                }
 
+                icon = WpfUtilities.ChildrenOfType<Image>(row).FirstOrDefault(i => i.Name == AIIconName);
+                if (icon == null) lastStep = "row found, but no Image named " + AIIconName;
+                return icon != null;
+            }, timeoutSeconds: 10);
+
+            Assert.IsNotNull(icon, "AI icon was not rendered in the node's row. Last step: " + lastStep);
             return icon;
         }
     }
