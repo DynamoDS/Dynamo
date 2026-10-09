@@ -16,10 +16,10 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
-using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
 using Dynamo.Wpf.Properties;
+using Newtonsoft.Json;
 
 namespace CoreNodeModelsWpf.Charts
 {
