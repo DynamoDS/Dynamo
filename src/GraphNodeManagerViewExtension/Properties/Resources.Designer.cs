@@ -364,6 +364,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recently changed by the AI Assistant.
+        /// </summary>
+        public static string Title_ModifiedByAI {
+            get {
+                return ResourceManager.GetString("Title_ModifiedByAI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Single item.
         /// </summary>
         public static string Title_IsOutputSingleItem {

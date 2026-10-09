@@ -48,6 +48,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private string topLevelItemsNumber = string.Empty;
         private Guid nodeGuid;
         private bool isRenamed = false;
+        private bool isRecentlyModifiedByAI = false;
         private int topLevelItemsNumberAsInt = 0;
 
         public delegate void EventHandler(object sender, EventArgs args);
@@ -380,6 +381,23 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
         }
         /// <summary>
+        /// Checks if the Node was recently created, modified or moved by the AI Assistant
+        /// </summary>
+        public bool IsRecentlyModifiedByAI
+        {
+            get
+            {
+                isRecentlyModifiedByAI = NodeModel.IsRecentlyModifiedByAI;
+                return isRecentlyModifiedByAI;
+            }
+            internal set
+            {
+                if (isRecentlyModifiedByAI == value) return;
+                isRecentlyModifiedByAI = value;
+                RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+            }
+        }
+        /// <summary>
         /// The original name of the node
         /// </summary>
         public string OriginalName
@@ -690,6 +708,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
                     break;
                 case nameof(nodeModel.IsVisible):
                     RaisePropertyChanged(nameof(StatusIsHidden));
+                    break;
+                case nameof(nodeModel.IsRecentlyModifiedByAI):
+                    RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
                     break;
                 case nameof(nodeModel.IsSetAsInput):
                     RaisePropertyChanged(nameof(StateIsInput));
