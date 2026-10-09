@@ -84,6 +84,14 @@ dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondi
 
 UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
 
+Engine tests live in `test/Engine/ProtoTest` (DesignScript runtime; CI runs them on PRs touching `src/Engine/`):
+
+```bash
+dotnet test test/Engine/ProtoTest/ProtoTest.csproj --filter "Category!=Failure"
+```
+
+The `Failure` category marks known-failing tests tracking engine defects — exclude it locally too, or you'll hit ~190 failures that aren't yours. `SmokeTest` is a fast subset (~1200 tests) if you want a quicker signal.
+
 ## Node Registration Patterns
 
 **Zero-touch** (static methods) — preferred for pure computation. Place static methods in a class under `src/Libraries/`. The namespace becomes the library category. Use XML `<search>` tags for keywords and `[IsVisibleInDynamoLibrary(false)]` to hide helpers:
