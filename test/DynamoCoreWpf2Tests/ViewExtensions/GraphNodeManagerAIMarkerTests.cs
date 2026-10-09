@@ -19,7 +19,7 @@ using NUnit.Framework;
 namespace DynamoCoreWpfTests
 {
     /// <summary>
-    /// Graph Node Manager tests for the Autodesk Assistant modification marker (DYN-10990).
+    /// Graph Node Manager tests for the Autodesk Assistant modification marker.
     /// Kept separate from GraphNodeManagerViewExtensionTests, which is marked [Category("Failure")],
     /// so these tests run with the regular unit/regression selection.
     /// </summary>
@@ -65,10 +65,6 @@ namespace DynamoCoreWpfTests
             ViewModel.PreferenceSettings.EnablePersistExtensions = oldEnablePersistance;
         }
 
-        /// <summary>
-        /// The rendered AI icon in the Name column follows NodeModel.IsRecentlyModifiedByAI:
-        /// collapsed by default, visible when the node is marked, collapsed again when the mark is cleared.
-        /// </summary>
         [Test]
         public void RecentlyModifiedByAIIconVisibilityTest()
         {
@@ -105,9 +101,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Visibility.Collapsed, GetAIIcon(grid, node.GUID).Visibility);
         }
 
-        /// <summary>
-        /// Finds the AI icon rendered in the DataGrid row of the given node
-        /// </summary>
         private static Image GetAIIcon(DataGrid grid, Guid nodeGuid)
         {
             var item = grid.Items.OfType<GridNodeViewModel>().FirstOrDefault(n => n.NodeGuid == nodeGuid);
@@ -116,7 +109,6 @@ namespace DynamoCoreWpfTests
             Image icon = null;
             DispatcherUtil.DoEventsLoop(() =>
             {
-                // The grid virtualizes rows, so make sure this one is realized
                 grid.ScrollIntoView(item);
                 grid.UpdateLayout();
 
