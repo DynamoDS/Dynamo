@@ -194,23 +194,14 @@ namespace Dynamo.Controls
                 Math.Max(0, dynamoViewModel.Model.PreferenceSettings.WindowW),
                 Math.Max(0, dynamoViewModel.Model.PreferenceSettings.WindowH));
 
-            if (IsWindowVisibleOnAnyScreen(savedBounds))
-            {
-                Left = savedBounds.Left;
-                Top = savedBounds.Top;
-                Width = savedBounds.Width;
-                Height = savedBounds.Height;
-            }
-            else
-            {
-                // SystemParameters.WorkArea is already in device-independent units,
-                // so it can be assigned to the window bounds without conversion.
-                var workArea = SystemParameters.WorkArea;
-                Width = Math.Min(1024, workArea.Width);
-                Height = Math.Min(768, workArea.Height);
-                Left = workArea.Left + (workArea.Width - Width) / 2;
-                Top = workArea.Top + (workArea.Height - Height) / 2;
-            }
+            // SystemParameters.WorkArea is already in device-independent units,
+            // so it can be used as the fallback without conversion.
+            var restoredBounds = GetRestoredWindowBounds(
+                savedBounds, GetScreenWorkAreas(), SystemParameters.WorkArea);
+            Left = restoredBounds.Left;
+            Top = restoredBounds.Top;
+            Width = restoredBounds.Width;
+            Height = restoredBounds.Height;
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
@@ -1190,45 +1181,106 @@ namespace Dynamo.Controls
         // recoverable by the user. Anything less is treated as off-screen.
         private const double MinVisibleWindowExtent = 100;
 
+        // Size of the window used when the saved bounds cannot be restored.
+        private const double DefaultWindowWidth = 1024;
+        private const double DefaultWindowHeight = 768;
+
         /// <summary>
-        /// Determines whether the given window bounds overlap the working area of
-        /// any currently-connected display by a usable amount. Used on startup to
-        /// decide whether the last-saved window position can be safely restored, or
-        /// whether the window must be recentered because the monitor it was saved
-        /// on is no longer available.
+        /// Computes the bounds the main window should be restored to on startup.
+        /// When the saved bounds still overlap a connected display, they are kept,
+        /// but shrunk to fit the connected displays and shifted so the title bar
+        /// lies inside the display the window mostly overlaps; this keeps the
+        /// caption buttons, menu and resize grip reachable after a monitor is
+        /// removed or replaced with a smaller one. Otherwise the window is centered
+        /// in the fallback work area.
         /// </summary>
-        /// <param name="bounds">Window bounds in device-independent units.</param>
-        private static bool IsWindowVisibleOnAnyScreen(Rect bounds)
+        /// <param name="savedBounds">Saved window bounds in device-independent units.</param>
+        /// <param name="screenWorkAreas">Working areas of the connected displays in device-independent units.</param>
+        /// <param name="fallbackWorkArea">Work area to center the window in when the saved bounds are not visible.</param>
+        internal static Rect GetRestoredWindowBounds(Rect savedBounds, IEnumerable<Rect> screenWorkAreas, Rect fallbackWorkArea)
         {
-            if (bounds.Width <= 0 || bounds.Height <= 0)
+            var workAreas = screenWorkAreas.ToList();
+            if (!TryGetHostWorkArea(savedBounds, workAreas, out var hostWorkArea))
+            {
+                var width = Math.Min(DefaultWindowWidth, fallbackWorkArea.Width);
+                var height = Math.Min(DefaultWindowHeight, fallbackWorkArea.Height);
+                return new Rect(
+                    fallbackWorkArea.Left + (fallbackWorkArea.Width - width) / 2,
+                    fallbackWorkArea.Top + (fallbackWorkArea.Height - height) / 2,
+                    width,
+                    height);
+            }
+
+            // A window may legitimately span several displays, so the size and the
+            // horizontal position are limited by the union of all displays, while the
+            // title bar must lie inside the display that hosts most of the window.
+            var desktop = Rect.Empty;
+            foreach (var workArea in workAreas)
+            {
+                desktop.Union(workArea);
+            }
+
+            var restoredWidth = Math.Min(savedBounds.Width, desktop.Width);
+            var restoredHeight = Math.Min(savedBounds.Height, desktop.Height);
+            var restoredLeft = Math.Clamp(savedBounds.Left, desktop.Left, desktop.Right - restoredWidth);
+            // The host overlap check already keeps the top at least
+            // MinVisibleWindowExtent above the host's bottom edge.
+            var restoredTop = Math.Max(savedBounds.Top, hostWorkArea.Top);
+
+            return new Rect(restoredLeft, restoredTop, restoredWidth, restoredHeight);
+        }
+
+        /// <summary>
+        /// Finds the working area that shares the largest overlap with the given
+        /// bounds, provided that overlap is at least <see cref="MinVisibleWindowExtent"/>
+        /// in both dimensions. A window without such an overlap is treated as
+        /// off-screen, e.g. because the monitor it was saved on is no longer available.
+        /// </summary>
+        private static bool TryGetHostWorkArea(Rect bounds, IEnumerable<Rect> screenWorkAreas, out Rect hostWorkArea)
+        {
+            hostWorkArea = Rect.Empty;
+            if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0)
             {
                 return false;
             }
 
-            // Screen reports device pixels, while the window bounds and the saved
-            // preferences are device-independent units, so the monitor rectangles
-            // have to be scaled before they can be intersected.
-            var scale = GetDeviceToDipScale();
-
-            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+            var largestOverlapArea = 0.0;
+            foreach (var workArea in screenWorkAreas)
             {
-                var workingArea = screen.WorkingArea;
-                var overlap = new Rect(
-                    workingArea.Left * scale,
-                    workingArea.Top * scale,
-                    workingArea.Width * scale,
-                    workingArea.Height * scale);
-                overlap.Intersect(bounds);
-
-                if (!overlap.IsEmpty &&
-                    overlap.Width >= MinVisibleWindowExtent &&
-                    overlap.Height >= MinVisibleWindowExtent)
+                var overlap = Rect.Intersect(workArea, bounds);
+                if (overlap.IsEmpty ||
+                    overlap.Width < MinVisibleWindowExtent ||
+                    overlap.Height < MinVisibleWindowExtent)
                 {
-                    return true;
+                    continue;
+                }
+
+                var overlapArea = overlap.Width * overlap.Height;
+                if (overlapArea > largestOverlapArea)
+                {
+                    largestOverlapArea = overlapArea;
+                    hostWorkArea = workArea;
                 }
             }
 
-            return false;
+            return !hostWorkArea.IsEmpty;
+        }
+
+        /// <summary>
+        /// Returns the working areas of the connected displays, converted from the
+        /// device pixels reported by <see cref="System.Windows.Forms.Screen"/> to the
+        /// device-independent units used by WPF window bounds.
+        /// </summary>
+        private static List<Rect> GetScreenWorkAreas()
+        {
+            var scale = GetDeviceToDipScale();
+            return System.Windows.Forms.Screen.AllScreens
+                .Select(screen => new Rect(
+                    screen.WorkingArea.Left * scale,
+                    screen.WorkingArea.Top * scale,
+                    screen.WorkingArea.Width * scale,
+                    screen.WorkingArea.Height * scale))
+                .ToList();
         }
 
         /// <summary>
