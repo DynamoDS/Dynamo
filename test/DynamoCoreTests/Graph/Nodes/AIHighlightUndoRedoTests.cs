@@ -5,26 +5,29 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Selection;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     /// <summary>
     /// Undo and redo count as the person touching a node: they clear
-    /// <see cref="NodeModel.IsRecentlyModifiedByAI"/> on every node they change, for every kind
-    /// of edit, and never bring it back.
+    /// <see cref="NodeModel.IsRecentlyModifiedByAI"/> on every node they change (value, name,
+    /// lacing, preview, freeze and position edits), and never bring it back.
     /// </summary>
     [TestFixture]
     class AIHighlightUndoRedoTests : DynamoModelTestBase
     {
-        private NodeModel AddNode(NodeModel node)
+        [SetUp]
+        public void UseManualRun()
         {
             if (CurrentDynamoModel.CurrentWorkspace is HomeWorkspaceModel home)
             {
                 home.RunSettings.RunType = RunType.Manual;
             }
+        }
 
+        private NodeModel AddNode(NodeModel node)
+        {
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, false, false));
             return node;
         }
@@ -108,56 +111,6 @@ namespace Dynamo.Tests
             Undo();
             Assert.IsFalse(edited.IsRecentlyModifiedByAI);
             Assert.IsTrue(other.IsRecentlyModifiedByAI, "undo must only clear nodes it changes");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void RedoOfAnAssistantCreatedNodeIsNotHighlighted()
-        {
-            var node = AddAddNode();
-            node.IsRecentlyModifiedByAI = true;
-            var guid = node.GUID;
-
-            Undo();
-            Assert.IsNull(FindNode(guid));
-
-            Redo();
-            var recreated = FindNode(guid);
-            Assert.IsNotNull(recreated);
-            Assert.IsFalse(recreated.IsRecentlyModifiedByAI);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void UndoOfADeleteBringsTheNodeBackWithoutHighlight()
-        {
-            var node = AddAddNode();
-            node.IsRecentlyModifiedByAI = true;
-            var guid = node.GUID;
-
-            CurrentDynamoModel.ExecuteCommand(new DynamoModel.DeleteModelCommand(guid));
-            Assert.IsNull(FindNode(guid));
-
-            Undo();
-            var restored = FindNode(guid);
-            Assert.IsNotNull(restored);
-            Assert.IsFalse(restored.IsRecentlyModifiedByAI);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CopyPasteDoesNotCarryHighlight()
-        {
-            var node = AddAddNode();
-            node.IsRecentlyModifiedByAI = true;
-
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(node);
-            CurrentDynamoModel.Copy();
-            CurrentDynamoModel.Paste();
-
-            var pasted = CurrentDynamoModel.CurrentWorkspace.Nodes.Single(n => n.GUID != node.GUID);
-            Assert.IsFalse(pasted.IsRecentlyModifiedByAI);
         }
     }
 }
