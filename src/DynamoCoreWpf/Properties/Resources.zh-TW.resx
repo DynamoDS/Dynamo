@@ -252,6 +252,9 @@
   <data name="ContextCreateGroupFromSelection" xml:space="preserve">
     <value>建立群組</value>
   </data>
+  <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
+    <value>Clear AI Highlights</value>
+  </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>複製內容</value>
   </data>
