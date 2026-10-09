@@ -16,7 +16,7 @@
 
     <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>0.0.31</PackageVersion>
+            <PackageVersion>0.0.33</PackageVersion>
             <PackageName>NotificationCenter</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
