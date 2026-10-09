@@ -745,6 +745,14 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 model.Deserialize(modelData, SaveContext.Undo);
+
+                // Undo and redo count as the person touching the node, so its AI highlight goes.
+                // Done here because restoring a position, name, lacing, preview, or freeze state
+                // does not raise Modified, which is what clears the highlight for other edits.
+                if (model is NodeModel node)
+                {
+                    node.IsRecentlyModifiedByAI = false;
+                }
             }
         }
 
