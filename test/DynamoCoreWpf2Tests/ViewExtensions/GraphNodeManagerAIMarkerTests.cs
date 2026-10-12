@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
             var icon = GetAIIcon(grid, node.GUID);
 
             // Assert
-            Assert.AreEqual(Visibility.Collapsed, icon.Visibility);
+            Assert.AreEqual(Visibility.Hidden, icon.Visibility);
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             // Assert
-            Assert.AreEqual(Visibility.Collapsed, GetAIIcon(grid, node.GUID).Visibility);
+            Assert.AreEqual(Visibility.Hidden, GetAIIcon(grid, node.GUID).Visibility);
         }
 
         /// <summary>
