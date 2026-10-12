@@ -56,6 +56,8 @@ test/
 
 Key relationships: `DynamoCore` is the graph model and execution engine. `DynamoCoreWpf` depends on it for UI. The `Engine/` DesignScript runtime (`ProtoCore`) is the low-level evaluator that `DynamoCore` drives. Node libraries in `Libraries/` expose zero-touch or explicit node models consumed by both. The full UI (`Dynamo.All.sln`) is Windows-only; `DynamoCore.sln` builds cross-platform (Windows, Linux, macOS).
 
+Area READMEs (layout, entry points, tests, contracts): [`src/DynamoCore/README.md`](src/DynamoCore/README.md), [`src/Engine/README.md`](src/Engine/README.md), [`src/Libraries/README.md`](src/Libraries/README.md).
+
 ## Key Conventions
 
 - Follow [Dynamo Coding Standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards) and [Naming Standards](https://github.com/DynamoDS/Dynamo/wiki/Naming-Standards).
@@ -82,7 +84,7 @@ dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitT
 dotnet test test/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
 ```
 
-UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
+UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpf2Tests`, and `DynamoCoreWpf3Tests`.
 
 Engine tests live in `test/Engine/ProtoTest` (DesignScript runtime; CI runs them on PRs touching `src/Engine/`):
 
