@@ -380,23 +380,12 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(IsRenamed));
             }
         }
+
         /// <summary>
         /// Checks if the Node was recently created, modified or moved by the AI Assistant
         /// </summary>
-        public bool IsRecentlyModifiedByAI
-        {
-            get
-            {
-                isRecentlyModifiedByAI = NodeModel.IsRecentlyModifiedByAI;
-                return isRecentlyModifiedByAI;
-            }
-            internal set
-            {
-                if (isRecentlyModifiedByAI == value) return;
-                isRecentlyModifiedByAI = value;
-                RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
-            }
-        }
+        public bool IsRecentlyModifiedByAI => NodeModel.IsRecentlyModifiedByAI;
+
         /// <summary>
         /// The original name of the node
         /// </summary>

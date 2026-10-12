@@ -130,14 +130,6 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <DockPanel HorizontalAlignment="Stretch">
-                                <!-- Node Name -->
-                                <TextBlock 
-                                    Text="{Binding Name}"
-                                    FontSize="11"                                 
-                                    FontFamily="{StaticResource ArtifaktElementBold}"
-                                    Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                                    Margin="3 0 0 0"
-                                    DockPanel.Dock="Left"></TextBlock>
                                 <!-- AI Assistant icon and Blue Dot -->
                                 <StackPanel
                                     Orientation="Horizontal"
@@ -153,7 +145,7 @@
                                            Margin="0 0 4 0"
                                            VerticalAlignment="Center"
                                            RenderOptions.BitmapScalingMode="HighQuality"
-                                           Visibility="{Binding IsRecentlyModifiedByAI, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" />
+                                           Visibility="{Binding IsRecentlyModifiedByAI, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <!-- Blue Dot signifying Renamed Nodes -->
                                     <Ellipse Name="nodeRenamedBlueDot"
                                              Width="6"
@@ -161,8 +153,15 @@
                                              Margin="0 0 6 0"
                                              VerticalAlignment="Center"
                                              Fill="{StaticResource Blue300Brush}"
-                                             Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" />
+                                             Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 </StackPanel>
+                                <!-- Node Name -->
+                                <TextBlock 
+                                    Text="{Binding Name}"
+                                    FontSize="11"                                 
+                                    FontFamily="{StaticResource ArtifaktElementBold}"
+                                    Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                                    Margin="3 0 0 0"></TextBlock>
                             </DockPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

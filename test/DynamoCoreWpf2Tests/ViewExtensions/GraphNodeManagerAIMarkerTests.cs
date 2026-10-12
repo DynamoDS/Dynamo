@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
 using Dynamo.GraphNodeManager;
 using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Interfaces;
@@ -14,6 +8,13 @@ using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace DynamoCoreWpfTests
 {
@@ -53,9 +54,67 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void RecentlyModifiedByAIIconVisibilityTest()
+        public void WhenNodeNotModifiedByAIThenIconIsCollapsed()
         {
-            // Open the Graph Node Manager
+            // Arrange
+            var (node, grid) = OpenGraphInNodeManager();
+
+            // Act
+            var icon = GetAIIcon(grid, node.GUID);
+
+            // Assert
+            Assert.AreEqual(Visibility.Collapsed, icon.Visibility);
+        }
+
+        [Test]
+        public void WhenAIIconIsRenderedThenImageSourceResolves()
+        {
+            // Arrange
+            var (node, grid) = OpenGraphInNodeManager();
+
+            // Act
+            var bitmap = GetAIIcon(grid, node.GUID).Source as BitmapSource;
+
+            // Assert
+            Assert.IsNotNull(bitmap, "AI icon has no image source.");
+            Assert.Greater(bitmap.PixelWidth, 0);
+        }
+
+        [Test]
+        public void WhenNodeModifiedByAIThenIconIsVisible()
+        {
+            // Arrange
+            var (node, grid) = OpenGraphInNodeManager();
+
+            // Act
+            node.IsRecentlyModifiedByAI = true;
+            DispatcherUtil.DoEvents();
+
+            // Assert
+            Assert.AreEqual(Visibility.Visible, GetAIIcon(grid, node.GUID).Visibility);
+        }
+
+        [Test]
+        public void WhenAIFlagClearedThenIconIsCollapsed()
+        {
+            // Arrange
+            var (node, grid) = OpenGraphInNodeManager();
+            node.IsRecentlyModifiedByAI = true;
+            DispatcherUtil.DoEvents();
+
+            // Act
+            node.IsRecentlyModifiedByAI = false;
+            DispatcherUtil.DoEvents();
+
+            // Assert
+            Assert.AreEqual(Visibility.Collapsed, GetAIIcon(grid, node.GUID).Visibility);
+        }
+
+        /// <summary>
+        /// Opens the Graph Node Manager and a sample graph, and returns the first node and the manager's grid.
+        /// </summary>
+        private (NodeModel node, DataGrid grid) OpenGraphInNodeManager()
+        {
             var viewExt = View.viewExtensionManager.ViewExtensions
                 .OfType<GraphNodeManagerViewExtension>()
                 .First();
@@ -64,26 +123,7 @@ namespace DynamoCoreWpfTests
             Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
 
             var node = ViewModel.CurrentSpace.Nodes.First();
-            var grid = viewExt.ManagerView.NodesInfoDataGrid;
-
-            // Not marked by default: icon is in the row but collapsed
-            var icon = GetAIIcon(grid, node.GUID);
-            Assert.AreEqual(Visibility.Collapsed, icon.Visibility);
-
-            // The image source resolves to a real bitmap
-            var bitmap = icon.Source as BitmapSource;
-            Assert.IsNotNull(bitmap, "AI icon has no image source.");
-            Assert.Greater(bitmap.PixelWidth, 0);
-
-            // Autodesk Assistant marks the node: icon becomes visible
-            node.IsRecentlyModifiedByAI = true;
-            DispatcherUtil.DoEvents();
-            Assert.AreEqual(Visibility.Visible, GetAIIcon(grid, node.GUID).Visibility);
-
-            // Transient: clearing the mark collapses the icon again
-            node.IsRecentlyModifiedByAI = false;
-            DispatcherUtil.DoEvents();
-            Assert.AreEqual(Visibility.Collapsed, GetAIIcon(grid, node.GUID).Visibility);
+            return (node, viewExt.ManagerView.NodesInfoDataGrid);
         }
 
         private static Image GetAIIcon(DataGrid grid, Guid nodeGuid)
