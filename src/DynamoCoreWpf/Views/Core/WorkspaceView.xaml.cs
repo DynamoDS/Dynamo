@@ -1261,12 +1261,6 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
-
-            ViewModel.ClearAIChangedHighlightsCommand.RaiseCanExecuteChanged();
-            ClearAIHighlightsMenuItem.Visibility = ViewModel.ClearAIChangedHighlightsCommand.CanExecute(null)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
             AddPythonEngineOptions(PythonEngineMenu);
             //Don't shrink. This prevents the popup menu from jumping when the height of the internal items is reduced.
             ContextMenuStackView.MinHeight = 0;
@@ -1275,7 +1269,6 @@ namespace Dynamo.Views
                 ContextMenuStackView.MinHeight = ContextMenuStackView.ActualHeight;
             }, DispatcherPriority.Loaded);
         }
-
         private void OnContextMenuClosed(object sender, EventArgs e)
         {
             foreach (var item in PythonEngineMenu.Items.Cast<MenuItem>())
