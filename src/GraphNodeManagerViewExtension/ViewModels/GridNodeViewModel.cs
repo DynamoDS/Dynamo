@@ -48,7 +48,6 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private string topLevelItemsNumber = string.Empty;
         private Guid nodeGuid;
         private bool isRenamed = false;
-        private bool isRecentlyModifiedByAI = false;
         private int topLevelItemsNumberAsInt = 0;
 
         public delegate void EventHandler(object sender, EventArgs args);
