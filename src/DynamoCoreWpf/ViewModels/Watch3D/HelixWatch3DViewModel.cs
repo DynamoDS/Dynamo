@@ -1144,7 +1144,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override bool CanToggleCanNavigateBackground(object parameter)
         {
-            return !IsCodeBlockEditorActive();
+            return true;
         }
 
         /// <summary>
