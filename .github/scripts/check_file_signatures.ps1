@@ -41,6 +41,7 @@
 #   pwsh -NoProfile -File .\check_file_signatures.ps1 <extracted-release-zip-dir>
 #   pwsh -NoProfile -File .\check_file_signatures.ps1 <dir> -Patterns 'LibG*.dll'
 #   pwsh -NoProfile -File .\check_file_signatures.ps1 <dir> -AllowUnverifiedChain
+#   pwsh -NoProfile -File .\check_file_signatures.ps1 <signed-harvest-or-zip-dir> -IncludeInstallerSigned
 #
 # Runs standalone: no credentials, no network.
 #
@@ -71,7 +72,13 @@ param (
     # Downgrade "signed by the expected name, but the chain did not evaluate to Valid" from a
     # failure to a warning. Only for a machine with a known-incomplete certificate store - with it
     # set, a binary signed by a forged "Autodesk, Inc." certificate passes.
-    [Parameter(Mandatory = $false)][switch]$AllowUnverifiedChain
+    [Parameter(Mandatory = $false)][switch]$AllowUnverifiedChain,
+
+    # Also check the third-party binaries that Dynamo signs itself at the installer step
+    # ($installerSignedFiles below). Use this ONLY against signed output - the installer harvest
+    # folder, the DynamoCoreRuntime zip or the MSI payload. Against a plain bin\AnyCPU\Release
+    # tree every one of them is legitimately unsigned and the check would fail.
+    [Parameter(Mandatory = $false)][switch]$IncludeInstallerSigned
 )
 
 $ErrorActionPreference = "Stop"
@@ -114,16 +121,34 @@ $includedFiles = @(
     "BigGustave.dll"
 )
 
-# This list is a snapshot of what is signed TODAY, and it is scheduled to grow.
-# DYN-10749 (Critical, 4.3) tracks ~43 third-party binaries that Civil 3D's install team requires
-# signed ahead of the stricter Autodesk 2028/Global Launch requirements - HelixToolkit*, SharpDX*,
-# Lucene.Net*, LiveChartsCore*, StarMath, RestSharp, ICSharpCode.AvalonEdit, Player\ffmpeg.dll and
-# others. They are deliberately absent here because they are unsigned today and this gate must
-# reflect reality rather than intent; adding them now would fail every build.
-# When DYN-10749 lands, add them here in the same commit - otherwise they become signed and
-# silently unchecked, which is the same blind spot in a new place.
-# Note two of them need care: libg_231_0_0\libiconv.dll and libg_231_0_0\libintl.dll live inside
-# the LibG folders but are NOT matched by "LibG*.dll", so they need their own entries.
+# Third-party binaries that arrive UNSIGNED from NuGet and are signed by Dynamo's own installer
+# step (DYN-10749): tools\install\Extra\additional-files-to-sign.txt feeds InstallerSpec.exe, whose
+# binariestosign.txt is signed by Digital_Sign.bat in src\DynamoInstall\DynamoInstall.wixproj.
+# They are deliberately NOT in $includedFiles: that list is the "already signed when it reaches
+# bin" set, and these are unsigned in bin by design. They are only checked when the caller passes
+# -IncludeInstallerSigned against signed output (harvest folder / DynamoCoreRuntime zip / MSI).
+# Keep this list in step with the DYN-10749 block of additional-files-to-sign.txt - a file added
+# there and not here becomes signed and silently unchecked.
+# Not yet covered, tracked separately: libg_*\libiconv.dll and libg_*\libintl.dll (signed in the
+# LibG repo; note "LibG*.dll" does NOT match them, so they will need their own entries), the
+# DynamoPlayer package's third-party files, and Moq.dll (PR #17394).
+$installerSignedFiles = @(
+    "CommandLine.dll",
+    "DiffPlex.dll",
+    "DotNetProjects.Wpf.Extended.Toolkit.dll",
+    "FontAwesome5*.dll",
+    "HelixToolkit*.dll",
+    "ICSharpCode.AvalonEdit.dll",
+    "J2N.dll",
+    "LiveChartsCore*.dll",
+    "Lucene.Net*.dll",
+    "MIConvexHull.dll",
+    "MimeMapping.dll",
+    "RestSharp.dll",
+    # Covers the managed SharpDX.* assemblies.
+    "SharpDX*.dll",
+    "StarMath.dll"
+)
 
 # Known-unsigned files that match a pattern above. Each is a real gap rather than a false alarm,
 # but neither is something this gate can fix, so failing on them would only teach the operator to
@@ -139,6 +164,7 @@ $excludedFiles = @(
 )
 
 if ($Patterns) { $includedFiles = $Patterns }
+elseif ($IncludeInstallerSigned) { $includedFiles += $installerSignedFiles }
 $excludedFiles += $ExcludePatterns
 
 if (-not (Test-Path -LiteralPath $path -PathType Container)) {
@@ -278,7 +304,12 @@ if ($failures.Count -gt 0) {
         "These files are expected to arrive already signed from their upstream package - Dynamo's own",
         "Garasign signing at the installer step will NOT cover them. Shipping in this state is the",
         "Dynamo 4.1.2 defect that reached Civil 3D and was only caught by C3D QA after publication."
-    ) -join "`n"
+    )
+    if ($IncludeInstallerSigned -and -not $Patterns) {
+        $summary += "-IncludeInstallerSigned was set: a failing third-party file from that list means the installer"
+        $summary += "signing step (additional-files-to-sign.txt) did not sign it, or the path is not signed output."
+    }
+    $summary = $summary -join "`n"
     Write-Host "`n$summary"
     exit 1
 }
