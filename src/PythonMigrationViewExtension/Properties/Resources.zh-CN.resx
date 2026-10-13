@@ -195,7 +195,7 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>移植助手</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0} - 解决与未保存编辑的冲突</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>{0} CPython 节点和{1}自定义节点定义已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0} - 审核 Assistant 更改</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0} - 解决与外部更改的冲突</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>什么都没有改变。此节点上的脚本在打开此窗口后发生更改，或者其 Python 编辑器有未保存的编辑或已关闭。</value>
   </data>
 </root>

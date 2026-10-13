@@ -195,7 +195,7 @@ En cliquant sur "Continuer", vous acceptez d'appliquer les modifications de synt
     <value>Assistant de migration</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0} - Résoudre les conflits liés aux modifications non enregistrées</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@ En cliquant sur "Continuer", vous acceptez d'appliquer les modifications de synt
     <value>{0} noeud(s) CPython et {1} définition(s) de noeuds personnalisés ont été automatiquement convertis à PythonNet3 pour s'exécuter dans Dynamo 4.0. CPython n'est plus pris en charge.</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0} - Réviser les modifications apportées par Assistant</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0} – Résoudre les conflits liés aux modifications externes</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>Rien n'a changé. Le script de ce noeud a été modifié après l'ouverture de cette fenêtre, ou son éditeur Python contient des modifications non enregistrées ou a été fermé.</value>
   </data>
 </root>

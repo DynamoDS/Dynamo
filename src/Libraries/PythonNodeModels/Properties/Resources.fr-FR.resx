@@ -223,14 +223,14 @@
     <value>Veuillez mettre à jour le moteur Python vers PythonNet3</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
-    <value>Script changed outside the editor</value>
+    <value>Script modifié en dehors de l'éditeur</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
-    <value>The script on this node was changed outside the editor (for example by Undo on the canvas) after you started editing.
+    <value>Le script de ce noeud a été modifié en dehors de l'éditeur (par exemple par Annuler sur la zone de dessin) après le début de la modification.
 
-Please choose:
-Yes - discard your edits and load the script from the node
-No - keep your edits and save them over the node
-Cancel - to do nothing</value>
+Veuillez choisir:
+Oui: ignorer les modifications et charger le script à partir du noeud
+Non: conserver les modifications et les enregistrer sur le noeud
+Annuler: ne rien faire</value>
   </data>
 </root>

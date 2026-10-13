@@ -223,14 +223,14 @@
     <value>Actualice el motor de Python a PythonNet3</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
-    <value>Script changed outside the editor</value>
+    <value>Secuencia de comandos modificada fuera del editor</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
-    <value>The script on this node was changed outside the editor (for example by Undo on the canvas) after you started editing.
+    <value>La secuencia de comandos de este nodo se ha modificado fuera del editor (por ejemplo, mediante la función Deshacer en el lienzo) después de que se iniciaran las modificaciones.
 
-Please choose:
-Yes - discard your edits and load the script from the node
-No - keep your edits and save them over the node
-Cancel - to do nothing</value>
+Elija una de las opciones siguientes:
+Sí: descarte las modificaciones y cargue la secuencia de comandos desde el nodo.
+No: conserve las modificaciones y guárdelas en el nodo.
+Cancelar: no realice ninguna acción.</value>
   </data>
 </root>

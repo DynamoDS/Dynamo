@@ -253,7 +253,7 @@
     <value>Créer un groupe</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>Effacer les mises en surbrillance IA</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Copier le contenu</value>
@@ -2307,7 +2307,7 @@ Voulez-vous désinstaller {1}? Redémarrez {2} pour terminer la désinstallation
     <value>Aj. style</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Réinitialiser les styles</value>
+    <value>Réinit. styles</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
     <value>Rétablit les styles de groupe par défaut et supprime les styles créés par l'utilisateur. Cette opération n'affecte pas les groupes des graphiques existants et elle ne peut pas être annulée.</value>

@@ -253,7 +253,7 @@
     <value>Utwórz grupę</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>Wyczyść najważniejsze informacje SI</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Kopiuj zawartość</value>

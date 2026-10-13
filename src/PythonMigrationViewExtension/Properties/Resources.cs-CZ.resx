@@ -195,7 +195,7 @@ Kliknutím na tlačítko „Pokračovat“ souhlasíte s implementací změn syn
     <value>Migration Assistant</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0} – Řešení konfliktů s neuloženými úpravami</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@ Kliknutím na tlačítko „Pokračovat“ souhlasíte s implementací změn syn
     <value>{0} uzlů CPython a {1} definic vlastních uzlů byly automaticky převedeny na PythonNet3, aby je bylo možné spustit ve verzi aplikace Dynamo 4.0. CPython již není podporováno.</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0} – Kontrola změn nástroje Assistant</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0} – Řešení konfliktů s externími změnami</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>Nic se nezměnilo. Skript na tomto uzlu se po otevření tohoto okna změnil nebo jeho editor jazyka Python obsahuje neuložené úpravy nebo byl zavřen.</value>
   </data>
 </root>
