@@ -44,7 +44,6 @@ SharpDX.Direct3D11.dll
 SharpDX.Direct3D9.dll
 SharpDX.DXGI.dll
 SharpDX.Mathematics.dll
-sharpdx_direct3d11_effects_x64.dll
 StarMath.dll
 ## DynamoServices.dll is multi-targeted, we sign the binaries for the nuget package separately.
 ..\..\NodeServices\obj\netstandard2.0\DynamoServices.dll

@@ -145,7 +145,7 @@ $installerSignedFiles = @(
     "MIConvexHull.dll",
     "MimeMapping.dll",
     "RestSharp.dll",
-    # Covers the managed SharpDX.* assemblies and the native sharpdx_direct3d11_effects_x64.dll.
+    # Covers the managed SharpDX.* assemblies.
     "SharpDX*.dll",
     "StarMath.dll"
 )
