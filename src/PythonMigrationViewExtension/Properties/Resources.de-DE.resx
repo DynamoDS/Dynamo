@@ -195,7 +195,7 @@ Durch Klicken auf Weiter erklären Sie sich damit einverstanden, die Syntaxände
     <value>Migrationsassistent</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0} - Konflikt mit nicht gespeicherten Änderungen beheben</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@ Durch Klicken auf Weiter erklären Sie sich damit einverstanden, die Syntaxände
     <value>{0} CPython-Block/Blöcke und {1} benutzerdefinierte Blockdefinition(en) wurden automatisch in PythonNet3 konvertiert, um in Dynamo 4.0 ausgeführt zu werden. CPython wird nicht mehr unterstützt.</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0} - Assistant-Änderungen überprüfen</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0} - Konflikte mit externen Änderungen beheben</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>Keine Änderungen. Das Skript in diesem Block wurde geändert, nachdem dieses Fenster geöffnet wurde, oder sein Python-Editor weist nicht gespeicherte Änderungen auf oder wurde geschlossen.</value>
   </data>
 </root>

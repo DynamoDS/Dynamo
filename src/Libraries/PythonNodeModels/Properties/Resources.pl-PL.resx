@@ -223,14 +223,14 @@
     <value>Zaktualizuj aparat języka Python do wersji PythonNet3</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
-    <value>Script changed outside the editor</value>
+    <value>Skrypt zmieniony poza edytorem</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
-    <value>The script on this node was changed outside the editor (for example by Undo on the canvas) after you started editing.
+    <value>Skrypt w tym węźle został zmieniony poza edytorem (na przykład przez polecenie Cofnij w obszarze rysunku) po rozpoczęciu edycji.
 
-Please choose:
-Yes - discard your edits and load the script from the node
-No - keep your edits and save them over the node
-Cancel - to do nothing</value>
+Wybierz opcję:
+Tak — odrzuć zmiany i wczytaj skrypt z węzła
+Nie — zachowaj zmiany i zapisz je w węźle
+Anuluj — nic nie rób.</value>
   </data>
 </root>

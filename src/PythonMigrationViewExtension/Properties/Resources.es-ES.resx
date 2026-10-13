@@ -195,7 +195,7 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
     <value>Asistente de migración</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0}: resolver conflictos con las modificaciones no guardadas</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
     <value>{0} nodos de CPython y {1} definiciones de nodos personalizados se han convertido automáticamente a PythonNet3 para ejecutarse en Dynamo 4.0. Ya no se admite CPython.</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0}: revisar cambios del asistente</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0}: resolver conflictos con cambios externos</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>No se ha modificado nada. La secuencia de comandos de este nodo se ha modificado después de que se abriera esta ventana, o bien el editor de Python tiene cambios sin guardar o se ha cerrado.</value>
   </data>
 </root>

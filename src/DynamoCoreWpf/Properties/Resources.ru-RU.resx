@@ -253,7 +253,7 @@
     <value>Создать группу</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>Удалить пометки от ИИ</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Копировать содержимое</value>
@@ -1283,7 +1283,7 @@
     <value>Является выводом</value>
   </data>
   <data name="NodeContextMenuPreview" xml:space="preserve">
-    <value>Предварительный просмотр геометрии</value>
+    <value>Предпросмотр геометрии</value>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
     <value>Переименовать</value>
@@ -3475,7 +3475,7 @@
     <value>Масштабирование геометрии рабочего пространства</value>
   </data>
   <data name="GroupContextMenuPreview" xml:space="preserve">
-    <value>Предварительный просмотр геометрии</value>
+    <value>Предпросмотр геометрии</value>
   </data>
   <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
     <value>Перетащите бегунок между значениями 25 и 300 %, чтобы настроить масштаб в библиотеке. Это также можно сделать, нажав клавишу CTRL и прокрутив колесико мыши.</value>

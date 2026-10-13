@@ -195,7 +195,7 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>マイグレーション アシスタント</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0} - 未保存の編集との競合を解決</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>{0} 個の CPython ノードと {1} 個のカスタム ノード定義は、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されました。CPython はサポートされなくなりました。</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0} - Assistant の変更内容を確認</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0} - 外部の変更との競合を解決</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>何も変更されませんでした。このノードのスクリプトがこのウィンドウを開いた後に変更されたか、Python エディタに未保存の編集があるか閉じられました。</value>
   </data>
 </root>
