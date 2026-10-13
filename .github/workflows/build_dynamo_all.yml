@@ -17,14 +17,14 @@ jobs:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
           global-json-file: Dynamo/global.json
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v3
+        uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3
       - name: Install dependencies for windows runtime
         run: dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
       - name: Build Dynamo with MSBuild for Windows

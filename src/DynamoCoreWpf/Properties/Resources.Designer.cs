@@ -628,6 +628,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear AI Highlights.
+        /// </summary>
+        public static string ContextMenuClearAIChangedHighlights {
+            get {
+                return ResourceManager.GetString("ContextMenuClearAIChangedHighlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide All Wires.
         /// </summary>
         public static string ContextMenuConnectionsHideAll {

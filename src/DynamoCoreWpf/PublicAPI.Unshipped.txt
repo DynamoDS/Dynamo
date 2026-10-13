@@ -60,7 +60,6 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.UI.Controls.CodeBlockEditor.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
-override Dynamo.UI.Controls.CodeBlockEditor.OnIsKeyboardFocusWithinChanged(System.Windows.DependencyPropertyChangedEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnSelectionChanged(System.Windows.Controls.SelectionChangedEventArgs e) -> void
 static Dynamo.PackageManager.UI.PackageManagerTabControl.GetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element) -> bool
 static Dynamo.PackageManager.UI.PackageManagerTabControl.SetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element, bool value) -> void
@@ -68,6 +67,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.ShowWithCheckbox(System.Windows.Window
 static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
 static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
+static Dynamo.Wpf.Properties.Resources.ContextMenuClearAIChangedHighlights.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
@@ -91,3 +91,6 @@ static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImportedRestartMessag
 static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsResetSuccess.get -> string
 static Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText.get -> string
 static readonly Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndWhenSelectedProperty -> System.Windows.DependencyProperty
+Dynamo.ViewModels.NodeViewModel.IsRecentlyModifiedByAI.get -> bool
+Dynamo.ViewModels.NodeViewModel.IsRecentlyModifiedByAI.set -> void
+Dynamo.ViewModels.WorkspaceViewModel.ClearAIChangedHighlightsCommand.get -> Dynamo.UI.Commands.DelegateCommand

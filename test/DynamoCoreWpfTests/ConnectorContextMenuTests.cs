@@ -164,6 +164,29 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(connectorViewModel.ConnectorModel.End.Owner.IsSelected, true);
         }
 
+        [Test]
+        public void ClearAIChangedHighlightsClearsEveryNodeWithoutDirtyingTheGraph()
+        {
+            Open(@"UI/ZoomNodeColorStates.dyn");
+
+            var workspace = this.ViewModel.CurrentSpaceViewModel;
+            var highlighted = workspace.Nodes.Take(2).ToList();
+            foreach (var node in highlighted)
+            {
+                node.IsRecentlyModifiedByAI = true;
+            }
+
+            Assert.IsTrue(workspace.ClearAIChangedHighlightsCommand.CanExecute(null));
+            workspace.Model.HasUnsavedChanges = false;
+
+            workspace.ClearAIChangedHighlightsCommand.Execute(null);
+
+            Assert.IsFalse(highlighted.Any(node => node.IsRecentlyModifiedByAI));
+            Assert.IsFalse(workspace.Nodes.Any(node => node.IsRecentlyModifiedByAI));
+            Assert.IsFalse(workspace.ClearAIChangedHighlightsCommand.CanExecute(null));
+            Assert.IsFalse(workspace.Model.HasUnsavedChanges);
+        }
+
         /// <summary>
         /// Helper method to select all (nodes) in the current Workspace
         /// </summary>

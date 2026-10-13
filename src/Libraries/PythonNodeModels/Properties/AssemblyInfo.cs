@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("IronPythonExtension")]
 
 // Needed to use internal MigrationAssistantRequested event 

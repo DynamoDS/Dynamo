@@ -6,6 +6,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Models.Migration.Python;
 using Dynamo.PythonMigration.Controls;
+using Dynamo.PythonMigration.Differ;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.PythonMigration.Properties;
 using Dynamo.PythonServices;
@@ -39,6 +40,7 @@ namespace Dynamo.PythonMigration
         private Dispatcher Dispatcher { get; set; }
 
         internal Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
+        private readonly Dictionary<Guid, BaseDiffViewer> pythonReviewWindows = new Dictionary<Guid, BaseDiffViewer>();
 
         /// <summary>
         /// Extension GUID
@@ -129,20 +131,7 @@ namespace Dynamo.PythonMigration
 
             var node = sender as PythonNode;
             var viewModel = new PythonMigrationAssistantViewModel(node, LoadedParams.CurrentWorkspaceModel as WorkspaceModel, LoadedParams.StartupParams.PathManager, LoadedParams.ViewStartupParams.DynamoVersion);
-            var assistantWindow = new BaseDiffViewer(viewModel)
-            {
-                Owner = parentWindow
-            };
-
-            // show modal window so user cant interact with dynamo while migration assistant is open
-            // if running in test mode, show modeless window show the test doesn't hang when opening the assistant window.
-            if (Models.DynamoModel.IsTestMode)
-            {
-                assistantWindow.Show();
-                return;
-            }
-                
-            assistantWindow.ShowDialog();
+            ShowDiffWindow(viewModel, parentWindow);
         }
 
         private void OnNotificationLogged(NotificationMessage obj)
@@ -394,11 +383,78 @@ namespace Dynamo.PythonMigration
         private void SubscribeToPythonNodeEvents(PythonNodeBase node)
         {
             node.MigrationAssistantRequested += OnMigrationAssistantRequested;
+            if (node is PythonNode pythonNode)
+            {
+                pythonNode.ScriptConflictReviewRequested += OnScriptConflictReviewRequested;
+            }
         }
 
         private void UnSubscribePythonNodeEvents(PythonNodeBase node)
         {
             node.MigrationAssistantRequested -= OnMigrationAssistantRequested;
+            if (node is PythonNode pythonNode)
+            {
+                pythonNode.ScriptConflictReviewRequested -= OnScriptConflictReviewRequested;
+                ClosePythonReviewWindow(pythonNode.GUID);
+            }
+        }
+
+        private void OnScriptConflictReviewRequested(object sender, PythonScriptConflictEventArgs e)
+        {
+            var node = sender as PythonNode;
+            if (node == null)
+            {
+                return;
+            }
+
+            ClosePythonReviewWindow(node.GUID);
+
+            var viewModel = PythonScriptConflictViewModel.Create(node, e, DynamoViewModel);
+
+            var window = new BaseDiffViewer(viewModel)
+            {
+                Owner = LoadedParams.DynamoWindow
+            };
+
+            pythonReviewWindows[node.GUID] = window;
+            window.Closed += (_, _) =>
+            {
+                if (pythonReviewWindows.TryGetValue(node.GUID, out var current) &&
+                    ReferenceEquals(current, window))
+                {
+                    pythonReviewWindows.Remove(node.GUID);
+                }
+            };
+
+            // Non-blocking: the assistant call has already returned, and the user may keep working.
+            window.Show();
+        }
+
+        private void ClosePythonReviewWindow(Guid nodeId)
+        {
+            if (!pythonReviewWindows.TryGetValue(nodeId, out var existing))
+            {
+                return;
+            }
+
+            pythonReviewWindows.Remove(nodeId);
+            existing.Close();
+        }
+
+        private static void ShowDiffWindow(ICodeDiffHost viewModel, Window owner)
+        {
+            var window = new BaseDiffViewer(viewModel)
+            {
+                Owner = owner
+            };
+
+            if (Models.DynamoModel.IsTestMode)
+            {
+                window.Show();
+                return;
+            }
+
+            window.ShowDialog();
         }
 
         private void UnSubscribeWorkspaceEvents()
