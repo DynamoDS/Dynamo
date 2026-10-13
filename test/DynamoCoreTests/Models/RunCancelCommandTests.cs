@@ -110,6 +110,14 @@ namespace Dynamo.Tests.ModelsTest
         }
 
         [Test]
+        public void WhenRunIsCancelledThenPendingChangesRemainSet()
+        {
+            CancelInFlightInfiniteLoop(out _);
+
+            Assert.IsTrue(CurrentHomeWorkspace().HasPendingChanges);
+        }
+
+        [Test]
         public void WhenCancelledRunFinishesThenNextRunCanSucceed()
         {
             CancelInFlightInfiniteLoop(out var codeBlock);

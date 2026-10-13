@@ -7,7 +7,9 @@ using System.Windows.Media;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using NUnit.Framework;
 using SystemTestServices;
 
@@ -158,6 +160,63 @@ namespace DynamoCoreWpfTests
 
             currentRunSettings = homeSpace.RunSettings.RunType;
             Assert.AreEqual(RunType.Automatic, currentRunSettings);
+        }
+
+        [Test]
+        public void WhenGraphEditedInManualModeAfterRunThenStatusShowsReadyToRun()
+        {
+            var node = AddNumberNodeAndRunAutomatically();
+            GetHomeSpace().RunSettings.RunType = RunType.Manual;
+
+            SetNumberValue(node, "2");
+
+            Assert.AreEqual(Resources.RunReady, GetHomeSpaceViewModel().CurrentNotificationMessage);
+        }
+
+        [Test]
+        public void WhenManualRunCompletesThenStatusShowsRunCompleted()
+        {
+            var node = AddNumberNodeAndRunAutomatically();
+            GetHomeSpace().RunSettings.RunType = RunType.Manual;
+            SetNumberValue(node, "2");
+
+            RunCurrentModel();
+
+            Assert.AreEqual(Resources.RunCompletedMessage, GetHomeSpaceViewModel().CurrentNotificationMessage);
+        }
+
+        [Test]
+        public void WhenStatusRefreshedWithPendingChangesThenStatusStaysReadyToRun()
+        {
+            var node = AddNumberNodeAndRunAutomatically();
+            GetHomeSpace().RunSettings.RunType = RunType.Manual;
+            SetNumberValue(node, "2");
+
+            // Tab switches, info bubble dismissals and file trust updates all refresh the status this way.
+            GetHomeSpaceViewModel().UpdateRunStatusMsgBasedOnStates();
+
+            Assert.AreEqual(Resources.RunReady, GetHomeSpaceViewModel().CurrentNotificationMessage);
+        }
+
+        private DoubleInput AddNumberNodeAndRunAutomatically()
+        {
+            var node = new DoubleInput();
+            Model.AddNodeToCurrentWorkspace(node, true);
+            Assert.AreEqual(Resources.RunCompletedMessage, GetHomeSpaceViewModel().CurrentNotificationMessage,
+                "Automatic run did not complete.");
+            return node;
+        }
+
+        private void SetNumberValue(DoubleInput node, string value)
+        {
+            Model.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value));
+        }
+
+        private HomeWorkspaceViewModel GetHomeSpaceViewModel()
+        {
+            var homeSpaceViewModel = ViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel;
+            Assert.NotNull(homeSpaceViewModel);
+            return homeSpaceViewModel;
         }
 
         private RoutedEventArgs GetKeyboardEnterEventArgs(Visual visual)

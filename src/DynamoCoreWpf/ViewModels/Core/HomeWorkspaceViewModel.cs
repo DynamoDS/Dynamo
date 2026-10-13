@@ -126,6 +126,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+            hwm.PendingChangesChanged += hwm_PendingChangesChanged;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
             dynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
@@ -268,6 +269,18 @@ namespace Dynamo.Wpf.ViewModels.Core
             UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
         }
 
+        private void hwm_PendingChangesChanged(object sender, EventArgs e)
+        {
+            var hwm = (HomeWorkspaceModel)Model;
+
+            // Only react to new pending changes. The flag is cleared when a run
+            // starts, and the completion handler sets the final status. A run in
+            // progress keeps its "Run started..." status until it completes.
+            if (!hwm.HasPendingChanges || hwm.GraphRunInProgress) return;
+
+            UpdateRunStatusMsgBasedOnStates();
+        }
+
 
         /// <summary>
         /// Update run status message based on error/warning/info states
@@ -283,6 +296,12 @@ namespace Dynamo.Wpf.ViewModels.Core
             if (((HomeWorkspaceModel)Model).RunSettings.ForceBlockRun)
             {
                 SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunBlockedMessage);
+                return;
+            }
+            // The graph changed since its last run, so any "Run completed" status would be stale.
+            if (((HomeWorkspaceModel)Model).HasPendingChanges)
+            {
+                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunReady);
                 return;
             }
 
@@ -501,11 +520,12 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
+            hwm.PendingChangesChanged -= hwm_PendingChangesChanged;
             RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
             RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
-            DynamoViewModel.Model.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
         }
     }
 
