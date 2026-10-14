@@ -46,6 +46,34 @@ namespace Dynamo.Graph.Workspaces
         // different threads, hence volatile.
         private volatile bool runCancelledByUser;
 
+        // Set from the UI thread on graph edits and from the scheduler thread
+        // when a run completes, hence volatile. Starts true because a freshly
+        // created workspace has never been evaluated.
+        private volatile bool hasPendingChanges = true;
+
+        /// <summary>
+        /// True when the graph has changed since it was last evaluated, so the
+        /// displayed results may be stale. Only edits made in Manual run mode
+        /// set this flag; in Automatic and Periodic modes a run follows each edit.
+        /// </summary>
+        internal bool HasPendingChanges
+        {
+            get { return hasPendingChanges; }
+            private set
+            {
+                if (hasPendingChanges == value) return;
+
+                hasPendingChanges = value;
+                PendingChangesChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Raised when <see cref="HasPendingChanges"/> changes. May be raised on
+        /// the scheduler thread.
+        /// </summary>
+        internal event EventHandler PendingChangesChanged;
+
         /// <summary>
         /// A flag which indicates whether Dynamo is currently running a graph.
         /// This flag is set to true when execution starts and is set to false
@@ -462,12 +490,13 @@ namespace Dynamo.Graph.Workspaces
         {
             base.RequestRun();
 
-            if (RunSettings.RunType != RunType.Manual)
+            if (RunSettings.RunType == RunType.Manual)
             {
-                if (!DelayGraphExecution)
-                {
-                    Run();
-                }
+                HasPendingChanges = true;
+            }
+            else if (!DelayGraphExecution)
+            {
+                Run();
             }
         }
 
@@ -619,6 +648,7 @@ namespace Dynamo.Graph.Workspaces
             PreloadedTraceData = null;
             RunSettings.Reset();
             EvaluationCount = 0;
+            HasPendingChanges = true;
         }
 
         internal void UndefineCBNFunctionDefinitions()
@@ -833,6 +863,9 @@ namespace Dynamo.Graph.Workspaces
                 {
                     node.MarkNodeAsModified();
                 }
+
+                // The cancelled run did not produce results, so the graph still needs one.
+                HasPendingChanges = true;
             }
 
             // This method is guaranteed to be called in the context of 
@@ -917,6 +950,10 @@ namespace Dynamo.Graph.Workspaces
 
             if (task.Initialize(EngineController, this))
             {
+                // The task has captured every change made so far. Clear the flag
+                // now, not on completion, so edits made during the run stay pending.
+                HasPendingChanges = false;
+
                 task.Completed += OnUpdateGraphCompleted;
 
                 // Reset node states
@@ -933,6 +970,9 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
+                // Nothing needed evaluating, so the current results are up to date.
+                HasPendingChanges = false;
+
                 // Notify handlers that evaluation did not take place.
                 var e = new EvaluationCompletedEventArgs(false);
                 OnEvaluationCompleted(e);
