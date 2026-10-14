@@ -89,6 +89,12 @@ $ErrorActionPreference = "Stop"
 $includedFiles = @(
     # Geometry library - the LibG package. 27 files, incl. LibG.ProtoInterface.resources.dll.
     "LibG*.dll",
+    # GNU runtime DLLs redistributed in the LibG_<ASM> package folders. "LibG*.dll" does not match
+    # them. Unsigned upstream (libiconv.vp.redist / libintl.vp.redist); signed by the LibG pipeline
+    # since LibG 4.0.0.6510 (DYN-10749). Verified signed in the release LibG_232_0_0 and
+    # LibG_233_0_0 packages; the _debug package is Debug-configuration only and is unsigned.
+    "libiconv.dll",
+    "libintl.dll",
     # ProtoGeometry ships alongside LibG and is versioned with it, not with Dynamo.
     "ProtoGeometry*.dll",
     # Autodesk.IDSDK, Autodesk.GeometryPrimitives.Dynamo, AutodeskAssistantViewExtension.
@@ -129,9 +135,9 @@ $includedFiles = @(
 # -IncludeInstallerSigned against signed output (harvest folder / DynamoCoreRuntime zip / MSI).
 # Keep this list in step with the DYN-10749 block of additional-files-to-sign.txt - a file added
 # there and not here becomes signed and silently unchecked.
-# Not yet covered, tracked separately: libg_*\libiconv.dll and libg_*\libintl.dll (signed in the
-# LibG repo; note "LibG*.dll" does NOT match them, so they will need their own entries), the
-# DynamoPlayer package's third-party files, and Moq.dll (PR #17394).
+# Not yet covered, tracked separately: the DynamoPlayer package's third-party files, and Moq.dll
+# (PR #17394). (libg_*\libiconv.dll and libintl.dll are signed upstream by LibG and are in
+# $includedFiles above.)
 $installerSignedFiles = @(
     "CommandLine.dll",
     "DiffPlex.dll",
