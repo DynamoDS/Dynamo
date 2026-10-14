@@ -40,10 +40,10 @@
     <PackageVersion Include="System.CodeDom" Version="6.0.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="8.0.0" />
-    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
     <PackageVersion Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
-    <PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.12" />
     <PackageVersion Include="System.Management" Version="8.0.0" />
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
@@ -67,7 +67,7 @@
     <PackageVersion Include="HelixToolkit" Version="2.24.0" />
     <PackageVersion Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
     <PackageVersion Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
-    <PackageVersion Include="HtmlSanitizer" Version="5.0.372" />
+    <PackageVersion Include="HtmlSanitizer" Version="9.2.1039" />
     <PackageVersion Include="JUnitTestLogger" Version="1.1.0" />
     <PackageVersion Include="JunitXml.TestLogger" Version="3.0.124" />
     <PackageVersion Include="LaunchDarkly.ClientSdk" Version="5.1.0" />
@@ -77,8 +77,8 @@
     <PackageVersion Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageVersion Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
     <PackageVersion Include="MIConvexHull" Version="1.1.19.1019" />
-    <PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="14.12.0" />
-    <PackageVersion Include="Magick.NET.Core" Version="14.12.0" />
+    <PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="14.17.2" />
+    <PackageVersion Include="Magick.NET.Core" Version="14.17.2" />
     <PackageVersion Include="Markdig" Version="0.22.0" />
     <PackageVersion Include="MimeMapping" Version="2.0.0" />
     <PackageVersion Include="Mono.Cecil" Version="0.11.4" />
@@ -86,10 +86,10 @@
     <PackageVersion Include="NUnit" Version="3.13.3" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Perfolizer" Version="0.2.1" />
     <PackageVersion Include="Prism.Core" Version="8.1.97" />
-    <PackageVersion Include="RestSharp" Version="112.0.0" />
+    <PackageVersion Include="RestSharp" Version="112.1.0" />
     <PackageVersion Include="RestSharp.Serializers.NewtonsoftJson" Version="106.12.0" />
     <PackageVersion Include="SharpDX" Version="4.2.0" />
     <PackageVersion Include="SharpDX.D3DCompiler" Version="4.2.0" />
