@@ -253,7 +253,7 @@
     <value>Crear grupo</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>Borrar resaltes de la IA</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Copiar contenido</value>
@@ -2308,7 +2308,7 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
     <value>Añadir estilo</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Restablecer estilos</value>
+    <value>Rest. estilos</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
     <value>Restablece los estilos de grupo por defecto y elimina los estilos creados por el usuario. Esta acción no afecta a los grupos de los gráficos existentes y no se puede deshacer.</value>

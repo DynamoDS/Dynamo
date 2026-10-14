@@ -8,9 +8,13 @@ What is checked:
 - Every dotnet/msbuild command line in AGENTS.md must appear verbatim in
   .github/copilot-instructions.md (and vice versa).
 - The set of PublicAPI project names listed in both files must match.
+- Neither file may exceed 250 lines ($maxInstructionLines), counted like
+  `wc -l`. Both are loaded into agent context at session start, so the
+  budget keeps explicit headroom; move detail into AGENTS.md sections or
+  area READMEs instead of growing either file.
 
-Exits non-zero on drift. Run locally with pwsh or in CI (see
-validate_agent_skills.yml).
+Exits non-zero on drift or when a file is over the line budget. Run locally
+with pwsh or in CI (see validate_agent_skills.yml).
 #>
 
 param(
@@ -29,6 +33,10 @@ if (-not (Test-Path $copilotPath)) { throw "Missing .github/copilot-instructions
 
 $agentsContent = Get-Content -Raw -Encoding UTF8 $agentsPath
 $copilotContent = Get-Content -Raw -Encoding UTF8 $copilotPath
+
+# Line budget for each instruction file. Single source for the limit used in
+# the check, the -Report output and the step summary.
+$maxInstructionLines = 250
 
 # The authoritative set of projects carrying PublicAPI.*.txt files, derived
 # from the tree so a newly added project is recognized without editing this
@@ -135,6 +143,30 @@ foreach ($p in $apiMissingInAgents) {
     $driftCount++
 }
 
+# Line budget: count lines the way `wc -l` does for a file that ends in a
+# newline: split on CRLF/LF, ignoring one trailing newline.
+function Get-LineCount {
+    param([string]$content)
+
+    if ([string]::IsNullOrEmpty($content)) { return 0 }
+    $body = $content -replace '\r?\n\z', ''
+    return @($body -split "`r?`n").Count
+}
+
+$agentsLineCount = Get-LineCount -content $agentsContent
+$copilotLineCount = Get-LineCount -content $copilotContent
+
+$lineCounts = @(
+    [pscustomobject]@{ Name = 'AGENTS.md'; Lines = $agentsLineCount }
+    [pscustomobject]@{ Name = '.github/copilot-instructions.md'; Lines = $copilotLineCount }
+)
+
+$overBudget = @($lineCounts | Where-Object { $_.Lines -gt $maxInstructionLines })
+
+foreach ($file in $overBudget) {
+    Write-Host "$($file.Name) is $($file.Lines) lines, over the $maxInstructionLines-line budget by $($file.Lines - $maxInstructionLines)."
+}
+
 if ($Report) {
     Write-Host ""
     Write-Host "Instruction drift report"
@@ -144,6 +176,9 @@ if ($Report) {
     Write-Host "- Commands missing from AGENTS.md: $($missingInAgents.Count)"
     Write-Host "- PublicAPI projects in AGENTS.md: $($agentsApiProjects.Count)"
     Write-Host "- PublicAPI projects in copilot-instructions.md: $($copilotApiProjects.Count)"
+    Write-Host "- AGENTS.md lines: $agentsLineCount of $maxInstructionLines ($($maxInstructionLines - $agentsLineCount) headroom)"
+    Write-Host "- copilot-instructions.md lines: $copilotLineCount of $maxInstructionLines ($($maxInstructionLines - $copilotLineCount) headroom)"
+    Write-Host "- Files over line budget: $($overBudget.Count)"
     Write-Host "- Total drift count: $driftCount"
 
     if ($env:GITHUB_REPOSITORY -and $env:GITHUB_RUN_ID) {
@@ -156,9 +191,13 @@ if ($Report) {
 | Commands in copilot-instructions.md | $($copilotCommands.Count) |
 | Commands missing from copilot-instructions.md | $($missingInCopilot.Count) |
 | Commands missing from AGENTS.md | $($missingInAgents.Count) |
+| AGENTS.md lines (budget $maxInstructionLines) | $agentsLineCount |
+| copilot-instructions.md lines (budget $maxInstructionLines) | $copilotLineCount |
+| Files over line budget | $($overBudget.Count) |
 | **Total drift count** | **$driftCount** |
 
 $( if ($driftCount -eq 0) { "✅ AGENTS.md and copilot-instructions.md are in sync" } else { "⚠️ Drift detected - align both files" } )
+$( if ($overBudget.Count -eq 0) { "✅ Both files are within the $maxInstructionLines-line budget" } else { "⚠️ Line budget exceeded - move detail out of the over-budget file" } )
 "@
         $summaryPath = $env:GITHUB_STEP_SUMMARY
         if ($summaryPath) {
@@ -171,8 +210,17 @@ if ($driftCount -gt 0) {
     Write-Host ""
     Write-Host "Instruction drift detected: $driftCount difference(s) between AGENTS.md and .github/copilot-instructions.md."
     Write-Host "Align both files so every tool's agent guidance stays identical."
+}
+
+if ($overBudget.Count -gt 0) {
+    Write-Host ""
+    Write-Host "Line budget exceeded: $($overBudget.Count) instruction file(s) over $maxInstructionLines lines."
+    Write-Host "Move detail into AGENTS.md sections or area READMEs and link to it."
+}
+
+if ($driftCount -gt 0 -or $overBudget.Count -gt 0) {
     exit 1
 }
 
-Write-Host "✅ AGENTS.md and copilot-instructions.md command sets are in sync."
+Write-Host "✅ AGENTS.md and copilot-instructions.md command sets are in sync and within the $maxInstructionLines-line budget."
 exit 0

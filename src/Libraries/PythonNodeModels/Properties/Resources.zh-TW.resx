@@ -223,14 +223,14 @@
     <value>請將 Python 引擎更新為 PythonNet3</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
-    <value>Script changed outside the editor</value>
+    <value>腳本在編輯器外發生變更</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
-    <value>The script on this node was changed outside the editor (for example by Undo on the canvas) after you started editing.
+    <value>在您開始編輯後，此節點的腳本在編輯器外發生變更 (例如在圖元區上使用「退回」)。
 
-Please choose:
-Yes - discard your edits and load the script from the node
-No - keep your edits and save them over the node
-Cancel - to do nothing</value>
+請選擇:
+是 - 捨棄您的編輯並從節點載入腳本
+否 - 保留您的編輯並儲存在節點上
+取消 - 不做任何動作</value>
   </data>
 </root>

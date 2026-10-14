@@ -195,7 +195,7 @@
     <value>移轉助理</value>
   </data>
   <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with Unsaved Edits</value>
+    <value>{0} - 使用「未儲存的編輯」解決衝突</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
@@ -240,12 +240,12 @@
     <value>{0} 個 CPython 節點和 {1} 個自訂節點定義已自動轉換為 PythonNet3 以在 Dynamo 4.0 中執行。不再支援 CPython。</value>
   </data>
   <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
-    <value>{0} - Review Assistant Changes</value>
+    <value>{0} - 檢閱 Assistant 變更</value>
   </data>
   <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
-    <value>{0} - Resolve Conflict with External Changes</value>
+    <value>{0} - 使用「外部變更」解決衝突</value>
   </data>
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
-    <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
+    <value>沒有任何內容改變。此節點的腳本在此視窗開啟後發生變更，或其 Python 編輯器有未儲存的編輯或被關閉。</value>
   </data>
 </root>

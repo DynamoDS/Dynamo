@@ -253,7 +253,7 @@
     <value>Crea gruppo</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>Cancella evidenziazioni IA</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Copia contenuto</value>

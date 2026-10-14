@@ -241,7 +241,7 @@
     <value>幾何圖形工作範圍</value>
   </data>
   <data name="CompactLayoutTitle" xml:space="preserve">
-    <value>精簡</value>
+    <value>緊湊</value>
   </data>
   <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
     <value>我同意桌面產品收集資料供 Autodesk 分析程式使用。</value>
@@ -253,7 +253,7 @@
     <value>建立群組</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>清楚亮顯 AI 內容</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>複製內容</value>

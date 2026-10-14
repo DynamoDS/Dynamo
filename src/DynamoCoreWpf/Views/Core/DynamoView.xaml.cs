@@ -182,37 +182,26 @@ namespace Dynamo.Controls
             // Apply appropriate expand/collapse library button state depending on initial width
             UpdateLibraryCollapseIcon();
 
-            // Check that preference bounds are actually within one
-            // of the available monitors.
-            if (CheckVirtualScreenSize())
-            {
-                System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
-                int leftLimit = 0;
-                int topLimit = 0;
-                foreach (var screen in screens)
-                {
-                    leftLimit += screen.Bounds.Width;
-                    topLimit += screen.Bounds.Height;
-                }
+            // Restore the saved window bounds, but only when they still land on a
+            // currently-connected display. When the monitor Dynamo was last shown
+            // on is no longer available (undocking, disconnected displays, remote
+            // sessions, changed multi-monitor layouts), the saved position can
+            // place the window entirely off-screen with no reliable way to recover
+            // it. In that case, recenter on the primary monitor's working area.
+            var savedBounds = new Rect(
+                dynamoViewModel.Model.PreferenceSettings.WindowX,
+                dynamoViewModel.Model.PreferenceSettings.WindowY,
+                Math.Max(0, dynamoViewModel.Model.PreferenceSettings.WindowW),
+                Math.Max(0, dynamoViewModel.Model.PreferenceSettings.WindowH));
 
-                Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
-                Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
-                Width = dynamoViewModel.Model.PreferenceSettings.WindowW;
-                Height = dynamoViewModel.Model.PreferenceSettings.WindowH;
-
-                //When the previous location was in a secondary screen then the next time Dynamo is launched will try to use the same location, then we need to added this validations to show Dynamo in the right place
-                if (Left > leftLimit)
-                    Left = 0;
-                if (Top > topLimit)
-                    Top = 0;
-            }
-            else
-            {
-                Left = 0;
-                Top = 0;
-                Width = 1024;
-                Height = 768;
-            }
+            // SystemParameters.WorkArea is already in device-independent units,
+            // so it can be used as the fallback without conversion.
+            var restoredBounds = GetRestoredWindowBounds(
+                savedBounds, GetScreenWorkAreas(), SystemParameters.WorkArea);
+            Left = restoredBounds.Left;
+            Top = restoredBounds.Top;
+            Width = restoredBounds.Width;
+            Height = restoredBounds.Height;
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
@@ -1187,31 +1176,132 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private bool CheckVirtualScreenSize()
+        // Minimum overlap (in device-independent units) that the saved window must
+        // share with a connected display's working area to be considered
+        // recoverable by the user. Anything less is treated as off-screen.
+        private const double MinVisibleWindowExtent = 100;
+
+        // Size of the window used when the saved bounds cannot be restored.
+        private const double DefaultWindowWidth = 1024;
+        private const double DefaultWindowHeight = 768;
+
+        /// <summary>
+        /// Computes the bounds the main window should be restored to on startup.
+        /// When the saved bounds still overlap a connected display, they are kept,
+        /// but shrunk to fit the connected displays and shifted so the title bar
+        /// lies inside the display the window mostly overlaps; this keeps the
+        /// caption buttons, menu and resize grip reachable after a monitor is
+        /// removed or replaced with a smaller one. Otherwise the window is centered
+        /// in the fallback work area.
+        /// </summary>
+        /// <param name="savedBounds">Saved window bounds in device-independent units.</param>
+        /// <param name="screenWorkAreas">Working areas of the connected displays in device-independent units.</param>
+        /// <param name="fallbackWorkArea">Work area to center the window in when the saved bounds are not visible.</param>
+        internal static Rect GetRestoredWindowBounds(Rect savedBounds, IEnumerable<Rect> screenWorkAreas, Rect fallbackWorkArea)
         {
-            var w = SystemParameters.VirtualScreenWidth;
-            var h = SystemParameters.VirtualScreenHeight;
-            var ox = SystemParameters.VirtualScreenLeft;
-            var oy = SystemParameters.VirtualScreenTop;
+            var workAreas = screenWorkAreas.ToList();
+            if (!TryGetHostWorkArea(savedBounds, workAreas, out var hostWorkArea))
+            {
+                var width = Math.Min(DefaultWindowWidth, fallbackWorkArea.Width);
+                var height = Math.Min(DefaultWindowHeight, fallbackWorkArea.Height);
+                return new Rect(
+                    fallbackWorkArea.Left + (fallbackWorkArea.Width - width) / 2,
+                    fallbackWorkArea.Top + (fallbackWorkArea.Height - height) / 2,
+                    width,
+                    height);
+            }
 
-            // TODO: Remove 10 pixel check if others can't reproduce
-            // On Ian's Windows 8 setup, when Dynamo is maximized, the origin
-            // saves at -8,-8. There doesn't seem to be any documentation on this
-            // so we'll put in a 10 pixel check to still allow the window to maximize.
-            if (dynamoViewModel.Model.PreferenceSettings.WindowX < ox - 10 ||
-                dynamoViewModel.Model.PreferenceSettings.WindowY < oy - 10)
+            // A window may legitimately span several displays, so the size and the
+            // horizontal position are limited by the union of all displays, while the
+            // title bar must lie inside the display that hosts most of the window.
+            var desktop = Rect.Empty;
+            foreach (var workArea in workAreas)
+            {
+                desktop.Union(workArea);
+            }
+
+            var restoredWidth = Math.Min(savedBounds.Width, desktop.Width);
+            var restoredHeight = Math.Min(savedBounds.Height, desktop.Height);
+            var restoredLeft = Math.Clamp(savedBounds.Left, desktop.Left, desktop.Right - restoredWidth);
+            // The host overlap check already keeps the top at least
+            // MinVisibleWindowExtent above the host's bottom edge.
+            var restoredTop = Math.Max(savedBounds.Top, hostWorkArea.Top);
+
+            return new Rect(restoredLeft, restoredTop, restoredWidth, restoredHeight);
+        }
+
+        /// <summary>
+        /// Finds the working area that shares the largest overlap with the given
+        /// bounds, provided that overlap is at least <see cref="MinVisibleWindowExtent"/>
+        /// in both dimensions. A window without such an overlap is treated as
+        /// off-screen, e.g. because the monitor it was saved on is no longer available.
+        /// </summary>
+        private static bool TryGetHostWorkArea(Rect bounds, IEnumerable<Rect> screenWorkAreas, out Rect hostWorkArea)
+        {
+            hostWorkArea = Rect.Empty;
+            if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0)
             {
                 return false;
             }
 
-            // Check that the window is smaller than the available area.
-            if (dynamoViewModel.Model.PreferenceSettings.WindowW > w ||
-                dynamoViewModel.Model.PreferenceSettings.WindowH > h)
+            var largestOverlapArea = 0.0;
+            foreach (var workArea in screenWorkAreas)
             {
-                return false;
+                var overlap = Rect.Intersect(workArea, bounds);
+                if (overlap.IsEmpty ||
+                    overlap.Width < MinVisibleWindowExtent ||
+                    overlap.Height < MinVisibleWindowExtent)
+                {
+                    continue;
+                }
+
+                var overlapArea = overlap.Width * overlap.Height;
+                if (overlapArea > largestOverlapArea)
+                {
+                    largestOverlapArea = overlapArea;
+                    hostWorkArea = workArea;
+                }
             }
 
-            return true;
+            return !hostWorkArea.IsEmpty;
+        }
+
+        /// <summary>
+        /// Returns the working areas of the connected displays, converted from the
+        /// device pixels reported by <see cref="System.Windows.Forms.Screen"/> to the
+        /// device-independent units used by WPF window bounds.
+        /// </summary>
+        private static List<Rect> GetScreenWorkAreas()
+        {
+            var scale = GetDeviceToDipScale();
+            return System.Windows.Forms.Screen.AllScreens
+                .Select(screen => new Rect(
+                    screen.WorkingArea.Left * scale,
+                    screen.WorkingArea.Top * scale,
+                    screen.WorkingArea.Width * scale,
+                    screen.WorkingArea.Height * scale))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Returns the factor that converts the device pixels reported by
+        /// <see cref="System.Windows.Forms.Screen"/> into the device-independent
+        /// units used by WPF window bounds, derived from the primary monitor.
+        /// Dynamo is System-DPI-aware, so Windows virtualizes every monitor's
+        /// coordinates to this single system scale; the factor is therefore correct
+        /// for all displays, not just the primary one. If Dynamo ever adopts
+        /// Per-Monitor V2 awareness (where each display can have its own scale),
+        /// this must be replaced with a per-monitor GetDpiForMonitor lookup.
+        /// </summary>
+        private static double GetDeviceToDipScale()
+        {
+            var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
+            if (primaryScreen == null || primaryScreen.Bounds.Width <= 0)
+            {
+                return 1.0;
+            }
+
+            return SystemParameters.PrimaryScreenWidth / primaryScreen.Bounds.Width;
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)

@@ -253,7 +253,7 @@
     <value>Criar grupo</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>Desmarque Destaques de IA</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Copiar conteúdo</value>

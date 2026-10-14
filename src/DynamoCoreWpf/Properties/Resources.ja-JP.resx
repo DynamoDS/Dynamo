@@ -253,7 +253,7 @@
     <value>グループを作成</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>AI ハイライト表示をクリア</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>コンテンツをコピー</value>

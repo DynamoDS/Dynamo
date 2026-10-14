@@ -253,7 +253,7 @@
     <value>Gruppe erstellen</value>
   </data>
   <data name="ContextMenuClearAIChangedHighlights" xml:space="preserve">
-    <value>Clear AI Highlights</value>
+    <value>KI-Hervorhebungen löschen</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Inhalte kopieren</value>
@@ -2308,7 +2308,7 @@ Möchten Sie {1} deinstallieren? Starten Sie {2} neu, um die Deinstallation abzu
     <value>Neuer Stil</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Stile zurücksetzen</value>
+    <value>Stile rücksetzen</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
     <value>Stellt die vorgabemäßigen Gruppenstile wieder her und entfernt benutzerdefinierte Stile. Dies wirkt sich nicht auf Gruppen in vorhandenen Diagrammen aus und kann nicht rückgängig gemacht werden.</value>
