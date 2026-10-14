@@ -6,7 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -414,37 +413,10 @@ namespace PythonNodeModels
             else
                 script = defaultPythonTemplateCode;
 
-            ResetScriptBaseline();
             AddInput();
         }
 
         private string script;
-
-        /// <summary>
-        /// The script this node held when it was created or opened in this session.
-        /// Not saved: each session starts from the script the node was opened with.
-        /// </summary>
-        private string baselineScript;
-
-        /// <summary>
-        /// How many times the script has changed since <see cref="baselineScript"/> was taken.
-        /// </summary>
-        private int scriptChangesSinceBaseline;
-
-        private void ResetScriptBaseline()
-        {
-            baselineScript = script;
-            scriptChangesSinceBaseline = 0;
-        }
-
-        /// <summary>
-        /// A node opened from a file starts its baseline from the saved script.
-        /// </summary>
-        [OnDeserialized]
-        private void OnPythonNodeDeserialized(StreamingContext context)
-        {
-            ResetScriptBaseline();
-        }
 
         [JsonProperty("Code")]
         public string Script
@@ -455,7 +427,6 @@ namespace PythonNodeModels
                 if (script != value)
                 {
                     script = value;
-                    scriptChangesSinceBaseline++;
                     RaisePropertyChanged("Script");
                 }
             }
@@ -545,27 +516,10 @@ namespace PythonNodeModels
         /// Shows a non-blocking before/after for an assistant script that is already stored on the node.
         /// Accept keeps it. Reject restores <paramref name="previousScript"/> if the node still holds
         /// <paramref name="newScript"/> and the editor has no unsaved edits.
-        /// No window when the write was the first change since the node was created or opened:
-        /// nobody touched the script in this session, so there is nothing of theirs to protect.
         /// </summary>
         public void NotifyScriptChangeReview(string previousScript, string newScript)
         {
-            if (WasFirstChangeSinceBaseline(previousScript))
-            {
-                return;
-            }
-
             RequestScriptConflictReview(PythonScriptReviewKind.AssistantReview, previousScript, newScript);
-        }
-
-        /// <summary>
-        /// True when the script has changed exactly once since this node was created or opened,
-        /// and that change replaced the baseline script. The script was untouched until then.
-        /// </summary>
-        private bool WasFirstChangeSinceBaseline(string previousScript)
-        {
-            return scriptChangesSinceBaseline == 1 &&
-                   string.Equals(previousScript, baselineScript, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -679,16 +633,6 @@ namespace PythonNodeModels
                 var restoredScript = scriptNode.InnerText;
                 var scriptChanged = script != restoredScript;
                 script = restoredScript;
-
-                // Undo changes the script within the session. Any other load opens the node.
-                if (context != SaveContext.Undo)
-                {
-                    ResetScriptBaseline();
-                }
-                else if (scriptChanged)
-                {
-                    scriptChangesSinceBaseline++;
-                }
 
                 // Announce the restored script so an open editor can refresh or want
                 if (context == SaveContext.Undo && scriptChanged)

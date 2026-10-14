@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
 using Dynamo.Models;
 using Dynamo.PythonMigration.Differ;
 using Dynamo.PythonMigration.MigrationAssistant;
@@ -212,87 +210,6 @@ namespace DynamoPythonTests
             Assert.AreEqual(PythonScriptReviewKind.AssistantReview, received.Kind);
             Assert.AreEqual(OriginalScript, received.LeftCode);
             Assert.AreEqual(AssistantScript, received.RightCode);
-        }
-
-        [Test]
-        public void WhenFirstWriteReplacesCreationTemplateThenNoReviewIsRequested()
-        {
-            // DYN-10799: filling a new node must not pop a diff of the template.
-            var node = new PythonNode();
-            ViewModel.Model.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(node, 0, 0, false, false));
-            var template = node.Script;
-            PythonScriptConflictEventArgs received = null;
-            node.ScriptConflictReviewRequested += (_, e) => received = e;
-            WriteScriptContent(node, AssistantScript);
-
-            node.NotifyScriptChangeReview(template, AssistantScript);
-
-            Assert.IsNull(received);
-        }
-
-        [Test]
-        public void WhenScriptWasChangedBeforeWriteThenReviewIsRequested()
-        {
-            var node = CreatePythonNodeWithScript(OriginalScript);
-            PythonScriptConflictEventArgs received = null;
-            node.ScriptConflictReviewRequested += (_, e) => received = e;
-            WriteScriptContent(node, AssistantScript);
-
-            node.NotifyScriptChangeReview(OriginalScript, AssistantScript);
-
-            Assert.IsNotNull(received);
-            Assert.AreEqual(OriginalScript, received.LeftCode);
-        }
-
-        [Test]
-        public void WhenScriptWasChangedBackToTemplateBeforeWriteThenReviewIsRequested()
-        {
-            // The text matches the template, but someone changed it; it is not untouched.
-            var node = new PythonNode();
-            ViewModel.Model.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(node, 0, 0, false, false));
-            var template = node.Script;
-            WriteScriptContent(node, OriginalScript);
-            WriteScriptContent(node, template);
-            PythonScriptConflictEventArgs received = null;
-            node.ScriptConflictReviewRequested += (_, e) => received = e;
-            WriteScriptContent(node, AssistantScript);
-
-            node.NotifyScriptChangeReview(template, AssistantScript);
-
-            Assert.IsNotNull(received);
-        }
-
-        [Test]
-        public void WhenFirstWriteAfterOpeningFileThenNoReviewIsRequested()
-        {
-            // Untouched is counted from when the node was opened in this session, not saved in the file.
-            ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, @"core\python", "python.dyn"));
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
-            var openedScript = node.Script;
-            PythonScriptConflictEventArgs received = null;
-            node.ScriptConflictReviewRequested += (_, e) => received = e;
-            WriteScriptContent(node, AssistantScript);
-
-            node.NotifyScriptChangeReview(openedScript, AssistantScript);
-
-            Assert.IsNull(received);
-        }
-
-        [Test]
-        public void WhenScriptWasChangedAfterOpeningFileThenReviewIsRequested()
-        {
-            ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, @"core\python", "python.dyn"));
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
-            WriteScriptContent(node, OriginalScript);
-            PythonScriptConflictEventArgs received = null;
-            node.ScriptConflictReviewRequested += (_, e) => received = e;
-            WriteScriptContent(node, AssistantScript);
-
-            node.NotifyScriptChangeReview(OriginalScript, AssistantScript);
-
-            Assert.IsNotNull(received);
         }
 
         #endregion
