@@ -379,6 +379,12 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(IsRenamed));
             }
         }
+
+        /// <summary>
+        /// Checks if the Node was recently created, modified or moved by the AI Assistant
+        /// </summary>
+        public bool IsRecentlyModifiedByAI => NodeModel.IsRecentlyModifiedByAI;
+
         /// <summary>
         /// The original name of the node
         /// </summary>
@@ -690,6 +696,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
                     break;
                 case nameof(nodeModel.IsVisible):
                     RaisePropertyChanged(nameof(StatusIsHidden));
+                    break;
+                case nameof(nodeModel.IsRecentlyModifiedByAI):
+                    RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
                     break;
                 case nameof(nodeModel.IsSetAsInput):
                     RaisePropertyChanged(nameof(StateIsInput));
