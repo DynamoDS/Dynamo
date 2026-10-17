@@ -185,7 +185,9 @@ namespace PythonNodeModelsWpf
             }            
 
             // Add custom highlighting rules consistent with DesignScript
-            CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
+            // The Python editor keeps its dark surface in both themes, so its dynamic rules
+            // must use the dark palette even when the canvas theme is light.
+            CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController, true);
 
             AvailableEngines =
                 new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));

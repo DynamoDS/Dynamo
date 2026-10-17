@@ -70,7 +70,7 @@
                 FontSize="13"
                 Height ="29"
                 Margin="3,0,3, 3"
-                Background="#666666"
+                Background="{StaticResource NodeDropDownBackgroundBrush}"
                 Width="34" Command="{Binding SwitchUnitsButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"   

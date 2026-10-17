@@ -22,9 +22,10 @@ namespace Dynamo.ViewModels
 
         private DelegateCommand portMouseLeftButtonOnContextCommand;
 
-        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        // See InPortViewModel: marker colors are themed rather than hard-coded.
+        private SolidColorBrush portValueMarkerColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortValueMarkerDefaultBrush"] as SolidColorBrush;
 
-        internal static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        internal static SolidColorBrush PortValueMarkerGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortValueMarkerGreyBrush"] as SolidColorBrush;
         internal static int valueMarkerWidthWithFunction = 5;
         internal static int valueMarkerWidthWithoutFunction = 0;
 

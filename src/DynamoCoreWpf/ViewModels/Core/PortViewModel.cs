@@ -12,6 +12,7 @@ using Dynamo.Graph.Workspaces;
 using UI.Prompts;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using static Dynamo.ViewModels.SearchViewModel;
@@ -32,9 +33,14 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
-        protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
-        public static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-        public static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+        // Read from the themed dictionary rather than hard-coded so the light theme can recolor
+        // ports along with the node body they sit on. Same lookup pattern as NodeView.
+        protected static readonly SolidColorBrush PortBackgroundColorPreviewOff =
+            SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortBackgroundPreviewOffBrush"] as SolidColorBrush;
+        public static readonly SolidColorBrush PortBackgroundColorDefault =
+            SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortBackgroundBrush"] as SolidColorBrush;
+        public static readonly SolidColorBrush PortBorderBrushColorDefault =
+            SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortBorderBrush"] as SolidColorBrush;
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         private Visibility highlight = Visibility.Collapsed;

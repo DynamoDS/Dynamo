@@ -1453,11 +1453,47 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Orientation="Horizontal" 
-                                                    Margin="0,12,0,0" 
-                                                    Grid.Row="0">
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,12,0,0"
+                                                Grid.Row="0">
+                                        <ComboBox Name="ThemeComboBox"
+                                                  Width="213"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  ItemsSource="{Binding Path=ThemesList}"
+                                                  SelectedItem="{Binding Path=SelectedTheme}"
+                                                  Style="{StaticResource NoBordersComboBoxStyle}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingsTheme}"
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                               Name="ThemeInfoLabel"
+                                               VerticalAlignment="Center"
+                                               Height="26"
+                                               Width="53"
+                                               Margin="0 3 0 0">
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowThemeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                    Margin="0,12,0,0"
+                                                    Grid.Row="1">
                                         <ToggleButton Name="HardwareAcceleration"
                                                               Width="{StaticResource ToggleButtonWidth}"
                                                               Height="{StaticResource ToggleButtonHeight}"
@@ -1491,7 +1527,7 @@
                                     
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="1">
+                                                Grid.Row="2">
                                         <ToggleButton Name="IsolateSelectedGeoToggle"
                                                     Width="{StaticResource ToggleButtonWidth}"
                                                     Height="{StaticResource ToggleButtonHeight}"
@@ -1525,7 +1561,7 @@
 
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="2">
+                                                Grid.Row="3">
                                         <ToggleButton Name="ShowEdgesToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1559,7 +1595,7 @@
 
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="3">
+                                                Grid.Row="4">
                                         <ToggleButton Name="UserRenderInstancingToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1593,7 +1629,7 @@
 
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="4">
+                                                Grid.Row="5">
                                         <ToggleButton Name="CodeBlockNodeLineNumbersToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1627,7 +1663,7 @@
 
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="5">
+                                                Grid.Row="6">
                                         <ToggleButton Name="ShowPreviewBubblesToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1661,7 +1697,7 @@
                                     
                                     <Grid x:Name="GraphicHelpersScale"
                                           Margin="0 12 0 5"
-                                          Grid.Row="6">
+                                          Grid.Row="7">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>

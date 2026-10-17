@@ -90,7 +90,7 @@
                                         <DataTrigger Binding="{Binding Enabled}"
                                                      Value="False">
                                             <Setter Property="Foreground"
-                                                    Value="#33F5F5F5" />
+                                                    Value="{StaticResource RunSettingsComboItemDisabledBrush}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsSelected}"
                                                      Value="True">
