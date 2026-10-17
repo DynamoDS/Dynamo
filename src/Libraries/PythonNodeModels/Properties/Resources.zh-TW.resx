@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>請將 Python 引擎更新為 PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>腳本在編輯器外發生變更</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>在您開始編輯後，此節點的腳本在編輯器外發生變更 (例如在圖元區上使用「退回」)。
+
+請選擇:
+是 - 捨棄您的編輯並從節點載入腳本
+否 - 保留您的編輯並儲存在節點上
+取消 - 不做任何動作</value>
+  </data>
 </root>

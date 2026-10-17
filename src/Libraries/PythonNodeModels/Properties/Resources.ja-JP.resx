@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Python エンジンを PythonNet3 に更新してください</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>スクリプトがエディタの外部で変更されました</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>編集を開始した後、このノードのスクリプトがエディタの外部で変更されました(キャンバスでの[元に戻す]操作など)。
+
+次を選択してください:
+はい: 編集内容を破棄し、ノードからスクリプトをロードします。
+いいえ: 編集内容を保持し、ノード上に保存します。
+キャンセル: 何もしない。</value>
+  </data>
 </root>

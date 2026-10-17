@@ -17,7 +17,7 @@
   
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <PropertyGroup>
-          <PackageVersion>1.1.0</PackageVersion>
+          <PackageVersion>1.1.1</PackageVersion>
           <PackageName>LibrarieJS</PackageName>
       </PropertyGroup>
       <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)pkgexist.ps1' '$(PackageName)' '$(PackageVersion)'&quot;" ConsoleToMSBuild="true">
@@ -211,7 +211,7 @@
     <EmbeddedResource Include="Packages\LibrarieJS\resources\Tessellation.Voronoi.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Web.WebView2" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">

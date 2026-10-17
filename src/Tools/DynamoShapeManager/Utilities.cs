@@ -102,7 +102,9 @@ namespace DynamoShapeManager
                 // else use the default asm install lookup -
                 // this is used for testing
                 getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
-                var installations = getASMInstallsFunc(rootFolder);
+                // Materialize once: the lookup is lazy, and the loop below would otherwise re-run it
+                // (and its registry/file-system probing) for every version it tries.
+                var installations = getASMInstallsFunc(rootFolder).Cast<object>().ToList();
 
 
                 // first find the exact match or the lowest matching within same major version
@@ -404,9 +406,9 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 231:
-                    return true;
                 case 232:
+                    return true;
+                case 233:
                     return true;
                 default:
                     // We don't know this version so it's safest to assume it's not complete.

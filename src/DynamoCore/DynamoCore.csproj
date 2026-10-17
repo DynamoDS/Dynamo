@@ -20,28 +20,28 @@
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
+    <PackageReference Include="Microsoft.Win32.Registry" />
     <!--The System.Drawing package is only included in DynamoCore (and not in all projects that have image resources) for simplicity-->
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="Autodesk.IDSDK" Version="1.2.9" />
-    <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.5336" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.5334" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.5334" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
-    <PackageReference Include="RestSharp" Version="112.0.0" CopyXML="true" />
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
-    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
-    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.8" GeneratePathProperty="true" ExcludeAssets="all" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.4.12843" />
+    <PackageReference Include="Autodesk.IDSDK" />
+    <PackageReference Include="Greg" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0_debug" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="Newtonsoft.Json" CopyXML="true" />
+    <PackageReference Include="RestSharp" CopyXML="true" />
+    <PackageReference Include="Lucene.Net" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" />
+    <PackageReference Include="Lucene.Net.QueryParser" />
+    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -115,11 +115,11 @@
 
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-        <LIBGVerMain>libg_232_0_0</LIBGVerMain>
-        <LIBGVerSecondary>libg_231_0_0</LIBGVerSecondary>
-        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Release' ">$(PkgDynamoVisualProgramming_LibG_232_0_0)</LibGMainPackagePath>
-        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Debug' ">$(PkgDynamoVisualProgramming_LibG_232_0_0_debug)</LibGMainPackagePath>
-        <LibGSecondaryPackagePath>$(PkgDynamoVisualProgramming_LibG_231_0_0)</LibGSecondaryPackagePath>
+        <LIBGVerMain>libg_233_0_0</LIBGVerMain>
+        <LIBGVerSecondary>libg_232_0_0</LIBGVerSecondary>
+        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Release' ">$(PkgDynamoVisualProgramming_LibG_233_0_0)</LibGMainPackagePath>
+        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Debug' ">$(PkgDynamoVisualProgramming_LibG_233_0_0_debug)</LibGMainPackagePath>
+        <LibGSecondaryPackagePath>$(PkgDynamoVisualProgramming_LibG_232_0_0)</LibGSecondaryPackagePath>
         <LibGProtoGeometryLibGLocale>$(LibGMainPackagePath)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>

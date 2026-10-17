@@ -194,6 +194,9 @@ Ao clicar em “Continuar”, você está concordando em implementar as alteraç
   <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
     <value>Assistente de migração</value>
   </data>
+  <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
+    <value>{0} – Resolver conflitos com edições não salvas</value>
+  </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
   </data>
@@ -219,7 +222,7 @@ Ao clicar em “Continuar”, você está concordando em implementar as alteraç
     <value>Aceitar</value>
   </data>
   <data name="RejectButton" xml:space="preserve">
-    <value>Cancelar</value>
+    <value>Rejeitar</value>
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Alternar vista</value>
@@ -235,5 +238,14 @@ Ao clicar em “Continuar”, você está concordando em implementar as alteraç
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
     <value>{0} nó(s) CPython e {1} definição(ões) de nós personalizados foram convertidos automaticamente em PythonNet3 para serem executados no Dynamo 4.0. O CPython não é mais suportado.</value>
+  </data>
+  <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
+    <value>{0} – Revisar alterações do assistente</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
+    <value>{0} – Resolver conflitos com alterações externas</value>
+  </data>
+  <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
+    <value>Nada foi alterado. O script nesse nó foi alterado após a abertura dessa janela, ou o editor Python tem edições não salvas ou foi fechado.</value>
   </data>
 </root>

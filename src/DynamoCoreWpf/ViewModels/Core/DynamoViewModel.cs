@@ -582,29 +582,6 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
-        private bool isCodeBlockEditorActive;
-
-        /// <summary>
-        /// True while a code block node's text editor has focus.
-        /// Used to disable graph keyboard shortcuts that should not run during editing.
-        /// </summary>
-        internal bool IsCodeBlockEditorActive
-        {
-            get { return isCodeBlockEditorActive; }
-            set
-            {
-                if (isCodeBlockEditorActive == value) return;
-                isCodeBlockEditorActive = value;
-                GraphAutoLayoutCommand?.RaiseCanExecuteChanged();
-                BackgroundPreviewViewModel?.TogglePanCommand?.RaiseCanExecuteChanged();
-                BackgroundPreviewViewModel?.ToggleCanNavigateBackgroundCommand?.RaiseCanExecuteChanged();
-                PanCommand?.RaiseCanExecuteChanged();
-                ZoomInCommand?.RaiseCanExecuteChanged();
-                ZoomOutCommand?.RaiseCanExecuteChanged();
-                FitViewCommand?.RaiseCanExecuteChanged();
-            }
-        }
-
         public ConnectorType ConnectorType
         {
             get
@@ -1924,7 +1901,9 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddModelsToGroup(object obj)
         {
-            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+            // Must match DynamoModel.AddToGroup: destination has to be selected and expanded.
+            // A collapsed-only selection used to no-op; it now throws if Execute is called.
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any(x => x.IsExpanded);
         }
 
         internal void AddModelsToGroup(object parameters)
@@ -3564,7 +3543,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanDoGraphAutoLayout(object parameter)
         {
-            return !IsCodeBlockEditorActive;
+            return true;
         }
 
         /// <summary>
@@ -4076,7 +4055,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPan(object parameter)
         {
-            return !IsCodeBlockEditorActive;
+            return true;
         }
 
         internal void ZoomIn(object parameter)
@@ -4118,7 +4097,7 @@ namespace Dynamo.ViewModels
 
         private bool CanZoomIn(object parameter)
         {
-            return !IsCodeBlockEditorActive && CurrentSpaceViewModel.CanZoomIn;
+            return CurrentSpaceViewModel.CanZoomIn;
         }
 
         private void ZoomOut(object parameter)
@@ -4137,7 +4116,7 @@ namespace Dynamo.ViewModels
 
         private bool CanZoomOut(object parameter)
         {
-            return !IsCodeBlockEditorActive && CurrentSpaceViewModel.CanZoomOut;
+            return CurrentSpaceViewModel.CanZoomOut;
         }
 
         private void FitView(object parameter)
@@ -4159,7 +4138,7 @@ namespace Dynamo.ViewModels
 
         private bool CanFitView(object parameter)
         {
-            return !IsCodeBlockEditorActive;
+            return true;
         }
 
         private static void LoadLibraryEvents_LoadLibraryFailure(string failureMessage, string messageBoxTitle)

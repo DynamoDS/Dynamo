@@ -41,6 +41,39 @@ namespace Dynamo.Graph.Workspaces
 
         private bool graphRunInProgress;
 
+        // Set when a cancellation is requested for the run currently in progress,
+        // and cleared at the start and end of every run. Written and read from
+        // different threads, hence volatile.
+        private volatile bool runCancelledByUser;
+
+        // Set from the UI thread on graph edits and from the scheduler thread
+        // when a run completes, hence volatile. Starts true because a freshly
+        // created workspace has never been evaluated.
+        private volatile bool hasPendingChanges = true;
+
+        /// <summary>
+        /// True when the graph has changed since it was last evaluated, so the
+        /// displayed results may be stale. Only edits made in Manual run mode
+        /// set this flag; in Automatic and Periodic modes a run follows each edit.
+        /// </summary>
+        internal bool HasPendingChanges
+        {
+            get { return hasPendingChanges; }
+            private set
+            {
+                if (hasPendingChanges == value) return;
+
+                hasPendingChanges = value;
+                PendingChangesChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Raised when <see cref="HasPendingChanges"/> changes. May be raised on
+        /// the scheduler thread.
+        /// </summary>
+        internal event EventHandler PendingChangesChanged;
+
         /// <summary>
         /// A flag which indicates whether Dynamo is currently running a graph.
         /// This flag is set to true when execution starts and is set to false
@@ -457,12 +490,13 @@ namespace Dynamo.Graph.Workspaces
         {
             base.RequestRun();
 
-            if (RunSettings.RunType != RunType.Manual)
+            if (RunSettings.RunType == RunType.Manual)
             {
-                if (!DelayGraphExecution)
-                {
-                    Run();
-                }
+                HasPendingChanges = true;
+            }
+            else if (!DelayGraphExecution)
+            {
+                Run();
             }
         }
 
@@ -614,6 +648,7 @@ namespace Dynamo.Graph.Workspaces
             PreloadedTraceData = null;
             RunSettings.Reset();
             EvaluationCount = 0;
+            HasPendingChanges = true;
         }
 
         internal void UndefineCBNFunctionDefinitions()
@@ -813,13 +848,33 @@ namespace Dynamo.Graph.Workspaces
             //set the node execution preview to false;
             OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
 
+            // Take the cancellation state for this run and clear it straight away,
+            // so listeners all see the same value and nothing carries into the next run.
+            bool wasCancelled = runCancelledByUser;
+            runCancelledByUser = false;
+            EngineController?.ResetCancellation();
+
+            if (wasCancelled)
+            {
+                // Cancelling tears down and rebuilds the DesignScript VM, so nothing
+                // compiled survives. Mark the whole graph dirty the same way a VM reset
+                // does, otherwise the next run sends a partial graph to an empty VM.
+                foreach (var node in Nodes)
+                {
+                    node.MarkNodeAsModified();
+                }
+
+                // The cancelled run did not produce results, so the graph still needs one.
+                HasPendingChanges = true;
+            }
+
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true, nodesWithInfos, null)
-                : new EvaluationCompletedEventArgs(true, nodesWithInfos, task.Exception);
+                ? new EvaluationCompletedEventArgs(true, nodesWithInfos, null, wasCancelled)
+                : new EvaluationCompletedEventArgs(true, nodesWithInfos, task.Exception, wasCancelled);
 
             EvaluationCount ++;
 
@@ -867,6 +922,11 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
+            // Clear any cancellation left over from before, so it cannot abort
+            // the run we are about to start.
+            runCancelledByUser = false;
+            EngineController.ResetCancellation();
+
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -890,6 +950,10 @@ namespace Dynamo.Graph.Workspaces
 
             if (task.Initialize(EngineController, this))
             {
+                // The task has captured every change made so far. Clear the flag
+                // now, not on completion, so edits made during the run stay pending.
+                HasPendingChanges = false;
+
                 task.Completed += OnUpdateGraphCompleted;
 
                 // Reset node states
@@ -906,10 +970,29 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
+                // Nothing needed evaluating, so the current results are up to date.
+                HasPendingChanges = false;
+
                 // Notify handlers that evaluation did not take place.
                 var e = new EvaluationCompletedEventArgs(false);
                 OnEvaluationCompleted(e);
             }
+        }
+
+        /// <summary>
+        /// Asks the engine to stop the graph evaluation that is currently running.
+        /// Does nothing when no evaluation is in progress, and does nothing extra
+        /// when called repeatedly during the same evaluation.
+        /// Returns immediately: the evaluation stops at the next point the engine
+        /// checks, which can be some time later if a single node is busy.
+        /// </summary>
+        internal void CancelRun()
+        {
+            if (!GraphRunInProgress) return;
+            if (EngineController == null) return;
+
+            runCancelledByUser = true;
+            EngineController.RequestCancellation();
         }
 
         /// <summary>

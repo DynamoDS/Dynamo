@@ -58,6 +58,8 @@ namespace Dynamo.PythonMigration.Differ
                         paragraphs.Add(ShowSubPieceDiffs(line, true));
                         break;
                     case ChangeType.Imaginary:
+                        // Spacer so this row stays opposite the real line in the other pane.
+                        paragraphs.Add(CreateParagraph(string.Empty, " ", " "));
                         break;
                     case ChangeType.Modified:
                         paragraphs.Add(ShowSubPieceDiffs(line, isBeforePanel));
@@ -77,29 +79,44 @@ namespace Dynamo.PythonMigration.Differ
                 isBeforeText ? GetBeforeModifiedBrush() : GetAfterModifiedBrush()
                 );
 
+            var wrotePiece = false;
             var subPieces = line.SubPieces;
-            foreach (var piece in subPieces)
+            if (subPieces != null)
             {
-                switch (piece.Type)
+                foreach (var piece in subPieces)
                 {
-                    case ChangeType.Unchanged:
-                        // if unchanged add the text with no coloring to the paragraph
-                        paragraph.Content.Inlines.Add(NewRun(piece.Text));
-                        break;
-                    case ChangeType.Deleted:
-                        paragraph.Content.Inlines.Add(NewRun(piece.Text, GetDeletedRunBrush()));
-                        break;
-                    case ChangeType.Inserted:
-                        paragraph.Content.Inlines.Add(NewRun(piece.Text, GetModifiedRunBrush()));
-                        break;
-                    case ChangeType.Imaginary:
-                        break;
-                    case ChangeType.Modified:
-                        break;
-                    default:
-                        break;
+                    switch (piece.Type)
+                    {
+                        case ChangeType.Unchanged:
+                            paragraph.Content.Inlines.Add(NewRun(piece.Text));
+                            wrotePiece = true;
+                            break;
+                        case ChangeType.Deleted:
+                            paragraph.Content.Inlines.Add(NewRun(piece.Text, GetDeletedRunBrush()));
+                            wrotePiece = true;
+                            break;
+                        case ChangeType.Inserted:
+                            paragraph.Content.Inlines.Add(NewRun(piece.Text, GetModifiedRunBrush()));
+                            wrotePiece = true;
+                            break;
+                        case ChangeType.Imaginary:
+                            break;
+                        case ChangeType.Modified:
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+
+            // A whole inserted or deleted line often has no character pieces.
+            // The words are on the line itself.
+            if (!wrotePiece && !string.IsNullOrEmpty(line.Text))
+            {
+                var brush = isBeforeText ? GetDeletedRunBrush() : GetModifiedRunBrush();
+                paragraph.Content.Inlines.Add(NewRun(line.Text, brush));
+            }
+
             return paragraph;
         }
 

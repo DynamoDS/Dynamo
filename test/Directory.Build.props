@@ -1,4 +1,8 @@
 <Project>
+  <!--
+    MSBuild stops at the first Directory.Build.props it finds walking up, so without this
+    import the test projects silently miss everything set in the repo-root one. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   <PropertyGroup>
     <TestProject>true</TestProject>
     <SolutionDir>$(MSBuildThisFileDirectory)..\src\</SolutionDir>

@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Aktualisieren Sie die Python-Engine auf PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Skript außerhalb des Editors geändert</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>Das Skript in diesem Block wurde außerhalb des Editors geändert (z. B. durch Rückgängig im Ansichtsbereich), nachdem Sie mit der Bearbeitung begonnen haben.
+
+Wählen Sie:
+Ja - Änderungen verwerfen und Skript aus dem Block laden
+Nein - Änderungen beibehalten und über den Block speichern
+Abbrechen - keine Aktion</value>
+  </data>
 </root>

@@ -194,6 +194,9 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
   <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
     <value>Migration Assistant</value>
   </data>
+  <data name="PythonScriptConflictWindowTitle" xml:space="preserve">
+    <value>{0} — rozwiązywanie konfliktu z niezapisanymi zmianami</value>
+  </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
   </data>
@@ -219,7 +222,7 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
     <value>Zaakceptuj</value>
   </data>
   <data name="RejectButton" xml:space="preserve">
-    <value>Anuluj</value>
+    <value>Odrzuć</value>
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Przełącz widok</value>
@@ -235,5 +238,14 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
     <value>Węzły CPython ({0}) i definicje węzłów niestandardowych ({1}) zostały automatycznie przekonwertowane na język PythonNet3, aby działały w dodatku Dynamo 4.0. Język CPython nie jest już obsługiwany.</value>
+  </data>
+  <data name="PythonScriptReviewWindowTitle" xml:space="preserve">
+    <value>{0} — przeglądanie zmian narzędzia Assistant</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorWindowTitle" xml:space="preserve">
+    <value>{0} — rozwiązywanie konfliktu ze zmianami zewnętrznymi</value>
+  </data>
+  <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
+    <value>Nic się nie zmieniło. Skrypt w tym węźle uległ zmianie po otwarciu tego okna albo edytor Python powiązany z tym skryptem zawiera niezapisane zmiany lub został zamknięty.</value>
   </data>
 </root>

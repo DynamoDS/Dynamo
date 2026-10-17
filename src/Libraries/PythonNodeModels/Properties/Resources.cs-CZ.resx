@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Aktualizujte modul jazyka Python na PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Skript byl změněn mimo editor</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>Skript v tomto uzlu byl po zahájení úprav změněn mimo editor (například příkazem Zpět na kreslicí ploše).
+
+Vyberte možnost:
+Ano – zrušit úpravy a načíst skript z uzlu
+Ne – zachovat úpravy a uložit je přes uzel
+Storno – nedělat nic</value>
+  </data>
 </root>

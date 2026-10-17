@@ -1282,6 +1282,53 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns whether the annotation group is collapsed.
+        /// </summary>
+        /// <param name="groupId">GUID of the annotation group.</param>
+        /// <returns>True if the group is collapsed; false if expanded.</returns>
+        /// <exception cref="ArgumentException">Thrown when no annotation matches <paramref name="groupId"/>.</exception>
+        public bool GetGroupCollapsed(Guid groupId)
+        {
+            return !GetAnnotationModel(groupId).IsExpanded;
+        }
+
+        /// <summary>
+        /// Collapses or expands an annotation group. The change is recordable and undoable.
+        /// </summary>
+        /// <param name="groupId">GUID of the annotation group.</param>
+        /// <param name="collapsed">True to collapse; false to expand.</param>
+        /// <exception cref="ArgumentException">Thrown when no annotation matches <paramref name="groupId"/>.</exception>
+        public void SetGroupCollapsed(Guid groupId, bool collapsed)
+        {
+            var annotation = GetAnnotationModel(groupId);
+
+            if (annotation == null)
+            {
+                throw new ArgumentException($"No annotation group found with id: '{groupId}'.", nameof(groupId));
+            }
+
+            var expanded = !collapsed;
+            if (annotation.IsExpanded == expanded) return;
+
+            DynamoViewModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    Model.Guid,
+                    annotation.GUID,
+                    nameof(AnnotationModel.IsExpanded),
+                    expanded.ToString()));
+        }
+
+        private AnnotationModel GetAnnotationModel(Guid groupId)
+        {
+            var annotation = Annotations.FirstOrDefault(x => x.AnnotationModel.GUID == groupId);
+            if (annotation == null)
+            {
+                throw new ArgumentException($"No annotation group found with id: '{groupId}'.", nameof(groupId));
+            }
+            return annotation.AnnotationModel;
+        }
+
+        /// <summary>
         /// Determine if a Dynamo element belongs to a collapsed group or sub group of a collapsed group
         /// </summary>
         /// <param name="model">Target node, note, annotation</param>

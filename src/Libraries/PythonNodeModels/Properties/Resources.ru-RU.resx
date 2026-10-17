@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Обновите компонент Python до PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Сценарий был изменен не в редакторе</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>Сценарий на этом узле был изменен не в редакторе (например, нажатием кнопки «Отменить» в рабочей области) после начала редактирования.
+
+Варианты выбора:
+«Да» — будут отменены изменения и загружен сценарий из узла
+«Нет» — изменения будут применены и сохранены поверх настроек узла
+«Отмена» — ничего не будет сделано</value>
+  </data>
 </root>

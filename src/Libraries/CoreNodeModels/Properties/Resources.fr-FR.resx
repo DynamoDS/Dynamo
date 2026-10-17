@@ -531,6 +531,12 @@
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
     <value>La valeur doit être numérique.</value>
   </data>
+  <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
+    <value>L'entrée doit correspondre au format de date et d'heure, et être valide.</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>L'entrée doit être un nombre entier.</value>
+  </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>Sélectionner une couleur dans la palette</value>
   </data>

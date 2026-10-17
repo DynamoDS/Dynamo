@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Nodes;
+using Dynamo.Selection;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using static Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests.ModelsTest
 {
     /// <summary>
-    /// This test class contains methods for testing the  UngroupModelCommand and AddModelToGroupCommand clases
+    /// This test class contains methods for testing the  UngroupModelCommand and AddModelToGroupCommand classes
     /// </summary>
     [TestFixture]
     class GroupModelCommandTests : DynamoModelTestBase
@@ -68,13 +72,275 @@ namespace Dynamo.Tests.ModelsTest
 
             AddModelToGroupCommand.DeserializeCore(xmlElement);
             command1.Serialize(xmlDocument);
-            command1.Execute(CurrentDynamoModel);
 
             //Assert
             //Verify that the guid in the commands created are right
             Assert.IsNotNull(command1);
             Assert.IsNotNull(command2);
             Assert.IsNotNull(command3);
+            Assert.AreEqual(Guid.Empty, command1.HostGroupGuid);
+            Assert.AreEqual(Guid.Empty, command2.HostGroupGuid);
+            Assert.AreEqual(Guid.Empty, command3.HostGroupGuid);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidProvidedAndGroupNotSelectedThenNodeIsAdded()
+        {
+            // Arrange
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var nodeToAdd = CreateNode();
+
+            DynamoSelection.Instance.ClearSelection();
+            Assert.IsFalse(group.IsSelected);
+
+            var command = new AddModelToGroupCommand(nodeToAdd.GUID, group.GUID);
+
+            // Act
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            // Assert
+            Assert.IsTrue(group.Nodes.Contains(nodeToAdd));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidProvidedAndNodeIdIsMissingThenThrowsAndDoesNotAdd()
+        {
+            // Arrange
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var countBefore = group.Nodes.Count();
+            DynamoSelection.Instance.ClearSelection();
+
+            var command = new AddModelToGroupCommand(Guid.NewGuid(), group.GUID);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.AreEqual(countBefore, group.Nodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidProvidedAndNodeAlreadyInGroupThenSucceeds()
+        {
+            // Arrange — adding a node that is already in the group is a no-op, not a failure
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            DynamoSelection.Instance.ClearSelection();
+
+            var command = new AddModelToGroupCommand(groupedNode.GUID, group.GUID);
+
+            // Act
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            // Assert
+            Assert.IsTrue(group.Nodes.Contains(groupedNode));
+            Assert.AreEqual(1, group.Nodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidOmittedAndGroupSelectedExpandedThenNodeIsAdded()
+        {
+            // Arrange — this is the canvas path: no host id, group must be selected and expanded
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var nodeToAdd = CreateNode();
+
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(group);
+            Assert.IsTrue(group.IsSelected);
+            Assert.IsTrue(group.IsExpanded);
+
+            var command = new AddModelToGroupCommand(nodeToAdd.GUID);
+
+            // Act
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            // Assert
+            Assert.IsTrue(group.Nodes.Contains(nodeToAdd));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidOmittedAndGroupNotSelectedThenThrowsAndDoesNotAdd()
+        {
+            // Arrange
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var nodeToAdd = CreateNode();
+            var countBefore = group.Nodes.Count();
+
+            DynamoSelection.Instance.ClearSelection();
+            var command = new AddModelToGroupCommand(nodeToAdd.GUID);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.AreEqual(countBefore, group.Nodes.Count());
+            Assert.IsFalse(group.Nodes.Contains(nodeToAdd));
+        }
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidOmittedAndGroupCollapsedThenThrowsAndDoesNotAdd()
+        {
+            // Arrange
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var nodeToAdd = CreateNode();
+            var countBefore = group.Nodes.Count();
+
+            group.IsExpanded = false;
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(group);
+
+            var command = new AddModelToGroupCommand(nodeToAdd.GUID);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.AreEqual(countBefore, group.Nodes.Count());
+            Assert.IsFalse(group.Nodes.Contains(nodeToAdd));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGuidProvidedAndGroupCollapsedThenThrowsAndDoesNotAdd()
+        {
+            // Arrange — even with an explicit id, a collapsed group must fail
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var nodeToAdd = CreateNode();
+            var countBefore = group.Nodes.Count();
+
+            group.IsExpanded = false;
+            var command = new AddModelToGroupCommand(nodeToAdd.GUID, group.GUID);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.AreEqual(countBefore, group.Nodes.Count());
+            Assert.IsFalse(group.Nodes.Contains(nodeToAdd));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenOldCommandXmlHasNoHostAttributeThenHostGuidIsEmpty()
+        {
+            // Arrange — old recorded commands only stored the node id
+            var nodeGuid = Guid.NewGuid();
+            var xmlDocument = new XmlDocument();
+            var element = xmlDocument.CreateElement(nameof(AddModelToGroupCommand));
+            var modelGuidNode = xmlDocument.CreateElement("ModelGuid");
+            modelGuidNode.InnerText = nodeGuid.ToString();
+            element.AppendChild(modelGuidNode);
+
+            // Act
+            var command = AddModelToGroupCommand.DeserializeCore(element);
+            // Assert
+            Assert.AreEqual(nodeGuid, command.ModelGuid);
+            Assert.AreEqual(Guid.Empty, command.HostGroupGuid);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAddingByHostGuidThenUndoRemovesTheNode()
+        {
+            // Arrange
+            var groupedNode = CreateNode();
+            var group = CreateGroupAround(groupedNode);
+            var nodeToAdd = CreateNode();
+
+            DynamoSelection.Instance.ClearSelection();
+            CurrentDynamoModel.ExecuteCommand(
+                new AddModelToGroupCommand(nodeToAdd.GUID, group.GUID));
+            Assert.IsTrue(group.Nodes.Contains(nodeToAdd));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.CanUndo);
+
+            // Act
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            // Assert
+            Assert.IsFalse(group.Nodes.Contains(nodeToAdd));
+            Assert.IsTrue(group.Nodes.Contains(groupedNode));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCommandWithHostGuidIsSerializedThenDeserializeKeepsHostGuid()
+        {
+            // Arrange
+            var nodeGuid = Guid.NewGuid();
+            var hostGuid = Guid.NewGuid();
+            var command = new AddModelToGroupCommand(nodeGuid, hostGuid);
+            var xmlDocument = new XmlDocument();
+
+            // Act
+            var element = command.Serialize(xmlDocument);
+            var deserialized = AddModelToGroupCommand.DeserializeCore(element);
+
+            // Assert
+            Assert.AreEqual(nodeGuid, deserialized.ModelGuid);
+            Assert.AreEqual(hostGuid, deserialized.HostGroupGuid);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHostGroupIsAlreadyNestedThenAddGroupToGroupThrows()
+        {
+            // Arrange — A contains B. Nesting C into B would be two levels.
+            var groupA = CreateGroupAround(CreateNode());
+            var groupB = CreateGroupAround(CreateNode());
+            var groupC = CreateGroupAround(CreateNode());
+            DynamoSelection.Instance.ClearSelection();
+
+            CurrentDynamoModel.ExecuteCommand(
+                new AddGroupToGroupCommand(groupB.GUID, groupA.GUID));
+            Assert.IsTrue(groupA.Nodes.Contains(groupB));
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(
+                    new AddGroupToGroupCommand(groupC.GUID, groupB.GUID)));
+            Assert.IsFalse(groupB.Nodes.Contains(groupC));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenGroupBeingAddedHasNestedGroupsThenAddGroupToGroupThrows()
+        {
+            // Arrange — A already contains B. Nesting A into C would be two levels.
+            var groupA = CreateGroupAround(CreateNode());
+            var groupB = CreateGroupAround(CreateNode());
+            var groupC = CreateGroupAround(CreateNode());
+            DynamoSelection.Instance.ClearSelection();
+
+            CurrentDynamoModel.ExecuteCommand(
+                new AddGroupToGroupCommand(groupB.GUID, groupA.GUID));
+            Assert.IsTrue(groupA.HasNestedGroups);
+
+            // Act / Assert
+            Assert.Throws<InvalidOperationException>(
+                () => CurrentDynamoModel.ExecuteCommand(
+                    new AddGroupToGroupCommand(groupA.GUID, groupC.GUID)));
+            Assert.IsFalse(groupC.Nodes.Contains(groupA));
+        }
+
+        private DummyNode CreateNode()
+        {
+            var node = new DummyNode();
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
+            return node;
+        }
+
+        private AnnotationModel CreateGroupAround(DummyNode node)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node);
+            return CurrentDynamoModel.CurrentWorkspace.AddAnnotation("test group", Guid.NewGuid());
         }
     }
 }

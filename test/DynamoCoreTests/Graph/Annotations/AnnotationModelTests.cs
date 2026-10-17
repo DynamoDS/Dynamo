@@ -309,5 +309,36 @@ namespace Dynamo.Tests
             Assert.AreEqual(resizedWidth, annotationModel.Width);
             Assert.AreEqual(resizedHeight, annotationModel.Height);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenIsExpandedChangesThenPropertyChangedIsRaised()
+        {
+            var raised = false;
+            annotationModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(AnnotationModel.IsExpanded))
+                    raised = true;
+            };
+            annotationModel.IsExpanded = false;
+
+            Assert.IsTrue(raised);
+            Assert.IsFalse(annotationModel.IsExpanded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenIsExpandedSetToSameValueThenPropertyChangedIsNotRaised()
+        {
+            var raised = false;
+            annotationModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(AnnotationModel.IsExpanded))
+                    raised = true;
+            };
+            annotationModel.IsExpanded = true;
+
+            Assert.IsFalse(raised);
+        }
     }
 }

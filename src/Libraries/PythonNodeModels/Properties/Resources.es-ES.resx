@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Actualice el motor de Python a PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Secuencia de comandos modificada fuera del editor</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>La secuencia de comandos de este nodo se ha modificado fuera del editor (por ejemplo, mediante la función Deshacer en el lienzo) después de que se iniciaran las modificaciones.
+
+Elija una de las opciones siguientes:
+Sí: descarte las modificaciones y cargue la secuencia de comandos desde el nodo.
+No: conserve las modificaciones y guárdelas en el nodo.
+Cancelar: no realice ninguna acción.</value>
+  </data>
 </root>

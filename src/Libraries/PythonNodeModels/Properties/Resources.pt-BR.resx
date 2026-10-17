@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Atualize o mecanismo Python para PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Script alterado fora do editor</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>O script nesse nó foi alterado fora do editor (por exemplo, por meio de Desfazer na tela) depois que você começou a editar.
+
+Escolha:
+Sim – descartar as edições e carregar o script do nó
+Não – manter as edições e salvá-las no nó
+Cancelar – não fazer nada</value>
+  </data>
 </root>

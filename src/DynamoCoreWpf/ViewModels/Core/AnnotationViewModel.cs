@@ -362,6 +362,8 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
+                if (annotationModel.IsExpanded == value) return;
+
                 // This change is triggered by the user interaction in the View.
                 // Before we updating the value in the Model and ViewModel
                 // we record the current state in the UndoRedoStack.
@@ -374,8 +376,6 @@ namespace Dynamo.ViewModels
 
                 annotationModel.IsExpanded = value;
 
-                // Methods to collapse or expand the group based on the new value of IsExpanded.
-                ManageAnnotationMVExpansionAndCollapse();
                 HandlePrePortToggleLayout();
             }
         }

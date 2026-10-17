@@ -14,8 +14,8 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FontAwesome5" Version="2.1.11" />
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="FontAwesome5" />
+    <PackageReference Include="Prism.Core" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

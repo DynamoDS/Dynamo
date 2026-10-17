@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="LaunchDarkly.ClientSdk" Version="5.1.0">
+    <PackageReference Include="CommandLineParser" />
+    <PackageReference Include="LaunchDarkly.ClientSdk">
     </PackageReference>
   </ItemGroup>
 </Project>

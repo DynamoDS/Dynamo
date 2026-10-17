@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Zaktualizuj aparat języka Python do wersji PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Skrypt zmieniony poza edytorem</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>Skrypt w tym węźle został zmieniony poza edytorem (na przykład przez polecenie Cofnij w obszarze rysunku) po rozpoczęciu edycji.
+
+Wybierz opcję:
+Tak — odrzuć zmiany i wczytaj skrypt z węzła
+Nie — zachowaj zmiany i zapisz je w węźle
+Anuluj — nic nie rób.</value>
+  </data>
 </root>

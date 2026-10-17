@@ -14,12 +14,12 @@
         <EnableDefaultPageItems>false</EnableDefaultPageItems>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />        
-        <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.8">
+        <PackageReference Include="DiffPlex" CopyMetaData="true" />        
+        <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3">
             <ExcludeAssets>runtime;native;contentFiles;build;buildTransitive;analyzers</ExcludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>        
-        <PackageReference Include="FontAwesome5" Version="2.1.11" />
+        <PackageReference Include="FontAwesome5" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

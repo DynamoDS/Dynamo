@@ -14,7 +14,7 @@
     <AssemblyName>DynamoWPFCLI</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">

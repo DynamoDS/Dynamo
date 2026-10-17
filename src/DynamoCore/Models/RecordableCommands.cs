@@ -2490,6 +2490,13 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
+            /// Id of the group that should host the models.
+            /// Empty means “use the selected expanded group”.
+            /// </summary>
+            [DataMember]
+            public Guid HostGroupGuid { get; set; }
+
+            /// <summary>
             ///
             /// </summary>
             /// <param name="modelGuid"></param>
@@ -2508,11 +2515,42 @@ namespace Dynamo.Models
             /// <param name="modelGuid"></param>
             public AddModelToGroupCommand(IEnumerable<Guid> modelGuid) : base(modelGuid) { }
 
+            /// <summary>
+            /// Creates a command to add a model to a specific group.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the model to add.</param>
+            /// <param name="hostModelGuid">The guid of the host group. Empty uses the selected expanded group.</param>
+            public AddModelToGroupCommand(string modelGuid, string hostModelGuid) : base(new[] { Guid.Parse(modelGuid) })
+            {
+                HostGroupGuid = Guid.Parse(hostModelGuid);
+            }
+
+            /// <summary>
+            /// Creates a command to add a model to a specific group.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the model to add.</param>
+            /// <param name="hostModelGuid">The guid of the host group. Empty uses the selected expanded group.</param>
+            public AddModelToGroupCommand(Guid modelGuid, Guid hostModelGuid) : base(new[] { modelGuid })
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            /// <summary>
+            /// Creates a command to add models to a specific group.
+            /// </summary>
+            /// <param name="modelGuid">The guids of the models to add.</param>
+            /// <param name="hostModelGuid">The guid of the host group. Empty uses the selected expanded group.</param>
+            public AddModelToGroupCommand(IEnumerable<Guid> modelGuid, Guid hostModelGuid) : base(modelGuid)
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
             internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
-                return new AddModelToGroupCommand(modelGuids);
+                var hostGroupGuid = helper.ReadGuid(nameof(HostGroupGuid), Guid.Empty);
+                return new AddModelToGroupCommand(modelGuids, hostGroupGuid);
             }
 
             #endregion
@@ -2527,6 +2565,8 @@ namespace Dynamo.Models
             protected override void SerializeCore(XmlElement element)
             {
                 base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute(nameof(HostGroupGuid), HostGroupGuid);
             }
 
             #endregion

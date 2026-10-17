@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Aggiornare il motore Python a PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Script modificato all'esterno dell'editor</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>Lo script in questo nodo è stato modificato al di fuori dell'editor (ad esempio mediante Annulla nell'area di disegno) dopo aver avviato la modifica.
+
+Scegliere:
+Sì per ignorare le modifiche e caricare lo script dal nodo
+No per mantenere le modifiche e salvarle nel nodo
+Annulla per non eseguire alcuna operazione</value>
+  </data>
 </root>

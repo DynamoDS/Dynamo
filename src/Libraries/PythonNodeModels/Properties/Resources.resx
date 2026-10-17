@@ -227,4 +227,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Please update Python Engine to PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Script changed outside the editor</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>The script on this node was changed outside the editor (for example by Undo on the canvas) after you started editing.
+
+Please choose:
+Yes - discard your edits and load the script from the node
+No - keep your edits and save them over the node
+Cancel - to do nothing</value>
+  </data>
 </root>

@@ -222,4 +222,15 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Veuillez mettre à jour le moteur Python vers PythonNet3</value>
   </data>
+  <data name="PythonScriptChangedOutsideEditorTitle" xml:space="preserve">
+    <value>Script modifié en dehors de l'éditeur</value>
+  </data>
+  <data name="PythonScriptChangedOutsideEditorMessage" xml:space="preserve">
+    <value>Le script de ce noeud a été modifié en dehors de l'éditeur (par exemple par Annuler sur la zone de dessin) après le début de la modification.
+
+Veuillez choisir:
+Oui: ignorer les modifications et charger le script à partir du noeud
+Non: conserver les modifications et les enregistrer sur le noeud
+Annuler: ne rien faire</value>
+  </data>
 </root>

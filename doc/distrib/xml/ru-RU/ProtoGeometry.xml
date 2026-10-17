@@ -2446,7 +2446,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.Point.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>Построение точки в заданной системе координат на основе ее положения в цилиндрической системе координат.</summary>
             <param name="coordinateSystem">Система координат для построения точки</param>
-            <param name="angle">Угол -​ это поворот относительно оси X в системе координат вокруг оси Z (в градусах)</param>
+            <param name="angle">Угол — это поворот относительно оси X в системе координат вокруг оси Z (в градусах)</param>
             <param name="elevation">Отметка точки находится над плоскостью XY</param>
             <param name="radius">Расстояние от начала системы координат</param>
             <returns>Точка в цилиндрических координатах</returns>

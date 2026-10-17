@@ -104,7 +104,8 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.LoadPackages(new List<Package> {pkg});
 
-            Assert.IsTrue(loader.RequestedExtensions.Count() == 2);
+            //3 = the DSPythonNet3 and DynamoMCP extensions from the built-in packages, plus SampleExtension loaded above.
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 3);
             Assert.IsTrue(extensionLoad);
             Assert.IsTrue(extensionAdd);
             Assert.IsTrue(extensionReady);

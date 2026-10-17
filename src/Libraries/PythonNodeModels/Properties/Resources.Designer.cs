@@ -374,5 +374,23 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("PythonStringPortDataScriptToolTip", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script changed outside the editor.
+        /// </summary>
+        public static string PythonScriptChangedOutsideEditorTitle {
+            get {
+                return ResourceManager.GetString("PythonScriptChangedOutsideEditorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The script on this node was changed outside the editor (f....
+        /// </summary>
+        public static string PythonScriptChangedOutsideEditorMessage {
+            get {
+                return ResourceManager.GetString("PythonScriptChangedOutsideEditorMessage", resourceCulture);
+            }
+        }
     }
 }

@@ -117,18 +117,22 @@ namespace CoreNodeModels.Input
             {
                 case "Min":
                 case "MinText":
+                    ClearErrorsAndWarnings();
                     Min = ConvertStringToDouble(value);
                     return true; // UpdateValueCore handled.
                 case "Max":
                 case "MaxText":
+                    ClearErrorsAndWarnings();
                     Max = ConvertStringToDouble(value);
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
+                    ClearErrorsAndWarnings();
                     Value = ConvertStringToDouble(value);
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
+                    ClearErrorsAndWarnings();
                     Step = ConvertStringToDouble(value);
                     return true;
             }
@@ -153,6 +157,8 @@ namespace CoreNodeModels.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
+
+            ClearErrorsAndWarnings();
 
             foreach (XmlNode subNode in element.ChildNodes)
             {
@@ -179,6 +185,9 @@ namespace CoreNodeModels.Input
                             break;
                     }
                 }
+
+                // Value's equality guard can skip notify, force UI to drop uncommitted invalid text
+                RaisePropertyChanged(nameof(Value));
 
                 break;
             }
