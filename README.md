@@ -16,7 +16,7 @@ Dynamo is a visual programming tool that aims to be accessible to both non-progr
 
 ## Get Dynamo
 
-Looking to learn or download Dynamo? Check out [dynamobim.org](https://dynamobim.org/)!
+Want to learn about or download Dynamo? Check out [dynamobim.org](https://dynamobim.org/)!
 
 ## Develop
 
