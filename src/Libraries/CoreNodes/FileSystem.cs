@@ -82,12 +82,14 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///  Moves a specified file to a new location
+        ///  Moves a specified file to a new location, or renames it. To rename a file,
+        ///  keep the same folder in newPath and change only the file name.
         /// </summary>
         /// <param name="path">String representation of existing path</param>
-        /// <param name="newPath">String representation of new path</param>
+        /// <param name="newPath">String representation of new path. To rename the file, use the same folder with a different file name.</param>
         /// <param name="overwrite">Toggle to overwrite existing files</param>
         /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
+        /// <search>rename,rename file,move file</search>
         public static void MoveFile(string path, string newPath, bool overwrite = false)
         {
             if (overwrite && FileExists(newPath))
