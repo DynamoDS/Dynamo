@@ -1,5 +1,5 @@
 ## 상세
-지정된 파일을 새 위치로 이동합니다.
+Moves a specified file to a new location. `FileSystem.MoveFile` can also rename a file: to do this, keep the same folder in `newPath` and change only the file name.
 ___
 ## 예제 파일
 

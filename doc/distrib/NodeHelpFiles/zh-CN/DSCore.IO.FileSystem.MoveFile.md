@@ -1,5 +1,5 @@
 ## 详细
-将指定文件移动到新位置。
+Moves a specified file to a new location. `FileSystem.MoveFile` can also rename a file: to do this, keep the same folder in `newPath` and change only the file name.
 ___
 ## 示例文件
 
