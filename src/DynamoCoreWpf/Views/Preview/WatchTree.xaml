@@ -170,7 +170,7 @@
                                                Fill="Black"
                                                SnapsToDevicePixels="True"
                                                UseLayoutRounding="True"
-                                               Stroke="#959595" />
+                                               Stroke="{StaticResource WatchTreeLineBrush}" />
 
                                     <!--  Draw Ellipse at the bottom of each vertical line  -->
 
@@ -180,10 +180,10 @@
                                              Margin="9,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
-                                             Fill="#959595"
+                                             Fill="{StaticResource WatchTreeLineBrush}"
                                              SnapsToDevicePixels="True"
                                              UseLayoutRounding="True"
-                                             Stroke="#959595" />
+                                             Stroke="{StaticResource WatchTreeLineBrush}" />
 
                                 </Grid>
 
@@ -233,7 +233,7 @@
                                 <Rectangle x:Name="Corner"
                                            Grid.Row="1"
                                            Grid.Column="1"
-                                           Fill="#3C3C3C" />
+                                           Fill="{StaticResource WatchTreeBackgroundBrush}" />
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
                                                         Grid.Row="0"
                                                         Grid.Column="0"
@@ -282,7 +282,7 @@
         </Grid.RowDefinitions>
 
         <TreeView Name="treeView1"
-                  Background="#3C3C3C"
+                  Background="{StaticResource WatchTreeBackgroundBrush}"
                   BorderBrush="{StaticResource PrimaryCharcoal200Brush}"
                   BorderThickness="0,0,0,1"
                   Margin="0,5,0,0"
@@ -342,10 +342,10 @@
                                    Visibility="{Binding Path=ViewPath, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource WatchTreeForegroundBrush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Children.Count}" Value="0">
-                                            <Setter Property="Foreground" Value="#4D4D4D" />
+                                            <Setter Property="Foreground" Value="{StaticResource WatchTreeIndexForegroundBrush}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -387,7 +387,7 @@
 
         <Border Grid.Row="1"
                 HorizontalAlignment="Stretch"
-                BorderBrush="#D3D3D3"
+                BorderBrush="{StaticResource WatchTreeLineBrush}"
                 CornerRadius="0,0,2,2"
                 BorderThickness="0">
             <Grid Name="ListLevelsGrid">
@@ -407,10 +407,10 @@
                            DockPanel.Dock="Right"
                            Margin="-10,0,0,2"
                            FontFamily="{StaticResource SourceCodePro}"
-                           Foreground="#D3D3D3"
+                           Foreground="{StaticResource WatchTreeForegroundBrush}"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                    {<Run Foreground="{StaticResource Blue300Brush}" Text="{Binding NumberOfItems}" />}</TextBlock>
+                    {<Run Foreground="{StaticResource WatchTreeAccentBrush}" Text="{Binding NumberOfItems}" />}</TextBlock>
 
                 <!--  Shows list@level labels in List  -->
                 <ListView Name="listLevelsView"
@@ -431,7 +431,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <ContentPresenter TextBlock.FontSize="10px" TextBlock.Foreground="#D3D3D3" />
+                                        <ContentPresenter TextBlock.FontSize="10px" TextBlock.Foreground="{StaticResource WatchTreeForegroundBrush}" />
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -448,12 +448,12 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock FontFamily="{StaticResource SourceCodePro}" FontSize="10">
-                                    <Run Foreground="#D3D3D3">@</Run>
+                                    <Run Foreground="{StaticResource WatchTreeForegroundBrush}">@</Run>
                                 </TextBlock>
                                 <TextBlock Name="indivListLevel"
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10">
-                                    <Run Foreground="#D3D3D3" Text="{Binding Path=.}" />
+                                    <Run Foreground="{StaticResource WatchTreeForegroundBrush}" Text="{Binding Path=.}" />
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>

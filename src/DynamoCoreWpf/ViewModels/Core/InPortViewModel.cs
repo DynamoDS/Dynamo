@@ -22,17 +22,19 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private bool isPythonNodePort;
 
-        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        // Marker and keep-list-structure colors come from the themed palette so they stay legible
+        // against a recolored node body.
+        private SolidColorBrush portValueMarkerColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortValueMarkerDefaultBrush"] as SolidColorBrush;
 
         private bool portDefaultValueMarkerVisible;
         private bool isFunctionNode;
 
-        internal static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-        internal static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
-        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        internal static SolidColorBrush PortValueMarkerBlue = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortValueMarkerBlueBrush"] as SolidColorBrush;
+        internal static SolidColorBrush PortValueMarkerRed = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortValueMarkerRedBrush"] as SolidColorBrush;
+        private static SolidColorBrush PortValueMarkerGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortValueMarkerGreyBrush"] as SolidColorBrush;
 
-        private static readonly SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
-        private static readonly SolidColorBrush PortBorderBrushColorKeepListStructure = new SolidColorBrush(Color.FromRgb(168, 181, 187));
+        private static readonly SolidColorBrush PortBackgroundColorKeepListStructure = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"] as SolidColorBrush;
+        private static readonly SolidColorBrush PortBorderBrushColorKeepListStructure = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBorderBrush"] as SolidColorBrush;
 
         /// <summary>
         /// Returns whether this port has a default value that can be used.

@@ -1,0 +1,109 @@
+<!--
+  Syntax definition for DesignScript, light theme variant (DYN-6228).
+
+  Same rule set as DesignScript.Resources.SyntaxHighlighting.xshd; only the colors differ.
+  Keep the two files' rules in sync: a keyword added to one must be added to the other.
+-->
+<SyntaxDefinition name="DesignScriptLight" extensions=".ds">
+  <Environment>
+    <Custom name="TypeReference" bold="false" italic="false" color="#03706E" />
+    <Custom name="UnknownEntity" bold="false" italic="false" color="#AB0404" />
+    <Default bold="false" italic="false" color="Black" bgcolor="#FBFAF8" />
+    <Selection bold="false" italic="false" color="#1A1A1A" bgcolor="#BFD7E8" />
+    <VRuler bold="false" italic="false" color="#7A9BB5" />
+    <InvalidLines bold="false" italic="false" color="#8A8578" />
+    <CaretMarker bold="false" italic="false" color="#8A8578" />
+    <LineNumbers bold="false" italic="false" color="#5C7FA0" bgcolor="#FBFAF8" />
+    <FoldLine bold="false" italic="false" color="Gray" bgcolor="Gray" />
+    <FoldMarker bold="false" italic="false" color="Gray" bgcolor="#FBFAF8" />
+    <SelectedFoldLine bold="false" italic="false" color="Gray" />
+    <EOLMarkers bold="false" italic="false" color="#8A8578" />
+    <SpaceMarkers bold="false" italic="false" color="#8A8578" />
+    <TabMarkers bold="false" italic="false" color="#8A8578" />
+  </Environment>
+  <Properties>
+    <Property name="LineComment" value="//" />
+  </Properties>
+  <RuleSets>
+    <RuleSet ignorecase="false">
+      <Delimiters>()[]{},:.`=;+-*/%!~#\ &amp;|^&gt;&lt;</Delimiters>
+      <Span name="Char" stopateol="true" color="#A05000" escapecharacter="\">
+        <Begin>'</Begin>
+        <End>'</End>
+      </Span>
+      <Span name="LineComment" stopateol="true" color="#4F7A2A">
+        <Begin>//</Begin>
+      </Span>
+      <Span name="MultiLineComment" stopateol="false" color="#4F7A2A">
+        <Begin>/*</Begin>
+        <End>*/</End>
+      </Span>
+      <Span name="String" stopateol="false" color="#A05000" escapecharacter="\">
+        <Begin>"</Begin>
+        <End>"</End>
+      </Span>
+      <KeyWords name="BuiltInStatements" color="#8A2BE2">
+        <Key word="local" />
+        <Key word="static" />
+        <Key word="this" />
+        <Key word="extends" />
+      </KeyWords>
+      <KeyWords name="ClassStatement" color="#1A7FB5">
+        <Key word="class" />
+      </KeyWords>
+      <KeyWords name="ExceptionHandlingStatements" color="#8A2BE2">
+        <Key word="throw" />
+        <Key word="catch" />
+        <Key word="try" />
+      </KeyWords>
+      <KeyWords name="Functions" color="#8A2BE2">
+        <Key word="def" />
+        <Key word="function" />
+        <Key word="constructor" />
+      </KeyWords>
+      <KeyWords name="Imports" color="#8A2BE2">
+        <Key word="import" />
+        <Key word="from" />
+      </KeyWords>
+      <KeyWords name="IterationStatements" color="#8A2BE2">
+        <Key word="for" />
+        <Key word="in" />
+        <Key word="while" />
+      </KeyWords>
+      <KeyWords name="JumpStatements" color="#8A2BE2">
+        <Key word="break" />
+        <Key word="continue" />
+        <Key word="return" />
+      </KeyWords>
+      <KeyWords name="AccessSpecifiers" color="#8A2BE2">
+        <Key word="public" />
+        <Key word="private" />
+        <Key word="protected" />
+      </KeyWords>
+      <KeyWords name="PrimitiveTypes" color="#8A2BE2">
+        <Key word="int" />
+        <Key word="double" />
+        <Key word="string" />
+        <Key word="bool" />
+        <Key word="var" />
+        <Key word="char" />
+        <Key word="void" />
+      </KeyWords>
+      <KeyWords name="Constants" color="#8A6D00">
+        <Key word="true" />
+        <Key word="false" />
+        <Key word="null" />
+      </KeyWords>
+      <KeyWords name="LanguageBlocks" color="#1A7FB5">
+        <Key word="Associative" />
+        <Key word="Imperative" />
+        <Key word="Options" />
+      </KeyWords>
+      <KeyWords name="SelectionStatements" color="#8A2BE2">
+        <Key word="elseif" />
+        <Key word="else" />
+        <Key word="if" />
+      </KeyWords>
+    </RuleSet>
+  </RuleSets>
+</SyntaxDefinition>

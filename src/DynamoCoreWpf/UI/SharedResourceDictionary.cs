@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using Dynamo.Configuration;
 
 namespace Dynamo.UI
 {
@@ -68,78 +69,166 @@ namespace Dynamo.UI
         private static ResourceDictionary inPortsDictionary;
         private static ResourceDictionary _liveChartDictionary;
 
-        public static string ThemesDirectory 
+        /// <summary>
+        /// Folder name of the theme that ships the complete set of resource dictionaries.
+        /// Every other theme folder only needs to contain the files it overrides.
+        /// </summary>
+        private const string BaseThemeFolderName = "Modern";
+
+        private static DynamoTheme currentTheme = DynamoTheme.Dark;
+
+        /// <summary>
+        /// The theme whose resource dictionaries are loaded.
+        /// </summary>
+        /// <remarks>
+        /// This must be assigned before the first Dynamo view is constructed, because
+        /// <see cref="SharedResourceDictionary"/> caches every dictionary by URI and WPF resolves
+        /// most colors through <c>StaticResource</c>. Assigning it later would leave the UI with a
+        /// mix of both themes, so callers should treat it as startup-only configuration.
+        /// </remarks>
+        public static DynamoTheme CurrentTheme
+        {
+            get { return currentTheme; }
+            set { currentTheme = value; }
+        }
+
+        /// <summary>
+        /// Maps a theme to the folder under <c>UI\Themes\</c> that holds its dictionaries.
+        /// </summary>
+        private static string GetThemeFolderName(DynamoTheme theme)
+        {
+            // The dark theme keeps its historical folder name so that the ~66 XAML files
+            // merging these dictionaries, and any package referencing them, keep working.
+            return theme == DynamoTheme.Dark ? BaseThemeFolderName : theme.ToString();
+        }
+
+        /// <summary>
+        /// Root folder holding all theme folders, e.g. <c>...\UI\Themes\</c>.
+        /// </summary>
+        private static string ThemesRootDirectory
         {
             get
             {
                 return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    @"UI\Themes\Modern\");
+                    @"UI\Themes\");
             }
+        }
+
+        /// <summary>
+        /// Directory the resource dictionaries of the <see cref="CurrentTheme"/> are loaded from.
+        /// </summary>
+        public static string ThemesDirectory
+        {
+            get
+            {
+                return Path.Combine(ThemesRootDirectory, GetThemeFolderName(CurrentTheme)) +
+                    Path.DirectorySeparatorChar;
+            }
+        }
+
+        /// <summary>
+        /// Resolves a dictionary file against the current theme, falling back to the base theme
+        /// when the current theme does not override that particular file.
+        /// </summary>
+        /// <param name="fileName">File name of the resource dictionary, e.g. "Ports.xaml".</param>
+        /// <returns>An absolute URI to the dictionary that should be loaded.</returns>
+        private static Uri GetThemedDictionaryUri(string fileName)
+        {
+            var themedPath = Path.Combine(ThemesDirectory, fileName);
+
+            // Per-file fallback lets a theme ship only the dictionaries whose colors differ,
+            // instead of duplicating all 13 files and drifting from the base theme over time.
+            if (!File.Exists(themedPath))
+            {
+                var basePath = Path.Combine(ThemesRootDirectory, BaseThemeFolderName, fileName);
+                if (File.Exists(basePath))
+                {
+                    return new Uri(basePath);
+                }
+            }
+
+            return new Uri(themedPath);
         }
 
         public static Uri DynamoModernDictionaryUri
         {
-            get {return new Uri(Path.Combine(ThemesDirectory, "DynamoModern.xaml")); }
+            get { return GetThemedDictionaryUri("DynamoModern.xaml"); }
         }
 
         public static Uri DataTemplatesDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DataTemplates.xaml")); }
+            get { return GetThemedDictionaryUri("DataTemplates.xaml"); }
         }
 
         public static Uri DynamoColorsAndBrushesDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoColorsAndBrushes.xaml")); }
+            get { return GetThemedDictionaryUri("DynamoColorsAndBrushes.xaml"); }
+        }
+
+        /// <summary>
+        /// URI of the palette belonging to the base theme, ignoring <see cref="CurrentTheme"/>.
+        /// </summary>
+        /// <remarks>
+        /// A theme dictionary merges this and then redefines only the keys it changes, so themes
+        /// stay small and automatically pick up keys added to the base palette.
+        /// </remarks>
+        public static Uri BaseDynamoColorsAndBrushesDictionaryUri
+        {
+            get
+            {
+                return new Uri(Path.Combine(ThemesRootDirectory, BaseThemeFolderName,
+                    "DynamoColorsAndBrushes.xaml"));
+            }
         }
 
         public static Uri DynamoConvertersDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoConverters.xaml")); }
+            get { return GetThemedDictionaryUri("DynamoConverters.xaml"); }
         }
 
         public static Uri DynamoTextDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoText.xaml")); }
+            get { return GetThemedDictionaryUri("DynamoText.xaml"); }
         }
 
         public static Uri MenuStyleDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "MenuStyleDictionary.xaml")); }
+            get { return GetThemedDictionaryUri("MenuStyleDictionary.xaml"); }
         }
 
         public static Uri ToolbarStyleDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "ToolbarStyleDictionary.xaml")); }
+            get { return GetThemedDictionaryUri("ToolbarStyleDictionary.xaml"); }
         }
 
         public static Uri ConnectorsDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "Connectors.xaml")); }
+            get { return GetThemedDictionaryUri("Connectors.xaml"); }
         }
 
         public static Uri PortsDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "Ports.xaml")); }
+            get { return GetThemedDictionaryUri("Ports.xaml"); }
         }
 
         public static Uri OutPortsDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "OutPorts.xaml")); }
+            get { return GetThemedDictionaryUri("OutPorts.xaml"); }
         }
 
         public static Uri InPortsDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "InPorts.xaml")); }
+            get { return GetThemedDictionaryUri("InPorts.xaml"); }
         }
 
         public static Uri SidebarGridDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "SidebarGridStyleDictionary.xaml")); }
+            get { return GetThemedDictionaryUri("SidebarGridStyleDictionary.xaml"); }
         }
 
         public static Uri LiveChartsDictionaryUri
         {
-            get { return new Uri(Path.Combine(ThemesDirectory, "LiveChartsStyle.xaml")); }
+            get { return GetThemedDictionaryUri("LiveChartsStyle.xaml"); }
         }
 
         public static ResourceDictionary LiveChartDictionary
