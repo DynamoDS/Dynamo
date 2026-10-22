@@ -50,7 +50,7 @@
     <PackageVersion Include="System.Resources.Extensions" Version="5.0.0" />
     
     <!-- Third-party -->
-    <PackageVersion Include="Autodesk.IDSDK" Version="1.2.10" />
+    <PackageVersion Include="Autodesk.IDSDK" Version="1.2.11" />
     <PackageVersion Include="AvalonEdit" Version="6.3.0.90" />
     <PackageVersion Include="Castle.Core" Version=" 5.1.1" />
     <PackageVersion Include="CommandLineParser" Version="2.9.1" />
