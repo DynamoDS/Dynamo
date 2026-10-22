@@ -1,11 +1,11 @@
 using Dynamo.Utilities;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -68,14 +68,41 @@ namespace DynamoUtilities
             //convert from json string to dictionary.
             try
             {
-                AllFlagsCache = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataFromCLI);
+                // System.Text.Json deserializes numbers as JsonElement by default for Dictionary<string, object>
+                // We need to convert them to the appropriate types
+                var rawCache = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(dataFromCLI);
+                
+                if (rawCache == null)
+                {
+                    // No flags could be deserialized; keep cache empty and return.
+                    RaiseMessageLogged("Failed to deserialize feature flags - received null result");
+                    return;
+                }
+                
+                AllFlagsCache = new Dictionary<string, object>();
+                
+                foreach (var kvp in rawCache)
+                {
+                    var element = kvp.Value;
+                    object value = element.ValueKind switch
+                    {
+                        JsonValueKind.String => element.GetString(),
+                        JsonValueKind.Number => element.TryGetInt64(out var longVal) ? longVal : element.GetDouble(),
+                        JsonValueKind.True => true,
+                        JsonValueKind.False => false,
+                        JsonValueKind.Null => null,
+                        _ => element.ToString()
+                    };
+                    AllFlagsCache[kvp.Key] = value;
+                }
+                
                 // Invoke the flags retrieved event on the sync context which should be the main ui thread (if in Dynamo with UI) or the default SyncContext (if in headless mode).
                 syncContext?.Send((_) =>
                 {
                     FlagsRetrieved?.Invoke();
 
                 }, null);
-                var formattedFlags = JsonConvert.SerializeObject(AllFlagsCache, Formatting.Indented);
+                var formattedFlags = JsonSerializer.Serialize(AllFlagsCache, new JsonSerializerOptions { WriteIndented = true });
                 OnLogMessage($"retrieved feature flags with value: {formattedFlags}");
 
             }
