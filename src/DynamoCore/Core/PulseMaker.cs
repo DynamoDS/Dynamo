@@ -5,7 +5,7 @@ using Dynamo.Models;
 
 namespace Dynamo.Core
 {
-    internal class PulseMaker
+    internal class PulseMaker : IDisposable
     {
         #region Class Data Members and Properties
 
@@ -124,6 +124,59 @@ namespace Dynamo.Core
             evaluationInProgress = true;
 
             OnRunStarted();
+        }
+
+        #endregion
+
+        #region IDisposable Implementation
+
+        private bool disposed = false;
+
+        /// <summary>
+        /// Disposes the PulseMaker, stopping and disposing the internal timer
+        /// and clearing event subscribers to prevent memory leaks.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Protected implementation of Dispose pattern.
+        /// </summary>
+        /// <param name="disposing">True if called from Dispose(), false if called from finalizer</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Thread-safe disposal within the same lock used by timer callbacks
+                    lock (stateMutex)
+                    {
+                        // Stop the timer before disposing
+                        if (internalTimer != null && TimerPeriod > 0)
+                        {
+                            TimerPeriod = 0;
+                            evaluationRequestPending = false;
+                            evaluationInProgress = false;
+                            internalTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                        }
+
+                        // Clear event subscribers to prevent memory leaks
+                        RunStarted = null;
+                    }
+
+                    // Dispose managed resources outside the lock (Dispose can block)
+                    if (internalTimer != null)
+                    {
+                        internalTimer.Dispose();
+                    }
+                }
+
+                disposed = true;
+            }
         }
 
         #endregion
