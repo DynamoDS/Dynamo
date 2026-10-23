@@ -470,6 +470,11 @@ namespace Dynamo.Graph.Nodes
             get { return name; }
             set
             {
+                // Notify only on a real change, like the node's other settings. Custom node info
+                // updates and definition sync re-assign the same name, and listeners such as the
+                // workspace's AI change tracking must not read that as a person renaming the node.
+                if (string.Equals(name, value, StringComparison.Ordinal)) return;
+
                 name = value;
                 RaisePropertyChanged("Name");
             }
@@ -1018,6 +1023,54 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private AINodeChange aiChange;
+
+        /// <summary>
+        /// What the most recent AI Assistant turn that touched this node did to it: whether it placed,
+        /// modified or moved the node, which turn that was, and which inputs changed from what to what.
+        /// Null when no AI turn has touched the node, or when the record has been cleared because a
+        /// person edited the node or undo/redo changed it.
+        /// </summary>
+        /// <remarks>
+        /// This is a review aid only. It does not affect execution, it is never written to the .dyn
+        /// file or to undo snapshots, and setting or clearing it never marks the workspace as having
+        /// unsaved changes. Records are added through
+        /// <see cref="WorkspaceModel.RecordAINodeChange"/>.
+        /// </remarks>
+        [JsonIgnore]
+        public AINodeChange AIChange
+        {
+            get => aiChange;
+            internal set
+            {
+                if (ReferenceEquals(aiChange, value)) return;
+
+                var wasTouched = aiChange != null;
+                aiChange = value;
+                RaisePropertyChanged(nameof(AIChange));
+                if (wasTouched != (aiChange != null))
+                {
+                    RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+                }
+            }
+        }
+
+        /// <summary>
+        /// True while this node carries an AI change record (see <see cref="AIChange"/>): an AI
+        /// Assistant turn placed, modified or moved it, and no person has edited it since. Never saved
+        /// to the .dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsRecentlyModifiedByAI => aiChange != null;
+
+        /// <summary>
+        /// Removes this node's AI change record, if it has one.
+        /// </summary>
+        internal void ClearAIChange()
+        {
+            AIChange = null;
+        }
+
         /// <summary>
         /// A flag indicating whether the node is in transient mode.
         /// When a node is in transient mode, the node will not participate in execution,
@@ -1496,10 +1549,23 @@ namespace Dynamo.Graph.Nodes
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
+
+        /// <summary>
+        /// Raised when a frozen node is edited. Frozen nodes do not raise <see cref="Modified"/>,
+        /// because that would schedule a run. Listeners can still react to the edit itself.
+        /// </summary>
+        internal event Action<NodeModel> EditedWhileFrozen;
+
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (!RaisesModificationEvents || IsFrozen)
+            if (!RaisesModificationEvents)
                 return;
+
+            if (IsFrozen)
+            {
+                EditedWhileFrozen?.Invoke(this);
+                return;
+            }
 
             MarkNodeAsModified(forceExecute);
             var handler = Modified;
