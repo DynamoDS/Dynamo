@@ -1148,7 +1148,12 @@ namespace Dynamo.Graph.Workspaces
                 turn.RememberMarkBeforeTurn(nodeId, node.AIChange);
             }
 
-            var change = AINodeChange.Apply(turn.GetNodeChange(nodeId), nodeId, kind, turn.TurnId, turn.TurnNumber, inputName, before, after);
+            var change = AINodeChange.Apply(
+                turn.GetNodeChange(nodeId),
+                nodeId,
+                turn.TurnId,
+                turn.TurnNumber,
+                new AIChangeReport(kind, inputName, before, after));
             turn.SetNodeChange(nodeId, change);
 
             if (change != null)
