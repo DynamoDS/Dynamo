@@ -1250,6 +1250,41 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Node settings whose change counts as a person editing the node. Changing them does not raise
+        /// <see cref="NodeModel.Modified"/> (freezing, preview, labels, input/output flags) or not always
+        /// (name, lacing), so they are watched through <see cref="ModelBase"/> property notifications.
+        /// </summary>
+        private static readonly HashSet<string> aiChangeClearingSettings = new HashSet<string>(StringComparer.Ordinal)
+        {
+            nameof(NodeModel.IsFrozen),
+            nameof(NodeModel.IsVisible),
+            nameof(NodeModel.DisplayLabels),
+            nameof(NodeModel.IsSetAsInput),
+            nameof(NodeModel.IsSetAsOutput),
+            nameof(NodeModel.ArgumentLacing),
+            nameof(NodeModel.Name),
+        };
+
+        /// <summary>
+        /// A person changed one of a node's settings, for example froze it or turned its preview off or
+        /// on. Like any other edit by a person, that clears the node's AI change record.
+        /// </summary>
+        private void ClearAIChangeOnSettingChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (IsAIEditInProgress
+                || sender is not NodeModel node
+                || node.IsTransient
+                || node.AIChange == null
+                || e.PropertyName == null
+                || !aiChangeClearingSettings.Contains(e.PropertyName))
+            {
+                return;
+            }
+
+            node.ClearAIChange();
+        }
+
+        /// <summary>
         /// A person edited a frozen node. Frozen nodes do not raise <see cref="NodeModel.Modified"/>,
         /// so this is the only place such an edit clears the AI change record.
         /// </summary>
@@ -1843,6 +1878,7 @@ namespace Dynamo.Graph.Workspaces
         {
             node.Modified += NodeModified;
             node.EditedWhileFrozen += ClearAIChangeOnFrozenEdit;
+            node.PropertyChanged += ClearAIChangeOnSettingChange;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -1930,6 +1966,7 @@ namespace Dynamo.Graph.Workspaces
             node.UpdateASTCollection -= OnToggleNodeFreeze;
             node.Modified -= NodeModified;
             node.EditedWhileFrozen -= ClearAIChangeOnFrozenEdit;
+            node.PropertyChanged -= ClearAIChangeOnSettingChange;
             node.Dispose();
         }
 
