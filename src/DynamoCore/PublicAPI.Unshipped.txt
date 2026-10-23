@@ -15,3 +15,35 @@ Dynamo.Models.EvaluationCompletedEventArgs.WasCancelled.get -> bool
 Dynamo.Graph.Workspaces.WorkspaceModel.MarkAsIndependentlyModified() -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup() -> System.IDisposable
 Dynamo.Graph.Workspaces.WorkspaceModel.IsUndoActionGroupOpen.get -> bool
+Dynamo.Graph.Nodes.AIChangeKind
+Dynamo.Graph.Nodes.AIChangeKind.Modified = 1 -> Dynamo.Graph.Nodes.AIChangeKind
+Dynamo.Graph.Nodes.AIChangeKind.Moved = 0 -> Dynamo.Graph.Nodes.AIChangeKind
+Dynamo.Graph.Nodes.AIChangeKind.Placed = 2 -> Dynamo.Graph.Nodes.AIChangeKind
+Dynamo.Graph.Nodes.AIInputChange
+Dynamo.Graph.Nodes.AIInputChange.After.get -> string
+Dynamo.Graph.Nodes.AIInputChange.Before.get -> string
+Dynamo.Graph.Nodes.AIInputChange.InputName.get -> string
+Dynamo.Graph.Nodes.AINodeChange
+Dynamo.Graph.Nodes.AINodeChange.InputChanges.get -> System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Nodes.AIInputChange>
+Dynamo.Graph.Nodes.AINodeChange.Kind.get -> Dynamo.Graph.Nodes.AIChangeKind
+Dynamo.Graph.Nodes.AINodeChange.NodeId.get -> System.Guid
+Dynamo.Graph.Nodes.AINodeChange.TurnId.get -> string
+Dynamo.Graph.Nodes.AINodeChange.TurnNumber.get -> int
+Dynamo.Graph.Nodes.NodeModel.AIChange.get -> Dynamo.Graph.Nodes.AINodeChange
+Dynamo.Graph.Nodes.NodeModel.IsRecentlyModifiedByAI.get -> bool
+Dynamo.Graph.Workspaces.AITurnSummary
+Dynamo.Graph.Workspaces.AITurnSummary.DeletedNodeCount.get -> int
+Dynamo.Graph.Workspaces.AITurnSummary.NodeIds.get -> System.Collections.Generic.IReadOnlyList<System.Guid>
+Dynamo.Graph.Workspaces.AITurnSummary.Nodes.get -> System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Nodes.AINodeChange>
+Dynamo.Graph.Workspaces.AITurnSummary.RemovedConnectorCount.get -> int
+Dynamo.Graph.Workspaces.AITurnSummary.TurnId.get -> string
+Dynamo.Graph.Workspaces.AITurnSummary.TurnNumber.get -> int
+Dynamo.Graph.Workspaces.WorkspaceModel.ClearAIChanges() -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.GetAITurnSummaries() -> System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Workspaces.AITurnSummary>
+Dynamo.Graph.Workspaces.WorkspaceModel.GetAITurnSummary(string turnId) -> Dynamo.Graph.Workspaces.AITurnSummary
+Dynamo.Graph.Workspaces.WorkspaceModel.IsAIEditInProgress.get -> bool
+Dynamo.Graph.Workspaces.WorkspaceModel.IsAIEditInProgress.set -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.RecordAIConnectorAdded(System.Guid startNodeId, int startPortIndex, System.Guid endNodeId, int endPortIndex, string turnId) -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.RecordAIConnectorRemoved(System.Guid startNodeId, int startPortIndex, System.Guid endNodeId, int endPortIndex, string turnId) -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.RecordAINodeChange(System.Guid nodeId, Dynamo.Graph.Nodes.AIChangeKind kind, string turnId, string inputName = null, string before = null, string after = null) -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.RecordAINodeDeleted(System.Guid nodeId, string turnId) -> void

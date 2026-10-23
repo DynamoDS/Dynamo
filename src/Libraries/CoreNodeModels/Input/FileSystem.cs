@@ -216,7 +216,9 @@ namespace CoreNodeModels.Input
 
             protected void Modified()
             {
-                node.OnNodeModified(forceExecute: true);
+                // The watched file or folder changed on disk. The node runs again, but nobody edited
+                // the graph, so this is reported as a change from outside it.
+                node.OnNodeModifiedByExternalChange(forceExecute: true);
             }
 
             public abstract void Dispose();
