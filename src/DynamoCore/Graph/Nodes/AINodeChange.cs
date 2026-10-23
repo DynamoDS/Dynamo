@@ -50,8 +50,9 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// What the most recent AI Assistant turn that touched a node did to it. Read it from
-    /// <see cref="NodeModel.AIChange"/>.
+    /// What one AI Assistant turn did to one node. A node's current record is
+    /// <see cref="NodeModel.AIChange"/>; a turn keeps its own copy of every node it touched, which
+    /// <see cref="Dynamo.Graph.Workspaces.AITurnSummary.Nodes"/> returns.
     /// </summary>
     /// <remarks>
     /// The record holds the net effect of the turn: the node before the turn compared with the node
@@ -61,12 +62,10 @@ namespace Dynamo.Graph.Nodes
     /// </remarks>
     public sealed class AINodeChange
     {
-        /// <summary>Input name used when a caller reports a modification without naming the input.</summary>
-        internal const string UnnamedInput = "(node)";
-
         private static readonly IReadOnlyList<AIInputChange> NoInputs = Array.Empty<AIInputChange>();
 
         private AINodeChange(
+            Guid nodeId,
             AIChangeKind kind,
             string turnId,
             int turnNumber,
@@ -75,6 +74,7 @@ namespace Dynamo.Graph.Nodes
             string positionBefore,
             string positionAfter)
         {
+            NodeId = nodeId;
             Kind = kind;
             TurnId = turnId;
             TurnNumber = turnNumber;
@@ -83,6 +83,9 @@ namespace Dynamo.Graph.Nodes
             PositionBefore = positionBefore;
             PositionAfter = positionAfter;
         }
+
+        /// <summary>The node the turn changed.</summary>
+        public Guid NodeId { get; }
 
         /// <summary>How the turn changed the node.</summary>
         public AIChangeKind Kind { get; }
@@ -116,14 +119,16 @@ namespace Dynamo.Graph.Nodes
         /// net effect on the node is nothing.
         /// </summary>
         /// <param name="current">The node's record so far; null when it has none.</param>
+        /// <param name="nodeId">The node that changed.</param>
         /// <param name="kind">What the change was.</param>
         /// <param name="turnId">Turn that made the change.</param>
         /// <param name="turnNumber">Display number of that turn.</param>
-        /// <param name="inputName">For <see cref="AIChangeKind.Modified"/>: the input that changed.</param>
+        /// <param name="inputName">For <see cref="AIChangeKind.Modified"/>: the input that changed. Required.</param>
         /// <param name="before">The input's value (or for a move, the position) before the change.</param>
         /// <param name="after">The input's value (or for a move, the position) after the change.</param>
         internal static AINodeChange Apply(
             AINodeChange current,
+            Guid nodeId,
             AIChangeKind kind,
             string turnId,
             int turnNumber,
@@ -140,7 +145,7 @@ namespace Dynamo.Graph.Nodes
             // Everything about a node the turn placed is new, so there is no before/after to keep.
             if (kind == AIChangeKind.Placed || current?.Kind == AIChangeKind.Placed)
             {
-                return new AINodeChange(AIChangeKind.Placed, turnId, turnNumber, NoInputs, false, null, null);
+                return new AINodeChange(nodeId, AIChangeKind.Placed, turnId, turnNumber, NoInputs, false, null, null);
             }
 
             var inputs = current?.InputChanges.ToList() ?? new List<AIInputChange>();
@@ -161,9 +166,12 @@ namespace Dynamo.Graph.Nodes
             }
             else
             {
-                var unnamed = string.IsNullOrEmpty(inputName);
-                var name = unnamed ? UnnamedInput : inputName;
-                var index = inputs.FindIndex(i => string.Equals(i.InputName, name, StringComparison.Ordinal));
+                if (string.IsNullOrEmpty(inputName))
+                {
+                    throw new ArgumentException("A modified node must name the input that changed.", nameof(inputName));
+                }
+
+                var index = inputs.FindIndex(i => string.Equals(i.InputName, inputName, StringComparison.Ordinal));
 
                 // Keep the value the input had before the turn; follow its latest value.
                 var turnBefore = index >= 0 ? inputs[index].Before : before;
@@ -172,17 +180,16 @@ namespace Dynamo.Graph.Nodes
                     inputs.RemoveAt(index);
                 }
 
-                // An input changed and then changed back is not a change. A modification reported
-                // without an input name cannot be compared, so it is always kept.
-                if (unnamed || !string.Equals(turnBefore, after, StringComparison.Ordinal))
+                // An input changed and then changed back is not a change.
+                if (!string.Equals(turnBefore, after, StringComparison.Ordinal))
                 {
-                    inputs.Insert(index >= 0 ? index : inputs.Count, new AIInputChange(name, turnBefore, after));
+                    inputs.Insert(index >= 0 ? index : inputs.Count, new AIInputChange(inputName, turnBefore, after));
                 }
             }
 
             if (inputs.Count > 0)
             {
-                return new AINodeChange(AIChangeKind.Modified, turnId, turnNumber, inputs.AsReadOnly(), hasMove, positionBefore, positionAfter);
+                return new AINodeChange(nodeId, AIChangeKind.Modified, turnId, turnNumber, inputs.AsReadOnly(), hasMove, positionBefore, positionAfter);
             }
 
             // A node moved back to where it started has not moved. Positions the caller did not
@@ -191,7 +198,7 @@ namespace Dynamo.Graph.Nodes
                 && !(positionBefore != null && string.Equals(positionBefore, positionAfter, StringComparison.Ordinal));
             if (moved)
             {
-                return new AINodeChange(AIChangeKind.Moved, turnId, turnNumber, NoInputs, hasMove, positionBefore, positionAfter);
+                return new AINodeChange(nodeId, AIChangeKind.Moved, turnId, turnNumber, NoInputs, hasMove, positionBefore, positionAfter);
             }
 
             return null;

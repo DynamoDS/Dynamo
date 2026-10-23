@@ -470,6 +470,11 @@ namespace Dynamo.Graph.Nodes
             get { return name; }
             set
             {
+                // Notify only on a real change, like the node's other settings. Custom node info
+                // updates and definition sync re-assign the same name, and listeners such as the
+                // workspace's AI change tracking must not read that as a person renaming the node.
+                if (string.Equals(name, value, StringComparison.Ordinal)) return;
+
                 name = value;
                 RaisePropertyChanged("Name");
             }

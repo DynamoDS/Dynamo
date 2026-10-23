@@ -1108,14 +1108,15 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Records that an AI Assistant turn placed, modified or moved a node. Several changes from the
-        /// same turn are combined into the net effect of the turn (see <see cref="AINodeChange"/>); a
-        /// change from a new turn replaces the node's previous record. Never marks the workspace as
-        /// having unsaved changes.
+        /// same turn are combined into the net effect of the turn (see <see cref="AINodeChange"/>). The
+        /// turn keeps its own copy of the result; the node's current record
+        /// (<see cref="NodeModel.AIChange"/>) shows it too, replacing a record from an earlier turn.
+        /// Never marks the workspace as having unsaved changes.
         /// </summary>
         /// <param name="nodeId">The node that changed. Unknown and transient nodes are ignored.</param>
         /// <param name="kind">What the change was.</param>
         /// <param name="turnId">Identifies the turn, for example the id of the undo group that holds its edits.</param>
-        /// <param name="inputName">For <see cref="AIChangeKind.Modified"/>: the port or setting that changed.</param>
+        /// <param name="inputName">For <see cref="AIChangeKind.Modified"/>, required: the port or setting that changed.</param>
         /// <param name="before">The input's value before the change, or for a move the position before it, as display text.</param>
         /// <param name="after">The input's value after the change, or for a move the position after it, as display text.</param>
         public void RecordAINodeChange(
@@ -1126,38 +1127,70 @@ namespace Dynamo.Graph.Workspaces
             string before = null,
             string after = null)
         {
-            var turn = GetOrCreateAITurn(turnId);
+            ValidateAITurnId(turnId);
+            if (kind == AIChangeKind.Modified && string.IsNullOrEmpty(inputName))
+            {
+                throw new ArgumentException("A modified node must name the input that changed.", nameof(inputName));
+            }
+
             var node = Nodes.FirstOrDefault(n => n.GUID == nodeId);
             if (node == null || node.IsTransient)
             {
                 return;
             }
 
-            node.AIChange = AINodeChange.Apply(node.AIChange, kind, turn.TurnId, turn.TurnNumber, inputName, before, after);
+            // Combine with what this turn already recorded for the node, from the turn's own copy: the
+            // node's current record may have been cleared by a person's edit since, or belong to an
+            // earlier turn.
+            var turn = GetOrCreateAITurn(turnId);
+            if (node.AIChange == null || !string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+            {
+                turn.RememberMarkBeforeTurn(nodeId, node.AIChange);
+            }
+
+            var change = AINodeChange.Apply(turn.GetNodeChange(nodeId), nodeId, kind, turn.TurnId, turn.TurnNumber, inputName, before, after);
+            turn.SetNodeChange(nodeId, change);
+
+            if (change != null)
+            {
+                node.AIChange = change;
+                return;
+            }
+
+            // The turn's net effect on the node is now nothing, so the node goes back to the record it
+            // had before this turn touched it. If a person has edited the node since, it has none.
+            var markBeforeTurn = turn.TakeMarkBeforeTurn(nodeId);
+            if (node.AIChange != null && string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+            {
+                node.AIChange = markBeforeTurn;
+            }
         }
 
         /// <summary>
-        /// Records that an AI Assistant turn is deleting a node. Call it before the node is deleted. A
-        /// node the same turn placed is not counted, because the graph never had it before the turn.
+        /// Records that an AI Assistant turn is deleting a node. Call it before the node is deleted:
+        /// a node that is not in the workspace is ignored. A node the same turn placed is neither listed
+        /// nor counted, because the graph never had it before the turn; any other deleted node is counted
+        /// once, however often it is reported, and is no longer listed among the turn's changed nodes.
         /// Report the connections the deletion removes with <see cref="RecordAIConnectorRemoved"/>.
         /// </summary>
         /// <param name="nodeId">The node being deleted.</param>
         /// <param name="turnId">Identifies the turn.</param>
         public void RecordAINodeDeleted(Guid nodeId, string turnId)
         {
-            var turn = GetOrCreateAITurn(turnId);
+            ValidateAITurnId(turnId);
             var node = Nodes.FirstOrDefault(n => n.GUID == nodeId);
-            if (node != null && node.IsTransient)
+            if (node == null || node.IsTransient)
             {
                 return;
             }
 
-            var placedThisTurn = node?.AIChange != null
-                && node.AIChange.Kind == AIChangeKind.Placed
-                && string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal);
+            var turn = GetOrCreateAITurn(turnId);
+            var placedThisTurn = turn.GetNodeChange(nodeId)?.Kind == AIChangeKind.Placed;
+            turn.SetNodeChange(nodeId, null);
+            turn.TakeMarkBeforeTurn(nodeId);
             if (!placedThisTurn)
             {
-                turn.DeletedNodeCount++;
+                turn.NodeDeleted(nodeId);
             }
         }
 
@@ -1220,14 +1253,20 @@ namespace Dynamo.Graph.Workspaces
             }
 
             aiTurns.Clear();
+            lastAITurnNumber = 0;
         }
 
-        private AITurnState GetOrCreateAITurn(string turnId)
+        private static void ValidateAITurnId(string turnId)
         {
             if (string.IsNullOrEmpty(turnId))
             {
                 throw new ArgumentException("An AI change must name the turn that made it.", nameof(turnId));
             }
+        }
+
+        private AITurnState GetOrCreateAITurn(string turnId)
+        {
+            ValidateAITurnId(turnId);
 
             if (!aiTurns.TryGetValue(turnId, out var turn))
             {
@@ -1238,15 +1277,9 @@ namespace Dynamo.Graph.Workspaces
             return turn;
         }
 
-        private AITurnSummary BuildAITurnSummary(AITurnState turn)
+        private static AITurnSummary BuildAITurnSummary(AITurnState turn)
         {
-            var nodeIds = Nodes
-                .Where(n => n.AIChange != null && string.Equals(n.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
-                .Select(n => n.GUID)
-                .ToList()
-                .AsReadOnly();
-
-            return new AITurnSummary(turn.TurnId, turn.TurnNumber, nodeIds, turn.DeletedNodeCount, turn.RemovedConnectorCount);
+            return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount, turn.RemovedConnectorCount);
         }
 
         /// <summary>

@@ -26,6 +26,7 @@ Dynamo.Graph.Nodes.AIInputChange.InputName.get -> string
 Dynamo.Graph.Nodes.AINodeChange
 Dynamo.Graph.Nodes.AINodeChange.InputChanges.get -> System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Nodes.AIInputChange>
 Dynamo.Graph.Nodes.AINodeChange.Kind.get -> Dynamo.Graph.Nodes.AIChangeKind
+Dynamo.Graph.Nodes.AINodeChange.NodeId.get -> System.Guid
 Dynamo.Graph.Nodes.AINodeChange.TurnId.get -> string
 Dynamo.Graph.Nodes.AINodeChange.TurnNumber.get -> int
 Dynamo.Graph.Nodes.NodeModel.AIChange.get -> Dynamo.Graph.Nodes.AINodeChange
@@ -33,6 +34,7 @@ Dynamo.Graph.Nodes.NodeModel.IsRecentlyModifiedByAI.get -> bool
 Dynamo.Graph.Workspaces.AITurnSummary
 Dynamo.Graph.Workspaces.AITurnSummary.DeletedNodeCount.get -> int
 Dynamo.Graph.Workspaces.AITurnSummary.NodeIds.get -> System.Collections.Generic.IReadOnlyList<System.Guid>
+Dynamo.Graph.Workspaces.AITurnSummary.Nodes.get -> System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Nodes.AINodeChange>
 Dynamo.Graph.Workspaces.AITurnSummary.RemovedConnectorCount.get -> int
 Dynamo.Graph.Workspaces.AITurnSummary.TurnId.get -> string
 Dynamo.Graph.Workspaces.AITurnSummary.TurnNumber.get -> int
