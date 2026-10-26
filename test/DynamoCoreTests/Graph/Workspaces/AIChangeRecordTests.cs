@@ -148,7 +148,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<ArgumentException>(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, null));
             Assert.Throws<ArgumentException>(() => Workspace.RecordAINodeDeleted(node.GUID, string.Empty));
-            Assert.Throws<ArgumentException>(() => Workspace.RecordAIConnectorRemoved(null, Guid.NewGuid(), 0, Guid.NewGuid(), 0));
+            Assert.Throws<ArgumentException>(() => Workspace.RecordAIConnectorRemoved(Guid.NewGuid(), 0, Guid.NewGuid(), 0, null));
         }
 
         [Test]
@@ -342,14 +342,14 @@ namespace Dynamo.Tests
             var c = Guid.NewGuid();
 
             // Existed before the turn and removed: counted, once.
-            Workspace.RecordAIConnectorRemoved(TurnA, a, 0, b, 0);
-            Workspace.RecordAIConnectorRemoved(TurnA, a, 0, b, 0);
+            Workspace.RecordAIConnectorRemoved(a, 0, b, 0, TurnA);
+            Workspace.RecordAIConnectorRemoved(a, 0, b, 0, TurnA);
             // Added and removed in the same turn: not counted.
-            Workspace.RecordAIConnectorAdded(TurnA, a, 0, c, 1);
-            Workspace.RecordAIConnectorRemoved(TurnA, a, 0, c, 1);
+            Workspace.RecordAIConnectorAdded(a, 0, c, 1, TurnA);
+            Workspace.RecordAIConnectorRemoved(a, 0, c, 1, TurnA);
             // Removed and put back in the same turn: not counted.
-            Workspace.RecordAIConnectorRemoved(TurnA, b, 0, c, 0);
-            Workspace.RecordAIConnectorAdded(TurnA, b, 0, c, 0);
+            Workspace.RecordAIConnectorRemoved(b, 0, c, 0, TurnA);
+            Workspace.RecordAIConnectorAdded(b, 0, c, 0, TurnA);
 
             Assert.AreEqual(1, Workspace.GetAITurnSummary(TurnA).RemovedConnectorCount);
         }
@@ -465,7 +465,7 @@ namespace Dynamo.Tests
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
             Workspace.RecordAINodeDeleted(node.GUID, TurnA);
-            Workspace.RecordAIConnectorRemoved(TurnA, Guid.NewGuid(), 0, Guid.NewGuid(), 0);
+            Workspace.RecordAIConnectorRemoved(Guid.NewGuid(), 0, Guid.NewGuid(), 0, TurnA);
             Assert.IsFalse(Workspace.HasUnsavedChanges);
 
             Workspace.ClearAIChanges();

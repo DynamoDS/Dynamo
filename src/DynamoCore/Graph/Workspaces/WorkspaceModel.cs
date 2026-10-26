@@ -1203,7 +1203,11 @@ namespace Dynamo.Graph.Workspaces
         /// Records that an AI Assistant turn added a connection. Only needed so that a connection the
         /// same turn removes again (or a removed one the turn puts back) is not counted.
         /// </summary>
-        public void RecordAIConnectorAdded(string turnId, Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex)
+        /// <remarks>
+        /// Like the other record methods, the turn comes after what is recorded: here the connection's
+        /// two ends.
+        /// </remarks>
+        public void RecordAIConnectorAdded(Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex, string turnId)
         {
             GetOrCreateAITurn(turnId).ConnectorAdded(
                 AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
@@ -1213,7 +1217,7 @@ namespace Dynamo.Graph.Workspaces
         /// Records that an AI Assistant turn removed a connection, including one removed because a node
         /// at either end was deleted.
         /// </summary>
-        public void RecordAIConnectorRemoved(string turnId, Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex)
+        public void RecordAIConnectorRemoved(Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex, string turnId)
         {
             GetOrCreateAITurn(turnId).ConnectorRemoved(
                 AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));

@@ -43,7 +43,7 @@ Dynamo.Graph.Workspaces.WorkspaceModel.GetAITurnSummaries() -> System.Collection
 Dynamo.Graph.Workspaces.WorkspaceModel.GetAITurnSummary(string turnId) -> Dynamo.Graph.Workspaces.AITurnSummary
 Dynamo.Graph.Workspaces.WorkspaceModel.IsAIEditInProgress.get -> bool
 Dynamo.Graph.Workspaces.WorkspaceModel.IsAIEditInProgress.set -> void
-Dynamo.Graph.Workspaces.WorkspaceModel.RecordAIConnectorAdded(string turnId, System.Guid startNodeId, int startPortIndex, System.Guid endNodeId, int endPortIndex) -> void
-Dynamo.Graph.Workspaces.WorkspaceModel.RecordAIConnectorRemoved(string turnId, System.Guid startNodeId, int startPortIndex, System.Guid endNodeId, int endPortIndex) -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.RecordAIConnectorAdded(System.Guid startNodeId, int startPortIndex, System.Guid endNodeId, int endPortIndex, string turnId) -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.RecordAIConnectorRemoved(System.Guid startNodeId, int startPortIndex, System.Guid endNodeId, int endPortIndex, string turnId) -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.RecordAINodeChange(System.Guid nodeId, Dynamo.Graph.Nodes.AIChangeKind kind, string turnId, string inputName = null, string before = null, string after = null) -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.RecordAINodeDeleted(System.Guid nodeId, string turnId) -> void
