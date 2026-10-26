@@ -1334,11 +1334,12 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// A person edited a frozen node. Frozen nodes do not raise <see cref="NodeModel.Modified"/>,
-        /// so this is the only place such an edit clears the AI change record.
+        /// so this is the only place such an edit clears the AI change record. A change from outside
+        /// the graph, such as a watched file changing on disk, is not an edit and keeps it.
         /// </summary>
         private void ClearAIChangeOnFrozenEdit(NodeModel node)
         {
-            if (node.IsTransient || IsAIEditInProgress)
+            if (node.IsTransient || IsAIEditInProgress || node.IsExternalChangeInProgress)
             {
                 return;
             }
@@ -1959,8 +1960,9 @@ namespace Dynamo.Graph.Workspaces
             }
 
             // A person editing the node takes over from the AI, so its AI change record goes.
-            // DynamoMCP's own edits keep it, because it sets IsAIEditInProgress while it edits.
-            if (!IsAIEditInProgress)
+            // DynamoMCP's own edits keep it, because it sets IsAIEditInProgress while it edits. So does a
+            // change from outside the graph, such as a watched file changing on disk: nobody edited it.
+            if (!IsAIEditInProgress && !node.IsExternalChangeInProgress)
             {
                 node.ClearAIChange();
             }

@@ -1573,6 +1573,33 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// True only while <see cref="OnNodeModifiedByExternalChange"/> is reporting a change that came
+        /// from outside the graph, so listeners can tell it apart from an edit to the graph.
+        /// </summary>
+        [JsonIgnore]
+        internal bool IsExternalChangeInProgress { get; private set; }
+
+        /// <summary>
+        /// Like <see cref="OnNodeModified"/>, for a change that comes from outside the graph rather than
+        /// from an edit to it, for example a watched file changing on disk. The node is marked modified
+        /// and runs again as usual, but nobody edited it, so it keeps its AI change record
+        /// (<see cref="AIChange"/>).
+        /// </summary>
+        /// <param name="forceExecute">As for <see cref="OnNodeModified"/>.</param>
+        internal void OnNodeModifiedByExternalChange(bool forceExecute = false)
+        {
+            IsExternalChangeInProgress = true;
+            try
+            {
+                OnNodeModified(forceExecute);
+            }
+            finally
+            {
+                IsExternalChangeInProgress = false;
+            }
+        }
+
+        /// <summary>
         /// Event fired when the node's DesignScript AST should be updated.
         /// This event deletes the frozen nodes from AST collection.
         /// </summary>

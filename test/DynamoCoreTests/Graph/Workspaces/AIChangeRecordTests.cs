@@ -457,6 +457,42 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void ChangeFromOutsideTheGraphKeepsTheRecordButStillMarksTheNodeModified()
+        {
+            // How a File From Path node reports its file changing on disk.
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            var modifiedCount = 0;
+            node.Modified += _ => modifiedCount++;
+
+            node.OnNodeModifiedByExternalChange(forceExecute: true);
+
+            Assert.AreEqual(1, modifiedCount, "The node is still reported modified, so it runs again.");
+            Assert.IsNotNull(node.AIChange, "Nobody edited the node, so it keeps its record.");
+            Assert.IsFalse(node.IsExternalChangeInProgress);
+
+            // A person's edit afterwards still clears it.
+            node.OnNodeModified();
+            Assert.IsNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeFromOutsideTheGraphKeepsTheRecordOfAFrozenNode()
+        {
+            var node = AddNumberNode();
+            AsAIEdit(() => node.IsFrozen = true);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Frozen", "off", "on");
+
+            node.OnNodeModifiedByExternalChange(forceExecute: true);
+            Assert.IsNotNull(node.AIChange);
+
+            node.OnNodeModified();
+            Assert.IsNull(node.AIChange, "A person's edit to the frozen node still clears it.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void PersonFreezingOrEditingAFrozenNodeClearsItsRecord()
         {
             var frozenByPerson = AddNumberNode();
