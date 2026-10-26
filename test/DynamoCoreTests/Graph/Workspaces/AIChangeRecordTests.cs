@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using CoreNodeModels.Input;
 using Dynamo.Graph;
@@ -474,6 +475,55 @@ namespace Dynamo.Tests
             // A person's edit afterwards still clears it.
             node.OnNodeModified();
             Assert.IsNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeFromOutsideTheGraphIsSeenOnlyOnTheThreadReportingIt()
+        {
+            var node = AddNumberNode();
+            var seenOnReportingThread = false;
+            var seenOnAnotherThread = true;
+            Action<NodeModel> listener = n =>
+            {
+                seenOnReportingThread = n.IsExternalChangeInProgress;
+                // Like a second file-watcher callback, or a person's edit on the UI thread, at the same moment.
+                seenOnAnotherThread = Task.Run(() => n.IsExternalChangeInProgress).Result;
+            };
+            node.Modified += listener;
+
+            node.OnNodeModifiedByExternalChange(forceExecute: true);
+            node.Modified -= listener;
+
+            Assert.IsTrue(seenOnReportingThread);
+            Assert.IsFalse(seenOnAnotherThread, "Another thread must see a person's edit as an edit.");
+            Assert.IsFalse(node.IsExternalChangeInProgress);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeFromOutsideTheGraphReportedInsideAnotherDoesNotEndItEarly()
+        {
+            var outer = AddNumberNode();
+            var inner = AddNumberNode();
+            Workspace.RecordAINodeChange(outer.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            Workspace.RecordAINodeChange(inner.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            var outerStillReported = false;
+            Action<NodeModel> listener = _ =>
+            {
+                inner.OnNodeModifiedByExternalChange(forceExecute: true);
+                outerStillReported = outer.IsExternalChangeInProgress;
+            };
+            outer.Modified += listener;
+
+            outer.OnNodeModifiedByExternalChange(forceExecute: true);
+            outer.Modified -= listener;
+
+            Assert.IsTrue(outerStillReported);
+            Assert.IsNotNull(outer.AIChange);
+            Assert.IsNotNull(inner.AIChange);
+            Assert.IsFalse(outer.IsExternalChangeInProgress);
+            Assert.IsFalse(inner.IsExternalChangeInProgress);
         }
 
         [Test]

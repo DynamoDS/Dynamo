@@ -1572,12 +1572,15 @@ namespace Dynamo.Graph.Nodes
             if (handler != null) handler(this);
         }
 
+        [ThreadStatic]
+        private static NodeModel externalChangeNode;
+
         /// <summary>
         /// True only while <see cref="OnNodeModifiedByExternalChange"/> is reporting a change that came
         /// from outside the graph, so listeners can tell it apart from an edit to the graph.
         /// </summary>
         [JsonIgnore]
-        internal bool IsExternalChangeInProgress { get; private set; }
+        internal bool IsExternalChangeInProgress => ReferenceEquals(externalChangeNode, this);
 
         /// <summary>
         /// Like <see cref="OnNodeModified"/>, for a change that comes from outside the graph rather than
@@ -1588,14 +1591,15 @@ namespace Dynamo.Graph.Nodes
         /// <param name="forceExecute">As for <see cref="OnNodeModified"/>.</param>
         internal void OnNodeModifiedByExternalChange(bool forceExecute = false)
         {
-            IsExternalChangeInProgress = true;
+            var previous = externalChangeNode;
+            externalChangeNode = this;
             try
             {
                 OnNodeModified(forceExecute);
             }
             finally
             {
-                IsExternalChangeInProgress = false;
+                externalChangeNode = previous;
             }
         }
 
