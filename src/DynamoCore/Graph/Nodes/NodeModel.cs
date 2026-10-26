@@ -1591,11 +1591,16 @@ namespace Dynamo.Graph.Nodes
         /// <param name="forceExecute">As for <see cref="OnNodeModified"/>.</param>
         internal void OnNodeModifiedByExternalChange(bool forceExecute = false)
         {
+            ReportExternalChange(this, forceExecute);
+        }
+
+        private static void ReportExternalChange(NodeModel node, bool forceExecute)
+        {
             var previous = externalChangeNode;
-            externalChangeNode = this;
+            externalChangeNode = node;
             try
             {
-                OnNodeModified(forceExecute);
+                node.OnNodeModified(forceExecute);
             }
             finally
             {
