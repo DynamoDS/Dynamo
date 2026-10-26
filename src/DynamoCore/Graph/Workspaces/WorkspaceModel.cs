@@ -1145,6 +1145,10 @@ namespace Dynamo.Graph.Workspaces
             var turn = GetOrCreateAITurn(turnId);
             if (node.AIChange == null || !string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
             {
+                // The turn is taking the node's record over: the first time it touches the node, or
+                // coming back to it after a person cleared the record or another turn replaced it. What
+                // the node shows now is what it goes back to if this turn's net effect becomes nothing,
+                // so a record a person cleared is not brought back. The turn's own history is kept.
                 turn.RememberMarkBeforeTurn(nodeId, node.AIChange);
             }
 
@@ -1190,10 +1194,12 @@ namespace Dynamo.Graph.Workspaces
             }
 
             var turn = GetOrCreateAITurn(turnId);
-            var placedThisTurn = turn.GetNodeChange(nodeId)?.Kind == AIChangeKind.Placed;
             turn.SetNodeChange(nodeId, null);
             turn.TakeMarkBeforeTurn(nodeId);
-            if (!placedThisTurn)
+
+            // Asked of the turn, not of its node changes: the first report removes the node's change,
+            // and a repeated report must still know the turn placed it.
+            if (!turn.PlacedNode(nodeId))
             {
                 turn.NodeDeleted(nodeId);
             }

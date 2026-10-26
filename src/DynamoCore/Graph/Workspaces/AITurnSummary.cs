@@ -63,16 +63,16 @@ namespace Dynamo.Graph.Workspaces
 
     /// <summary>
     /// Everything one turn recorded, kept by <see cref="WorkspaceModel"/>: its own copy of each node's
-    /// change, the nodes it deleted and the connections it added and removed.
+    /// change, the nodes it placed and deleted, and the connections it added and removed.
     /// </summary>
     internal sealed class AITurnState
     {
         private readonly List<Guid> nodeOrder = new List<Guid>();
         private readonly Dictionary<Guid, AINodeChange> nodeChanges = new Dictionary<Guid, AINodeChange>();
+        private readonly HashSet<Guid> placedNodes = new HashSet<Guid>();
         private readonly HashSet<Guid> deletedNodes = new HashSet<Guid>();
         private readonly Dictionary<Guid, AINodeChange> marksBeforeTurn = new Dictionary<Guid, AINodeChange>();
-        private readonly HashSet<string> addedConnectors = new HashSet<string>(StringComparer.Ordinal);
-        private readonly HashSet<string> removedConnectors = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, ConnectorPresence> connectors = new Dictionary<string, ConnectorPresence>(StringComparer.Ordinal);
 
         internal AITurnState(string turnId, int turnNumber)
         {
@@ -86,7 +86,7 @@ namespace Dynamo.Graph.Workspaces
 
         internal int DeletedNodeCount => deletedNodes.Count;
 
-        internal int RemovedConnectorCount => removedConnectors.Count;
+        internal int RemovedConnectorCount => connectors.Values.Count(c => c.ExistedBeforeTurn && !c.ExistsNow);
 
         /// <summary>The turn's changes to each node, in the order the turn first touched them.</summary>
         internal IReadOnlyList<AINodeChange> NodeChanges => nodeOrder.Select(id => nodeChanges[id]).ToList().AsReadOnly();
@@ -116,19 +116,32 @@ namespace Dynamo.Graph.Workspaces
             }
 
             nodeChanges[nodeId] = change;
+            if (change.Kind == AIChangeKind.Placed)
+            {
+                placedNodes.Add(nodeId);
+            }
         }
 
         /// <summary>
-        /// Remembers the record a node carried when this turn first touched it (null for none), so it
-        /// can be put back if the turn's net effect on the node turns out to be nothing. Only the first
-        /// call for a node while the turn has a change for it is kept.
+        /// Whether this turn placed the node. Kept apart from the node's change, so it is still known
+        /// after the change is removed, for example when the turn reports deleting the node.
+        /// </summary>
+        internal bool PlacedNode(Guid nodeId)
+        {
+            return placedNodes.Contains(nodeId);
+        }
+
+        /// <summary>
+        /// Remembers the record a node carried when this turn took it over (null for none), so it can be
+        /// put back if the turn's net effect on the node turns out to be nothing. Call it whenever the
+        /// node's current record is not this turn's: the first time the turn touches the node, and
+        /// again when the turn comes back to a node whose record a person cleared, or another turn
+        /// replaced, in the meantime. The latest call wins, so a record a person cleared never comes
+        /// back.
         /// </summary>
         internal void RememberMarkBeforeTurn(Guid nodeId, AINodeChange mark)
         {
-            if (!nodeChanges.ContainsKey(nodeId) && !marksBeforeTurn.ContainsKey(nodeId))
-            {
-                marksBeforeTurn[nodeId] = mark;
-            }
+            marksBeforeTurn[nodeId] = mark;
         }
 
         /// <summary>The record a node carried before this turn touched it, and forgets it.</summary>
@@ -155,10 +168,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal void ConnectorAdded(string key)
         {
-            if (!removedConnectors.Remove(key))
-            {
-                addedConnectors.Add(key);
-            }
+            ReportConnector(key, existsNow: true);
         }
 
         /// <summary>
@@ -167,10 +177,35 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal void ConnectorRemoved(string key)
         {
-            if (!addedConnectors.Remove(key))
+            ReportConnector(key, existsNow: false);
+        }
+
+        /// <summary>
+        /// The first report about a connection tells whether it existed before the turn: one the turn
+        /// added did not, one it removed did. Later reports only change whether it exists now, so a
+        /// repeated report changes nothing. A connection counts as removed when it existed before the
+        /// turn and does not exist now.
+        /// </summary>
+        private void ReportConnector(string key, bool existsNow)
+        {
+            var existedBeforeTurn = connectors.TryGetValue(key, out var known)
+                ? known.ExistedBeforeTurn
+                : !existsNow;
+            connectors[key] = new ConnectorPresence(existedBeforeTurn, existsNow);
+        }
+
+        /// <summary>Whether a connection existed before the turn, and whether it exists now.</summary>
+        private readonly struct ConnectorPresence
+        {
+            internal ConnectorPresence(bool existedBeforeTurn, bool existsNow)
             {
-                removedConnectors.Add(key);
+                ExistedBeforeTurn = existedBeforeTurn;
+                ExistsNow = existsNow;
             }
+
+            internal bool ExistedBeforeTurn { get; }
+
+            internal bool ExistsNow { get; }
         }
     }
 }

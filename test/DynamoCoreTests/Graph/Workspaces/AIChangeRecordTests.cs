@@ -4,11 +4,13 @@ using System.Reflection;
 using System.Xml;
 using CoreNodeModels.Input;
 using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using WatchNode = CoreNodeModels.Watch;
 
 namespace Dynamo.Tests
 {
@@ -276,6 +278,30 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void RecordAPersonClearedIsNotBroughtBackWhenTheSameTurnComesBack()
+        {
+            var node = AddNumberNode();
+
+            // Turn A marks the node, then turn B takes it over.
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "2", "3");
+
+            // A person renames the node, which clears its record.
+            node.Name = "Renamed";
+            Assert.IsNull(node.AIChange);
+
+            // Turn B comes back, marks the node again, then returns the value to where B started.
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "3", "4");
+            Assert.AreEqual(TurnB, node.AIChange?.TurnId);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "4", "2");
+
+            Assert.IsNull(node.AIChange, "Turn A's mark, which the rename cleared, must not come back.");
+            CollectionAssert.AreEqual(new[] { node.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds,
+                "Turn A's own history is kept.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ClearAIChangesRemovesEverythingAndRestartsTurnNumbering()
         {
             var node = AddNumberNode();
@@ -335,6 +361,22 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void NodePlacedInTheTurnAndReportedDeletedTwiceIsNotCounted()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.RecordAINodeDeleted(node.GUID, TurnA);
+            Workspace.RecordAINodeDeleted(node.GUID, TurnA);
+            Workspace.RemoveAndDisposeNode(node);
+
+            var summary = Workspace.GetAITurnSummary(TurnA);
+            Assert.AreEqual(0, summary.DeletedNodeCount);
+            CollectionAssert.IsEmpty(summary.NodeIds);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void RemovedConnectionsAreCountedAsTheTurnsNetEffect()
         {
             var a = Guid.NewGuid();
@@ -351,6 +393,28 @@ namespace Dynamo.Tests
             Workspace.RecordAIConnectorRemoved(b, 0, c, 0, TurnA);
             Workspace.RecordAIConnectorAdded(b, 0, c, 0, TurnA);
 
+            Assert.AreEqual(1, Workspace.GetAITurnSummary(TurnA).RemovedConnectorCount);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RepeatedConnectionReportsDoNotChangeTheCount()
+        {
+            var a = Guid.NewGuid();
+            var b = Guid.NewGuid();
+            var c = Guid.NewGuid();
+
+            // Added in the turn, then reported removed twice: the net effect is still nothing.
+            Workspace.RecordAIConnectorAdded(a, 0, b, 0, TurnA);
+            Workspace.RecordAIConnectorRemoved(a, 0, b, 0, TurnA);
+            Workspace.RecordAIConnectorRemoved(a, 0, b, 0, TurnA);
+            Assert.AreEqual(0, Workspace.GetAITurnSummary(TurnA).RemovedConnectorCount);
+
+            // Existed before the turn, removed, put back, then reported removed twice: counted once.
+            Workspace.RecordAIConnectorRemoved(b, 0, c, 0, TurnA);
+            Workspace.RecordAIConnectorAdded(b, 0, c, 0, TurnA);
+            Workspace.RecordAIConnectorRemoved(b, 0, c, 0, TurnA);
+            Workspace.RecordAIConnectorRemoved(b, 0, c, 0, TurnA);
             Assert.AreEqual(1, Workspace.GetAITurnSummary(TurnA).RemovedConnectorCount);
         }
 
@@ -450,6 +514,48 @@ namespace Dynamo.Tests
 
             Assert.IsNull(node.AIChange);
             CollectionAssert.AreEqual(new[] { node.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoThatMovesAConnectionsStartClearsTheRecordOfTheNodeAtItsEnd()
+        {
+            // Undoing the deletion of an inline Watch puts a connection's start back this way, without
+            // raising Modified on the node at its end.
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            var end = new WatchNode();
+            Workspace.AddAndRegisterNode(end, false);
+            var connector = ConnectorModel.Make(first, end, 0, 0);
+            Assert.IsNotNull(connector);
+
+            var undoXml = connector.Serialize(new XmlDocument(), SaveContext.Undo);
+            Assert.IsTrue(connector.TryUpdateStartPort(second.OutPorts[0], notifyEndNodeModified: false));
+            Workspace.RecordAINodeChange(end.GUID, AIChangeKind.Modified, TurnA, "Input", "first", "second");
+
+            Workspace.ReloadModel(undoXml);
+
+            Assert.AreSame(first.OutPorts[0], connector.Start, "Undo puts the connection's start back.");
+            Assert.IsNull(end.AIChange);
+            CollectionAssert.AreEqual(new[] { end.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds,
+                "The turn's own history is kept.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoThatLeavesAConnectionsStartAloneKeepsTheRecordOfTheNodeAtItsEnd()
+        {
+            var start = AddNumberNode();
+            var end = new WatchNode();
+            Workspace.AddAndRegisterNode(end, false);
+            var connector = ConnectorModel.Make(start, end, 0, 0);
+            Assert.IsNotNull(connector);
+            Workspace.RecordAINodeChange(end.GUID, AIChangeKind.Modified, TurnA, "Input", null, "start");
+
+            Workspace.ReloadModel(connector.Serialize(new XmlDocument(), SaveContext.Undo));
+
+            Assert.AreSame(start.OutPorts[0], connector.Start);
+            Assert.IsNotNull(end.AIChange);
         }
 
         #endregion
