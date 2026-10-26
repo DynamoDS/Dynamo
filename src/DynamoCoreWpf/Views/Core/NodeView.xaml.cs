@@ -128,6 +128,7 @@ namespace Dynamo.Controls
         private Rectangle nodeIcon;
         private Rectangle nodeBackground;
         private Grid aiHalo;
+        private Brush nodeBorderBrushWithoutHalo;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -1568,18 +1569,25 @@ namespace Dynamo.Controls
                 if (aiHalo != null)
                 {
                     aiHalo.Visibility = Visibility.Collapsed;
+                    nodeBorder.BorderBrush = nodeBorderBrushWithoutHalo;
                 }
                 return;
             }
 
             if (aiHalo == null)
             {
+                nodeBorderBrushWithoutHalo = nodeBorder.BorderBrush;
                 aiHalo = CreateAIHalo();
                 grid.Children.Add(aiHalo);
             }
 
             aiHalo.Opacity = opacity;
             aiHalo.Visibility = Visibility.Visible;
+
+            // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
+            // pale ring between the node and the glow, so it is hidden while the halo is on. The
+            // border keeps its thickness, so the node's size and layout do not change.
+            nodeBorder.BorderBrush = Brushes.Transparent;
         }
 
         private static Grid CreateAIHalo()

@@ -173,6 +173,29 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void NodeBorderIsHiddenWhileHaloShowsAndRestoredAfter()
+        {
+            var node = AddNumberNode();
+            var nodeView = ViewOf(node);
+            var borderBrushBefore = nodeView.nodeBorder.BorderBrush;
+            var borderThicknessBefore = nodeView.nodeBorder.BorderThickness;
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(Brushes.Transparent, nodeView.nodeBorder.BorderBrush,
+                "No pale ring between the node and the halo.");
+            Assert.AreEqual(borderThicknessBefore, nodeView.nodeBorder.BorderThickness,
+                "The node keeps its size.");
+
+            Workspace.ClearAIChanges();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(borderBrushBefore, nodeView.nodeBorder.BorderBrush);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void HaloUsesTheAIPurpleColor()
         {
             var node = AddNumberNode();
