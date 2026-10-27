@@ -689,6 +689,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// True when the AI Assistant badge should be drawn on this node: the node was placed or
+        /// modified by the Assistant. Nodes it only moved get no badge, so they stay the quietest
+        /// (<see cref="NodeModel.AIChange"/>).
+        /// </summary>
+        internal bool ShowAIBadge
+        {
+            get
+            {
+                var change = NodeModel?.AIChange;
+                return change != null && change.Kind != AIChangeKind.Moved;
+            }
+        }
+
+        /// <summary>
         /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
         /// <value>
@@ -1340,6 +1354,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(NodeModel.AIChange):
                     RaisePropertyChanged(nameof(AIHaloOpacity));
+                    RaisePropertyChanged(nameof(ShowAIBadge));
                     break;
             }
         }
