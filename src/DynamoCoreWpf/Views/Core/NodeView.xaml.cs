@@ -129,6 +129,7 @@ namespace Dynamo.Controls
         private Rectangle nodeBackground;
         private Grid aiHalo;
         private Brush nodeBorderBrushWithoutHalo;
+        private Image aiBadge;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -203,6 +204,10 @@ namespace Dynamo.Controls
             RenderingBias = RenderingBias.Quality
         };
 
+        // AI Assistant badge - a 24px purple disc with the Weave ai-assistant icon and a white outer ring
+        internal const double AIBadgeSize = 27;
+        private const double AIBadgeOffset = AIBadgeSize / 2;
+
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
         private static InverseBoolToVisibilityConverter inverseBooleanToVisibilityConverter = new InverseBoolToVisibilityConverter();
@@ -225,6 +230,7 @@ namespace Dynamo.Controls
         private static readonly BitmapImage hiddenEyeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"));
         private static readonly BitmapImage nodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
         private static readonly BitmapImage nodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
+        private static readonly BitmapImage aiBadgeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png"));
         private static ImageBrush defaultNodeIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
             Stretch = Stretch.UniformToFill
@@ -267,6 +273,7 @@ namespace Dynamo.Controls
             nodeHoverColor.Freeze();
             nodeAITouchedHaloBrush.Freeze();
             aiHaloBlur.Freeze();
+            aiBadgeImageSource.Freeze();
         }
 
         public NodeView()
@@ -1540,6 +1547,7 @@ namespace Dynamo.Controls
 
             // The node may already carry an AI change record, for example when its view is rebuilt
             UpdateAIHalo();
+            UpdateAIBadge();
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1547,6 +1555,10 @@ namespace Dynamo.Controls
             if (e.PropertyName == nameof(NodeViewModel.AIHaloOpacity))
             {
                 UpdateAIHalo();
+            }
+            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge))
+            {
+                UpdateAIBadge();
             }
         }
 
@@ -1624,6 +1636,62 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(halo, -1);
 
             return halo;
+        }
+
+        /// <summary>
+        /// The AI Assistant badge, or null if this node has never needed one. Exposed for tests.
+        /// </summary>
+        internal FrameworkElement AIBadge => aiBadge;
+
+        private void UpdateAIBadge()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIBadge));
+                return;
+            }
+
+            if (ViewModel?.ShowAIBadge != true)
+            {
+                if (aiBadge != null)
+                {
+                    aiBadge.Visibility = Visibility.Collapsed;
+                }
+                return;
+            }
+
+            if (aiBadge == null)
+            {
+                aiBadge = CreateAIBadge();
+                grid.Children.Add(aiBadge);
+            }
+
+            aiBadge.Visibility = Visibility.Visible;
+        }
+
+        private static Image CreateAIBadge()
+        {
+            var badge = new Image
+            {
+                Name = "aiBadge",
+                Source = aiBadgeImageSource,
+                Width = AIBadgeSize,
+                Height = AIBadgeSize,
+                Stretch = Stretch.Uniform,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
+                IsHitTestVisible = false
+            };
+
+            // The image is drawn at 1/4 of its size to keep the ring and icon edges smooth
+            RenderOptions.SetBitmapScalingMode(badge, BitmapScalingMode.HighQuality);
+
+            Grid.SetRow(badge, 1);
+            Grid.SetColumnSpan(badge, 3);
+            Canvas.SetZIndex(badge, 60);
+
+            return badge;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)
