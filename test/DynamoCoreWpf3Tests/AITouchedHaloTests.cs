@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -148,7 +149,9 @@ namespace DynamoCoreWpfTests
         {
             var node = AddNumberNode();
             var nodeView = ViewOf(node);
-            var opacitiesBefore = nodeView.grid.Children.OfType<UIElement>().Select(c => c.Opacity).ToList();
+            var partsBefore = nodeView.grid.Children.OfType<UIElement>().ToList();
+            var bodyFill = NodePart<Rectangle>(nodeView, "nodeBackground").Fill;
+            var headerFill = NodePart<Border>(nodeView, "nameBackground").Background;
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             var halo = ViewOf(node).AIHalo;
@@ -164,11 +167,18 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(new Thickness(-8), halo.Margin);
             Assert.IsFalse(halo.IsHitTestVisible);
 
-            // The node's own parts keep their opacity, and the node itself stays fully opaque.
-            var opacitiesAfter = nodeView.grid.Children.OfType<UIElement>()
-                .Where(c => c != halo).Select(c => c.Opacity).ToList();
-            CollectionAssert.AreEqual(opacitiesBefore, opacitiesAfter);
+            // The halo is the only new part and the node's fill is unchanged. Part opacities are not
+            // compared: some parts fade in over 0.2 s, so their value depends on test timing.
+            var partsAfter = nodeView.grid.Children.OfType<UIElement>().Where(c => c != halo).ToList();
+            CollectionAssert.AreEqual(partsBefore, partsAfter);
+            Assert.AreSame(bodyFill, NodePart<Rectangle>(nodeView, "nodeBackground").Fill);
+            Assert.AreSame(headerFill, NodePart<Border>(nodeView, "nameBackground").Background);
             Assert.AreEqual(1.0, nodeView.grid.Opacity);
+        }
+
+        private static T NodePart<T>(NodeView nodeView, string name) where T : FrameworkElement
+        {
+            return nodeView.grid.Children.OfType<T>().Single(e => e.Name == name);
         }
 
         [Test]
