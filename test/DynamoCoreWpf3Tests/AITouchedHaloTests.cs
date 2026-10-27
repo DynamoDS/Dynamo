@@ -168,10 +168,13 @@ namespace DynamoCoreWpfTests
             // Extends past the node edge and never takes mouse clicks.
             Assert.AreEqual(new Thickness(-8), halo.Margin);
             Assert.IsFalse(halo.IsHitTestVisible);
+            Assert.IsFalse(badge.IsHitTestVisible);
 
-            // The halo is the only new part and the node's fill is unchanged. Part opacities are not
-            // compared: some parts fade in over 0.2 s, so their value depends on test timing.
-            var partsAfter = nodeView.grid.Children.OfType<UIElement>().Where(c => c != halo).ToList();
+            // The halo and the badge are the only new parts, and the node's fill is unchanged.
+            // Part opacities are not compared: some parts fade in over 0.2 s, so their value
+            // depends on test timing.
+            var partsAfter = nodeView.grid.Children.OfType<UIElement>()
+                .Where(c => c != halo && c != badge).ToList();
             CollectionAssert.AreEqual(partsBefore, partsAfter);
             Assert.AreSame(bodyFill, NodePart<Rectangle>(nodeView, "nodeBackground").Fill);
             Assert.AreSame(headerFill, NodePart<Border>(nodeView, "nameBackground").Background);
