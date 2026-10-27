@@ -326,13 +326,13 @@ namespace DynamoCoreWpfTests
             var nodeView = ViewOf(node);
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            var badge = (Image)ViewOf(node).AIBadge;
+            var badge = (Grid)ViewOf(node).AIBadge;
 
             // 24px disc plus a 1.5px white ring on each side.
             Assert.AreEqual(27, NodeView.AIBadgeSize);
             Assert.AreEqual(NodeView.AIBadgeSize, badge.Width);
             Assert.AreEqual(NodeView.AIBadgeSize, badge.Height);
-            Assert.IsNotNull(badge.Source);
+            Assert.IsNotNull(badge.Children.OfType<Image>().Single().Source);
 
             // Top-right corner of the node, pulled out by half its size so its centre sits on the corner.
             Assert.AreEqual(HorizontalAlignment.Right, badge.HorizontalAlignment);
@@ -348,6 +348,40 @@ namespace DynamoCoreWpfTests
                 Assert.Greater(badgeZIndex, Panel.GetZIndex(child));
             }
             Assert.IsFalse(badge.IsHitTestVisible);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeIsNotShownWhenZoomedOut()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
+            var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
+
+            // Zoomed out, below the 0.4 threshold where nodes switch to their zoomed-out look
+            workspaceViewModel.Zoom = 0.3;
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+
+            // Zoomed back in
+            workspaceViewModel.Zoom = 0.6;
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Visibility.Visible, badgeImage.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeAddedWhileZoomedOutIsNotShown()
+        {
+            ViewModel.CurrentSpaceViewModel.Zoom = 0.3;
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            DispatcherUtil.DoEvents();
+
+            var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
+            Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
         }
     }
 }
