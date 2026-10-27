@@ -129,7 +129,7 @@ namespace Dynamo.Controls
         private Rectangle nodeBackground;
         private Grid aiHalo;
         private Brush nodeBorderBrushWithoutHalo;
-        private Image aiBadge;
+        private Grid aiBadge;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -215,6 +215,7 @@ namespace Dynamo.Controls
         private static BoolToVisibilityConverter booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
         private static ZoomToVisibilityCollapsedConverter zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static ZoomToInverseVisibilityCollapsedConverter zoomToInverseVisibilityCollapsedConverter = new ZoomToInverseVisibilityCollapsedConverter();
         private static IValueConverter sZoomFadeControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeControl"] as IValueConverter;
         private static IValueConverter sZoomFadeInControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeInControl"] as IValueConverter;
         private static IValueConverter sZoomFadeOutPreview = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeOutPreview"] as IValueConverter;
@@ -1669,23 +1670,36 @@ namespace Dynamo.Controls
             aiBadge.Visibility = Visibility.Visible;
         }
 
-        private static Image CreateAIBadge()
+        private static Grid CreateAIBadge()
         {
-            var badge = new Image
+            var image = new Image
+            {
+                Name = "aiBadgeImage",
+                Source = aiBadgeImageSource,
+                Stretch = Stretch.Uniform
+            };
+
+            // The image is drawn at 1/4 of its size to keep the ring and icon edges smooth
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            // Not shown when zoomed out
+            image.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = zoomToInverseVisibilityCollapsedConverter
+            });
+
+            var badge = new Grid
             {
                 Name = "aiBadge",
-                Source = aiBadgeImageSource,
                 Width = AIBadgeSize,
                 Height = AIBadgeSize,
-                Stretch = Stretch.Uniform,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
                 IsHitTestVisible = false
             };
-
-            // The image is drawn at 1/4 of its size to keep the ring and icon edges smooth
-            RenderOptions.SetBitmapScalingMode(badge, BitmapScalingMode.HighQuality);
+            badge.Children.Add(image);
 
             Grid.SetRow(badge, 1);
             Grid.SetColumnSpan(badge, 3);
