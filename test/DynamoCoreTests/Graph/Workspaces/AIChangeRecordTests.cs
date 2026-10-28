@@ -39,17 +39,12 @@ namespace Dynamo.Tests
             return node;
         }
 
-        /// <summary>Runs an edit as DynamoMCP does: with IsAIEditInProgress set.</summary>
+        /// <summary>Runs an edit as DynamoMCP does: inside a BeginAIEdit scope.</summary>
         private void AsAIEdit(Action edit)
         {
-            Workspace.IsAIEditInProgress = true;
-            try
+            using (Workspace.BeginAIEdit())
             {
                 edit();
-            }
-            finally
-            {
-                Workspace.IsAIEditInProgress = false;
             }
         }
 
@@ -642,6 +637,49 @@ namespace Dynamo.Tests
 
             Assert.AreSame(start.OutPorts[0], connector.Start);
             Assert.IsNotNull(end.AIChange);
+        }
+
+        #endregion
+
+        #region AI edit scope
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIEditScopesNestAndDisposingTwiceIsSafe()
+        {
+            var outer = Workspace.BeginAIEdit();
+            var inner = Workspace.BeginAIEdit();
+
+            inner.Dispose();
+            inner.Dispose();
+            Assert.IsTrue(Workspace.IsAIEditInProgress);
+
+            outer.Dispose();
+            Assert.IsFalse(Workspace.IsAIEditInProgress);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIEditEndsWhenTheEditFails()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Assert.Throws<InvalidOperationException>(() => AsAIEdit(() => throw new InvalidOperationException()));
+
+            Assert.IsFalse(Workspace.IsAIEditInProgress);
+            node.OnNodeModified();
+            Assert.IsNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIEditFlagCannotBeSet()
+        {
+            var property = typeof(WorkspaceModel).GetProperty(nameof(WorkspaceModel.IsAIEditInProgress));
+
+            Assert.IsFalse(property.CanWrite);
+            Assert.IsNull(property.GetSetMethod(nonPublic: true));
         }
 
         #endregion

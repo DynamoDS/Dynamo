@@ -1097,14 +1097,44 @@ namespace Dynamo.Graph.Workspaces
         private readonly Dictionary<string, AITurnState> aiTurns = new Dictionary<string, AITurnState>(StringComparer.Ordinal);
         private int lastAITurnNumber;
 
+        private int aiEditDepth;
+
         /// <summary>
-        /// True only while an AI-driven edit (from DynamoMCP) is actively changing this workspace.
-        /// DynamoMCP sets this around its own tool calls. While it is true, a node modification does
-        /// not clear <see cref="NodeModel.AIChange"/>; while it is false, a person editing a node
-        /// clears it. This flag never adds a record itself, and it is never saved to the .dyn file.
+        /// True while a <see cref="BeginAIEdit"/> scope is open. While true, node edits do not clear
+        /// <see cref="NodeModel.AIChange"/>. Never saved to the .dyn file.
         /// </summary>
         [JsonIgnore]
-        public bool IsAIEditInProgress { get; set; }
+        public bool IsAIEditInProgress => Volatile.Read(ref aiEditDepth) > 0;
+
+        /// <summary>
+        /// Starts an AI-driven edit (from DynamoMCP). Dispose the result to end it; disposing twice is
+        /// safe, and scopes can nest. A scope that is never disposed stays open for the rest of the
+        /// session, and a person's edits then no longer clear AI change records.
+        /// </summary>
+        public IDisposable BeginAIEdit()
+        {
+            Interlocked.Increment(ref aiEditDepth);
+            return new AIEditScope(this);
+        }
+
+        private sealed class AIEditScope : IDisposable
+        {
+            private WorkspaceModel workspace;
+
+            internal AIEditScope(WorkspaceModel workspace)
+            {
+                this.workspace = workspace;
+            }
+
+            public void Dispose()
+            {
+                var owner = Interlocked.Exchange(ref workspace, null);
+                if (owner != null)
+                {
+                    Interlocked.Decrement(ref owner.aiEditDepth);
+                }
+            }
+        }
 
         /// <summary>
         /// Records that an AI Assistant turn placed, modified or moved a node. Several changes from the
@@ -1959,9 +1989,8 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
-            // A person editing the node takes over from the AI, so its AI change record goes.
-            // DynamoMCP's own edits keep it, because it sets IsAIEditInProgress while it edits. So does a
-            // change from outside the graph, such as a watched file changing on disk: nobody edited it.
+            // A person's edit clears the AI change record. Edits inside a BeginAIEdit scope (DynamoMCP)
+            // and changes from outside the graph, such as a watched file changing on disk, keep it.
             if (!IsAIEditInProgress && !node.IsExternalChangeInProgress)
             {
                 node.ClearAIChange();
