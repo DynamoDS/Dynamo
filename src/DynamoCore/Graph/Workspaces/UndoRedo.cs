@@ -745,6 +745,14 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 model.Deserialize(modelData, SaveContext.Undo);
+
+                // Undo and redo count as the person touching the node, so its AI change record goes.
+                // Done here because restoring a position, name, lacing, preview or freeze state does
+                // not raise Modified, which is what clears the record for other edits.
+                if (model is NodeModel node)
+                {
+                    node.ClearAIChange();
+                }
             }
         }
 
@@ -762,9 +770,13 @@ namespace Dynamo.Graph.Workspaces
                 return;
 
             var startPort = startNode.OutPorts[startPortIndex];
-            if (!ReferenceEquals(connectorModel.Start, startPort))
+            if (!ReferenceEquals(connectorModel.Start, startPort)
+                && connectorModel.TryUpdateStartPort(startPort, notifyEndNodeModified: false))
             {
-                connectorModel.TryUpdateStartPort(startPort, notifyEndNodeModified: false);
+                // Undo and redo count as the person touching the graph (see ReloadModel). The node at
+                // this connector's end now takes its input from a different port, so its AI change
+                // record goes. Cleared directly rather than through Modified, which would schedule a run.
+                connectorModel.End?.Owner?.ClearAIChange();
             }
         }
 
