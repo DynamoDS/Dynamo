@@ -453,6 +453,30 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void RunningTheGraphKeepsTheRecord()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            RunCurrentModel();
+
+            Assert.IsNotNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CustomNodeDefinitionUpdateKeepsTheRecord()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            ((HomeWorkspaceModel)Workspace).MarkNodesAsModifiedAndRequestRun(new[] { node }, forceExecute: true);
+
+            Assert.IsNotNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ChangeFromOutsideTheGraphKeepsTheRecordButStillMarksTheNodeModified()
         {
             // How a File From Path node reports its file changing on disk.
