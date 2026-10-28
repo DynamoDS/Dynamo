@@ -1,5 +1,5 @@
 ## 詳細
-指定されたファイルを新しい場所に移動します。
+Moves a specified file to a new location. `FileSystem.MoveFile` can also rename a file: to do this, keep the same folder in `newPath` and change only the file name.
 ___
 ## サンプル ファイル
 
