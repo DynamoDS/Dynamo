@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using NUnit.Framework;
@@ -30,6 +31,7 @@ namespace Dynamo.Tests
         private const string OlderVersionFolderName = "1.1";
 
         private bool originalIsTestMode;
+        private bool originalDisableAnalytics;
         private string originalDynamoTestPath;
         private string userDataRoot;
         private TestPathResolver pathResolver;
@@ -41,6 +43,10 @@ namespace Dynamo.Tests
             base.Setup();
 
             originalIsTestMode = DynamoModel.IsTestMode;
+
+            // NoNetworkMode sets this process-wide flag and never clears it, which would silently
+            // disable analytics for tests that run after this fixture.
+            originalDisableAnalytics = Analytics.DisableAnalytics;
 
             // UnitTestBase points this at a nonexistent file, which DynamoModel prefers over the real
             // settings file; the app never sets it.
@@ -78,6 +84,7 @@ namespace Dynamo.Tests
             {
                 ResetPathManagerSingleton();
                 DynamoModel.IsTestMode = originalIsTestMode;
+                SetDisableAnalytics(originalDisableAnalytics);
                 PreferenceSettings.DynamoTestPath = originalDynamoTestPath;
                 base.Cleanup();
             }
@@ -255,6 +262,14 @@ namespace Dynamo.Tests
                 NumberFormat = CurrentVersionNumberFormat,
                 IsFirstRun = isFirstRun
             }.Save(settingsPath);
+        }
+
+        private static void SetDisableAnalytics(bool value)
+        {
+            // The setter is internal to DynamoServices and not visible to the tests.
+            var property = typeof(Analytics).GetProperty(nameof(Analytics.DisableAnalytics));
+            property.GetSetMethod(nonPublic: true).Invoke(null, new object[] { value });
+            Assert.AreEqual(value, Analytics.DisableAnalytics);
         }
 
         private static void ResetPathManagerSingleton()
