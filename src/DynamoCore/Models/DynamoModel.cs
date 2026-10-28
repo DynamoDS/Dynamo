@@ -821,7 +821,7 @@ namespace Dynamo.Models
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
             // Migration must not replace settings the user already has on disk.
-            if (!IsServiceMode && !IsTestMode && PreferenceSettings.IsFirstRun && !File.Exists(pathManager.PreferenceFilePath))
+            if (!IsServiceMode && !IsTestMode && PreferenceSettings?.IsFirstRun == true && !File.Exists(pathManager.PreferenceFilePath))
             {
                 DynamoMigratorBase migrator = null;
 
