@@ -80,6 +80,14 @@
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
+    <!--
+        Semantic node surface keys. Prefer these over the palette greys above when styling a node:
+        the palette names describe a shade, not a role, so they cannot be re-themed safely
+        (the same key is used as a foreground in one view and a background in another).
+    -->
+    <SolidColorBrush x:Key="NodeBodyBackgroundBrush" Color="{StaticResource DarkerGrey}" />
+    <SolidColorBrush x:Key="NodeHeaderBackgroundBrush" Color="{StaticResource DarkMidGrey}" />
+
     <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
     <SolidColorBrush x:Key="NodeTransientOverlayColor" Color="#D5BCF7" />
     <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
@@ -89,14 +97,133 @@
     <SolidColorBrush x:Key="NodeCustomColor" Color="#32BCAD" />
 
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
+    <SolidColorBrush x:Key="NodeExpanderBackground" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="NodeExpanderHoverBackground" Color="#282828" />
+    <!--  Chevron and outline of the expander toggle (Number Slider, Custom Selection).  -->
+    <SolidColorBrush x:Key="NodeExpanderGlyphBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeExpanderGlyphPressedBrush" Color="#FFFFFF" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
 
     <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight" Color="#FFFFFF" />
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
+    <!--  Checkmarks and submenu arrows drawn inside a canvas context menu.  -->
+    <SolidColorBrush x:Key="NodeContextMenuAccentBrush" Color="{StaticResource Blue300}" />
+
+    <!--
+        Surfaces that borrowed the NodeContextMenu* keys but are not canvas context menus, and
+        that stay dark in every theme. They get their own keys so re-theming the canvas menus
+        cannot leak into them. Values intentionally match the dark NodeContextMenu* equivalents.
+    -->
+    <SolidColorBrush x:Key="DividerRectangleBrush" Color="#808080" />
+    <!--
+        Plain text in the Python script editor, which stays dark in every theme. It used to borrow
+        AutocompletionWindowFontColor, which the light theme darkens for the autocomplete popup,
+        so identifiers such as sys, clr and IN became dark grey on the dark editor.
+    -->
+    <SolidColorBrush x:Key="PythonEditorForegroundBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="MainMenuSeparatorBrush" Color="#AFAFAF" />
+
+    <!--  Package Manager context menus (DarkContextMenuStyle is used only by Package Manager).  -->
+    <SolidColorBrush x:Key="PMContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="PMContextMenuForegroundHighlight" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="PMContextMenuBackground" Color="{StaticResource MidGrey}" />
+    <SolidColorBrush x:Key="PMContextMenuBackgroundHighlight" Color="#808080" />
+    <SolidColorBrush x:Key="PMContextMenuSeparatorColor" Color="#AFAFAF" />
+
+    <!--
+        Node input widgets: DynamoTextBox and the slider value boxes. Read from here instead of
+        being hard-coded in DynamoTextBox.cs, so a theme can recolor them with the node body.
+    -->
+    <SolidColorBrush x:Key="NodeInputBackgroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="NodeInputBorderBrush" Color="#4A4A4A" />
+    <SolidColorBrush x:Key="NodeInputForegroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="NodeInputSecondaryForegroundBrush" Color="#BCBCBC" />
+    <SolidColorBrush x:Key="NodeInputLabelForegroundBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="NodeInputCaretBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="NodeInputHighlightBrush" Color="#64FFFFFF" />
+
+    <!--  Slider track and thumb  -->
+    <SolidColorBrush x:Key="NodeSliderThumbBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NodeSliderTrackBrush" Color="{StaticResource PrimaryCharcoal100}" />
+
+    <!--
+        Node dropdowns: the RefreshComboBox style and its toggle button, used by every dropdown
+        node (DSDropDownBase, e.g. Custom Selection), Curve Mapper, and the converter and unit
+        nodes. Values match the literals those templates used before.
+    -->
+    <SolidColorBrush x:Key="NodeDropDownBackgroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="NodeDropDownBorderBrush" Color="#4A4A4A" />
+    <SolidColorBrush x:Key="NodeDropDownForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="NodeDropDownEditableForegroundBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="NodeDropDownPlaceholderBrush" Color="#AFAFAF" />
+    <SolidColorBrush x:Key="NodeDropDownArrowBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NodeDropDownHighlightBrush" Color="#808080" />
+    <SolidColorBrush x:Key="NodeDropDownAccentBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeDropDownPopupBackgroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledBackgroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledBorderBrush" Color="#AAAAAA" />
+    <SolidColorBrush x:Key="NodeDropDownDisabledForegroundBrush" Color="#888888" />
+    <!--  The swap button between the From/To dropdowns of the converter node.  -->
+    <SolidColorBrush x:Key="NodeDropDownButtonHoverBrush" Color="#373737" />
+    <SolidColorBrush x:Key="NodeDropDownButtonPressedBrush" Color="#272727" />
+    <SolidColorBrush x:Key="NodeDropDownButtonDisabledBackgroundBrush" Color="#373737" />
+    <SolidColorBrush x:Key="NodeDropDownButtonDisabledForegroundBrush" Color="#555555" />
+
+    <!--
+        Other node controls drawn on the node body. Values match what each control used
+        before: Define Data borrowed PreferencesWindowFontColor, Curve Mapper borrowed
+        DefaultFontColorBrush, and the rest were literals.
+    -->
+    <SolidColorBrush x:Key="NodeLabelForegroundBrush" Color="#E5E5E5" />
+    <SolidColorBrush x:Key="NodePanelOverlayBrush" Color="#19FFFFFF" />
+    <SolidColorBrush x:Key="NodeSelectionButtonBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="NodeSelectionButtonForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NodeSelectionButtonDisabledBrush" Color="#707070" />
+    <SolidColorBrush x:Key="NodeSelectionTextBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="CurveMapperLabelForegroundBrush" Color="{StaticResource DefaultFontColor}" />
+    <SolidColorBrush x:Key="CurveMapperAxisLabelBrush" Color="#979797" />
+    <SolidColorBrush x:Key="CurveMapperCurveBrush" Color="#5BC9BD" />
+    <SolidColorBrush x:Key="CurveMapperGridLineBrush" Color="#5E5E5E" />
+
+    <!--
+        Node autocomplete bar (NodeAutoCompleteBarView). Values match what the bar used before:
+        literals, the shade keys DarkGreyBrush / LightGreyBrush, the library key
+        DefaultSearchTextBlockText, and the Package Manager combo styles it borrowed.
+        The glyph colours are the colours of the PNGs they recolour (see the bar's XAML).
+    -->
+    <SolidColorBrush x:Key="AutoCompleteBorderBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="AutoCompleteButtonHoverBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="AutoCompleteGlyphBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="AutoCompleteGlyphDisabledBrush" Color="#999999" />
+    <SolidColorBrush x:Key="AutoCompleteGripperBrush" Color="#999999" />
+    <SolidColorBrush x:Key="AutoCompleteGripperHoverBrush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="AutoCompleteSearchForegroundBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="AutoCompleteCaretBrush" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="AutoCompleteSearchIconBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="AutoCompleteResultSecondaryForegroundBrush" Color="#ABAFB3" />
+    <SolidColorBrush x:Key="AutoCompleteItemHighlightBrush" Color="#474747" />
+    <SolidColorBrush x:Key="AutoCompleteItemDisabledForegroundBrush" Color="#888888" />
+    <SolidColorBrush x:Key="AutoCompleteToggleBorderBrush" Color="#A9A9A9" />
+    <SolidColorBrush x:Key="AutoCompleteToggleArrowBrush" Color="#999999" />
+    <SolidColorBrush x:Key="AutoCompleteToggleArrowHoverBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchBackgroundBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchBorderBrush" Color="#A9A9A9" />
+    <SolidColorBrush x:Key="AutoCompleteSwitchKnobDisabledBrush" Color="{StaticResource LightGrey}" />
+
+    <!--  Code block and Python editor surface  -->
+    <SolidColorBrush x:Key="CodeEditorBackgroundBrush" Color="#3A3B3B" />
+    <SolidColorBrush x:Key="CodeEditorForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="CodeEditorLineNumbersBrush" Color="#AAAAAA" />
+    <SolidColorBrush x:Key="CodeEditorBorderBrush" Color="#959595" />
+    <SolidColorBrush x:Key="CodeEditorNumberBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="CodeEditorClassBrush" Color="#B7D78C" />
+    <SolidColorBrush x:Key="CodeEditorMethodBrush" Color="#84D7CE" />
+    <SolidColorBrush x:Key="CodeEditorLinkBrush" Color="#6AC0E7" />
 
     <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7" />
 
@@ -135,6 +262,35 @@
     <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
     <SolidColorBrush x:Key="ExtensionButtonBackgroundColor" Color="#535353" />
 
+    <!--
+        In-canvas search. This control is embedded in the canvas and group context menus, so it
+        follows the canvas theme rather than the library sidebar, even though it reuses the
+        library's result-row templates. Values match the library keys it previously borrowed
+        (SearchTextBoxBackground, DefaultSearchTextBlockText, CommonSidebarTextColor).
+    -->
+    <SolidColorBrush x:Key="InCanvasSearchBackgroundBrush" Color="#444444" />
+    <SolidColorBrush x:Key="InCanvasSearchBorderBrush" Color="#2A576C" />
+    <SolidColorBrush x:Key="InCanvasSearchForegroundBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="InCanvasSearchPlaceholderBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="InCanvasSearchCaretBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="InCanvasSearchAccentBrush" Color="#ADD4E5" />
+    <SolidColorBrush x:Key="InCanvasSearchResultBackgroundBrush" Color="#333333" />
+    <SolidColorBrush x:Key="InCanvasSearchResultForegroundBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="InCanvasSearchResultSecondaryForegroundBrush" Color="#808285" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipBackgroundBrush" Color="#333333" />
+    <!--
+        In-canvas search result rows (IncanvasSearchControl), and the node tooltip (ToolTipWindow)
+        shared by the in-canvas search and the library's hover tooltip. Values match what they
+        used before: LibraryMemberOnHover, the #3E464C search-match highlight, and literals.
+    -->
+    <SolidColorBrush x:Key="InCanvasSearchResultHoverBrush" Color="#404040" />
+    <SolidColorBrush x:Key="InCanvasSearchResultHighlightBrush" Color="#3E464C" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipTextBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipDescriptionMissingBrush" Color="#666666" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipMutedBrush" Color="#777777" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipHeaderBrush" Color="#50B5A3" />
+    <SolidColorBrush x:Key="InCanvasSearchTooltipAccentBrush" Color="#4192D9" />
+
     <!--  Library background  -->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
     <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
@@ -165,6 +321,44 @@
     <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
     <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
 
+    <!--
+        Preview bubble: the result panel shown when hovering a node, plus the expanded watch tree
+        inside it. Values match the literals and palette greys these surfaces previously used.
+    -->
+    <SolidColorBrush x:Key="PreviewBubbleBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="PreviewBubbleForegroundBrush" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="PreviewBubbleSecondaryForegroundBrush" Color="#D3D3D3" />
+    <SolidColorBrush x:Key="PreviewBubbleAccentBrush" Color="{StaticResource Blue300}" />
+
+    <!--  Watch tree surfaces  -->
+    <SolidColorBrush x:Key="WatchTreeBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="WatchTreeForegroundBrush" Color="#D3D3D3" />
+    <SolidColorBrush x:Key="WatchTreeSecondaryForegroundBrush" Color="#959595" />
+    <SolidColorBrush x:Key="WatchTreeLineBrush" Color="#959595" />
+    <!--  The "List" label, returned by ObjectTypeConverter (also used by the preview bubble).  -->
+    <SolidColorBrush x:Key="WatchTreeListLabelBrush" Color="{StaticResource PrimaryCharcoal200}" />
+    <!--  The {count} shown after a list label.  -->
+    <SolidColorBrush x:Key="WatchTreeAccentBrush" Color="{StaticResource Blue300}" />
+    <!--  Index of a leaf item, drawn on the light #DCDCDC chip from ListIndexBackgroundConverter.  -->
+    <SolidColorBrush x:Key="WatchTreeIndexForegroundBrush" Color="#4D4D4D" />
+
+    <!--  Boolean node controls  -->
+    <SolidColorBrush x:Key="BooleanControlForegroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="BooleanControlBorderBrush" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="BooleanControlMarkBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="BooleanControlHoverBrush" Color="#FFFFFF" />
+
+    <!--  Run mode combo  -->
+    <SolidColorBrush x:Key="RunSettingsComboBackgroundBrush" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="RunSettingsComboForegroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="RunSettingsComboDisabledBrush" Color="#888888" />
+    <!--
+        Text of a disabled entry inside the run-type dropdown (e.g. Periodic when the graph
+        cannot run periodically). Kept separate from RunSettingsComboDisabledBrush because the
+        dark theme has always drawn it as translucent white, which composites far dimmer.
+    -->
+    <SolidColorBrush x:Key="RunSettingsComboItemDisabledBrush" Color="#33F5F5F5" />
+
     <!--  Bubble preview  -->
     <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
     <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#FFFFFF" />
@@ -176,13 +370,42 @@
     <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor" Color="#38ABDF" />
 
     <!--  Port color  -->
+    <!--  Role-named port keys; these are read by PortViewModel and Ports.xaml.  -->
+    <SolidColorBrush x:Key="PortBackgroundBrush" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="PortBackgroundPreviewOffBrush" Color="#666666" />
+    <SolidColorBrush x:Key="PortBorderBrush" Color="#A1A1A1" />
+    <SolidColorBrush x:Key="PortLabelForegroundBrush" Color="#DCDCDC" />
+
+    <!--  Port value-type markers; read by InPortViewModel / OutPortViewModel.  -->
+    <SolidColorBrush x:Key="PortValueMarkerDefaultBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="PortValueMarkerBlueBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="PortValueMarkerRedBrush" Color="#EB5555" />
+    <SolidColorBrush x:Key="PortValueMarkerGreyBrush" Color="#999999" />
+
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
+    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#A8B5BB" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
     <SolidColorBrush x:Key="ChevronHighlightOverlayBackground" Color="#E5E2DE" />
     <SolidColorBrush x:Key="PortMouseOverColor" Color="#636363" />
 
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
+
+    <!--
+        Wire colors per connection state. Both a Color and a Brush form are needed because
+        ConnectionStateToColorConverter and ConnectionStateToBrushConverter take different types.
+    -->
+    <Color x:Key="ConnectorNoneColor">#444444</Color>
+    <Color x:Key="ConnectorSelectionColor">#6AC0E7</Color>
+    <Color x:Key="ConnectorHoverColor">#808080</Color>
+    <Color x:Key="ConnectorExecutionPreviewColor">#F2930C</Color>
+    <Color x:Key="ConnectorTransientColor">#D5BCF7</Color>
+
+    <SolidColorBrush x:Key="ConnectorNoneBrush" Color="{StaticResource ConnectorNoneColor}" />
+    <SolidColorBrush x:Key="ConnectorSelectionBrush" Color="{StaticResource ConnectorSelectionColor}" />
+    <SolidColorBrush x:Key="ConnectorHoverBrush" Color="{StaticResource ConnectorHoverColor}" />
+    <SolidColorBrush x:Key="ConnectorExecutionPreviewBrush" Color="{StaticResource ConnectorExecutionPreviewColor}" />
+    <SolidColorBrush x:Key="ConnectorTransientBrush" Color="{StaticResource ConnectorTransientColor}" />
 
     <!--  Modal Pattern  -->
 

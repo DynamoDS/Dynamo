@@ -201,7 +201,7 @@
                 </DockPanel>
 
                 <Rectangle Style="{StaticResource DividerRectangleStyle}"
-                           Fill="{StaticResource NodeContextMenuBackgroundHighlight}"
+                           Fill="{StaticResource DividerRectangleBrush}"
                            Grid.Row="0"
                            Margin="0 1 0 0"/>
 
@@ -355,7 +355,7 @@
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
                                            Background="{StaticResource TextEditorBrush}"
-                                           Foreground="{StaticResource AutocompletionWindowFontColor}"
+                                           Foreground="{StaticResource PythonEditorForegroundBrush}"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
                                            PreviewMouseWheel="EditorBox_PreviewMouseWheel"

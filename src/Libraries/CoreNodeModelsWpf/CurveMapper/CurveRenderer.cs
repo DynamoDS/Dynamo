@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Dynamo.UI;
 
 namespace Dynamo.Wpf.CurveMapper
 {
@@ -79,7 +80,8 @@ namespace Dynamo.Wpf.CurveMapper
             return new Path
             {
                 Data = geometry,
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5BC9BD")),
+                // Themed: the dark theme's teal is too faint on a light node body.
+                Stroke = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["CurveMapperCurveBrush"] as Brush,
                 StrokeThickness = isControlLine ? 1 : 3,
                 StrokeDashArray = isControlLine ? new DoubleCollection { 4, 4 } : null
             };

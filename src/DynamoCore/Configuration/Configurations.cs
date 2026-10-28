@@ -301,6 +301,12 @@ namespace Dynamo.Configuration
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";
 
+        /// <summary>
+        ///     Highlighting File used by the light theme
+        /// </summary>
+        public static readonly string LightHighlightingFile =
+            "DesignScript.Resources.SyntaxHighlighting.Light.xshd";
+
         #endregion
 
         #region Externally Visible Strings

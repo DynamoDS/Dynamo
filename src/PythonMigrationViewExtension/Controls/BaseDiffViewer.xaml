@@ -198,7 +198,7 @@
         </DockPanel>
 
         <Rectangle Style="{StaticResource DividerRectangleStyle}"
-                           Fill="{StaticResource NodeContextMenuBackgroundHighlight}"
+                           Fill="{StaticResource DividerRectangleBrush}"
                            Grid.Row="0"
                            Margin="0 1 0 0"/>
 

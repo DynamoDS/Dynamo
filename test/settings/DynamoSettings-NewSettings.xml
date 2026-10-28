@@ -111,6 +111,7 @@
   <DisableCustomPackageLocations>true</DisableCustomPackageLocations>
   <DefaultRunType>Manual</DefaultRunType>
   <DefaultNodeAutocompleteSuggestion>ObjectType</DefaultNodeAutocompleteSuggestion>
+  <Theme>Light</Theme>
   <ShowRunPreview>true</ShowRunPreview>
   <GroupStyleItemsList>
     <GroupStyleItem>

@@ -96,14 +96,14 @@ namespace Dynamo.Nodes
 
         //Brushes
         private static SolidColorBrush _primaryCharcoal300 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal300Brush"] as SolidColorBrush;
-        private static SolidColorBrush _midGreyBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"] as SolidColorBrush;
-        private static SolidColorBrush _blue300Brush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"] as SolidColorBrush;
+        private static SolidColorBrush _nodeContextMenuAccent = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuAccentBrush"] as SolidColorBrush;
         private static SolidColorBrush _preferencesWindowButtonColor = SharedDictionaryManager.DynamoModernDictionary["PreferencesWindowButtonColor"] as SolidColorBrush;
         private static SolidColorBrush _primaryCharcoal100 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"] as SolidColorBrush;
         private static SolidColorBrush _nodeContextMenuSeparatorColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuSeparatorColor"] as SolidColorBrush;
         private static SolidColorBrush _nodeContextMenuBackgroundHighlight = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuBackgroundHighlight"] as SolidColorBrush;
         private static SolidColorBrush _nodeContextMenuBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuBackground"] as SolidColorBrush;
         private static SolidColorBrush _nodeContextMenuForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuForeground"] as SolidColorBrush;
+        private static SolidColorBrush _nodeContextMenuForegroundHighlight = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuForegroundHighlight"] as SolidColorBrush;
 
         private static CornerRadius _cornerRadius = new CornerRadius(10, 10, 0, 0);
 
@@ -142,14 +142,14 @@ namespace Dynamo.Nodes
             _caretUpHoverImage.Freeze();
 
             _primaryCharcoal300.Freeze();
-            _midGreyBrush.Freeze();
-            _blue300Brush.Freeze();
+            _nodeContextMenuAccent.Freeze();
             _preferencesWindowButtonColor.Freeze();
             _primaryCharcoal100.Freeze();
             _nodeContextMenuSeparatorColor.Freeze();
             _nodeContextMenuBackgroundHighlight.Freeze();
             _nodeContextMenuBackground.Freeze();
             _nodeContextMenuForeground.Freeze();
+            _nodeContextMenuForegroundHighlight.Freeze();
         }
         public AnnotationView()
         {
@@ -710,7 +710,7 @@ namespace Dynamo.Nodes
             // Rebuild content for dynamic state
             var border = new Border
             {
-                Background = _midGreyBrush,
+                Background = _nodeContextMenuBackground,
                 Child = CreatePopupPanel()
             };
             border.PreviewKeyDown += GroupContextMenu_KeyDown;
@@ -1815,7 +1815,7 @@ namespace Dynamo.Nodes
             // Wrap in border to apply outer padding
             var border = new Border
             {
-                Background = _midGreyBrush,
+                Background = _nodeContextMenuBackground,
                 Child = CreatePopupPanel()
             };
 
@@ -1832,7 +1832,7 @@ namespace Dynamo.Nodes
         {
             groupPopupPanel = new StackPanel
             {
-                Background = _midGreyBrush,
+                Background = _nodeContextMenuBackground,
                 Orientation = Orientation.Vertical
             };
 
@@ -1935,7 +1935,7 @@ namespace Dynamo.Nodes
                 Text = checkedState ? "✓" : "",
                 FontSize = 11,
                 FontFamily = _artifaktElementRegular,
-                Foreground = checkedState ? _blue300Brush : Brushes.Transparent,
+                Foreground = checkedState ? _nodeContextMenuAccent : Brushes.Transparent,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(-7, 0, 0, 0),
                 Width = 10, // reserve space so layout doesn't shift
@@ -1972,7 +1972,7 @@ namespace Dynamo.Nodes
                     {
                         bool nowChecked = isChecked();
                         check.Text = nowChecked ? "✓" : "";
-                        check.Foreground = nowChecked ? _blue300Brush : Brushes.Transparent;
+                        check.Foreground = nowChecked ? _nodeContextMenuAccent : Brushes.Transparent;
                         text.FontFamily = nowChecked ? _artifaktElementBold : _artifaktElementRegular;
                     }
                 }
@@ -2004,7 +2004,7 @@ namespace Dynamo.Nodes
                 Text = ">",
                 FontSize = 13,
                 FontFamily = _artifaktElementRegular,
-                Foreground = _blue300Brush,
+                Foreground = _nodeContextMenuAccent,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 RenderTransformOrigin = new Point(0.5, 0.5),
@@ -2042,7 +2042,7 @@ namespace Dynamo.Nodes
                 popup.PlacementTarget = border;
                 popup.IsOpen = true;
                 border.Background = _nodeContextMenuBackgroundHighlight;
-                arrow.Foreground = Brushes.White;
+                arrow.Foreground = _nodeContextMenuForegroundHighlight;
             };
 
             border.MouseLeave += (s, e) =>
@@ -2052,7 +2052,7 @@ namespace Dynamo.Nodes
                 {
                     popup.IsOpen = false;
                     border.Background = Brushes.Transparent;
-                    arrow.Foreground = _blue300Brush;
+                    arrow.Foreground = _nodeContextMenuAccent;
                 }
             };
 
@@ -2081,7 +2081,7 @@ namespace Dynamo.Nodes
 
             return new Border
             {
-                Background = _midGreyBrush,
+                Background = _nodeContextMenuBackground,
                 Padding = new Thickness(10, 5, 10, 5),
                 Child = panel
             };
@@ -2110,7 +2110,7 @@ namespace Dynamo.Nodes
 
             return new Border
             {
-                Background = _midGreyBrush,
+                Background = _nodeContextMenuBackground,
                 Padding = new Thickness(0, 5, 0, 5),
                 Child = stack
             };
@@ -2210,7 +2210,7 @@ namespace Dynamo.Nodes
 
             return new Border
             {
-                Background = _midGreyBrush,
+                Background = _nodeContextMenuBackground,
                 Padding = new Thickness(10,10,!needsScroll ? 10 : 1,10),
                 Child = content
             };

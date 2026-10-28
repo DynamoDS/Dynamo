@@ -46,6 +46,33 @@
             </Style>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <dynconverters:InverseBoolToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+
+            <DataTemplate x:Key="InCanvasMemberTemplate">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Height="36"
+                           Width="24"
+                           Margin="2,0,16,0"
+                           VerticalAlignment="Center"
+                           Source="{Binding SmallIcon}" />
+                    <Grid Margin="-10,0,0,0">
+                        <Rectangle Fill="{StaticResource InCanvasSearchResultBackgroundBrush}">
+                            <Rectangle.Margin>
+                                <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                                    <Binding ElementName="memberName" />
+                                    <Binding Path="DataContext"
+                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}" />
+                                </MultiBinding>
+                            </Rectangle.Margin>
+                        </Rectangle>
+                        <TextBlock Name="memberName" VerticalAlignment="Center" FontSize="13">
+                            <Run Text="{Binding Name, Mode=OneWay}"
+                                 Foreground="{StaticResource InCanvasSearchResultForegroundBrush}" />
+                            <Run Text="{Binding Parameters, Mode=OneWay}"
+                                 Foreground="{StaticResource InCanvasSearchResultSecondaryForegroundBrush}" />
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -69,7 +96,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Border Background="{StaticResource DarkMidGreyBrush}"
+                <Border Background="{StaticResource autocompletionWindow}"
                         CornerRadius="8,8,0,0">
                     <Grid Name="HeaderContent">
                         <Grid.ColumnDefinitions>
@@ -126,10 +153,10 @@
                 </Border>
             </Grid>
 
-            <StackPanel Background="{StaticResource LibraryCommonBackground}"
+            <StackPanel Background="{StaticResource InCanvasSearchResultBackgroundBrush}"
                         Grid.Row="1"
                         Width="{Binding Source={x:Static resx:Resources.Autocomplete}, Converter={StaticResource NodeAutocompleteWidthConverter}}">
-                <Border Background="{StaticResource LibraryCommonBackground}"
+                <Border Background="{StaticResource InCanvasSearchResultBackgroundBrush}"
                         Grid.Row="1"
                         MaxHeight="270">
                     <ListBox Name="MembersListBox"
@@ -148,7 +175,7 @@
                                               Style="{StaticResource InCanvasScrollViewerStyle}"
                                               CanContentScroll="True"
                                               Width="{Binding Source={x:Static resx:Resources.Autocomplete}, Converter={StaticResource NodeAutocompleteWidthConverter}}">
-                                    <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
+                                    <ContentPresenter ContentTemplate="{StaticResource InCanvasMemberTemplate}" />
                                 </ScrollViewer>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -253,7 +280,7 @@
             </Popup>
 
             <Grid Name="SearchText"
-                  Background="{StaticResource LibraryCommonBackground}"
+                  Background="{StaticResource InCanvasSearchResultBackgroundBrush}"
                   Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
