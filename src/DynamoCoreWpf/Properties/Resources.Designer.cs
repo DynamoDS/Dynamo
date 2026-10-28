@@ -8776,6 +8776,15 @@ namespace Dynamo.Wpf.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The {0} theme is selected, but this session keeps the {1} theme it started with. Restart Dynamo and the application it runs in to apply the change..
+        /// </summary>
+        public static string PreferencesViewThemeChangePendingRestart {
+            get {
+                return ResourceManager.GetString("PreferencesViewThemeChangePendingRestart", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Dark.
         /// </summary>
         public static string PreferencesViewThemeDark {
@@ -8794,7 +8803,7 @@ namespace Dynamo.Wpf.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Restart Dynamo to apply the new theme..
+        ///   Looks up a localized string similar to Restart Dynamo to apply the new theme. If Dynamo is running inside another application, such as Revit, restart that application too..
         /// </summary>
         public static string PreferencesViewThemeRestartRequired {
             get {
@@ -8803,7 +8812,7 @@ namespace Dynamo.Wpf.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Selects the color theme used by the Dynamo interface. The change takes effect the next time Dynamo starts. Some areas, including the library, the home page and the Package Manager, currently remain dark in both themes..
+        ///   Looks up a localized string similar to Selects the color theme used by the Dynamo interface. The change takes effect the next time Dynamo starts; if Dynamo runs inside another application, such as Revit, restart that application. Some areas, including the library, the home page and the Package Manager, currently remain dark in both themes..
         /// </summary>
         public static string PreferencesWindowThemeTooltip {
             get {

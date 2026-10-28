@@ -225,6 +225,16 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Model.PreferenceSettings.Theme, SharedDictionaryManager.CurrentTheme);
         }
 
+        /// <summary>
+        /// Starting Dynamo must go through the once-per-process latch rather than assign the theme
+        /// directly; otherwise reopening Dynamo inside a host could switch themes mid-process.
+        /// </summary>
+        [Test]
+        public void WhenDynamoStartsThenTheThemeIsLatchedForTheProcess()
+        {
+            Assert.IsTrue(SharedDictionaryManager.IsThemeLatched);
+        }
+
         [Test]
         public void WhenPreferencesAreDefaultThenDynamoStartsInDarkTheme()
         {

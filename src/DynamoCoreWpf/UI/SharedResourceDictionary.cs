@@ -76,20 +76,66 @@ namespace Dynamo.UI
         private const string BaseThemeFolderName = "Modern";
 
         private static DynamoTheme currentTheme = DynamoTheme.Dark;
+        private static bool isThemeLatched;
 
         /// <summary>
         /// The theme whose resource dictionaries are loaded.
         /// </summary>
         /// <remarks>
-        /// This must be assigned before the first Dynamo view is constructed, because
-        /// <see cref="SharedResourceDictionary"/> caches every dictionary by URI and WPF resolves
-        /// most colors through <c>StaticResource</c>. Assigning it later would leave the UI with a
-        /// mix of both themes, so callers should treat it as startup-only configuration.
+        /// The theme is fixed for the lifetime of the process by <see cref="ApplyStartupTheme"/>.
+        /// <see cref="SharedResourceDictionary"/> caches every dictionary by URI, WPF resolves most
+        /// colors through <c>StaticResource</c>, and several views hold brushes in static fields,
+        /// all of which survive a Dynamo session closing. Changing the theme later in the same
+        /// process would therefore leave a mix of both themes.
         /// </remarks>
         public static DynamoTheme CurrentTheme
         {
             get { return currentTheme; }
-            set { currentTheme = value; }
+            // Internal so that nothing outside Dynamo can bypass the once-per-process latch.
+            // Tests assign it directly to load a given palette.
+            internal set { currentTheme = value; }
+        }
+
+        /// <summary>
+        /// Applies the theme for this process. Only the first call takes effect.
+        /// </summary>
+        /// <remarks>
+        /// When Dynamo runs inside a host such as Revit, closing and reopening Dynamo starts a new
+        /// session in the same process, and every static cache above still holds the theme the
+        /// process started with. Latching keeps later sessions on that theme instead of mixing
+        /// two, so a theme change needs the host application to restart as well.
+        /// </remarks>
+        /// <param name="requestedTheme">The theme stored in the user's preferences.</param>
+        /// <returns>
+        /// True if <paramref name="requestedTheme"/> is the theme in effect; false if an earlier
+        /// session in this process already fixed a different theme.
+        /// </returns>
+        internal static bool ApplyStartupTheme(DynamoTheme requestedTheme)
+        {
+            if (!isThemeLatched)
+            {
+                currentTheme = requestedTheme;
+                isThemeLatched = true;
+            }
+
+            return currentTheme == requestedTheme;
+        }
+
+        /// <summary>
+        /// Whether <see cref="ApplyStartupTheme"/> has fixed the theme for this process.
+        /// </summary>
+        internal static bool IsThemeLatched
+        {
+            get { return isThemeLatched; }
+        }
+
+        /// <summary>
+        /// Releases the latch so the next <see cref="ApplyStartupTheme"/> call takes effect.
+        /// For tests only: in a real process the static caches would keep the old theme.
+        /// </summary>
+        internal static void ResetThemeLatchForTesting()
+        {
+            isThemeLatched = false;
         }
 
         /// <summary>

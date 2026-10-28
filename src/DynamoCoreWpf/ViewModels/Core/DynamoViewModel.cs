@@ -858,9 +858,15 @@ namespace Dynamo.ViewModels
 
             // The theme has to be selected before any view is constructed, because the shared
             // resource dictionaries are cached by URI the first time a view resolves them.
-            if (model.PreferenceSettings != null)
+            if (model.PreferenceSettings != null &&
+                !SharedDictionaryManager.ApplyStartupTheme(model.PreferenceSettings.Theme))
             {
-                SharedDictionaryManager.CurrentTheme = model.PreferenceSettings.Theme;
+                // An earlier Dynamo session in this process (for example inside Revit) already
+                // fixed a different theme. Keep it rather than mix two, and say why.
+                model.Logger?.Log(string.Format(
+                    WpfResources.PreferencesViewThemeChangePendingRestart,
+                    model.PreferenceSettings.Theme,
+                    SharedDictionaryManager.CurrentTheme));
             }
 
             this.model.CommandStarting += OnModelCommandStarting;
