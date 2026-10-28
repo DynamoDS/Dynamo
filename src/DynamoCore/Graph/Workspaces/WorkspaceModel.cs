@@ -300,6 +300,8 @@ namespace Dynamo.Graph.Workspaces
         private bool independentDirtyFlag;
         private bool isReadOnly;
         private readonly List<NodeModel> nodes;
+        // Index of nodes by GUID for the AI change record. Kept in step with nodes, under lock (nodes).
+        private readonly Dictionary<Guid, NodeModel> nodesByGuid = new Dictionary<Guid, NodeModel>();
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
         internal readonly List<PresetModel> presets;
@@ -1163,7 +1165,7 @@ namespace Dynamo.Graph.Workspaces
                 throw new ArgumentException("A modified node must name the input that changed.", nameof(inputName));
             }
 
-            var node = Nodes.FirstOrDefault(n => n.GUID == nodeId);
+            var node = FindNodeForAIRecord(nodeId);
             if (node == null || node.IsTransient)
             {
                 return;
@@ -1217,7 +1219,7 @@ namespace Dynamo.Graph.Workspaces
         public void RecordAINodeDeleted(Guid nodeId, string turnId)
         {
             ValidateAITurnId(turnId);
-            var node = Nodes.FirstOrDefault(n => n.GUID == nodeId);
+            var node = FindNodeForAIRecord(nodeId);
             if (node == null || node.IsTransient)
             {
                 return;
@@ -1299,6 +1301,26 @@ namespace Dynamo.Graph.Workspaces
 
             aiTurns.Clear();
             lastAITurnNumber = 0;
+        }
+
+        private NodeModel FindNodeForAIRecord(Guid nodeId)
+        {
+            lock (nodes)
+            {
+                if (nodesByGuid.TryGetValue(nodeId, out var node) && node.GUID == nodeId)
+                {
+                    return node;
+                }
+
+                // Not indexed under this GUID, for example because its GUID changed after it was added.
+                node = nodes.FirstOrDefault(n => n.GUID == nodeId);
+                if (node != null)
+                {
+                    nodesByGuid[nodeId] = node;
+                }
+
+                return node;
+            }
         }
 
         private static void ValidateAITurnId(string turnId)
@@ -1422,6 +1444,7 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 nodes.Add(node);
+                nodesByGuid[node.GUID] = node;
             }
 
             OnNodeAdded(node);
@@ -1432,6 +1455,7 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 nodes.Clear();
+                nodesByGuid.Clear();
             }
 
             OnNodesCleared();
@@ -1697,6 +1721,11 @@ namespace Dynamo.Graph.Workspaces
             guid = Guid.NewGuid();
 
             this.nodes = new List<NodeModel>(nodes);
+            foreach (var node in this.nodes)
+            {
+                nodesByGuid[node.GUID] = node;
+            }
+
             this.notes = new List<NoteModel>(notes);
             foreach (var note in this.notes)
                 note.Workspace = this;
@@ -2010,6 +2039,11 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 if (!nodes.Remove(model)) return;
+
+                if (nodesByGuid.TryGetValue(model.GUID, out var indexed) && ReferenceEquals(indexed, model))
+                {
+                    nodesByGuid.Remove(model.GUID);
+                }
             }
 
             // Ensure the node is removed from the global selection set. In the undo path,
