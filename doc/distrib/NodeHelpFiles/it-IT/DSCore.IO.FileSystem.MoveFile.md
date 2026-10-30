@@ -1,5 +1,5 @@
 ## In profondità
-Moves a specified file to a new location. `FileSystem.MoveFile` can also rename a file: to do this, keep the same folder in `newPath` and change only the file name.
+Sposta il file specificato in una nuova posizione. `FileSystem.MoveFile` consente anche di rinominare un file: per farlo, mantenere la stessa cartella in `newPath` e modificare solo il nome del file.
 ___
 ## File di esempio
 
