@@ -192,10 +192,14 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
         private static SolidColorBrush nodeAITouchedHaloBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAITouchedHaloBrush"] as SolidColorBrush;
 
-        // AI-touched halo - a glow that extends 8px past the node edge with an 18px Figma layer blur.
-        // Figma's layer blur value is twice the Gaussian standard deviation (18 -> 9),
-        // and WPF's BlurEffect uses a standard deviation of about Radius/3, so a radius of 27 gives the same falloff
+        // AI-touched halo. On a default node the glow extends 8px past the edge. A frozen node or a
+        // node with preview off already draws its own border, so the glow moves out to 16px and sits
+        // outside that border (DYN-11001). Figma's layer blur value is twice the Gaussian standard
+        // deviation (18 -> 9), and WPF's BlurEffect uses a standard deviation of about Radius/3, so a
+        // radius of 27 gives the same falloff.
+        private const double AIHaloNodeCornerRadius = 8;
         private const double AIHaloSpread = 8;
+        private const double AIHaloSpreadOutsideStateBorder = 16;
         private const double AIHaloBlurRadius = 27;
         private static readonly BlurEffect aiHaloBlur = new BlurEffect
         {
@@ -1553,7 +1557,9 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(NodeViewModel.AIHaloOpacity))
+            if (e.PropertyName == nameof(NodeViewModel.AIHaloOpacity)
+                || e.PropertyName == nameof(NodeViewModel.IsFrozen)
+                || e.PropertyName == nameof(NodeViewModel.IsVisible))
             {
                 UpdateAIHalo();
             }
@@ -1596,6 +1602,7 @@ namespace Dynamo.Controls
 
             aiHalo.Opacity = opacity;
             aiHalo.Visibility = Visibility.Visible;
+            ApplyAIHaloSpread();
 
             // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
             // pale ring between the node and the glow, so it is hidden while the halo is on. The
@@ -1603,12 +1610,29 @@ namespace Dynamo.Controls
             nodeBorder.BorderBrush = Brushes.Transparent;
         }
 
+        /// <summary>
+        /// Puts the glow 8px outside a default node, or 16px when the node already draws a frozen or
+        /// preview-off border, so the glow sits outside that border.
+        /// </summary>
+        private void ApplyAIHaloSpread()
+        {
+            var outsideStateBorder = ViewModel != null && (ViewModel.IsFrozen || !ViewModel.IsVisible);
+            var spread = outsideStateBorder ? AIHaloSpreadOutsideStateBorder : AIHaloSpread;
+            aiHalo.Margin = new Thickness(-spread);
+
+            if (aiHalo.Children[0] is Border glow)
+            {
+                var corner = AIHaloNodeCornerRadius + spread;
+                glow.CornerRadius = new CornerRadius(corner, corner, 0, 0);
+            }
+        }
+
         private static Grid CreateAIHalo()
         {
             var glow = new Border
             {
                 Background = nodeAITouchedHaloBrush,
-                CornerRadius = new CornerRadius(8 + AIHaloSpread, 8 + AIHaloSpread, 0, 0),
+                CornerRadius = new CornerRadius(AIHaloNodeCornerRadius + AIHaloSpread, AIHaloNodeCornerRadius + AIHaloSpread, 0, 0),
                 Effect = aiHaloBlur
             };
 

@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
@@ -385,6 +386,55 @@ namespace DynamoCoreWpfTests
 
             var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAFrozenBorderAndReturns()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            // The assistant froze it, so the change record stays. A person's freeze would clear it.
+            Workspace.IsAIEditInProgress = true;
+            node.IsFrozen = true;
+            Workspace.IsAIEditInProgress = false;
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
+
+            Workspace.IsAIEditInProgress = true;
+            node.IsFrozen = false;
+            Workspace.IsAIEditInProgress = false;
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAPreviewOffBorder()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            Workspace.IsAIEditInProgress = true;
+            node.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+            Workspace.IsAIEditInProgress = false;
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.IsFalse(node.IsVisible);
+            Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+        }
+
+        private Border HaloGlow(NodeModel node)
+        {
+            return ((Grid)ViewOf(node).AIHalo).Children.OfType<Border>().Single();
         }
     }
 }
