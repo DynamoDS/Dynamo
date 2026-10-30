@@ -1152,6 +1152,51 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAFrozenBorderAndReturns()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            // The assistant froze it, so the change record stays. A person's freeze would clear it.
+            AsAIEdit(() => node.IsFrozen = true);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
+
+            AsAIEdit(() => node.IsFrozen = false);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAPreviewOffBorder()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            AsAIEdit(() => node.UpdateValue(new UpdateValueParams("IsVisible", "false")));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.IsFalse(node.IsVisible);
+            Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+        }
+
+        private Border HaloGlow(NodeModel node)
+        {
+            return ((Grid)ViewOf(node).AIHalo).Children.OfType<Border>().Single();
+        }
+
         #region Zoomed-out treatment (DYN-11010)
 
         private const string AIIcon = "ai-badge-96px.png";
