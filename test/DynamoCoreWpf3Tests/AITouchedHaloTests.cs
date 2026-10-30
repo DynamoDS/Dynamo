@@ -430,6 +430,41 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(node.AIChange);
             Assert.IsFalse(node.IsVisible);
             Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewOf(node).AIHalo.Opacity,
+                "Preview off draws a border. It does not dim the glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AlertCapsTheHaloAtSixtyPercentUntilItClears()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewOf(node).AIHalo.Opacity);
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloAlertOpacity, ViewOf(node).AIHalo.Opacity);
+
+            node.ClearErrorsAndWarnings();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewOf(node).AIHalo.Opacity);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeWithAnAlertStaysAtTheMovedOpacity()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloMovedOpacity, ViewOf(node).AIHalo.Opacity,
+                "40% is already under the 60% alert cap.");
         }
 
         private Border HaloGlow(NodeModel node)
