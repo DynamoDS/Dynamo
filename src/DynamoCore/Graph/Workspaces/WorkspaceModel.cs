@@ -1376,7 +1376,9 @@ namespace Dynamo.Graph.Workspaces
                 || node.IsTransient
                 || node.AIChange == null
                 || e.PropertyName == null
-                || !aiChangeClearingSettings.Contains(e.PropertyName))
+                || !aiChangeClearingSettings.Contains(e.PropertyName)
+                // A cache refresh, not a freeze
+                || (e.PropertyName == nameof(NodeModel.IsFrozen) && node.IsUpstreamCacheRefreshInProgress))
             {
                 return;
             }

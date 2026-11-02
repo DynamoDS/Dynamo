@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using DefineDataNode = CoreNodeModels.DefineData;
 using WatchNode = CoreNodeModels.Watch;
 
 namespace Dynamo.Tests
@@ -29,14 +31,28 @@ namespace Dynamo.Tests
 
         private NodeModel AddNumberNode()
         {
+            return AddNode(new DoubleInput());
+        }
+
+        private T AddNode<T>(T node) where T : NodeModel
+        {
             if (Workspace is HomeWorkspaceModel home)
             {
                 home.RunSettings.RunType = RunType.Manual;
             }
 
-            var node = new DoubleInput();
             Workspace.AddAndRegisterNode(node, false);
             return node;
+        }
+
+        private (NodeModel before, WatchNode watch, NodeModel after) AddChainThroughInlineWatch()
+        {
+            var before = AddNumberNode();
+            var watch = AddNode(new WatchNode());
+            var after = AddNode(new WatchNode());
+            Assert.IsNotNull(ConnectorModel.Make(before, watch, 0, 0));
+            Assert.IsNotNull(ConnectorModel.Make(watch, after, 0, 0));
+            return (before, watch, after);
         }
 
         /// <summary>Runs an edit as DynamoMCP does: inside a BeginAIEdit scope.</summary>
@@ -661,6 +677,102 @@ namespace Dynamo.Tests
 
             Assert.AreSame(start.OutPorts[0], connector.Start);
             Assert.IsNotNull(end.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PersonDeletingAnInlineWatchClearsTheRecordOfTheNodeItFed()
+        {
+            var (before, watch, after) = AddChainThroughInlineWatch();
+            Workspace.RecordAINodeChange(after.GUID, AIChangeKind.Modified, TurnA, "Input", null, "Watch");
+
+            Workspace.RecordAndDeleteModels(new List<ModelBase> { watch });
+
+            Assert.AreSame(before.OutPorts[0], after.InPorts[0].Connectors.Single().Start,
+                "The node is rewired past the deleted Watch.");
+            Assert.IsNull(after.AIChange, "Same as undoing or redoing the deletion.");
+            CollectionAssert.AreEqual(new[] { after.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds,
+                "The turn's own history is kept.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIDeletingAnInlineWatchKeepsTheRecordOfTheNodeItFed()
+        {
+            var (_, watch, after) = AddChainThroughInlineWatch();
+            Workspace.RecordAINodeChange(after.GUID, AIChangeKind.Modified, TurnA, "Input", null, "Watch");
+
+            AsAIEdit(() => Workspace.RecordAndDeleteModels(new List<ModelBase> { watch }));
+
+            Assert.IsNotNull(after.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DeletingAnInlineWatchKeepsTheRecordOfTheNodeBeforeIt()
+        {
+            // The rewire raises IsFrozen on this node, although nobody froze it.
+            var (before, watch, _) = AddChainThroughInlineWatch();
+            Workspace.RecordAINodeChange(before.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.RecordAndDeleteModels(new List<ModelBase> { watch });
+
+            Assert.IsNotNull(before.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RefreshingTheFrozenStateKeepsTheRecordButFreezingStillClearsIt()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var announced = new List<string>();
+            node.PropertyChanged += (_, e) => announced.Add(e.PropertyName);
+
+            // Raises IsFrozen even though nothing was frozen.
+            node.ComputeUpstreamOnDownstreamNodes();
+
+            CollectionAssert.Contains(announced, nameof(NodeModel.IsFrozen), "The frozen look is still refreshed.");
+            Assert.IsNotNull(node.AIChange, "Nobody froze the node.");
+            Assert.IsFalse(node.IsUpstreamCacheRefreshInProgress);
+
+            node.IsFrozen = true;
+
+            Assert.IsNull(node.AIChange, "Freezing is still a person's edit.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DefineDataSwitchingBetweenListAndSingleValueWhileRunningKeepsTheRecord()
+        {
+            // Automatic mode flips IsList itself when the input switches between single value and list.
+            var node = AddNode(new DefineDataNode());
+            Assert.IsTrue(node.IsAutoMode);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var wasList = node.IsList;
+            var modifiedCount = 0;
+            node.Modified += _ => modifiedCount++;
+
+            ReportRunResultToDefineData(node, isValid: true, updateList: true);
+
+            Assert.AreNotEqual(wasList, node.IsList, "The node switched between list and single value.");
+            Assert.AreEqual(1, modifiedCount, "The node is still reported modified, so it runs again.");
+            Assert.IsNotNull(node.AIChange, "Nobody edited the node, so it keeps its record.");
+
+            // A person's edit still clears it.
+            node.IsList = wasList;
+            Assert.IsNull(node.AIChange);
+        }
+
+        /// <summary>
+        /// Calls DefineData's data bridge callback, as the engine does after a run.
+        /// </summary>
+        private static void ReportRunResultToDefineData(DefineDataNode node, bool isValid, bool updateList)
+        {
+            var callback = typeof(DefineDataNode).GetMethod("DataBridgeCallback", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(callback, "DefineData's data bridge callback was not found.");
+
+            callback.Invoke(node, new object[] { (isValid, updateList, (DSCore.Data.DataNodeDynamoType)null) });
         }
 
         #endregion

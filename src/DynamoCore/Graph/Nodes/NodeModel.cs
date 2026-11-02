@@ -1258,8 +1258,25 @@ namespace Dynamo.Graph.Nodes
                 }
             }
 
-            RaisePropertyChanged("IsFrozen");
+            // Flagged as a cache refresh, so it is not mistaken for a person freezing the node
+            var wasRefreshing = IsUpstreamCacheRefreshInProgress;
+            IsUpstreamCacheRefreshInProgress = true;
+            try
+            {
+                RaisePropertyChanged(nameof(IsFrozen));
+            }
+            finally
+            {
+                IsUpstreamCacheRefreshInProgress = wasRefreshing;
+            }
         }
+
+        /// <summary>
+        /// True while <see cref="ComputeUpstreamOnDownstreamNodes"/> raises <see cref="IsFrozen"/> after
+        /// a cache refresh, which is not a person freezing or unfreezing the node.
+        /// </summary>
+        [JsonIgnore]
+        internal bool IsUpstreamCacheRefreshInProgress { get; private set; }
 
         private void MarkDownStreamNodesAsModified(NodeModel node)
         {
@@ -1583,10 +1600,9 @@ namespace Dynamo.Graph.Nodes
         internal bool IsExternalChangeInProgress => ReferenceEquals(externalChangeNode, this);
 
         /// <summary>
-        /// Like <see cref="OnNodeModified"/>, for a change that comes from outside the graph rather than
-        /// from an edit to it, for example a watched file changing on disk. The node is marked modified
-        /// and runs again as usual, but nobody edited it, so it keeps its AI change record
-        /// (<see cref="AIChange"/>).
+        /// Like <see cref="OnNodeModified"/>, for a change nobody made, such as a watched file changing on
+        /// disk or a node adapting to its input during a run. The node still runs again, but keeps its
+        /// AI change record (<see cref="AIChange"/>).
         /// </summary>
         /// <param name="forceExecute">As for <see cref="OnNodeModified"/>.</param>
         internal void OnNodeModifiedByExternalChange(bool forceExecute = false)
