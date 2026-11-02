@@ -3567,6 +3567,7 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="ContextMenuClearAIHighlights" xml:space="preserve">
     <value>Clear AI Highlights</value>
+  </data>
   <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
     <value>Hide All Wires</value>
   </data>
