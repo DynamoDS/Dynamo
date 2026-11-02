@@ -41,23 +41,10 @@ namespace Dynamo.Tests
                 home.RunSettings.RunType = RunType.Manual;
             }
 
-            var node = new DoubleInput();
             Workspace.AddAndRegisterNode(node, false);
             return node;
         }
 
-        /// <summary>Runs an edit as DynamoMCP does: with IsAIEditInProgress set.</summary>
-        private void AsAIEdit(Action edit)
-        {
-            Workspace.IsAIEditInProgress = true;
-            try
-            {
-                edit();
-            }
-            finally
-            {
-                Workspace.IsAIEditInProgress = false;
-            }
         private (NodeModel before, WatchNode watch, NodeModel after) AddChainThroughInlineWatch()
         {
             var before = AddNumberNode();
