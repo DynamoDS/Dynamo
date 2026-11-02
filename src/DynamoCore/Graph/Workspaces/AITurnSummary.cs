@@ -7,20 +7,13 @@ namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
     /// What one AI Assistant turn did to a workspace: the nodes it placed, modified or moved, and how
-    /// many nodes and connections it deleted. Read it with <see cref="WorkspaceModel.GetAITurnSummary"/>.
+    /// many nodes and connections it deleted. See <see cref="WorkspaceModel.GetAITurnSummary"/>.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This is the history of the turn, kept as the turn recorded it. A person editing one of its nodes
-    /// afterwards, undo or redo, or a later turn clears or replaces that node's current record
-    /// (<see cref="NodeModel.AIChange"/>), but does not change this summary, so its node list and its
-    /// counts always describe the same thing.
-    /// </para>
-    /// <para>
-    /// Like the per-node record, it is the net effect of the turn and is never saved to the .dyn file.
-    /// A node the turn placed and then deleted again is neither listed nor counted, and a connection the
-    /// turn added and then removed again is not counted.
-    /// </para>
+    /// The turn's own history. A later edit, undo/redo or another turn changes a node's current record
+    /// (<see cref="NodeModel.AIChange"/>), not this summary. Holds the turn's net effect: a node it
+    /// placed then deleted, or a connection it added then removed, is not counted. Never saved to the
+    /// .dyn file.
     /// </remarks>
     public sealed class AITurnSummary
     {
@@ -39,31 +32,31 @@ namespace Dynamo.Graph.Workspaces
             RemovedConnectorCount = removedConnectorCount;
         }
 
-        /// <summary>Identifier of the turn, as reported by the caller that recorded it.</summary>
+        /// <summary>The turn's identifier, as given by the caller.</summary>
         public string TurnId { get; }
 
-        /// <summary>Position of the turn among the turns recorded in this workspace, starting at 1.</summary>
+        /// <summary>The turn's 1-based position in this workspace.</summary>
         public int TurnNumber { get; }
 
         /// <summary>
-        /// What the turn did to each node it placed, modified or moved, in the order the turn first
-        /// touched them. Nodes the turn deleted are counted in <see cref="DeletedNodeCount"/> instead.
+        /// Each node the turn placed, modified or moved, in the order first touched. Deleted nodes are in
+        /// <see cref="DeletedNodeCount"/> instead.
         /// </summary>
         public IReadOnlyList<AINodeChange> Nodes { get; }
 
         /// <summary>The ids of <see cref="Nodes"/>, in the same order.</summary>
         public IReadOnlyList<Guid> NodeIds { get; }
 
-        /// <summary>How many nodes that existed before the turn the turn deleted.</summary>
+        /// <summary>How many pre-existing nodes the turn deleted.</summary>
         public int DeletedNodeCount { get; }
 
-        /// <summary>How many connections that existed before the turn the turn removed.</summary>
+        /// <summary>How many pre-existing connections the turn removed.</summary>
         public int RemovedConnectorCount { get; }
     }
 
     /// <summary>
-    /// Everything one turn recorded, kept by <see cref="WorkspaceModel"/>: its own copy of each node's
-    /// change, the nodes it placed and deleted, and the connections it added and removed.
+    /// Everything one turn recorded: its copy of each node's change, the nodes it placed and deleted,
+    /// and the connections it added and removed.
     /// </summary>
     internal sealed class AITurnState
     {
@@ -91,7 +84,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>The turn's changes to each node, in the order the turn first touched them.</summary>
         internal IReadOnlyList<AINodeChange> NodeChanges => nodeOrder.Select(id => nodeChanges[id]).ToList().AsReadOnly();
 
-        /// <summary>This turn's change to a node so far; null when the turn has not changed it.</summary>
+        /// <summary>This turn's change to a node so far, or null.</summary>
         internal AINodeChange GetNodeChange(Guid nodeId)
         {
             return nodeChanges.TryGetValue(nodeId, out var change) ? change : null;
@@ -123,8 +116,8 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Whether this turn placed the node. Kept apart from the node's change, so it is still known
-        /// after the change is removed, for example when the turn reports deleting the node.
+        /// Whether this turn placed the node. Kept separately, so it survives the node's change being
+        /// removed (for example when the turn deletes the node).
         /// </summary>
         internal bool PlacedNode(Guid nodeId)
         {
@@ -132,26 +125,24 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Remembers the record a node carried when this turn took it over (null for none), so it can be
-        /// put back if the turn's net effect on the node turns out to be nothing. Call it whenever the
-        /// node's current record is not this turn's: the first time the turn touches the node, and
-        /// again when the turn comes back to a node whose record a person cleared, or another turn
-        /// replaced, in the meantime. The latest call wins, so a record a person cleared never comes
-        /// back.
+        /// Remembers the record a node had when this turn took it over (null for none), to restore if the
+        /// turn's net effect is nothing. Call whenever the node's record is not this turn's, including
+        /// after a person cleared it or another turn replaced it. The latest call wins, so a cleared
+        /// record never comes back.
         /// </summary>
         internal void RememberMarkBeforeTurn(Guid nodeId, AINodeChange mark)
         {
             marksBeforeTurn[nodeId] = mark;
         }
 
-        /// <summary>The record a node carried before this turn touched it, and forgets it.</summary>
+        /// <summary>Returns and forgets the record a node had before this turn.</summary>
         internal AINodeChange TakeMarkBeforeTurn(Guid nodeId)
         {
             marksBeforeTurn.Remove(nodeId, out var mark);
             return mark;
         }
 
-        /// <summary>The turn deleted a node that existed before it. Reporting the same node again counts once.</summary>
+        /// <summary>The turn deleted a pre-existing node. Repeat reports count once.</summary>
         internal void NodeDeleted(Guid nodeId)
         {
             deletedNodes.Add(nodeId);
@@ -163,28 +154,22 @@ namespace Dynamo.Graph.Workspaces
             return $"{startNodeId:N}:{startPortIndex}>{endNodeId:N}:{endPortIndex}";
         }
 
-        /// <summary>
-        /// The turn added a connection. Re-adding one the same turn removed cancels that removal.
-        /// </summary>
+        /// <summary>The turn added a connection. Re-adding one it removed cancels the removal.</summary>
         internal void ConnectorAdded(string key)
         {
             ReportConnector(key, existsNow: true);
         }
 
-        /// <summary>
-        /// The turn removed a connection. Removing one the same turn added cancels that addition, so it
-        /// is not counted.
-        /// </summary>
+        /// <summary>The turn removed a connection. Removing one it added cancels the addition.</summary>
         internal void ConnectorRemoved(string key)
         {
             ReportConnector(key, existsNow: false);
         }
 
         /// <summary>
-        /// The first report about a connection tells whether it existed before the turn: one the turn
-        /// added did not, one it removed did. Later reports only change whether it exists now, so a
-        /// repeated report changes nothing. A connection counts as removed when it existed before the
-        /// turn and does not exist now.
+        /// The first report tells whether the connection existed before the turn (removed: yes, added:
+        /// no). Later reports only update whether it exists now. It counts as removed if it existed
+        /// before and does not now.
         /// </summary>
         private void ReportConnector(string key, bool existsNow)
         {

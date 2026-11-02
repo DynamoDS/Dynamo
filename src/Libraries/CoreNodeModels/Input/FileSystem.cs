@@ -216,8 +216,7 @@ namespace CoreNodeModels.Input
 
             protected void Modified()
             {
-                // The watched file or folder changed on disk. The node runs again, but nobody edited
-                // the graph, so this is reported as a change from outside it.
+                // Changed on disk, not edited: the node runs again but keeps its AI change record
                 node.OnNodeModifiedByExternalChange(forceExecute: true);
             }
 
