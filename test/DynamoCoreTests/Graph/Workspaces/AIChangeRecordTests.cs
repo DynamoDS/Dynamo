@@ -820,6 +820,139 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Starting a turn and dismissing (DYN-11002)
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnClearsEarlierTurnsRecordsButKeepsTheirHistory()
+        {
+            var placed = AddNumberNode();
+            var modified = AddNumberNode();
+            Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(modified.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Workspace.StartAITurn(TurnB);
+
+            Assert.IsNull(placed.AIChange);
+            Assert.IsNull(modified.AIChange);
+            CollectionAssert.AreEquivalent(new[] { placed.GUID, modified.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds,
+                "Turn A's own history is kept.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnKeepsTheRecordsThatTurnAlreadyMade()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.StartAITurn(TurnA);
+
+            Assert.AreEqual(TurnA, node.AIChange?.TurnId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnThatChangesNothingRecordsNoTurn()
+        {
+            Workspace.StartAITurn(TurnA);
+
+            Assert.IsNull(Workspace.GetAITurnSummary(TurnA));
+            CollectionAssert.IsEmpty(Workspace.GetAITurnSummaries());
+
+            // Turn numbers count only turns that changed something
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnB);
+            Assert.AreEqual(1, node.AIChange.TurnNumber);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeInATurnThatWasNotStartedKeepsEarlierRecords()
+        {
+            // An ungrouped DynamoMCP edit has its own turn and must not clear earlier records
+            var earlier = AddNumberNode();
+            var later = AddNumberNode();
+            Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.RecordAINodeChange(later.GUID, AIChangeKind.Placed, "call-1");
+
+            Assert.AreEqual(TurnA, earlier.AIChange?.TurnId);
+            Assert.AreEqual("call-1", later.AIChange?.TurnId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RecordClearedByANewTurnIsNotBroughtBackWhenThatTurnNetsToNothing()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Workspace.StartAITurn(TurnB);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "2", "3");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "3", "2");
+
+            Assert.IsNull(node.AIChange, "Turn A's cleared record must not return.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnWithoutATurnIdIsRejected()
+        {
+            Assert.Throws<ArgumentException>(() => Workspace.StartAITurn(null));
+            Assert.Throws<ArgumentException>(() => Workspace.StartAITurn(string.Empty));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DismissingClearsEveryRecordButKeepsTheTurnsHistory()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+
+            Workspace.DismissAIChanges();
+
+            Assert.IsNull(first.AIChange);
+            Assert.IsNull(second.AIChange);
+            CollectionAssert.AreEqual(new[] { first.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds);
+            CollectionAssert.AreEqual(new[] { second.GUID }, Workspace.GetAITurnSummary(TurnB).NodeIds);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TurnInProgressStillReportsEveryChangeAfterADismiss()
+        {
+            var before = AddNumberNode();
+            var after = AddNumberNode();
+            Workspace.RecordAINodeChange(before.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.DismissAIChanges();
+            Workspace.RecordAINodeChange(after.GUID, AIChangeKind.Placed, TurnA);
+
+            Assert.IsNull(before.AIChange);
+            Assert.AreEqual(TurnA, after.AIChange?.TurnId);
+            CollectionAssert.AreEquivalent(new[] { before.GUID, after.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnAndDismissingAreNotUndoSteps()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var couldUndo = Workspace.UndoRecorder.CanUndo;
+
+            Workspace.StartAITurn(TurnB);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+            Workspace.DismissAIChanges();
+
+            Assert.AreEqual(couldUndo, Workspace.UndoRecorder.CanUndo);
+        }
+
+        #endregion
+
         #region Never saved, never unsaved
 
         [Test]
@@ -835,6 +968,24 @@ namespace Dynamo.Tests
             Assert.IsFalse(Workspace.HasUnsavedChanges);
 
             Workspace.ClearAIChanges();
+            Assert.IsFalse(Workspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnAndDismissingNeverMarkTheGraphUnsaved()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.HasUnsavedChanges = false;
+
+            Workspace.StartAITurn(TurnB);
+            Assert.IsNull(node.AIChange);
+            Assert.IsFalse(Workspace.HasUnsavedChanges);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+            Workspace.DismissAIChanges();
+            Assert.IsNull(node.AIChange);
             Assert.IsFalse(Workspace.HasUnsavedChanges);
         }
 
