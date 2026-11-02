@@ -522,6 +522,13 @@ namespace Dynamo.Graph.Workspaces
                 if (!downstreamConnector.TryUpdateStartPort(upstreamPort, notifyEndNodeModified: false))
                     continue;
 
+                // A person deleting the Watch clears the rewired node's AI record, as undo/redo does
+                // (UpdateConnectorStartFromXml). Cleared directly, as Modified would schedule a run.
+                if (!IsAIEditInProgress)
+                {
+                    downstreamConnector.End.Owner.ClearAIChange();
+                }
+
                 reconnectedAnyConnector = true;
                 firstReconnectedConnector ??= downstreamConnector;
             }
