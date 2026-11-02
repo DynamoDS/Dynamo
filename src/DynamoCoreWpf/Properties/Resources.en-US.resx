@@ -3571,6 +3571,9 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>Pin Wire</value>
   </data>
+  <data name="ContextMenuClearAIHighlights" xml:space="preserve">
+    <value>Clear AI Highlights</value>
+  </data>
   <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
     <value>Hide All Wires</value>
   </data>

@@ -31,6 +31,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showAllWiresCommand;
         private DelegateCommand hideAllWiresCommand;
         private DelegateCommand unpinAllPreviewBubblesCommand;
+        private DelegateCommand clearAIHighlightsCommand;
 
         #endregion
 
@@ -288,6 +289,20 @@ namespace Dynamo.ViewModels
                 if (unpinAllPreviewBubblesCommand == null)
                     unpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
                 return unpinAllPreviewBubblesCommand;
+            }
+        }
+
+        /// <summary>
+        /// Clears AI Assistant highlights from all nodes. View-only: no unsaved changes, no undo step.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ClearAIHighlightsCommand
+        {
+            get
+            {
+                if (clearAIHighlightsCommand == null)
+                    clearAIHighlightsCommand = new DelegateCommand(ClearAIHighlights, CanClearAIHighlights);
+                return clearAIHighlightsCommand;
             }
         }
         #endregion

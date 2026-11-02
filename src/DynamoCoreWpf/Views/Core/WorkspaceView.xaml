@@ -733,6 +733,12 @@
 
                     </controls:ParentMenuItem>
 
+                    <!--  Clear AI Highlights (visibility set in OnContextMenuOpened)  -->
+                    <MenuItem x:Name="ClearAIHighlightsMenuItem"
+                              Command="{Binding Path=ClearAIHighlightsCommand}"
+                              Header="{x:Static p:Resources.ContextMenuClearAIHighlights}"
+                              Visibility="Collapsed" />
+
                     <Separator Visibility="{Binding Path=CanCopyOrPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                     <!--  Copy  -->
