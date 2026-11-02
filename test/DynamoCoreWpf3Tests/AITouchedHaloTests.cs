@@ -397,18 +397,20 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
 
             // The assistant froze it, so the change record stays. A person's freeze would clear it.
-            Workspace.IsAIEditInProgress = true;
-            node.IsFrozen = true;
-            Workspace.IsAIEditInProgress = false;
+            using (Workspace.BeginAIEdit())
+            {
+                node.IsFrozen = true;
+            }
             DispatcherUtil.DoEvents();
 
             Assert.IsNotNull(node.AIChange);
             Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
             Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
 
-            Workspace.IsAIEditInProgress = true;
-            node.IsFrozen = false;
-            Workspace.IsAIEditInProgress = false;
+            using (Workspace.BeginAIEdit())
+            {
+                node.IsFrozen = false;
+            }
             DispatcherUtil.DoEvents();
 
             Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
@@ -422,9 +424,10 @@ namespace DynamoCoreWpfTests
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
 
-            Workspace.IsAIEditInProgress = true;
-            node.UpdateValue(new UpdateValueParams("IsVisible", "false"));
-            Workspace.IsAIEditInProgress = false;
+            using (Workspace.BeginAIEdit())
+            {
+                node.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+            }
             DispatcherUtil.DoEvents();
 
             Assert.IsNotNull(node.AIChange);
