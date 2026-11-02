@@ -5,27 +5,25 @@ using System.Linq;
 namespace Dynamo.Graph.Nodes
 {
     /// <summary>
-    /// How an AI Assistant turn changed a node. When one turn changes a node in several ways, the
-    /// highest value wins: a node the turn placed stays <see cref="Placed"/> even if the same turn then
-    /// sets its value or moves it, and a node whose inputs changed is <see cref="Modified"/> even if it
-    /// was also moved.
+    /// How an AI Assistant turn changed a node. If a turn changes a node in several ways, the highest
+    /// value wins: <see cref="Placed"/>, then <see cref="Modified"/>, then <see cref="Moved"/>.
     /// </summary>
     public enum AIChangeKind
     {
-        /// <summary>The node was moved on the canvas; none of its inputs changed.</summary>
+        /// <summary>Moved on the canvas; no input changed.</summary>
         Moved = 0,
 
-        /// <summary>One or more of the node's inputs changed. See <see cref="AINodeChange.InputChanges"/>.</summary>
+        /// <summary>One or more inputs changed. See <see cref="AINodeChange.InputChanges"/>.</summary>
         Modified = 1,
 
-        /// <summary>The node was added to the graph.</summary>
+        /// <summary>Added to the graph.</summary>
         Placed = 2,
     }
 
     /// <summary>
-    /// One input of a node that an AI Assistant turn changed, with its value before and after the turn.
-    /// An "input" is an input port's wiring or anything else that feeds the node's result, such as a
-    /// slider value, Code Block text, a Python script, the Python engine, the node's name or its lacing.
+    /// A node input an AI Assistant turn changed, with its value before and after the turn. An input is
+    /// a port's wiring or a setting that feeds the result (slider value, Code Block text, Python script
+    /// or engine, name, lacing).
     /// </summary>
     public sealed class AIInputChange
     {
@@ -37,8 +35,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Name of the input: a port name for a wiring change, or a fixed name such as "Value", "Code",
-        /// "Script", "Engine", "Name" or "Lacing" for the node's own settings.
+        /// A port name for wiring, or "Value", "Code", "Script", "Engine", "Name" or "Lacing" for a setting.
         /// </summary>
         public string InputName { get; }
 
@@ -50,15 +47,13 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// What one AI Assistant turn did to one node. A node's current record is
-    /// <see cref="NodeModel.AIChange"/>; a turn keeps its own copy of every node it touched, which
-    /// <see cref="Dynamo.Graph.Workspaces.AITurnSummary.Nodes"/> returns.
+    /// What one AI Assistant turn did to one node. The node's current record is
+    /// <see cref="NodeModel.AIChange"/>; the turn's own copy is in
+    /// <see cref="Dynamo.Graph.Workspaces.AITurnSummary.Nodes"/>.
     /// </summary>
     /// <remarks>
-    /// The record holds the net effect of the turn: the node before the turn compared with the node
-    /// after it. A value that was changed and then changed back, or a node moved back to where it
-    /// started, leaves no record. The record is never saved to the .dyn file and never marks the
-    /// workspace as having unsaved changes.
+    /// Holds the turn's net effect: a value changed back, or a node moved back, leaves no record. Never
+    /// saved to the .dyn file; never marks the workspace as unsaved.
     /// </remarks>
     public sealed class AINodeChange
     {
@@ -86,29 +81,29 @@ namespace Dynamo.Graph.Nodes
         /// <summary>How the turn changed the node.</summary>
         public AIChangeKind Kind { get; }
 
-        /// <summary>Identifier of the turn, as reported by the caller that recorded the change.</summary>
+        /// <summary>The turn's identifier, as given by the caller.</summary>
         public string TurnId { get; }
 
         /// <summary>
-        /// Position of the turn among the turns recorded in this workspace, starting at 1. Meant for
-        /// display ("Turn 3"); use <see cref="TurnId"/> to identify a turn.
+        /// The turn's 1-based position in this workspace, for display ("Turn 3"). Use
+        /// <see cref="TurnId"/> to identify a turn.
         /// </summary>
         public int TurnNumber { get; }
 
         /// <summary>
-        /// The inputs the turn changed, in the order they were first changed. Empty for a
-        /// <see cref="AIChangeKind.Placed"/> or <see cref="AIChangeKind.Moved"/> node.
+        /// Changed inputs, in the order first changed. Empty for <see cref="AIChangeKind.Placed"/> and
+        /// <see cref="AIChangeKind.Moved"/>.
         /// </summary>
         public IReadOnlyList<AIInputChange> InputChanges { get; }
 
-        /// <summary>Where the turn moved the node from and to; empty when it did not move it.</summary>
+        /// <summary>Where the turn moved the node from and to; empty if not moved.</summary>
         internal AIMove Move { get; }
 
         /// <summary>
-        /// Adds one change to a node's record and returns the resulting record, or null when the turn's
-        /// net effect on the node is nothing.
+        /// Adds one change to a node's record. Returns the new record, or null if the turn's net effect
+        /// on the node is nothing.
         /// </summary>
-        /// <param name="current">The node's record so far in this turn; null when it has none.</param>
+        /// <param name="current">The node's record so far in this turn, or null.</param>
         /// <param name="nodeId">The node that changed.</param>
         /// <param name="turnId">Turn that made the change.</param>
         /// <param name="turnNumber">Display number of that turn.</param>
@@ -120,13 +115,13 @@ namespace Dynamo.Graph.Nodes
             int turnNumber,
             AIChangeReport report)
         {
-            // A later turn starts a fresh record: the record describes one turn only.
+            // A record describes one turn, so a new turn starts fresh
             if (current != null && !string.Equals(current.TurnId, turnId, StringComparison.Ordinal))
             {
                 current = null;
             }
 
-            // Everything about a node the turn placed is new, so there is no before/after to keep.
+            // A placed node is all new: no before/after to keep
             if (report.Kind == AIChangeKind.Placed || current?.Kind == AIChangeKind.Placed)
             {
                 return new AINodeChange(nodeId, AIChangeKind.Placed, turnId, turnNumber, NoInputs, AIMove.None);
@@ -155,9 +150,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Adds a changed input to <paramref name="inputs"/>, keeping the value the input had before the
-        /// turn and following its latest value. An input changed back to its value before the turn is
-        /// removed, because it is not a change.
+        /// Adds a changed input, keeping its value before the turn and its latest value. An input changed
+        /// back to its value before the turn is removed.
         /// </summary>
         private static void ApplyInputChange(List<AIInputChange> inputs, AIChangeReport report)
         {
@@ -185,8 +179,8 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// One change reported to <see cref="AINodeChange.Apply"/>: what kind it was and, for a modified
-    /// input or a move, the value or position before and after it.
+    /// One change passed to <see cref="AINodeChange.Apply"/>: its kind and, for an input or a move, the
+    /// value or position before and after.
     /// </summary>
     internal readonly struct AIChangeReport
     {
@@ -211,7 +205,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// Where one turn moved a node: the position before its first move and after its last one.
+    /// Where a turn moved a node: before its first move and after its last.
     /// </summary>
     internal readonly struct AIMove
     {
@@ -225,18 +219,18 @@ namespace Dynamo.Graph.Nodes
             After = after;
         }
 
-        /// <summary>True when the turn moved the node at least once.</summary>
+        /// <summary>True if the turn moved the node at least once.</summary>
         internal bool HasMove { get; }
 
-        /// <summary>Where the node was before the turn's first move, as reported by the caller.</summary>
+        /// <summary>Position before the turn's first move, as reported.</summary>
         internal string Before { get; }
 
-        /// <summary>Where the turn's last move left the node, as reported by the caller.</summary>
+        /// <summary>Position after the turn's last move, as reported.</summary>
         internal string After { get; }
 
         /// <summary>
-        /// A node moved back to where it started has not moved. Positions the caller did not report
-        /// cannot be compared, so such a move always counts.
+        /// False if the node moved back to where it started. A move without reported positions always
+        /// counts.
         /// </summary>
         internal bool IsNetMove =>
             HasMove && !(Before != null && string.Equals(Before, After, StringComparison.Ordinal));
