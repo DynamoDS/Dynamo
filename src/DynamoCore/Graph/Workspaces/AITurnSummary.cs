@@ -142,6 +142,15 @@ namespace Dynamo.Graph.Workspaces
             return mark;
         }
 
+        /// <summary>
+        /// Forgets every record this turn would restore, so none comes back once the turn has started
+        /// (<see cref="WorkspaceModel.StartAITurn"/>). The turn's own changes are kept.
+        /// </summary>
+        internal void ForgetMarksBeforeTurn()
+        {
+            marksBeforeTurn.Clear();
+        }
+
         /// <summary>The turn deleted a pre-existing node. Repeat reports count once.</summary>
         internal void NodeDeleted(Guid nodeId)
         {

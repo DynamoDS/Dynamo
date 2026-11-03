@@ -897,6 +897,28 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void StartingATurnThatAlreadyRecordedChangesNeverBringsBackAnEarlierTurnsRecord()
+        {
+            // Turn B records changes before it is started (e.g. its first start failed and was retried)
+            var node = AddNumberNode();
+            var other = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "2", "3");
+            Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnB);
+
+            Workspace.StartAITurn(TurnB);
+            Assert.AreEqual(TurnB, node.AIChange?.TurnId, "Turn B keeps its own records.");
+            Assert.AreEqual(TurnB, other.AIChange?.TurnId);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "3", "2");
+
+            Assert.IsNull(node.AIChange, "Turn A's record, gone once turn B started, must not come back.");
+            CollectionAssert.AreEqual(new[] { node.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds, "Turn A keeps its history.");
+            CollectionAssert.AreEqual(new[] { other.GUID }, Workspace.GetAITurnSummary(TurnB).NodeIds, "Turn B keeps its history.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void StartingATurnWithoutATurnIdIsRejected()
         {
             Assert.Throws<ArgumentException>(() => Workspace.StartAITurn(null));

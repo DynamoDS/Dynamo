@@ -1294,8 +1294,9 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Starts an AI Assistant turn: clears node records left by earlier turns, keeping their history.
-        /// Never marks the workspace unsaved. DynamoMCP calls this when a new Assistant turn starts.
+        /// Starts an AI Assistant turn: clears node records left by earlier turns, keeping their history, and
+        /// makes sure none of them comes back later. Never marks the workspace unsaved. DynamoMCP calls this
+        /// when a new Assistant turn starts.
         /// </summary>
         /// <param name="turnId">The starting turn; its own records are kept.</param>
         public void StartAITurn(string turnId)
@@ -1308,6 +1309,11 @@ namespace Dynamo.Graph.Workspaces
                 {
                     node.ClearAIChange();
                 }
+            }
+
+            if (aiTurns.TryGetValue(turnId, out var turn))
+            {
+                turn.ForgetMarksBeforeTurn();
             }
         }
 
