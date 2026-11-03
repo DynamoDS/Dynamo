@@ -16,7 +16,8 @@ namespace DynamoCoreWpfTests
 {
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
-    /// AI Assistant placed, modified or moved.
+    /// AI Assistant placed, modified or moved, and the AI Assistant badge (DYN-11000) drawn on
+    /// nodes it placed or modified.
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
     {
@@ -155,6 +156,7 @@ namespace DynamoCoreWpfTests
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             var halo = ViewOf(node).AIHalo;
+            var badge = ViewOf(node).AIBadge;
 
             // Behind every other part of the node.
             var haloZIndex = Panel.GetZIndex(halo);
@@ -166,10 +168,13 @@ namespace DynamoCoreWpfTests
             // Extends past the node edge and never takes mouse clicks.
             Assert.AreEqual(new Thickness(-8), halo.Margin);
             Assert.IsFalse(halo.IsHitTestVisible);
+            Assert.IsFalse(badge.IsHitTestVisible);
 
-            // The halo is the only new part and the node's fill is unchanged. Part opacities are not
-            // compared: some parts fade in over 0.2 s, so their value depends on test timing.
-            var partsAfter = nodeView.grid.Children.OfType<UIElement>().Where(c => c != halo).ToList();
+            // The halo and the badge are the only new parts, and the node's fill is unchanged.
+            // Part opacities are not compared: some parts fade in over 0.2 s, so their value
+            // depends on test timing.
+            var partsAfter = nodeView.grid.Children.OfType<UIElement>()
+                .Where(c => c != halo && c != badge).ToList();
             CollectionAssert.AreEqual(partsBefore, partsAfter);
             Assert.AreSame(bodyFill, NodePart<Rectangle>(nodeView, "nodeBackground").Fill);
             Assert.AreSame(headerFill, NodePart<Border>(nodeView, "nameBackground").Background);
@@ -216,6 +221,170 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual((Color)ColorConverter.ConvertFromString("#A76EF5"), ((SolidColorBrush)glow.Background).Color);
             Assert.IsNotNull(glow.Effect, "The glow is blurred.");
             Assert.IsInstanceOf<BitmapCache>(ViewOf(node).AIHalo.CacheMode, "The blurred glow is cached as a bitmap.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UntouchedNodeHasNoBadge()
+        {
+            var node = AddNumberNode();
+
+            Assert.IsFalse(ViewModelOf(node).ShowAIBadge);
+            Assert.IsNull(ViewOf(node).AIBadge, "The badge is only created for nodes that need one.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PlacedNodeShowsBadge()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Assert.IsTrue(ViewModelOf(node).ShowAIBadge);
+            var badge = ViewOf(node).AIBadge;
+            Assert.IsNotNull(badge);
+            Assert.AreEqual(Visibility.Visible, badge.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ModifiedNodeShowsBadge()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Assert.IsTrue(ViewModelOf(node).ShowAIBadge);
+            var badge = ViewOf(node).AIBadge;
+            Assert.IsNotNull(badge);
+            Assert.AreEqual(Visibility.Visible, badge.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedOnlyNodeHasNoBadge()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+
+            Assert.IsFalse(ViewModelOf(node).ShowAIBadge);
+            Assert.IsNull(ViewOf(node).AIBadge, "Moved nodes are the quietest: halo only, no badge.");
+            Assert.IsNotNull(ViewOf(node).AIHalo, "The 40% halo is still shown.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeThatIsThenModifiedShowsBadge()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeHidesWhenTheChangeRecordIsCleared()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility);
+
+            Workspace.ClearAIChanges();
+
+            Assert.IsFalse(ViewModelOf(node).ShowAIBadge);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeChangeIsAnnounced()
+        {
+            var node = AddNumberNode();
+            var raised = new List<string>();
+            System.ComponentModel.PropertyChangedEventHandler handler = (s, e) => raised.Add(e.PropertyName);
+            var nodeViewModel = ViewModelOf(node);
+            nodeViewModel.PropertyChanged += handler;
+            try
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            finally
+            {
+                nodeViewModel.PropertyChanged -= handler;
+            }
+
+            CollectionAssert.Contains(raised, nameof(NodeViewModel.ShowAIBadge));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeIsCentredOnTheTopRightCornerAndInFrontOfTheNode()
+        {
+            var node = AddNumberNode();
+            var nodeView = ViewOf(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var badge = (Grid)ViewOf(node).AIBadge;
+
+            // 24px disc plus a 1.5px white ring on each side.
+            Assert.AreEqual(27, NodeView.AIBadgeSize);
+            Assert.AreEqual(NodeView.AIBadgeSize, badge.Width);
+            Assert.AreEqual(NodeView.AIBadgeSize, badge.Height);
+            Assert.IsNotNull(badge.Children.OfType<Image>().Single().Source);
+
+            // Top-right corner of the node, pulled out by half its size so its centre sits on the corner.
+            Assert.AreEqual(HorizontalAlignment.Right, badge.HorizontalAlignment);
+            Assert.AreEqual(VerticalAlignment.Top, badge.VerticalAlignment);
+            Assert.AreEqual(Grid.GetRow(nodeView.nodeBorder), Grid.GetRow(badge), "Same top edge as the node.");
+            Assert.AreEqual(new Thickness(0, -13.5, -13.5, 0), badge.Margin);
+
+            // In front of every other part of the node, including the zoomed-out overlay, and
+            // never takes mouse clicks.
+            var badgeZIndex = Panel.GetZIndex(badge);
+            foreach (var child in nodeView.grid.Children.OfType<UIElement>().Where(c => c != badge))
+            {
+                Assert.Greater(badgeZIndex, Panel.GetZIndex(child));
+            }
+            Assert.IsFalse(badge.IsHitTestVisible);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeIsNotShownWhenZoomedOut()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
+            var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
+
+            // Zoomed out, below the 0.4 threshold where nodes switch to their zoomed-out look
+            workspaceViewModel.Zoom = 0.3;
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+
+            // Zoomed back in
+            workspaceViewModel.Zoom = 0.6;
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Visibility.Visible, badgeImage.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeAddedWhileZoomedOutIsNotShown()
+        {
+            ViewModel.CurrentSpaceViewModel.Zoom = 0.3;
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            DispatcherUtil.DoEvents();
+
+            var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
+            Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
         }
     }
 }
