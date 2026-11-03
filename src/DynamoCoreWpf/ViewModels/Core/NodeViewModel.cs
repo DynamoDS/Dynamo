@@ -662,6 +662,33 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Halo opacity for a node the AI Assistant placed or modified.
+        /// </summary>
+        internal const double AIHaloFullOpacity = 1.0;
+
+        /// <summary>
+        /// Halo opacity for a node the AI Assistant only moved. Moved nodes are deliberately the
+        /// quietest: position changes are rarely what a reviewer needs to catch.
+        /// </summary>
+        internal const double AIHaloMovedOpacity = 0.4;
+
+        /// <summary>
+        /// How strongly the AI-touched halo behind this node is drawn, from 0 (no halo) to 1:
+        /// full strength when the AI Assistant placed or modified the node, 40% when it only moved
+        /// it, and 0 when the node has no AI change record (<see cref="NodeModel.AIChange"/>).
+        /// </summary>
+        internal double AIHaloOpacity
+        {
+            get
+            {
+                var change = NodeModel?.AIChange;
+                if (change == null) return 0;
+
+                return change.Kind == AIChangeKind.Moved ? AIHaloMovedOpacity : AIHaloFullOpacity;
+            }
+        }
+
+        /// <summary>
         /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
         /// <value>
@@ -1310,6 +1337,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsTransient":
                     HandleColorOverlayChange();
+                    break;
+                case nameof(NodeModel.AIChange):
+                    RaisePropertyChanged(nameof(AIHaloOpacity));
                     break;
             }
         }

@@ -21,6 +21,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -126,6 +127,8 @@ namespace Dynamo.Controls
         private TextBox EditableNameBox;
         private Rectangle nodeIcon;
         private Rectangle nodeBackground;
+        private Grid aiHalo;
+        private Brush nodeBorderBrushWithoutHalo;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -186,6 +189,19 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeOptionsButtonBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeOptionsButtonBackground"] as SolidColorBrush;
         private static SolidColorBrush nodeHoverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal300Brush"] as SolidColorBrush;
         private static SolidColorBrush nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
+        private static SolidColorBrush nodeAITouchedHaloBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAITouchedHaloBrush"] as SolidColorBrush;
+
+        // AI-touched halo - a glow that extends 8px past the node edge with an 18px Figma layer blur.
+        // Figma's layer blur value is twice the Gaussian standard deviation (18 -> 9),
+        // and WPF's BlurEffect uses a standard deviation of about Radius/3, so a radius of 27 gives the same falloff
+        private const double AIHaloSpread = 8;
+        private const double AIHaloBlurRadius = 27;
+        private static readonly BlurEffect aiHaloBlur = new BlurEffect
+        {
+            Radius = AIHaloBlurRadius,
+            KernelType = KernelType.Gaussian,
+            RenderingBias = RenderingBias.Quality
+        };
 
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
@@ -249,6 +265,8 @@ namespace Dynamo.Controls
             nodeContextMenuSeparatorColor.Freeze();
             nodeOptionsButtonBackground.Freeze();
             nodeHoverColor.Freeze();
+            nodeAITouchedHaloBrush.Freeze();
+            aiHaloBlur.Freeze();
         }
 
         public NodeView()
@@ -1327,6 +1345,7 @@ namespace Dynamo.Controls
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
+            ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
@@ -1508,6 +1527,7 @@ namespace Dynamo.Controls
             // OnNodeViewLoaded, and it needs ViewModel for size computation).
 
             ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
@@ -1517,6 +1537,93 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
+
+            // The node may already carry an AI change record, for example when its view is rebuilt
+            UpdateAIHalo();
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NodeViewModel.AIHaloOpacity))
+            {
+                UpdateAIHalo();
+            }
+        }
+
+        /// <summary>
+        /// The AI-touched halo, or null if this node has never needed one. Exposed for tests.
+        /// </summary>
+        internal FrameworkElement AIHalo => aiHalo;
+
+        private void UpdateAIHalo()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIHalo));
+                return;
+            }
+
+            var opacity = ViewModel?.AIHaloOpacity ?? 0;
+            if (opacity <= 0)
+            {
+                if (aiHalo != null)
+                {
+                    aiHalo.Visibility = Visibility.Collapsed;
+                    nodeBorder.BorderBrush = nodeBorderBrushWithoutHalo;
+                }
+                return;
+            }
+
+            if (aiHalo == null)
+            {
+                nodeBorderBrushWithoutHalo = nodeBorder.BorderBrush;
+                aiHalo = CreateAIHalo();
+                grid.Children.Add(aiHalo);
+            }
+
+            aiHalo.Opacity = opacity;
+            aiHalo.Visibility = Visibility.Visible;
+
+            // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
+            // pale ring between the node and the glow, so it is hidden while the halo is on. The
+            // border keeps its thickness, so the node's size and layout do not change.
+            nodeBorder.BorderBrush = Brushes.Transparent;
+        }
+
+        private static Grid CreateAIHalo()
+        {
+            var glow = new Border
+            {
+                Background = nodeAITouchedHaloBrush,
+                CornerRadius = new CornerRadius(8 + AIHaloSpread, 8 + AIHaloSpread, 0, 0),
+                Effect = aiHaloBlur
+            };
+
+            // Blur is the expensive part, so the wrapper keeps the blurred result as a cached
+            // bitmap. It is redrawn only when the node changes size; panning, zooming and opacity
+            // changes reuse it. Scale 1 is enough: the content is already soft, so stretching it
+            // when zoomed in loses no visible detail.
+            var halo = new Grid
+            {
+                Name = "aiHalo",
+                Margin = new Thickness(-AIHaloSpread),
+                IsHitTestVisible = false,
+                CacheMode = new BitmapCache
+                {
+                    RenderAtScale = 1,
+                    SnapsToDevicePixels = false,
+                    EnableClearType = false
+                }
+            };
+            halo.Children.Add(glow);
+
+            // Same rows and columns as the node border, and behind every other part of the node
+            Grid.SetRow(halo, 1);
+            Grid.SetRowSpan(halo, 4);
+            Grid.SetColumnSpan(halo, 3);
+            Canvas.SetZIndex(halo, -1);
+
+            return halo;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

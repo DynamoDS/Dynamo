@@ -298,7 +298,7 @@ namespace CoreNodeModels
             {
                 if (UpdateList)
                 {
-                    IsList = !IsList;
+                    SetIsListFromRun(!IsList);
                 }
 
                 if (InputType != null)
@@ -321,6 +321,17 @@ namespace CoreNodeModels
             }
         }
 
+
+        /// <summary>
+        /// Sets <see cref="IsList"/> when automatic mode switches it during a run. Unlike the setter, it
+        /// keeps the AI change record (<see cref="NodeModel.AIChange"/>), as nobody edited the node.
+        /// </summary>
+        private void SetIsListFromRun(bool value)
+        {
+            isList = value;
+            OnNodeModifiedByExternalChange();
+            RaisePropertyChanged(nameof(IsList));
+        }
 
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
