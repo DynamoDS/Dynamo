@@ -1186,6 +1186,7 @@
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
     <Resource Include="UI\Images\adsk-logo-16px.png" />
+    <Resource Include="UI\Images\ai-badge-96px.png" />
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />

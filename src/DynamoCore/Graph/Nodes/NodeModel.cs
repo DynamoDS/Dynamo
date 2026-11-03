@@ -470,6 +470,10 @@ namespace Dynamo.Graph.Nodes
             get { return name; }
             set
             {
+                // Notify only on a real change. Custom node info updates and definition sync re-assign
+                // the same name, which AI change tracking must not read as a rename.
+                if (string.Equals(name, value, StringComparison.Ordinal)) return;
+
                 name = value;
                 RaisePropertyChanged("Name");
             }
@@ -1018,6 +1022,51 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private AINodeChange aiChange;
+
+        /// <summary>
+        /// What the latest AI Assistant turn that touched this node did: placed, modified or moved it,
+        /// which turn, and which inputs changed. Null if no turn touched it, or if a person's edit or
+        /// undo/redo cleared it.
+        /// </summary>
+        /// <remarks>
+        /// A review aid only: does not affect execution, is never saved to the .dyn file or undo
+        /// snapshots, and never marks the workspace as unsaved. Added through
+        /// <see cref="WorkspaceModel.RecordAINodeChange"/>.
+        /// </remarks>
+        [JsonIgnore]
+        public AINodeChange AIChange
+        {
+            get => aiChange;
+            internal set
+            {
+                if (ReferenceEquals(aiChange, value)) return;
+
+                var wasTouched = aiChange != null;
+                aiChange = value;
+                RaisePropertyChanged(nameof(AIChange));
+                if (wasTouched != (aiChange != null))
+                {
+                    RaisePropertyChanged(nameof(IsRecentlyModifiedByAI));
+                }
+            }
+        }
+
+        /// <summary>
+        /// True while the node has an AI change record (<see cref="AIChange"/>). Never saved to the .dyn
+        /// file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsRecentlyModifiedByAI => aiChange != null;
+
+        /// <summary>
+        /// Removes this node's AI change record, if it has one.
+        /// </summary>
+        internal void ClearAIChange()
+        {
+            AIChange = null;
+        }
+
         /// <summary>
         /// A flag indicating whether the node is in transient mode.
         /// When a node is in transient mode, the node will not participate in execution,
@@ -1205,8 +1254,25 @@ namespace Dynamo.Graph.Nodes
                 }
             }
 
-            RaisePropertyChanged("IsFrozen");
+            // Flagged as a cache refresh, so it is not mistaken for a person freezing the node
+            var wasRefreshing = IsUpstreamCacheRefreshInProgress;
+            IsUpstreamCacheRefreshInProgress = true;
+            try
+            {
+                RaisePropertyChanged(nameof(IsFrozen));
+            }
+            finally
+            {
+                IsUpstreamCacheRefreshInProgress = wasRefreshing;
+            }
         }
+
+        /// <summary>
+        /// True while <see cref="ComputeUpstreamOnDownstreamNodes"/> raises <see cref="IsFrozen"/> after
+        /// a cache refresh, which is not a person freezing or unfreezing the node.
+        /// </summary>
+        [JsonIgnore]
+        internal bool IsUpstreamCacheRefreshInProgress { get; private set; }
 
         private void MarkDownStreamNodesAsModified(NodeModel node)
         {
@@ -1496,14 +1562,62 @@ namespace Dynamo.Graph.Nodes
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
+
+        /// <summary>
+        /// Raised when a frozen node is edited, since frozen nodes do not raise <see cref="Modified"/>
+        /// (that would schedule a run).
+        /// </summary>
+        internal event Action<NodeModel> EditedWhileFrozen;
+
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (!RaisesModificationEvents || IsFrozen)
+            if (!RaisesModificationEvents)
                 return;
+
+            if (IsFrozen)
+            {
+                EditedWhileFrozen?.Invoke(this);
+                return;
+            }
 
             MarkNodeAsModified(forceExecute);
             var handler = Modified;
             if (handler != null) handler(this);
+        }
+
+        [ThreadStatic]
+        private static NodeModel externalChangeNode;
+
+        /// <summary>
+        /// True only while <see cref="OnNodeModifiedByExternalChange"/> runs, so listeners can tell its
+        /// change from an edit.
+        /// </summary>
+        [JsonIgnore]
+        internal bool IsExternalChangeInProgress => ReferenceEquals(externalChangeNode, this);
+
+        /// <summary>
+        /// Like <see cref="OnNodeModified"/>, for a change nobody made, such as a watched file changing on
+        /// disk or a node adapting to its input during a run. The node still runs again, but keeps its
+        /// AI change record (<see cref="AIChange"/>).
+        /// </summary>
+        /// <param name="forceExecute">As for <see cref="OnNodeModified"/>.</param>
+        internal void OnNodeModifiedByExternalChange(bool forceExecute = false)
+        {
+            ReportExternalChange(this, forceExecute);
+        }
+
+        private static void ReportExternalChange(NodeModel node, bool forceExecute)
+        {
+            var previous = externalChangeNode;
+            externalChangeNode = node;
+            try
+            {
+                node.OnNodeModified(forceExecute);
+            }
+            finally
+            {
+                externalChangeNode = previous;
+            }
         }
 
         /// <summary>
