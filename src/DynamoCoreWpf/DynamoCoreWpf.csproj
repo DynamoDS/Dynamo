@@ -514,6 +514,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AIChangePopover.cs" />
     <Compile Include="Controls\InPorts.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>

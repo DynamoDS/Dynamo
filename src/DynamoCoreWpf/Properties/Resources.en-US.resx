@@ -4309,4 +4309,40 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Auto‑sync with node selection.</value>
   </data>
+  <data name="AIBadgeToolTipEdited" xml:space="preserve">
+    <value>Edited by Autodesk Assistant</value>
+    <comment>Tooltip on the AI badge of a node whose inputs Autodesk Assistant changed.</comment>
+  </data>
+  <data name="AIBadgeToolTipPlaced" xml:space="preserve">
+    <value>Placed by Autodesk Assistant</value>
+    <comment>Tooltip on the AI badge of a node Autodesk Assistant added.</comment>
+  </data>
+  <data name="AIChangePopoverAfter" xml:space="preserve">
+    <value>After</value>
+    <comment>Label for an input's value after Autodesk Assistant changed it.</comment>
+  </data>
+  <data name="AIChangePopoverBefore" xml:space="preserve">
+    <value>Before</value>
+    <comment>Label for an input's value before Autodesk Assistant changed it.</comment>
+  </data>
+  <data name="AIChangePopoverNextChange" xml:space="preserve">
+    <value>Next change ›</value>
+    <comment>Button that moves to the next change Autodesk Assistant made.</comment>
+  </data>
+  <data name="AIChangePopoverNoValue" xml:space="preserve">
+    <value>None</value>
+    <comment>Shown when an input had no value before, or has none after, the change.</comment>
+  </data>
+  <data name="AIChangePopoverUndo" xml:space="preserve">
+    <value>Undo this change</value>
+    <comment>Button that undoes the Autodesk Assistant change shown in the popover.</comment>
+  </data>
+  <data name="AIChangePopoverUndoToolTip" xml:space="preserve">
+    <value>Undoes everything Autodesk Assistant changed in this turn</value>
+    <comment>Tooltip on the Undo this change button.</comment>
+  </data>
+  <data name="AIChangePopoverUndoUnavailable" xml:space="preserve">
+    <value>Only the latest change can be undone from here</value>
+    <comment>Tooltip on the disabled Undo this change button.</comment>
+  </data>
 </root>

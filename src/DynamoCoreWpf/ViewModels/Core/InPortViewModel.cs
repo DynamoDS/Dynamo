@@ -172,6 +172,7 @@ namespace Dynamo.ViewModels
 
             RefreshPortDefaultValueMarkerVisible();
             IsPythonNodePort = node.NodeModel is PythonNodeModels.PythonNode;
+            RefreshAIInputChange();
         }
 
         private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -181,7 +182,47 @@ namespace Dynamo.ViewModels
                 case nameof(node.NodeModel.CachedValue):
                     RefreshPortColors();
                     break;
+                case nameof(node.NodeModel.AIChange):
+                    RefreshAIInputChange();
+                    break;
             }
+        }
+
+        private AIInputChange aiInputChange;
+
+        /// <summary>
+        /// What the AI Assistant changed on this input, from the node's AI change record
+        /// (<see cref="NodeModel.AIChange"/>), or null. Only inputs that are ports are matched:
+        /// setting changes such as a Code Block's code have no port to show them on.
+        /// </summary>
+        internal AIInputChange AIInputChange => aiInputChange;
+
+        private void RefreshAIInputChange()
+        {
+            var change = node.NodeModel.AIChange;
+            var inputChange = change?.Kind == AIChangeKind.Modified
+                ? change.InputChanges.FirstOrDefault(i => string.Equals(i.InputName, port.Name, StringComparison.Ordinal))
+                : null;
+
+            if (ReferenceEquals(aiInputChange, inputChange)) return;
+
+            aiInputChange = inputChange;
+            RaisePropertyChanged(nameof(AIInputChange));
+        }
+
+        /// <summary>
+        /// Asks the port's view to open this input's change popover and move keyboard focus to it.
+        /// </summary>
+        internal event Action RequestShowAIChange;
+
+        /// <summary>
+        /// Opens this input's change popover, if the input has an AI change.
+        /// </summary>
+        internal void ShowAIChange()
+        {
+            if (aiInputChange == null) return;
+
+            RequestShowAIChange?.Invoke();
         }
 
         public override void Dispose()

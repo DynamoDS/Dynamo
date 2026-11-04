@@ -169,6 +169,87 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edited by Autodesk Assistant.
+        /// </summary>
+        public static string AIBadgeToolTipEdited {
+            get {
+                return ResourceManager.GetString("AIBadgeToolTipEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Placed by Autodesk Assistant.
+        /// </summary>
+        public static string AIBadgeToolTipPlaced {
+            get {
+                return ResourceManager.GetString("AIBadgeToolTipPlaced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After.
+        /// </summary>
+        public static string AIChangePopoverAfter {
+            get {
+                return ResourceManager.GetString("AIChangePopoverAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before.
+        /// </summary>
+        public static string AIChangePopoverBefore {
+            get {
+                return ResourceManager.GetString("AIChangePopoverBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next change ›.
+        /// </summary>
+        public static string AIChangePopoverNextChange {
+            get {
+                return ResourceManager.GetString("AIChangePopoverNextChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string AIChangePopoverNoValue {
+            get {
+                return ResourceManager.GetString("AIChangePopoverNoValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo this change.
+        /// </summary>
+        public static string AIChangePopoverUndo {
+            get {
+                return ResourceManager.GetString("AIChangePopoverUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undoes everything Autodesk Assistant changed in this turn.
+        /// </summary>
+        public static string AIChangePopoverUndoToolTip {
+            get {
+                return ResourceManager.GetString("AIChangePopoverUndoToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the latest change can be undone from here.
+        /// </summary>
+        public static string AIChangePopoverUndoUnavailable {
+            get {
+                return ResourceManager.GetString("AIChangePopoverUndoUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {

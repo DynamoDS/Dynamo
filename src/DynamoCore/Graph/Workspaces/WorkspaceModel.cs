@@ -1142,7 +1142,8 @@ namespace Dynamo.Graph.Workspaces
         /// Records that an AI Assistant turn placed, modified or moved a node. A turn's changes combine
         /// into its net effect (see <see cref="AINodeChange"/>). The turn keeps its own copy;
         /// <see cref="NodeModel.AIChange"/> shows it too, replacing an earlier turn's record. Never marks
-        /// the workspace as unsaved.
+        /// the workspace as unsaved. Record inside the <see cref="BeginUndoActionGroup"/> scope holding
+        /// the turn's edits, so a person can undo the turn from its review popover.
         /// </summary>
         /// <param name="nodeId">The node. Unknown and transient nodes are ignored.</param>
         /// <param name="kind">What the change was.</param>
@@ -1325,6 +1326,11 @@ namespace Dynamo.Graph.Workspaces
         {
             ValidateAITurnId(turnId);
 
+            // Every record passes through here. Inside the turn's BeginUndoActionGroup scope, this
+            // ties the scope's undo step to the turn, so the turn can be undone from its review
+            // popover (CanUndoAITurn).
+            undoRecorder?.TagCoalescingScopeWithAITurn(turnId);
+
             if (!aiTurns.TryGetValue(turnId, out var turn))
             {
                 turn = new AITurnState(turnId, ++lastAITurnNumber);
@@ -1332,6 +1338,19 @@ namespace Dynamo.Graph.Workspaces
             }
 
             return turn;
+        }
+
+        /// <summary>
+        /// True if the next undo would revert exactly this AI Assistant turn. That needs the turn to
+        /// have recorded its changes inside the <see cref="BeginUndoActionGroup"/> scope holding its
+        /// edits, and nothing to have been recorded for undo since.
+        /// </summary>
+        /// <param name="turnId">Identifies the turn.</param>
+        internal bool CanUndoAITurn(string turnId)
+        {
+            return !string.IsNullOrEmpty(turnId)
+                && CanUndo
+                && string.Equals(undoRecorder.TopActionGroupAITurnId, turnId, StringComparison.Ordinal);
         }
 
         private static AITurnSummary BuildAITurnSummary(AITurnState turn)
