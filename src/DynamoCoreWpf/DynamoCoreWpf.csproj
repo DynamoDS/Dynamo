@@ -474,6 +474,7 @@
     <None Remove="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\FileTrust\FileTrustWarning.xaml" />
+    <None Remove="Views\FileTrust\FileTrustPreviewWindow.xaml" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
@@ -722,6 +723,8 @@
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
     <Compile Include="ViewModels\Core\ShortcutToolbarViewModel.cs" />
     <Compile Include="ViewModels\FileTrust\FileTrustWarningViewModel.cs" />
+    <Compile Include="ViewModels\FileTrust\GraphPreview.cs" />
+    <Compile Include="ViewModels\FileTrust\GraphPreviewRenderer.cs" />
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
@@ -779,6 +782,9 @@
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FileTrust\FileTrustWarning.xaml.cs" />
+    <Compile Include="Views\FileTrust\FileTrustPreviewWindow.xaml.cs">
+      <DependentUpon>FileTrustPreviewWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
@@ -965,6 +971,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FileTrust\FileTrustWarning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileTrust\FileTrustPreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
