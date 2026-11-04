@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -52,9 +53,8 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
             var drawing = new DrawingGroup();
 
             // Groups first so they sit behind nodes and wires.
-            foreach (var group in preview.Groups)
+            foreach (var group in preview.Groups.Where(g => g.Width > 0 && g.Height > 0))
             {
-                if (group.Width <= 0 || group.Height <= 0) continue;
                 var rect = new Rect(group.Left, group.Top, group.Width, group.Height);
                 drawing.Children.Add(Frozen(new GeometryDrawing(ParseGroupBrush(group.Background), null, Frozen(new RectangleGeometry(rect)))));
                 AddText(drawing, group.Title, new Point(rect.Left + 10, rect.Top + 6), GroupTitleFontSize, GroupTitleBrush, rect.Width - 20, pixelsPerDip);
@@ -137,20 +137,25 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
             drawing.Children.Add(Frozen(new GeometryDrawing(brush, null, Frozen(geometry))));
         }
 
-        private static Brush ParseGroupBrush(string color)
+        /// <summary>
+        /// Parses a group color from the untrusted file. Only literal "#RRGGBB" or "#AARRGGBB" values
+        /// are accepted: WPF's ColorConverter also accepts ContextColor strings that reference an ICC
+        /// profile URI, which it would open, so it must not see file content before the user trusts it.
+        /// </summary>
+        internal static Brush ParseGroupBrush(string color)
         {
-            if (string.IsNullOrEmpty(color)) return DefaultGroupFill;
-            try
+            if (color == null || color.Length < 7 || color[0] != '#') return DefaultGroupFill;
+
+            var hex = color.Substring(1);
+            if ((hex.Length != 6 && hex.Length != 8) ||
+                !uint.TryParse(hex, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var value))
             {
-                var parsed = (Color)ColorConverter.ConvertFromString(color);
-                parsed.A = 0x80;
-                return Frozen(new SolidColorBrush(parsed));
-            }
-            catch (Exception ex) when (ex is FormatException || ex is NotSupportedException)
-            {
-                // Unknown color strings fall back to the default group color.
                 return DefaultGroupFill;
             }
+
+            // The alpha byte, when present, is ignored: groups are always drawn half transparent.
+            var parsed = Color.FromArgb(0x80, (byte)(value >> 16), (byte)(value >> 8), (byte)value);
+            return Frozen(new SolidColorBrush(parsed));
         }
 
         private static T Frozen<T>(T freezable) where T : Freezable

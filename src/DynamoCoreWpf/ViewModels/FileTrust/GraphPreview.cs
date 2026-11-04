@@ -204,9 +204,8 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
             if (ports == null) return 0;
 
             var index = 0;
-            foreach (var port in ports.OfType<JObject>())
+            foreach (var portId in ports.OfType<JObject>().Select(port => (string)port["Id"]))
             {
-                var portId = (string)port["Id"];
                 if (!string.IsNullOrEmpty(portId))
                 {
                     portLookup[portId] = (nodeId, index);

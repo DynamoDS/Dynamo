@@ -2254,6 +2254,19 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Open(object parameters)
         {
+            Open(parameters, promptToSaveHomeSpace: false);
+        }
+
+        /// <summary>
+        /// Opens a definition or workspace; see <see cref="Open(object)"/> for the parameters.
+        /// The trust decision for an untrusted file comes before the prompt to save unsaved changes,
+        /// so declining an untrusted file never asks the user to save.
+        /// </summary>
+        /// <param name="parameters">The file path, or a tuple of the path and run settings.</param>
+        /// <param name="promptToSaveHomeSpace">True to ask about unsaved changes in the home workspace
+        /// even when another workspace is current; false to ask only when the current workspace has them.</param>
+        private void Open(object parameters, bool promptToSaveHomeSpace)
+        {
             string requestedPath;
             bool forceManualMode = false;
             bool isTemplate = false;
@@ -2279,11 +2292,11 @@ namespace Dynamo.ViewModels
             if (!ConfirmUntrustedFileBeforeLoad(requestedPath, ref displayTrustWarning, out bool trustAcceptedBeforeLoad))
                 return;
 
-            if (CurrentSpaceViewModel != null && CurrentSpaceViewModel.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
+            bool hasUnsavedChanges = promptToSaveHomeSpace
+                ? HomeSpace.HasUnsavedChanges
+                : CurrentSpaceViewModel != null && CurrentSpaceViewModel.HasUnsavedChanges;
+            if (hasUnsavedChanges && !AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                return;
 
             // try catch for exceptions thrown while opening files, say from a future version,
             // that can't be handled reliably
@@ -2449,6 +2462,16 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Insert(object parameters)
         {
+            TryInsert(parameters);
+        }
+
+        /// <summary>
+        /// Inserts a definition or a custom node; see <see cref="Insert(object)"/> for the parameters.
+        /// </summary>
+        /// <param name="parameters">The file path, or a tuple of the path and the manual run flag.</param>
+        /// <returns>True when the file was inserted; false when the user declined it or inserting failed.</returns>
+        private bool TryInsert(object parameters)
+        {
             // try catch for exceptions thrown while opening files, say from a future version,
             // that can't be handled reliably
             filePath = string.Empty;
@@ -2473,7 +2496,7 @@ namespace Dynamo.ViewModels
                 // Otherwise the run is blocked so the untrusted graph cannot run before it is accepted.
                 bool displayTrustWarning = ShouldForceBlockRun(filePath);
                 if (!ConfirmUntrustedFileBeforeLoad(filePath, ref displayTrustWarning, out bool trustAcceptedBeforeLoad))
-                    return;
+                    return false;
 
                 // Execute graph insert command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode, displayTrustWarning));
@@ -2514,9 +2537,10 @@ namespace Dynamo.ViewModels
                     throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
-                return;
+                return false;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
+            return true;
         }
 
         internal void OpenOnboardingGuideFile()
@@ -2635,12 +2659,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
         {
-            if (HomeSpace.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
-
+            // Unsaved changes are handled by Open, after the trust decision for the chosen file.
             bool isTemplate = parameter is string s && string.Equals(s, "Template", StringComparison.Ordinal);
             var fileExtensions = isTemplate ? "*.dyn" : "*.dyn;*.dyf";
             var dialogTitle = isTemplate
@@ -2707,11 +2726,11 @@ namespace Dynamo.ViewModels
                     if (isTemplate)
                     {
                         // File opening API which does not modify the original template file
-                        Open(new Tuple<string, bool, bool>(_fileDialog.FileName, _fileDialog.RunManualMode, true));
+                        Open(new Tuple<string, bool, bool>(_fileDialog.FileName, _fileDialog.RunManualMode, true), promptToSaveHomeSpace: true);
                     }
                     else
                     {
-                        Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                        Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode), promptToSaveHomeSpace: true);
                         LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
                     }
                 }
@@ -2799,9 +2818,9 @@ namespace Dynamo.ViewModels
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
-                    Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
-
-                    if (HomeSpace.RunSettings.RunType != RunType.Manual)
+                    // Nothing changes in the current workspace when the insert is declined or fails.
+                    if (TryInsert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode))
+                        && HomeSpace.RunSettings.RunType != RunType.Manual)
                     {
                         ToastManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
                         HomeSpace.RunSettings.RunType = RunType.Manual;
@@ -2817,12 +2836,7 @@ namespace Dynamo.ViewModels
 
         private void OpenRecent(object path)
         {
-            // Make sure user get chance to save unsaved changes first
-            if (CurrentSpaceViewModel.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
+            // Open asks to save unsaved changes, after the trust decision for the file.
             this.Open(path as string);
         }
 

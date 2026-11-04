@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using Dynamo.Logging;
 using Dynamo.Wpf.ViewModels.FileTrust;
@@ -44,9 +45,12 @@ namespace Dynamo.Wpf.Views.FileTrust
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             Loaded -= OnLoaded;
+            FitToWorkArea();
             AcceptButton.Focus();
 
             ImageSource previewImage = null;
+            // Catch everything: this is an async void handler, so an escaping exception would take down
+            // Dynamo, and the preview is optional. The failure is logged and the prompt still works.
             try
             {
                 // Parse and draw off the UI thread so the prompt stays responsive for very large graphs.
@@ -74,6 +78,31 @@ namespace Dynamo.Wpf.Views.FileTrust
             PreviewImage.Source = previewImage;
             PreviewStatusTextBlock.Visibility = Visibility.Collapsed;
         }
+
+        /// <summary>
+        /// Shrinks the preview when the window is taller than the work area of the monitor it is on
+        /// (for example on small high-DPI screens), so the checkbox and buttons always stay visible.
+        /// </summary>
+        private void FitToWorkArea()
+        {
+            var handle = new WindowInteropHelper(Owner ?? this).Handle;
+            if (handle == IntPtr.Zero) return;
+
+            var dpi = VisualTreeHelper.GetDpi(this);
+            var workingArea = System.Windows.Forms.Screen.FromHandle(handle).WorkingArea;
+            var workTop = workingArea.Top / dpi.DpiScaleY;
+            var workHeight = workingArea.Height / dpi.DpiScaleY;
+
+            UpdateLayout();
+            var overflow = ActualHeight - workHeight;
+            if (overflow <= 0) return;
+
+            PreviewBorder.Height = Math.Max(MinPreviewHeight, PreviewBorder.ActualHeight - overflow);
+            UpdateLayout();
+            Top = workTop + Math.Max(0, (workHeight - ActualHeight) / 2);
+        }
+
+        private const double MinPreviewHeight = 80;
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {

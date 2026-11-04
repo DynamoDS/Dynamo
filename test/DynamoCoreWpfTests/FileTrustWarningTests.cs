@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.ViewModels;
@@ -159,6 +160,56 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
             Assert.AreEqual(path, ViewModel.HomeSpace.FileName);
+        }
+
+        [Test]
+        public void WhenUntrustedFileDeclinedFromOpenRecentThenUserIsNotAskedToSave()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Declined, false);
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+            var saveRequests = 0;
+            WorkspaceSaveEventHandler handler = (o, e) => saveRequests++;
+            ViewModel.RequestUserSaveWorkflow += handler;
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenRecentCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+                ViewModel.RequestUserSaveWorkflow -= handler;
+            }
+
+            Assert.AreEqual(0, saveRequests);
+            Assert.IsTrue(ViewModel.HomeSpace.HasUnsavedChanges);
+        }
+
+        [TestCase("#FFC1D676", 0xC1, 0xD6, 0x76)]
+        [TestCase("#A4E1FF", 0xA4, 0xE1, 0xFF)]
+        public void WhenGroupColorIsHexThenPreviewUsesIt(string color, int red, int green, int blue)
+        {
+            var brush = (SolidColorBrush)GraphPreviewRenderer.ParseGroupBrush(color);
+
+            Assert.AreEqual(Color.FromArgb(0x80, (byte)red, (byte)green, (byte)blue), brush.Color);
+        }
+
+        [TestCase("ContextColor file://server/share/profile.icc 1,0,0,0")]
+        [TestCase("sc#1,0,0,0")]
+        [TestCase("Red")]
+        [TestCase("#GGGGGG")]
+        [TestCase("#12345")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void WhenGroupColorIsNotLiteralHexThenPreviewUsesDefault(string color)
+        {
+            var fallback = (SolidColorBrush)GraphPreviewRenderer.ParseGroupBrush(null);
+
+            var brush = (SolidColorBrush)GraphPreviewRenderer.ParseGroupBrush(color);
+
+            Assert.AreSame(fallback, brush);
         }
 
         [Test]
