@@ -11,7 +11,9 @@ using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
@@ -19,7 +21,8 @@ namespace DynamoCoreWpfTests
 {
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
-    /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), and the
+    /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), its clock
+    /// (DYN-11005: starts on screen, hover holds it, Esc ends it, a new touch restarts it), and the
     /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified.
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
@@ -53,6 +56,49 @@ namespace DynamoCoreWpfTests
             return NodeViewWithGuid(node.GUID.ToString());
         }
 
+        private WorkspaceView WorkspaceViewOf()
+        {
+            return View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+        }
+
+        /// <summary>
+        /// Runs the on-screen check now instead of waiting for the view to settle, so every waiting
+        /// glow whose node is on screen starts. Returns the nodes whose glow started.
+        /// </summary>
+        private IReadOnlyList<NodeViewModel> ShowGlows()
+        {
+            DispatcherUtil.DoEvents();
+            var started = WorkspaceViewOf().CheckAIHaloVisibility();
+            DispatcherUtil.DoEvents();
+            return started;
+        }
+
+        private const double OffScreenX = 100000;
+
+        /// <summary>
+        /// A node far outside the window, so the view's own on-screen check never starts its glow.
+        /// Tests bring it "on screen" by passing a matching area to <see cref="StartGlowsIn"/>.
+        /// </summary>
+        private NodeModel AddNodeOffScreen(double x = OffScreenX, double y = 0)
+        {
+            var node = AddNumberNode();
+            node.X = x;
+            node.Y = y;
+            DispatcherUtil.DoEvents();
+            return node;
+        }
+
+        /// <summary>
+        /// The workspace's on-screen check, as if <paramref name="visibleBounds"/> were the part of
+        /// the canvas on screen.
+        /// </summary>
+        private IReadOnlyList<NodeViewModel> StartGlowsIn(Rect visibleBounds)
+        {
+            var started = ViewModel.CurrentSpaceViewModel.StartAIHaloGlowsInView(visibleBounds);
+            DispatcherUtil.DoEvents();
+            return started;
+        }
+
         [Test]
         [Category("UnitTests")]
         public void UntouchedNodeHasNoHalo()
@@ -70,6 +116,7 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
 
             var halo = ViewOf(node).AIHalo;
             Assert.IsNotNull(halo);
@@ -86,6 +133,7 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            ShowGlows();
 
             var halo = ViewOf(node).AIHalo;
             Assert.IsNotNull(halo);
@@ -102,6 +150,7 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
 
             Assert.AreEqual(0.4, NodeViewModel.AIHaloMovedOpacity);
             var halo = ViewOf(node).AIHalo;
@@ -120,6 +169,7 @@ namespace DynamoCoreWpfTests
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            ShowGlows();
 
             var glow = ViewModelOf(node).AIHaloGlow;
             Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
@@ -133,6 +183,7 @@ namespace DynamoCoreWpfTests
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
 
             Workspace.ClearAIChanges();
@@ -175,6 +226,7 @@ namespace DynamoCoreWpfTests
             var headerFill = NodePart<Border>(nodeView, "nameBackground").Background;
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             var halo = ViewOf(node).AIHalo;
             var badge = ViewOf(node).AIBadge;
 
@@ -186,7 +238,7 @@ namespace DynamoCoreWpfTests
             }
 
             // Extends past the node edge and never takes mouse clicks.
-            Assert.AreEqual(new Thickness(-8), halo.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-8), halo.Margin);
             Assert.IsFalse(halo.IsHitTestVisible);
             Assert.IsFalse(badge.IsHitTestVisible);
 
@@ -209,6 +261,7 @@ namespace DynamoCoreWpfTests
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
 
             var halo = (Grid)ViewOf(node).AIHalo;
             var glow = halo.Children.OfType<Border>().Single();
@@ -216,7 +269,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(halo.HasAnimatedProperties, "The halo's opacity is animated.");
             Assert.IsFalse(glow.HasAnimatedProperties, "The blurred glow itself never changes.");
             Assert.IsFalse(glow.Effect.HasAnimatedProperties, "No blur changes.");
-            Assert.AreEqual(new Thickness(-8), halo.Margin, "No size changes.");
+            Assert.AreEqual(new System.Windows.Thickness(-8), halo.Margin, "No size changes.");
         }
 
         [Test]
@@ -227,6 +280,7 @@ namespace DynamoCoreWpfTests
             AIHaloGlow.Now = () => now;
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             var nodeView = ViewOf(node);
             Assert.AreEqual(Visibility.Visible, nodeView.AIHalo.Visibility);
 
@@ -253,6 +307,7 @@ namespace DynamoCoreWpfTests
             AIHaloGlow.Now = () => now;
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             Assert.IsNotNull(ViewOf(node).AIHaloClock);
 
             // 6 s in, the glow is in its steady hold. A new view for the same node, for example
@@ -280,7 +335,7 @@ namespace DynamoCoreWpfTests
             var borderBrushBefore = nodeView.nodeBorder.BorderBrush;
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            DispatcherUtil.DoEvents();
+            ShowGlows();
             Assert.AreEqual(Brushes.Transparent, nodeView.nodeBorder.BorderBrush);
 
             now += AIHaloGlow.FadeOutEnd;
@@ -289,90 +344,153 @@ namespace DynamoCoreWpfTests
             Assert.AreSame(borderBrushBefore, nodeView.nodeBorder.BorderBrush);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void NodeTouchedAgainWhileGlowingKeepsItsGlow()
-        {
-            var now = TimeSpan.FromMinutes(1);
-            AIHaloGlow.Now = () => now;
-            var node = AddNumberNode();
-            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
-            var glow = ViewModelOf(node).AIHaloGlow;
-            var clock = ViewOf(node).AIHaloClock;
+        #endregion
 
-            // A later AI edit, 8 s into the glow
-            now += TimeSpan.FromSeconds(8);
-            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
-
-            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The glow is not restarted.");
-            Assert.AreSame(clock, ViewOf(node).AIHaloClock);
-        }
+        #region Glow clock: starts on screen (DYN-11005)
 
         [Test]
         [Category("UnitTests")]
-        public void NodeMovedThenModifiedWhileGlowingGetsTheFullGlow()
+        public void GlowWaitsUntilTheNodeIsOnScreen()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
-            var node = AddNumberNode();
-            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50"));
-            var moved = ViewModelOf(node).AIHaloGlow;
+            var node = AddNodeOffScreen();
 
-            now += TimeSpan.FromSeconds(8);
-            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
 
             var glow = ViewModelOf(node).AIHaloGlow;
-            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
-            Assert.IsTrue(glow.Breathes);
-            Assert.AreEqual(moved.StartedAt, glow.StartedAt, "Stays on the same timeline; no restart.");
-        }
+            Assert.IsTrue(glow.IsWaiting, "Off screen, the clock has not started.");
+            Assert.IsNull(ViewOf(node).AIHaloClock);
+            Assert.IsTrue(ViewOf(node).AIHalo == null || ViewOf(node).AIHalo.Visibility == Visibility.Collapsed);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility, "The badge shows straight away.");
 
-        [Test]
-        [Category("UnitTests")]
-        public void NodeTouchedAgainAfterItsGlowFadedGlowsAgain()
-        {
-            var now = TimeSpan.FromMinutes(1);
-            AIHaloGlow.Now = () => now;
-            var node = AddNumberNode();
-            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
-            var first = ViewModelOf(node).AIHaloGlow;
+            // Long after the change, the node comes on screen
+            now += TimeSpan.FromMinutes(5);
+            var started = StartGlowsIn(AroundNode(node));
 
-            // Touched again after the fade-out, for example late in a long turn
-            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(45);
-            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
-
-            var second = ViewModelOf(node).AIHaloGlow;
-            Assert.AreNotSame(first, second);
-            Assert.AreEqual(now, second.StartedAt, "The timer starts again from the new touch.");
-            Assert.IsFalse(second.IsFinished);
+            CollectionAssert.AreEqual(new[] { ViewModelOf(node) }, started);
+            Assert.IsTrue(glow.IsGlowing);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "The clock starts now, not at the change.");
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodeChangedAgainInTheSameAIEditKeepsItsGlow()
+        public void GlowStartsOnlyWhenAtLeastHalfOfTheNodeIsOnScreen()
         {
-            var node = AddNumberNode();
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.Greater(node.Width, 0, "The node has been measured.");
 
-            AsAIEdit(() =>
-            {
-                // Placed, then given a value
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-                var glow = ViewModelOf(node).AIHaloGlow;
-                var clock = ViewOf(node).AIHaloClock;
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            // 40% of the node's width in view
+            var fortyPercent = new Rect(node.X + node.Width * 0.6, node.Y - 100, 1000, node.Height + 200);
+            Assert.IsEmpty(StartGlowsIn(fortyPercent));
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsWaiting);
 
-                Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The running glow is not restarted.");
-                Assert.IsNotNull(clock);
-                Assert.AreSame(clock, ViewOf(node).AIHaloClock, "The halo keeps playing the same animation.");
-            });
+            // 60% in view
+            var sixtyPercent = new Rect(node.X + node.Width * 0.4, node.Y - 100, 1000, node.Height + 200);
+            Assert.AreEqual(1, StartGlowsIn(sixtyPercent).Count);
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsGlowing);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodesChangedSeveralTimesInOneAIEditTakeOneStaggerSlotEach()
+        public void NodeInACollapsedGroupWaitsUntilItIsShown()
         {
-            var nodes = Enumerable.Range(0, 5).Select(_ => AddNumberNode()).ToList();
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var nodeViewModel = ViewModelOf(node);
+
+            nodeViewModel.IsCollapsed = true;
+            Assert.IsEmpty(StartGlowsIn(AroundNode(node)));
+            Assert.IsTrue(nodeViewModel.AIHaloGlow.IsWaiting);
+
+            nodeViewModel.IsCollapsed = false;
+            Assert.AreEqual(1, StartGlowsIn(AroundNode(node)).Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ViewStartsTheGlowOnItsOwnOnceItSettles()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Assert.IsTrue(WaitUntil(() => ViewModelOf(node).AIHaloGlow.IsStarted, TimeSpan.FromSeconds(3)),
+                "A node already on screen starts once the view has been still for a moment.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PanningANodeOnScreenStartsItsGlow()
+        {
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsWaiting);
+
+            // Pan so the node sits near the top-left corner of the view
+            WorkspaceViewOf().zoomBorder.SetTranslateTransformOrigin(new(200 - node.X, 200 - node.Y));
+
+            Assert.IsTrue(WaitUntil(() => ViewModelOf(node).AIHaloGlow.IsStarted, TimeSpan.FromSeconds(3)));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodesThatComeOnScreenTogetherAreStaggered()
+        {
+            var nodes = Enumerable.Range(0, 3).Select(i => AddNodeOffScreen(OffScreenX + i * 300)).ToList();
+            foreach (var node in nodes)
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+
+            var started = StartGlowsIn(new Rect(OffScreenX - 100, -100, 2000, 1000));
+
+            CollectionAssert.AreEqual(nodes.Select(ViewModelOf), started);
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes), "100 ms apart.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StaggerFollowsTheOrderTheNodesWereTouched()
+        {
+            var nodes = Enumerable.Range(0, 3).Select(i => AddNodeOffScreen(OffScreenX + i * 300)).ToList();
+
+            // Touched right to left
+            foreach (var node in Enumerable.Reverse(nodes))
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            StartGlowsIn(new Rect(OffScreenX - 100, -100, 2000, 1000));
+
+            CollectionAssert.AreEqual(new[] { 200.0, 100, 0 }, DelaysOf(nodes));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeThatComesOnScreenAloneStartsWithoutDelay()
+        {
+            var first = AddNodeOffScreen(OffScreenX);
+            var second = AddNodeOffScreen(OffScreenX + 5000);
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+
+            StartGlowsIn(AroundNode(first));
+            Assert.IsTrue(ViewModelOf(second).AIHaloGlow.IsWaiting);
+            StartGlowsIn(AroundNode(second));
+
+            CollectionAssert.AreEqual(new[] { 0.0, 0.0 }, DelaysOf(new[] { first, second }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodesChangedSeveralTimesTakeOneStaggerSlotEach()
+        {
+            var nodes = Enumerable.Range(0, 5).Select(i => AddNodeOffScreen(OffScreenX + i * 300)).ToList();
 
             AsAIEdit(() =>
             {
@@ -386,115 +504,306 @@ namespace DynamoCoreWpfTests
                     Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
                 }
             });
+            StartGlowsIn(new Rect(OffScreenX - 100, -100, 3000, 1000));
 
             CollectionAssert.AreEqual(new[] { 0.0, 100, 200, 300, 400 }, DelaysOf(nodes));
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodeMovedThenModifiedInOneAIEditGetsTheFullGlowInItsSlot()
+        public void NodeChangedAgainBeforeItIsSeenKeepsWaitingAtTheNewStrength()
         {
-            var first = AddNumberNode();
-            var node = AddNumberNode();
-            AIHaloGlow moved = null;
+            var node = AddNodeOffScreen();
 
-            AsAIEdit(() =>
-            {
-                Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
-                moved = ViewModelOf(node).AIHaloGlow;
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
-            });
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow);
+            Assert.IsTrue(glow.IsWaiting);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
+        }
+
+        #endregion
+
+        #region Glow clock: hover, Esc, restart (DYN-11005)
+
+        [Test]
+        [Category("UnitTests")]
+        public void HoverHoldsTheGlowAndLeavingLetsItRunOn()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeViewModel = ViewModelOf(node);
+            var glow = nodeViewModel.AIHaloGlow;
+            var clock = ViewOf(node).AIHaloClock;
+
+            now += TimeSpan.FromSeconds(2);
+            nodeViewModel.SetAIHaloHovered(true);
+            DispatcherUtil.DoEvents();
+            now += TimeSpan.FromSeconds(10);
+
+            Assert.IsTrue(glow.IsHeld);
+            Assert.AreEqual(TimeSpan.FromSeconds(2), glow.Elapsed, "Time while hovered does not count.");
+            Assert.IsTrue(WaitUntil(() => clock.IsPaused, TimeSpan.FromSeconds(3)), "The halo stops at its current value.");
+            Assert.AreSame(clock, ViewOf(node).AIHaloClock);
+
+            nodeViewModel.SetAIHaloHovered(false);
+            DispatcherUtil.DoEvents();
+            now += TimeSpan.FromSeconds(1);
+
+            Assert.IsFalse(glow.IsHeld);
+            Assert.AreEqual(TimeSpan.FromSeconds(3), glow.Elapsed, "Runs on from where it was held.");
+            Assert.IsTrue(WaitUntil(() => !clock.IsPaused, TimeSpan.FromSeconds(3)));
+            Assert.AreSame(clock, ViewOf(node).AIHaloClock, "Same animation, not a restart.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeThatComesOnScreenUnderTheMouseStartsHeld()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var nodeViewModel = ViewModelOf(node);
+
+            nodeViewModel.SetAIHaloHovered(true);
+            StartGlowsIn(AroundNode(node));
+            now += TimeSpan.FromSeconds(5);
+
+            var glow = nodeViewModel.AIHaloGlow;
+            Assert.IsTrue(glow.IsStarted);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
+
+            nodeViewModel.SetAIHaloHovered(false);
+            now += TimeSpan.FromSeconds(1);
+            Assert.AreEqual(TimeSpan.FromSeconds(1), glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscEndsTheGlowOfTheHoveredNodeOnlyAndKeepsTheBadge()
+        {
+            var hovered = AddNumberNode();
+            var other = AddNumberNode();
+            Workspace.RecordAINodeChange(hovered.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var unsavedBefore = Workspace.HasUnsavedChanges;
+
+            ViewModelOf(hovered).SetAIHaloHovered(true);
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
+            DispatcherUtil.DoEvents();
+
+            var glow = ViewModelOf(hovered).AIHaloGlow;
+            Assert.IsTrue(glow.IsDismissed);
+            Assert.IsTrue(glow.IsFinished);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(hovered).AIHalo.Visibility);
+            Assert.IsNull(ViewOf(hovered).AIHaloClock);
+            Assert.AreEqual(Visibility.Visible, ViewOf(hovered).AIBadge.Visibility, "Esc keeps the badge.");
+            Assert.IsTrue(hovered.IsRecentlyModifiedByAI, "The change record is kept.");
+
+            Assert.IsTrue(ViewModelOf(other).AIHaloGlow.IsGlowing, "Other nodes keep glowing.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(other).AIHalo.Visibility);
+            Assert.AreEqual(unsavedBefore, Workspace.HasUnsavedChanges, "Dismissing never marks the workspace as changed.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscDoesNothingWithoutAHoveredGlowingNode()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var glowing = AddNumberNode();
+            var waiting = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(glowing.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(waiting.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            // Nothing hovered
+            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
+
+            // Hovering a node whose glow is still waiting
+            ViewModelOf(waiting).SetAIHaloHovered(true);
+            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
+            ViewModelOf(waiting).SetAIHaloHovered(false);
+
+            // Hovering a node whose glow has faded out: only the badge is left
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
+            ViewModelOf(glowing).SetAIHaloHovered(true);
+            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
+            Assert.IsFalse(ViewModelOf(glowing).AIHaloGlow.IsDismissed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DismissedGlowStaysGoneInARebuiltView()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+            ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow();
+
+            var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
+            rebuilt.UpdateAIHalo();
+
+            Assert.IsNull(rebuilt.AIHaloClock);
+            Assert.IsNull(rebuilt.AIHalo, "No halo is created for a dismissed glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedAgainWhileGlowingRestartsItsGlow()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+            var glow = ViewModelOf(node).AIHaloGlow;
+            var clock = ViewOf(node).AIHaloClock;
+            var version = glow.Version;
+
+            // A later AI edit, 8 s into the glow
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
+
+            // The current glow keeps playing until the on-screen check, which finds the node on screen
+            Assert.IsTrue(glow.IsRestartPending);
+            Assert.AreEqual(version, glow.Version);
+            ShowGlows();
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow);
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreNotEqual(version, glow.Version, "The timeline starts again.");
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "The timer restarts from the new touch.");
+            Assert.AreEqual(TimeSpan.Zero, glow.Delay, "No stagger wait on a restart.");
+            Assert.AreNotSame(clock, ViewOf(node).AIHaloClock, "The halo plays the restarted glow.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeMovedThenModifiedWhileGlowingRestartsAtFullStrength()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50"));
+            ShowGlows();
+
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
+            ShowGlows();
 
             var glow = ViewModelOf(node).AIHaloGlow;
             Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
             Assert.IsTrue(glow.Breathes);
-            Assert.AreEqual(moved.Delay, glow.Delay, "Keeps its place in the stagger.");
-            Assert.AreEqual(moved.StartedAt, glow.StartedAt);
-            Assert.AreEqual(TimeSpan.FromMilliseconds(100), glow.Delay);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodesTouchedInTheSameAIEditAreStaggered()
-        {
-            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
-
-            PlaceInOneAIEdit(nodes);
-
-            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes), "100 ms apart, in the order touched.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void AIEditsBackToBackAreStaggeredSeparately()
-        {
-            var firstEdit = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
-            var secondEdit = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
-
-            // No UI work and no time in between
-            PlaceInOneAIEdit(firstEdit);
-            PlaceInOneAIEdit(secondEdit);
-
-            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(firstEdit));
-            CollectionAssert.AreEqual(new[] { 0.0, 100 }, DelaysOf(secondEdit), "A new AI edit starts a new stagger.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void PauseInsideOneAIEditKeepsOneStagger()
+        public void NodeTouchedAgainAfterItLeftTheScreenWaitsUntilItIsBack()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
-            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            StartGlowsIn(AroundNode(node));
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.IsTrue(glow.IsGlowing);
 
-            AsAIEdit(() =>
-            {
-                Workspace.RecordAINodeChange(nodes[0].GUID, AIChangeKind.Placed, TurnA);
+            // The view moves away, then a second change arrives 5 s into the glow
+            now += TimeSpan.FromSeconds(5);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            StartGlowsIn(new Rect(0, 0, 1000, 1000));
 
-                // For example a dialog: the UI thread runs other work and time passes
-                DispatcherUtil.DoEvents();
-                now += TimeSpan.FromSeconds(5);
+            Assert.IsTrue(glow.IsWaiting, "Off screen, the second change waits to be seen.");
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
+            Assert.IsNull(ViewOf(node).AIHaloClock);
 
-                Workspace.RecordAINodeChange(nodes[1].GUID, AIChangeKind.Placed, TurnA);
-                Workspace.RecordAINodeChange(nodes[2].GUID, AIChangeKind.Placed, TurnA);
-            });
+            // A minute later the view comes back
+            now += TimeSpan.FromMinutes(1);
+            CollectionAssert.AreEqual(new[] { ViewModelOf(node) }, StartGlowsIn(AroundNode(node)));
 
-            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes));
+            Assert.IsTrue(glow.IsGlowing, "The glow is still there to be seen.");
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NestedAIEditsAreOneStagger()
+        public void SecondChangeIsNotLostWhenTheFirstGlowEndsBeforeTheCheck()
         {
-            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            StartGlowsIn(AroundNode(node));
+            var glow = ViewModelOf(node).AIHaloGlow;
 
-            using (Workspace.BeginAIEdit())
-            {
-                Workspace.RecordAINodeChange(nodes[0].GUID, AIChangeKind.Placed, TurnA);
-                using (Workspace.BeginAIEdit())
-                {
-                    Workspace.RecordAINodeChange(nodes[1].GUID, AIChangeKind.Placed, TurnA);
-                }
-                Workspace.RecordAINodeChange(nodes[2].GUID, AIChangeKind.Placed, TurnA);
-            }
+            // Touched again just before the fade-out ends; the first timeline then runs out
+            now += AIHaloGlow.FadeOutEnd - TimeSpan.FromMilliseconds(50);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            now += TimeSpan.FromSeconds(1);
 
-            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes));
+            Assert.IsFalse(glow.IsFinished, "The second change has not been seen yet.");
+            StartGlowsIn(AroundNode(node));
+            Assert.IsTrue(glow.IsGlowing);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodeTouchedOutsideAnAIEditStartsWithoutDelay()
+        public void NodeTouchedAgainAfterItsGlowFadedGlowsAgain()
         {
-            var nodes = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+            var first = ViewModelOf(node).AIHaloGlow;
 
-            foreach (var node in nodes)
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
+            // Touched again after the fade-out, for example late in a long turn
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(45);
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
+            ShowGlows();
 
-            CollectionAssert.AreEqual(new[] { 0.0, 0.0 }, DelaysOf(nodes));
+            var second = ViewModelOf(node).AIHaloGlow;
+            Assert.AreNotSame(first, second);
+            Assert.IsTrue(second.IsGlowing);
+            Assert.AreEqual(TimeSpan.Zero, second.Elapsed);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedAgainAfterEscGlowsAgain()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeViewModel = ViewModelOf(node);
+            nodeViewModel.SetAIHaloHovered(true);
+            nodeViewModel.DismissAIHaloGlow();
+            nodeViewModel.SetAIHaloHovered(false);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            ShowGlows();
+
+            Assert.IsTrue(nodeViewModel.AIHaloGlow.IsGlowing, "A new change gets a new glow.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        #endregion
 
         /// <summary>
         /// A clock starts, and applies a seek, on WPF's next animation tick. Pumps the UI thread
@@ -502,12 +811,26 @@ namespace DynamoCoreWpfTests
         /// </summary>
         private static void WaitUntilPlayingFrom(AnimationClock clock, TimeSpan time)
         {
-            var giveUpAt = System.DateTime.UtcNow + TimeSpan.FromSeconds(3);
-            while ((clock.CurrentTime == null || clock.CurrentTime < time) && System.DateTime.UtcNow < giveUpAt)
+            WaitUntil(() => clock.CurrentTime != null && clock.CurrentTime >= time, TimeSpan.FromSeconds(3));
+        }
+
+        /// <summary>
+        /// Pumps the UI thread until the condition holds or the time runs out. Returns the condition.
+        /// </summary>
+        private static bool WaitUntil(Func<bool> condition, TimeSpan timeout)
+        {
+            var giveUpAt = System.DateTime.UtcNow + timeout;
+            while (!condition() && System.DateTime.UtcNow < giveUpAt)
             {
                 DispatcherUtil.DoEvents();
                 Thread.Sleep(15);
             }
+            return condition();
+        }
+
+        private static Rect AroundNode(NodeModel node)
+        {
+            return new Rect(node.X - 50, node.Y - 50, Math.Max(node.Width, 1) + 100, Math.Max(node.Height, 1) + 100);
         }
 
         private void AsAIEdit(Action changes)
@@ -518,23 +841,10 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        private void PlaceInOneAIEdit(IEnumerable<NodeModel> nodes)
-        {
-            AsAIEdit(() =>
-            {
-                foreach (var node in nodes)
-                {
-                    Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-                }
-            });
-        }
-
         private List<double> DelaysOf(IEnumerable<NodeModel> nodes)
         {
             return nodes.Select(n => ViewModelOf(n).AIHaloGlow.Delay.TotalMilliseconds).ToList();
         }
-
-        #endregion
 
         private static T NodePart<T>(NodeView nodeView, string name) where T : FrameworkElement
         {
@@ -551,7 +861,7 @@ namespace DynamoCoreWpfTests
             var borderThicknessBefore = nodeView.nodeBorder.BorderThickness;
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            DispatcherUtil.DoEvents();
+            ShowGlows();
 
             Assert.AreEqual(Brushes.Transparent, nodeView.nodeBorder.BorderBrush,
                 "No pale ring between the node and the halo.");
@@ -570,6 +880,7 @@ namespace DynamoCoreWpfTests
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
 
             var glow = ((Grid)ViewOf(node).AIHalo).Children.OfType<Border>().Single();
 
@@ -623,6 +934,7 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
 
             Assert.IsFalse(ViewModelOf(node).ShowAIBadge);
             Assert.IsNull(ViewOf(node).AIBadge, "Moved nodes are the quietest: halo only, no badge.");
@@ -696,7 +1008,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(HorizontalAlignment.Right, badge.HorizontalAlignment);
             Assert.AreEqual(VerticalAlignment.Top, badge.VerticalAlignment);
             Assert.AreEqual(Grid.GetRow(nodeView.nodeBorder), Grid.GetRow(badge), "Same top edge as the node.");
-            Assert.AreEqual(new Thickness(0, -13.5, -13.5, 0), badge.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(0, -13.5, -13.5, 0), badge.Margin);
 
             // In front of every other part of the node, including the zoomed-out overlay, and
             // never takes mouse clicks.
@@ -744,7 +1056,8 @@ namespace DynamoCoreWpfTests
     }
 
     /// <summary>
-    /// The halo glow's timeline (DYN-11004, Figma node 20:338), checked without a Dynamo window.
+    /// The halo glow's timeline (DYN-11004, Figma node 20:338) and its clock (DYN-11005, Figma node
+    /// 7:989), checked without a Dynamo window.
     /// </summary>
     [TestFixture]
     public class AIHaloGlowTimelineTests
@@ -752,12 +1065,13 @@ namespace DynamoCoreWpfTests
         private const double Tolerance = 1e-6;
         private static readonly TimeSpan Start = TimeSpan.FromMinutes(5);
 
-        private static int lastTestAIEdit;
+        private TimeSpan now;
 
         [SetUp]
         public void FixTheClock()
         {
-            AIHaloGlow.Now = () => Start;
+            now = Start;
+            AIHaloGlow.Now = () => now;
         }
 
         [TearDown]
@@ -766,14 +1080,12 @@ namespace DynamoCoreWpfTests
             AIHaloGlow.Now = AIHaloGlow.DefaultClock;
         }
 
-        /// <summary>
-        /// A new AI edit number. Negative, so it never matches one a workspace hands out.
-        /// </summary>
-        private static int NewAIEdit() => --lastTestAIEdit;
-
-        private static AIHaloGlow NewGlow(double strength = 1.0, bool breathes = true)
+        /// <summary>A glow whose node has just come on screen.</summary>
+        private static AIHaloGlow NewGlow(double strength = 1.0, bool breathes = true, int place = 0)
         {
-            return AIHaloGlow.Start(NewAIEdit(), strength, breathes);
+            var glow = AIHaloGlow.Create(strength, breathes);
+            glow.Begin(AIHaloGlow.StaggerDelay(place));
+            return glow;
         }
 
         /// <summary>The animation's value at a time, worked out from its key frames.</summary>
@@ -796,6 +1108,8 @@ namespace DynamoCoreWpfTests
             }
             return previousValue;
         }
+
+        #region Timeline
 
         [Test]
         [Category("UnitTests")]
@@ -862,38 +1176,10 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void StrongerGlowKeepsItsStartAndItsSlot()
-        {
-            var edit = NewAIEdit();
-            AIHaloGlow.Start(edit, 1.0, true);
-            var glow = AIHaloGlow.Start(edit, NodeViewModel.AIHaloMovedOpacity, false);
-
-            var upgraded = glow.WithStrength(1.0, true);
-
-            Assert.AreEqual(1.0, upgraded.Strength);
-            Assert.IsTrue(upgraded.Breathes);
-            Assert.AreEqual(glow.StartedAt, upgraded.StartedAt);
-            Assert.AreEqual(TimeSpan.FromMilliseconds(100), upgraded.Delay);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void GlowOutsideAnAIEditStartsAloneWithoutDelay()
-        {
-            var first = AIHaloGlow.Start(0, 1.0, true);
-            var second = AIHaloGlow.Start(0, 1.0, true);
-
-            Assert.AreEqual(TimeSpan.Zero, first.Delay);
-            Assert.AreEqual(TimeSpan.Zero, second.Delay);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void StaggerIsOneHundredMillisecondsPerNodeUpToOneSecond()
         {
-            var edit = NewAIEdit();
             var delays = Enumerable.Range(0, 13)
-                .Select(_ => AIHaloGlow.Start(edit, 1.0, true).Delay.TotalMilliseconds)
+                .Select(place => AIHaloGlow.StaggerDelay(place).TotalMilliseconds)
                 .ToList();
 
             CollectionAssert.AreEqual(
@@ -905,10 +1191,7 @@ namespace DynamoCoreWpfTests
         [Category("UnitTests")]
         public void DelayedGlowWaitsThenRunsTheSameTimeline()
         {
-            var edit = NewAIEdit();
-            AIHaloGlow.Start(edit, 1.0, true);
-            AIHaloGlow.Start(edit, 1.0, true);
-            var third = AIHaloGlow.Start(edit, 1.0, true);
+            var third = NewGlow(place: 2);
             var animation = third.CreateAnimation();
 
             Assert.AreEqual(0.2, third.Delay.TotalSeconds, Tolerance);
@@ -925,7 +1208,7 @@ namespace DynamoCoreWpfTests
         {
             var animation = NewGlow().CreateAnimation(startOpacity: 0.7);
 
-            Assert.AreEqual(0.7, ValueAt(animation, 0.0), Tolerance, "No dip to zero when a running glow is replaced");
+            Assert.AreEqual(0.7, ValueAt(animation, 0.0), Tolerance, "No dip to zero when a running glow restarts");
             Assert.AreEqual(1.0, ValueAt(animation, 0.6), Tolerance);
         }
 
@@ -933,15 +1216,292 @@ namespace DynamoCoreWpfTests
         [Category("UnitTests")]
         public void GlowIsFinishedAtTheEndOfTheFadeOut()
         {
-            var now = Start;
-            AIHaloGlow.Now = () => now;
             var glow = NewGlow();
 
             now = Start + TimeSpan.FromSeconds(14.8);
             Assert.IsFalse(glow.IsFinished);
+            Assert.IsTrue(glow.IsGlowing);
 
             now = Start + TimeSpan.FromSeconds(14.9);
             Assert.IsTrue(glow.IsFinished);
+            Assert.IsFalse(glow.IsGlowing);
         }
+
+        #endregion
+
+        #region Clock (DYN-11005)
+
+        [Test]
+        [Category("UnitTests")]
+        public void NewGlowWaitsAndItsClockDoesNotRun()
+        {
+            var glow = AIHaloGlow.Create(1.0, true);
+
+            now += TimeSpan.FromMinutes(10);
+
+            Assert.IsTrue(glow.IsWaiting);
+            Assert.IsFalse(glow.IsStarted);
+            Assert.IsFalse(glow.IsGlowing);
+            Assert.IsFalse(glow.IsFinished, "A glow never seen has not faded out.");
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ClockStartsWhenTheNodeComesOnScreen()
+        {
+            var glow = AIHaloGlow.Create(1.0, true);
+            now += TimeSpan.FromMinutes(10);
+
+            Assert.IsTrue(glow.Begin(TimeSpan.Zero));
+            now += TimeSpan.FromSeconds(3);
+
+            Assert.IsTrue(glow.IsGlowing);
+            Assert.AreEqual(TimeSpan.FromSeconds(3), glow.Elapsed);
+            Assert.IsFalse(glow.Begin(TimeSpan.Zero), "Only the first time on screen starts the clock.");
+            Assert.AreEqual(TimeSpan.FromSeconds(3), glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GlowsAreOrderedByTouch()
+        {
+            var first = AIHaloGlow.Create(1.0, true);
+            var second = AIHaloGlow.Create(1.0, true);
+
+            Assert.Less(first.TouchOrder, second.TouchOrder);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HeldGlowDoesNotCountTime()
+        {
+            var glow = NewGlow();
+            now += TimeSpan.FromSeconds(2);
+
+            Assert.IsTrue(glow.Hold());
+            now += TimeSpan.FromSeconds(30);
+            Assert.AreEqual(TimeSpan.FromSeconds(2), glow.Elapsed);
+            Assert.IsTrue(glow.IsGlowing, "A held glow does not fade out.");
+
+            Assert.IsTrue(glow.Release());
+            now += TimeSpan.FromSeconds(1);
+            Assert.AreEqual(TimeSpan.FromSeconds(3), glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HoldingDuringTheStaggerWaitHoldsTheWaitToo()
+        {
+            var glow = NewGlow(place: 5);
+            now += TimeSpan.FromMilliseconds(200);
+
+            glow.Hold();
+            now += TimeSpan.FromSeconds(10);
+
+            Assert.AreEqual(TimeSpan.FromMilliseconds(200), glow.Elapsed, "Still inside its 500 ms wait.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GlowThatBeginsHeldRunsOnceReleased()
+        {
+            var glow = AIHaloGlow.Create(1.0, true);
+            glow.Hold();
+
+            glow.Begin(TimeSpan.Zero);
+            now += TimeSpan.FromSeconds(5);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
+
+            glow.Release();
+            now += TimeSpan.FromSeconds(1);
+            Assert.AreEqual(TimeSpan.FromSeconds(1), glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RetouchMarksARunningGlowForRestartAndKeepsItPlaying()
+        {
+            var glow = NewGlow();
+            var version = glow.Version;
+            now += TimeSpan.FromSeconds(8);
+
+            glow.Retouch(1.0, true);
+
+            Assert.IsTrue(glow.IsRestartPending);
+            Assert.AreEqual(version, glow.Version, "Nothing changes on screen until the check.");
+            Assert.AreEqual(TimeSpan.FromSeconds(8), glow.Elapsed);
+            Assert.IsTrue(glow.IsGlowing);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RestartStartsAgainWithoutDelay()
+        {
+            var glow = NewGlow(NodeViewModel.AIHaloMovedOpacity, breathes: false, place: 3);
+            var version = glow.Version;
+            now += TimeSpan.FromSeconds(8);
+
+            glow.Retouch(1.0, true);
+            Assert.IsTrue(glow.Restart());
+
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
+            Assert.AreEqual(TimeSpan.Zero, glow.Delay);
+            Assert.AreNotEqual(version, glow.Version);
+            Assert.AreEqual(1.0, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
+
+            now += TimeSpan.FromSeconds(1);
+            Assert.AreEqual(TimeSpan.FromSeconds(1), glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RetouchWhileHeldRestartsHeld()
+        {
+            var glow = NewGlow();
+            now += TimeSpan.FromSeconds(8);
+            glow.Hold();
+
+            glow.Retouch(1.0, true);
+            glow.Restart();
+            now += TimeSpan.FromSeconds(5);
+
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "Stays at the start until the mouse leaves.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WaitAgainSendsTheGlowBackToWaiting()
+        {
+            var glow = NewGlow(place: 2);
+            var version = glow.Version;
+            now += TimeSpan.FromSeconds(5);
+            glow.Retouch(1.0, true);
+
+            Assert.IsTrue(glow.WaitAgain());
+
+            Assert.IsTrue(glow.IsWaiting);
+            Assert.IsFalse(glow.IsStarted);
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreNotEqual(version, glow.Version);
+            now += TimeSpan.FromMinutes(1);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "The clock does not run while waiting.");
+
+            // Back on screen, it starts like a new glow, with its place in the stagger
+            Assert.IsTrue(glow.Begin(AIHaloGlow.StaggerDelay(1)));
+            Assert.AreEqual(TimeSpan.FromMilliseconds(100), glow.Delay);
+            Assert.IsTrue(glow.IsGlowing);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RestartAndWaitAgainNeedATouchFirst()
+        {
+            var glow = NewGlow();
+
+            Assert.IsFalse(glow.Restart());
+            Assert.IsFalse(glow.WaitAgain());
+            Assert.IsTrue(glow.IsStarted);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PendingRestartIsNotFinishedWhenTheOldTimelineEnds()
+        {
+            var glow = NewGlow();
+            now += TimeSpan.FromSeconds(14);
+            glow.Retouch(1.0, true);
+
+            now += TimeSpan.FromSeconds(5);
+
+            Assert.IsFalse(glow.IsFinished, "The newer change still has to be seen.");
+            Assert.IsFalse(glow.IsGlowing, "The old timeline has ended, so no halo meanwhile.");
+            Assert.IsTrue(glow.Restart());
+            Assert.IsTrue(glow.IsGlowing);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DismissClearsAPendingRestart()
+        {
+            var glow = NewGlow();
+            now += TimeSpan.FromSeconds(3);
+            glow.Retouch(1.0, true);
+
+            Assert.IsTrue(glow.Dismiss());
+
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.IsFalse(glow.Restart());
+            Assert.IsFalse(glow.WaitAgain());
+            Assert.IsTrue(glow.IsFinished);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RetouchWhileWaitingKeepsWaitingAtTheNewStrength()
+        {
+            var glow = AIHaloGlow.Create(NodeViewModel.AIHaloMovedOpacity, false);
+            var version = glow.Version;
+
+            glow.Retouch(1.0, true);
+
+            Assert.IsTrue(glow.IsWaiting);
+            Assert.AreEqual(version, glow.Version);
+            Assert.AreEqual(1.0, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HoldAndReleaseDoNotChangeTheVersion()
+        {
+            var glow = NewGlow();
+            var version = glow.Version;
+
+            glow.Hold();
+            glow.Release();
+
+            Assert.AreEqual(version, glow.Version);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DismissEndsAGlowingGlowOnly()
+        {
+            var waiting = AIHaloGlow.Create(1.0, true);
+            Assert.IsFalse(waiting.Dismiss(), "Nothing to end before the node is seen.");
+
+            var glowing = NewGlow();
+            now += TimeSpan.FromSeconds(3);
+            Assert.IsTrue(glowing.Dismiss());
+            Assert.IsTrue(glowing.IsDismissed);
+            Assert.IsTrue(glowing.IsFinished);
+            Assert.IsFalse(glowing.IsGlowing);
+            Assert.IsFalse(glowing.Dismiss(), "Already dismissed.");
+
+            var fadedOut = NewGlow();
+            now += AIHaloGlow.FadeOutEnd;
+            Assert.IsFalse(fadedOut.Dismiss(), "Only the badge is left.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DismissedGlowIgnoresRetouchAndRelease()
+        {
+            var glow = NewGlow();
+            glow.Hold();
+            glow.Dismiss();
+
+            glow.Retouch(1.0, true);
+            glow.Release();
+            now += TimeSpan.FromSeconds(1);
+
+            Assert.IsTrue(glow.IsFinished);
+            Assert.IsFalse(glow.Begin(TimeSpan.Zero));
+        }
+
+        #endregion
     }
 }
