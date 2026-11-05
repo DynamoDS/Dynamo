@@ -736,12 +736,11 @@ namespace Dynamo.ViewModels
 
             if (current != null && !current.IsFinished)
             {
+                // Still waiting, or glowing with a restart now pending: the on-screen check decides
+                // whether it restarts here or waits until the node is back on screen
                 current.Retouch(strength, breathes);
                 RaisePropertyChanged(nameof(AIHaloGlow));
-                if (current.IsWaiting)
-                {
-                    WorkspaceViewModel?.OnAIHaloGlowWaiting();
-                }
+                WorkspaceViewModel?.OnAIHaloGlowWaiting();
                 return;
             }
 
@@ -804,10 +803,39 @@ namespace Dynamo.ViewModels
 
         private void RequestAIHaloCheckIfWaiting()
         {
-            if (AIHaloGlow?.IsWaiting == true)
+            var glow = AIHaloGlow;
+            if (glow != null && (glow.IsWaiting || glow.IsRestartPending))
             {
                 WorkspaceViewModel?.OnAIHaloGlowWaiting();
             }
+        }
+
+        /// <summary>
+        /// Restarts the glow of a node touched again while glowing, because it is on screen. Called by
+        /// the workspace's on-screen check.
+        /// </summary>
+        /// <returns>True if the glow restarted.</returns>
+        internal bool RestartAIHaloGlow()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Restart()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        /// <summary>
+        /// Sends the glow of a node touched again while glowing back to waiting, because the node has
+        /// left the screen. Called by the workspace's on-screen check.
+        /// </summary>
+        /// <returns>True if the glow is waiting again.</returns>
+        internal bool WaitAIHaloGlowAgain()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.WaitAgain()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
         }
 
         /// <summary>

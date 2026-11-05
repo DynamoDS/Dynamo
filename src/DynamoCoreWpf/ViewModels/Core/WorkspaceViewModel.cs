@@ -178,8 +178,8 @@ namespace Dynamo.ViewModels
         internal const double AIHaloVisibleShare = 0.5;
 
         /// <summary>
-        /// Raised when a node has a glow waiting to come on screen, so the view checks what is on
-        /// screen. May be raised off the UI thread.
+        /// Raised when a node has a glow waiting to come on screen, or a glow with a restart pending,
+        /// so the view checks what is on screen. May be raised off the UI thread.
         /// </summary>
         internal event Action AIHaloGlowWaiting;
 
@@ -192,15 +192,28 @@ namespace Dynamo.ViewModels
         /// Starts the clock of every waiting glow whose node is on screen: at least half of it inside
         /// <paramref name="visibleBounds"/>, and not hidden or collapsed in a group. The nodes that start
         /// together are staggered 100 ms apart, in the order the AI Assistant touched them, up to 1 s.
-        /// Call on the UI thread.
+        /// A node touched again while glowing restarts straight away if it is on screen, and waits
+        /// again if it has left, so the later change is not missed either. Call on the UI thread.
         /// </summary>
         /// <param name="visibleBounds">The part of the canvas on screen, in canvas coordinates.</param>
-        /// <returns>The nodes whose glow started, in the order they start.</returns>
+        /// <returns>The nodes whose glow started from waiting, in the order they start.</returns>
         internal IReadOnlyList<NodeViewModel> StartAIHaloGlowsInView(Rect visibleBounds)
         {
             if (visibleBounds.IsEmpty || visibleBounds.Width <= 0 || visibleBounds.Height <= 0)
             {
                 return Array.Empty<NodeViewModel>();
+            }
+
+            foreach (var node in Nodes.Where(n => n.AIHaloGlow?.IsRestartPending == true).ToList())
+            {
+                if (IsOnScreen(node, visibleBounds))
+                {
+                    node.RestartAIHaloGlow();
+                }
+                else
+                {
+                    node.WaitAIHaloGlowAgain();
+                }
             }
 
             var starting = Nodes

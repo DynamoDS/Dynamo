@@ -1607,7 +1607,7 @@ namespace Dynamo.Controls
             var glow = ViewModel?.AIHaloGlow;
 
             // No glow, still waiting to come on screen, faded out or dismissed: no halo
-            if (glow == null || !glow.IsStarted || glow.IsFinished)
+            if (glow == null || !glow.IsGlowing)
             {
                 HideAIHalo();
                 return;

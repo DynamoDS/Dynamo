@@ -27,8 +27,10 @@ namespace Dynamo.ViewModels
     /// on screen together start 100 ms apart, in the order they were touched, up to 1 s in total.
     /// Hovering the node holds the glow at its current value (<see cref="Hold"/>,
     /// <see cref="Release"/>); only time while not held counts. A node touched again while glowing
-    /// restarts from its current strength (<see cref="Retouch"/>). Esc on a hovered node ends the
-    /// glow and keeps the badge (<see cref="Dismiss"/>).
+    /// restarts when the next on-screen check finds it on screen, from its current strength
+    /// (<see cref="Retouch"/>, <see cref="Restart"/>). If it has left the screen, the glow waits
+    /// again until the node is back (<see cref="WaitAgain"/>), so a later change is not missed
+    /// either. Esc on a hovered node ends the glow and keeps the badge (<see cref="Dismiss"/>).
     /// </para>
     /// </remarks>
     internal sealed class AIHaloGlow
@@ -129,6 +131,7 @@ namespace Dynamo.ViewModels
         private bool isStarted;
         private bool isHeld;
         private bool isDismissed;
+        private bool isRestartPending;
         private int version;
 
         // Time on the timeline that has already counted, and since when the clock has been running
@@ -185,9 +188,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Changes each time the glow's timeline starts again (<see cref="Begin"/>,
-        /// <see cref="Retouch"/>), so a view knows to build a new animation. Holding and releasing
-        /// the glow do not change it.
+        /// Changes each time the glow's timeline starts again or stops to wait (<see cref="Begin"/>,
+        /// <see cref="Restart"/>, <see cref="WaitAgain"/>), so a view knows to build a new animation.
+        /// Holding, releasing and <see cref="Retouch"/> do not change it.
         /// </summary>
         internal int Version
         {
@@ -200,6 +203,15 @@ namespace Dynamo.ViewModels
         internal bool IsWaiting
         {
             get { lock (sync) return !isStarted && !isDismissed; }
+        }
+
+        /// <summary>
+        /// True when the node was touched again while glowing, until the next on-screen check
+        /// restarts the glow or sends it back to waiting. The current glow keeps playing meanwhile.
+        /// </summary>
+        internal bool IsRestartPending
+        {
+            get { lock (sync) return isRestartPending; }
         }
 
         /// <summary>
@@ -245,6 +257,8 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// True once the glow has faded out or been dismissed. The node then shows its badge only.
+        /// A glow with a restart pending is not finished, even if its current timeline has ended:
+        /// the newer change still has to be seen.
         /// </summary>
         internal bool IsFinished
         {
@@ -252,7 +266,8 @@ namespace Dynamo.ViewModels
             {
                 lock (sync)
                 {
-                    return isDismissed || (isStarted && ElapsedUnlocked() >= delay + FadeOutEnd);
+                    return isDismissed
+                        || (isStarted && !isRestartPending && ElapsedUnlocked() >= delay + FadeOutEnd);
                 }
             }
         }
@@ -348,10 +363,11 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The AI Assistant touched the node again while this glow is waiting or running. A running
-        /// glow starts its timeline again, without a stagger delay; the view starts it from the
-        /// halo's current strength, so it never dips to zero. A waiting glow keeps waiting. Either
-        /// way the glow takes the new strength, for example a moved node that is then modified.
+        /// The AI Assistant touched the node again while this glow is waiting or running. The glow
+        /// takes the new strength, for example a moved node that is then modified. A waiting glow
+        /// keeps waiting. A running glow keeps playing and is marked <see cref="IsRestartPending"/>;
+        /// the next on-screen check then calls <see cref="Restart"/> if the node is on screen, or
+        /// <see cref="WaitAgain"/> if it has left.
         /// </summary>
         /// <param name="newStrength">Peak opacity of the halo, from 0 to 1.</param>
         /// <param name="newBreathes">True for the breathing timeline (placed or modified nodes).</param>
@@ -363,12 +379,53 @@ namespace Dynamo.ViewModels
 
                 strength = newStrength;
                 breathes = newBreathes;
-                if (!isStarted) return;
+                if (isStarted)
+                {
+                    isRestartPending = true;
+                }
+            }
+        }
 
+        /// <summary>
+        /// Starts a glow with a restart pending again from the beginning, without a stagger delay,
+        /// because its node is on screen. The view starts it from the halo's current strength, so it
+        /// never dips to zero. A held glow restarts held.
+        /// </summary>
+        /// <returns>True if the glow restarted.</returns>
+        internal bool Restart()
+        {
+            lock (sync)
+            {
+                if (!isRestartPending || isDismissed) return false;
+
+                isRestartPending = false;
                 delay = TimeSpan.Zero;
                 countedBefore = TimeSpan.Zero;
                 runningSince = isHeld ? (TimeSpan?)null : Now();
                 version++;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Sends a glow with a restart pending back to waiting, because its node has left the
+        /// screen. The halo goes away, and the glow starts again, with the usual stagger, the next
+        /// time the node comes on screen (<see cref="Begin"/>).
+        /// </summary>
+        /// <returns>True if the glow is waiting again.</returns>
+        internal bool WaitAgain()
+        {
+            lock (sync)
+            {
+                if (!isRestartPending || isDismissed) return false;
+
+                isRestartPending = false;
+                isStarted = false;
+                delay = TimeSpan.Zero;
+                countedBefore = TimeSpan.Zero;
+                runningSince = null;
+                version++;
+                return true;
             }
         }
 
@@ -385,6 +442,7 @@ namespace Dynamo.ViewModels
                 countedBefore = ElapsedUnlocked();
                 runningSince = null;
                 isDismissed = true;
+                isRestartPending = false;
                 return true;
             }
         }
@@ -397,7 +455,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="startOpacity">
         /// Opacity to start from. Zero for a new halo; the halo's current opacity when a running glow
-        /// restarts (<see cref="Retouch"/>), so the halo never dips to zero.
+        /// restarts (<see cref="Restart"/>), so the halo never dips to zero.
         /// </param>
         internal DoubleAnimationUsingKeyFrames CreateAnimation(double startOpacity = 0)
         {
