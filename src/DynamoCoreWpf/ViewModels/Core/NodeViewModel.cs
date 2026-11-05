@@ -723,9 +723,11 @@ namespace Dynamo.ViewModels
             var breathes = change.Kind != AIChangeKind.Moved;
             var current = AIHaloGlow;
 
-            // Another change to this node in the same action (placed, then given a value): one glow
-            // and one stagger slot per node. A later action restarts the glow.
-            if (current != null && current.IsInCurrentBatch)
+            var aiEdit = WorkspaceViewModel?.Model?.CurrentAIEdit ?? 0;
+
+            // Another change to this node in the same AI edit (placed, then given a value): one glow
+            // and one stagger slot per node. A later AI edit restarts the glow.
+            if (current != null && !current.IsFinished && current.IsFromAIEdit(aiEdit))
             {
                 if (current.Strength != strength || current.Breathes != breathes)
                 {
@@ -734,7 +736,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            AIHaloGlow = AIHaloGlow.Start(strength, breathes);
+            AIHaloGlow = AIHaloGlow.Start(aiEdit, strength, breathes);
         }
 
         /// <summary>

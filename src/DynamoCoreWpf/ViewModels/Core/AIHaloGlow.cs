@@ -1,9 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Windows;
 using System.Windows.Media.Animation;
-using System.Windows.Threading;
 
 namespace Dynamo.ViewModels
 {
@@ -24,8 +21,9 @@ namespace Dynamo.ViewModels
     /// and one rebuilt after the fade-out shows no halo.
     /// </para>
     /// <para>
-    /// Nodes touched by the same action (one burst of work on the UI thread) start 100 ms apart,
-    /// in the order they were touched, up to 1 s in total.
+    /// Nodes touched in the same AI edit (one <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.BeginAIEdit"/>
+    /// scope, which DynamoMCP opens per action) start 100 ms apart, in the order they were touched,
+    /// up to 1 s in total.
     /// </para>
     /// </remarks>
     internal sealed class AIHaloGlow
@@ -78,12 +76,12 @@ namespace Dynamo.ViewModels
         internal const double HoldLevel = 0.70;
 
         /// <summary>
-        /// Gap between the starts of nodes touched by the same action.
+        /// Gap between the starts of nodes touched in the same AI edit.
         /// </summary>
         internal static readonly TimeSpan StaggerStep = TimeSpan.FromMilliseconds(100);
 
         /// <summary>
-        /// Longest stagger delay; from the 11th node on, every node starts at this delay.
+        /// Longest stagger delay; from the 11th node of an AI edit on, every node starts at this delay.
         /// </summary>
         internal static readonly TimeSpan MaxStagger = TimeSpan.FromSeconds(1);
 
@@ -111,9 +109,9 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        private AIHaloGlow(int batch, TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
+        private AIHaloGlow(int aiEdit, TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
         {
-            this.batch = batch;
+            AIEdit = aiEdit;
             StartedAt = startedAt;
             Delay = delay;
             Strength = strength;
@@ -126,8 +124,8 @@ namespace Dynamo.ViewModels
         internal TimeSpan StartedAt { get; }
 
         /// <summary>
-        /// How long the glow waits before fading in, so nodes touched by the same action start one
-        /// after another. Zero for the first node of an action.
+        /// How long the glow waits before fading in, so nodes touched in the same AI edit start one
+        /// after another. Zero for the first node of an AI edit.
         /// </summary>
         internal TimeSpan Delay { get; }
 
@@ -163,42 +161,37 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal bool IsFinished => Elapsed >= Duration;
 
-        private readonly int batch;
+        /// <summary>
+        /// The AI edit that started this glow (<see cref="Dynamo.Graph.Workspaces.WorkspaceModel.CurrentAIEdit"/>),
+        /// or 0 if the node was touched outside one.
+        /// </summary>
+        internal int AIEdit { get; }
 
         /// <summary>
-        /// True while the action that started this glow is still running. Further changes to the node
-        /// in that action keep this glow and its place in the stagger.
+        /// True if this glow was started by the given AI edit. Further changes to the node in that
+        /// edit keep this glow and its place in the stagger.
         /// </summary>
-        internal bool IsInCurrentBatch
-        {
-            get
-            {
-                lock (staggerLock)
-                {
-                    return batchStartedAt != null && batch == batchId && Now() - batchStartedAt.Value <= MaxStagger;
-                }
-            }
-        }
+        internal bool IsFromAIEdit(int aiEdit) => aiEdit != 0 && aiEdit == AIEdit;
 
         /// <summary>
-        /// Starts a glow for a node touched now. Nodes touched by the same action are staggered.
+        /// Starts a glow for a node touched now. Nodes touched in the same AI edit are staggered;
+        /// a node touched outside one starts without delay.
         /// </summary>
+        /// <param name="aiEdit">The workspace's <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.CurrentAIEdit"/>.</param>
         /// <param name="strength">Peak opacity of the halo, from 0 to 1.</param>
         /// <param name="breathes">True for the breathing timeline (placed or modified nodes).</param>
-        internal static AIHaloGlow Start(double strength, bool breathes)
+        internal static AIHaloGlow Start(int aiEdit, double strength, bool breathes)
         {
-            var now = Now();
-            var delay = NextStaggerDelay(now, out var batch);
-            return new AIHaloGlow(batch, now, delay, strength, breathes);
+            return new AIHaloGlow(aiEdit, Now(), NextStaggerDelay(aiEdit), strength, breathes);
         }
 
         /// <summary>
-        /// This glow at a new strength, for example a moved node the same action then modified. Keeps
+        /// This glow at a new strength, for example a moved node the same AI edit then modified. Keeps
         /// its start time and its place in the stagger.
         /// </summary>
         internal AIHaloGlow WithStrength(double strength, bool breathes)
         {
-            return new AIHaloGlow(batch, StartedAt, Delay, strength, breathes);
+            return new AIHaloGlow(AIEdit, StartedAt, Delay, strength, breathes);
         }
 
         /// <summary>
@@ -275,59 +268,28 @@ namespace Dynamo.ViewModels
         #region Stagger
 
         private static readonly object staggerLock = new object();
-        private static TimeSpan? batchStartedAt;
-        private static int batchSize;
-        private static int batchId;
+        private static int staggerAIEdit;
+        private static int staggerCount;
 
         /// <summary>
-        /// The delay for the next node of the current action. The first touch opens a batch; it closes
-        /// when the UI thread has finished the action's work, or after <see cref="MaxStagger"/> at the
-        /// latest.
+        /// The delay for the next node touched in this AI edit. Only the latest edit is tracked;
+        /// AI edits run one after another.
         /// </summary>
-        private static TimeSpan NextStaggerDelay(TimeSpan now, out int batch)
+        private static TimeSpan NextStaggerDelay(int aiEdit)
         {
+            if (aiEdit == 0) return TimeSpan.Zero;
+
             lock (staggerLock)
             {
-                if (batchStartedAt == null || now - batchStartedAt.Value > MaxStagger)
+                if (aiEdit != staggerAIEdit)
                 {
-                    batchStartedAt = now;
-                    batchSize = 0;
-                    CloseBatchWhenIdle(++batchId);
+                    staggerAIEdit = aiEdit;
+                    staggerCount = 0;
                 }
 
-                var delay = TimeSpan.FromTicks(Math.Min(StaggerStep.Ticks * batchSize, MaxStagger.Ticks));
-                batchSize++;
-                batch = batchId;
+                var delay = TimeSpan.FromTicks(Math.Min(StaggerStep.Ticks * staggerCount, MaxStagger.Ticks));
+                staggerCount++;
                 return delay;
-            }
-        }
-
-        private static void CloseBatchWhenIdle(int id)
-        {
-            // Background runs after the action's own work (Normal priority and above) is done
-            var dispatcher = Application.Current?.Dispatcher ?? Dispatcher.FromThread(Thread.CurrentThread);
-            dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => EndBatch(id)));
-        }
-
-        private static void EndBatch(int id)
-        {
-            lock (staggerLock)
-            {
-                if (id == batchId)
-                {
-                    batchStartedAt = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Ends the current batch, so the next touched node starts without delay. For tests.
-        /// </summary>
-        internal static void EndBatch()
-        {
-            lock (staggerLock)
-            {
-                batchStartedAt = null;
             }
         }
 

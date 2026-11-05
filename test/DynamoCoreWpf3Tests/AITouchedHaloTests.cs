@@ -25,17 +25,10 @@ namespace DynamoCoreWpfTests
     {
         private const string TurnA = "turn-a";
 
-        [SetUp]
-        public void StartEachTestWithANewStaggerBatch()
-        {
-            AIHaloGlow.EndBatch();
-        }
-
         [TearDown]
         public void RestoreTheGlowClock()
         {
             AIHaloGlow.Now = AIHaloGlow.DefaultClock;
-            AIHaloGlow.EndBatch();
         }
 
         private WorkspaceModel Workspace => ViewModel.Model.CurrentWorkspace;
@@ -273,18 +266,17 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void NodeTouchedAgainInALaterActionRestartsItsGlow()
+        public void NodeTouchedAgainInALaterAIEditRestartsItsGlow()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
             var node = AddNumberNode();
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
             var first = ViewModelOf(node).AIHaloGlow;
 
-            // Touched again late in the glow, by a later action
+            // Touched again late in the glow, by a later AI edit
             now += TimeSpan.FromSeconds(14);
-            AIHaloGlow.EndBatch();
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
 
             var second = ViewModelOf(node).AIHaloGlow;
             Assert.AreNotSame(first, second);
@@ -295,52 +287,58 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void NodeChangedAgainInTheSameActionKeepsItsGlow()
+        public void NodeChangedAgainInTheSameAIEditKeepsItsGlow()
         {
             var node = AddNumberNode();
-            AIHaloGlow.EndBatch();
 
-            // One action: placed, then given a value
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            var glow = ViewModelOf(node).AIHaloGlow;
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            AsAIEdit(() =>
+            {
+                // Placed, then given a value
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+                var glow = ViewModelOf(node).AIHaloGlow;
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
 
-            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The running glow is not restarted.");
+                Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The running glow is not restarted.");
+            });
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodesChangedSeveralTimesInOneActionTakeOneStaggerSlotEach()
+        public void NodesChangedSeveralTimesInOneAIEditTakeOneStaggerSlotEach()
         {
             var nodes = Enumerable.Range(0, 5).Select(_ => AddNumberNode()).ToList();
-            AIHaloGlow.EndBatch();
 
-            // One action: every node placed, then every node given a value
-            foreach (var node in nodes)
+            AsAIEdit(() =>
             {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
-            foreach (var node in nodes)
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
-            }
+                // Every node placed, then every node given a value
+                foreach (var node in nodes)
+                {
+                    Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+                }
+                foreach (var node in nodes)
+                {
+                    Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+                }
+            });
 
-            var delays = nodes.Select(n => ViewModelOf(n).AIHaloGlow.Delay.TotalMilliseconds).ToList();
-            CollectionAssert.AreEqual(new[] { 0.0, 100, 200, 300, 400 }, delays);
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200, 300, 400 }, DelaysOf(nodes));
         }
 
         [Test]
         [Category("UnitTests")]
-        public void NodeMovedThenModifiedInOneActionGetsTheFullGlowInItsSlot()
+        public void NodeMovedThenModifiedInOneAIEditGetsTheFullGlowInItsSlot()
         {
             var first = AddNumberNode();
             var node = AddNumberNode();
-            AIHaloGlow.EndBatch();
+            AIHaloGlow moved = null;
 
-            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
-            var moved = ViewModelOf(node).AIHaloGlow;
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            AsAIEdit(() =>
+            {
+                Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+                moved = ViewModelOf(node).AIHaloGlow;
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            });
 
             var glow = ViewModelOf(node).AIHaloGlow;
             Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
@@ -352,25 +350,108 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void NodesTouchedByTheSameActionAreStaggered()
+        public void NodesTouchedInTheSameAIEditAreStaggered()
         {
             var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
-            AIHaloGlow.EndBatch();
 
-            // One action: no UI work in between
+            PlaceInOneAIEdit(nodes);
+
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes), "100 ms apart, in the order touched.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIEditsBackToBackAreStaggeredSeparately()
+        {
+            var firstEdit = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            var secondEdit = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
+
+            // No UI work and no time in between
+            PlaceInOneAIEdit(firstEdit);
+            PlaceInOneAIEdit(secondEdit);
+
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(firstEdit));
+            CollectionAssert.AreEqual(new[] { 0.0, 100 }, DelaysOf(secondEdit), "A new AI edit starts a new stagger.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PauseInsideOneAIEditKeepsOneStagger()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+
+            AsAIEdit(() =>
+            {
+                Workspace.RecordAINodeChange(nodes[0].GUID, AIChangeKind.Placed, TurnA);
+
+                // For example a dialog: the UI thread runs other work and time passes
+                DispatcherUtil.DoEvents();
+                now += TimeSpan.FromSeconds(5);
+
+                Workspace.RecordAINodeChange(nodes[1].GUID, AIChangeKind.Placed, TurnA);
+                Workspace.RecordAINodeChange(nodes[2].GUID, AIChangeKind.Placed, TurnA);
+            });
+
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NestedAIEditsAreOneStagger()
+        {
+            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+
+            using (Workspace.BeginAIEdit())
+            {
+                Workspace.RecordAINodeChange(nodes[0].GUID, AIChangeKind.Placed, TurnA);
+                using (Workspace.BeginAIEdit())
+                {
+                    Workspace.RecordAINodeChange(nodes[1].GUID, AIChangeKind.Placed, TurnA);
+                }
+                Workspace.RecordAINodeChange(nodes[2].GUID, AIChangeKind.Placed, TurnA);
+            }
+
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200 }, DelaysOf(nodes));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedOutsideAnAIEditStartsWithoutDelay()
+        {
+            var nodes = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
+
             foreach (var node in nodes)
             {
                 Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             }
 
-            var delays = nodes.Select(n => ViewModelOf(n).AIHaloGlow.Delay.TotalMilliseconds).ToList();
-            CollectionAssert.AreEqual(new[] { 0.0, 100.0, 200.0 }, delays, "100 ms apart, in the order touched.");
+            CollectionAssert.AreEqual(new[] { 0.0, 0.0 }, DelaysOf(nodes));
+        }
 
-            // A later action starts a new batch
-            DispatcherUtil.DoEvents();
-            var later = AddNumberNode();
-            Workspace.RecordAINodeChange(later.GUID, AIChangeKind.Placed, TurnA);
-            Assert.AreEqual(TimeSpan.Zero, ViewModelOf(later).AIHaloGlow.Delay);
+        private void AsAIEdit(Action changes)
+        {
+            using (Workspace.BeginAIEdit())
+            {
+                changes();
+            }
+        }
+
+        private void PlaceInOneAIEdit(IEnumerable<NodeModel> nodes)
+        {
+            AsAIEdit(() =>
+            {
+                foreach (var node in nodes)
+                {
+                    Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+                }
+            });
+        }
+
+        private List<double> DelaysOf(IEnumerable<NodeModel> nodes)
+        {
+            return nodes.Select(n => ViewModelOf(n).AIHaloGlow.Delay.TotalMilliseconds).ToList();
         }
 
         #endregion
@@ -591,24 +672,28 @@ namespace DynamoCoreWpfTests
         private const double Tolerance = 1e-6;
         private static readonly TimeSpan Start = TimeSpan.FromMinutes(5);
 
+        private static int lastTestAIEdit;
+
         [SetUp]
         public void FixTheClock()
         {
             AIHaloGlow.Now = () => Start;
-            AIHaloGlow.EndBatch();
         }
 
         [TearDown]
         public void RestoreTheClock()
         {
             AIHaloGlow.Now = AIHaloGlow.DefaultClock;
-            AIHaloGlow.EndBatch();
         }
+
+        /// <summary>
+        /// A new AI edit number. Negative, so it never matches one a workspace hands out.
+        /// </summary>
+        private static int NewAIEdit() => --lastTestAIEdit;
 
         private static AIHaloGlow NewGlow(double strength = 1.0, bool breathes = true)
         {
-            AIHaloGlow.EndBatch();
-            return AIHaloGlow.Start(strength, breathes);
+            return AIHaloGlow.Start(NewAIEdit(), strength, breathes);
         }
 
         /// <summary>The animation's value at a time, worked out from its key frames.</summary>
@@ -697,28 +782,39 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void GlowBelongsToTheActionThatStartedIt()
+        public void GlowBelongsToTheAIEditThatStartedIt()
         {
-            AIHaloGlow.EndBatch();
-            var glow = AIHaloGlow.Start(NodeViewModel.AIHaloMovedOpacity, false);
-            Assert.IsTrue(glow.IsInCurrentBatch);
+            var edit = NewAIEdit();
+            var glow = AIHaloGlow.Start(edit, NodeViewModel.AIHaloMovedOpacity, false);
+            Assert.IsTrue(glow.IsFromAIEdit(edit));
 
             var upgraded = glow.WithStrength(1.0, true);
-            Assert.IsTrue(upgraded.IsInCurrentBatch);
+            Assert.IsTrue(upgraded.IsFromAIEdit(edit));
             Assert.AreEqual(glow.StartedAt, upgraded.StartedAt);
             Assert.AreEqual(glow.Delay, upgraded.Delay);
 
-            AIHaloGlow.EndBatch();
-            Assert.IsFalse(glow.IsInCurrentBatch, "A later action starts a new glow.");
+            Assert.IsFalse(glow.IsFromAIEdit(NewAIEdit()), "A later AI edit starts a new glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GlowOutsideAnAIEditStartsAloneWithoutDelay()
+        {
+            var first = AIHaloGlow.Start(0, 1.0, true);
+            var second = AIHaloGlow.Start(0, 1.0, true);
+
+            Assert.AreEqual(TimeSpan.Zero, first.Delay);
+            Assert.AreEqual(TimeSpan.Zero, second.Delay);
+            Assert.IsFalse(first.IsFromAIEdit(0), "Every change outside an AI edit starts its own glow.");
         }
 
         [Test]
         [Category("UnitTests")]
         public void StaggerIsOneHundredMillisecondsPerNodeUpToOneSecond()
         {
-            AIHaloGlow.EndBatch();
+            var edit = NewAIEdit();
             var delays = Enumerable.Range(0, 13)
-                .Select(_ => AIHaloGlow.Start(1.0, true).Delay.TotalMilliseconds)
+                .Select(_ => AIHaloGlow.Start(edit, 1.0, true).Delay.TotalMilliseconds)
                 .ToList();
 
             CollectionAssert.AreEqual(
@@ -730,10 +826,10 @@ namespace DynamoCoreWpfTests
         [Category("UnitTests")]
         public void DelayedGlowWaitsThenRunsTheSameTimeline()
         {
-            AIHaloGlow.EndBatch();
-            AIHaloGlow.Start(1.0, true);
-            AIHaloGlow.Start(1.0, true);
-            var third = AIHaloGlow.Start(1.0, true);
+            var edit = NewAIEdit();
+            AIHaloGlow.Start(edit, 1.0, true);
+            AIHaloGlow.Start(edit, 1.0, true);
+            var third = AIHaloGlow.Start(edit, 1.0, true);
             var animation = third.CreateAnimation();
 
             Assert.AreEqual(0.2, third.Delay.TotalSeconds, Tolerance);
