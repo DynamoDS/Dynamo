@@ -82,13 +82,13 @@
             <returns name="color">두 색상을 추가한 색상 결과</returns>
         </member>
         <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
-            <summary>입력 색상에 숫자 승수를 곱하여 더 어두운 색상을 만들 수 있습니다. 입력 색상의 알파 값은 255보다 작아야 합니다.</summary>
+            <summary>Multiply an input color with a number multiplier to produce a brighter color, where the input color must have an alpha less than 255.</summary>
             <param name="color">곱할 색상</param>
             <param name="multiplier">승수 값</param>
             <returns name="color">곱한 색상 결과</returns>
         </member>
         <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
-            <summary>입력 색상을 숫자 제수로 나누어 더 밝은 색상을 만들고 색상 색조를 제거할 수 있습니다.</summary>
+            <summary>Divide an input color with a number divider to produce a darker color and remove color tint</summary>
             <param name="color">분할할 색상</param>
             <param name="dividend">분할 값</param>
             <returns name="color">분할한 색상 결과</returns>
