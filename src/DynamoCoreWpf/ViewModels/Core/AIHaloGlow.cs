@@ -100,7 +100,7 @@ namespace Dynamo.ViewModels
         /// The time used to place a glow on its timeline. Replaced by tests to control time; set it
         /// back to <see cref="DefaultClock"/> afterwards.
         /// </summary>
-        internal static Func<TimeSpan> Now = DefaultClock;
+        internal static Func<TimeSpan> Now { get; set; } = DefaultClock;
 
         /// <summary>
         /// Time since Dynamo started, from a monotonic clock.

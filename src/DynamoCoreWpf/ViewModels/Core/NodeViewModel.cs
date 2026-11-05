@@ -728,7 +728,7 @@ namespace Dynamo.ViewModels
             // does not keep lighting up. A moved node that is then modified glows at full strength.
             if (current != null && !current.IsFinished)
             {
-                if (current.Strength != strength || current.Breathes != breathes)
+                if (current.Breathes != breathes)
                 {
                     AIHaloGlow = current.WithStrength(strength, breathes);
                 }
