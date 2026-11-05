@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Dynamo.Exceptions;
 using Dynamo.Logging;
 using Dynamo.Wpf.ViewModels.FileTrust;
 
@@ -29,6 +31,12 @@ namespace Dynamo.Wpf.Views.FileTrust
         /// </summary>
         internal bool TrustLocation => TrustLocationCheckBox.IsChecked == true;
 
+        /// <summary>
+        /// Hash of the file text the preview was built from, or null when the file could not be read.
+        /// Passed to the open so Dynamo loads only the content the user approved.
+        /// </summary>
+        internal string ContentHash { get; private set; }
+
         internal FileTrustPreviewWindow(string filePath, ILogger logger)
         {
             InitializeComponent();
@@ -39,6 +47,9 @@ namespace Dynamo.Wpf.Views.FileTrust
             FilePathTextBlock.Text = filePath;
             FilePathTextBlock.ToolTip = filePath;
 
+            // Yes stays disabled until the file has been read, so an approval is always tied to content.
+            AcceptButton.IsEnabled = false;
+
             Loaded += OnLoaded;
         }
 
@@ -46,18 +57,25 @@ namespace Dynamo.Wpf.Views.FileTrust
         {
             Loaded -= OnLoaded;
             FitToWorkArea();
-            AcceptButton.Focus();
+            // The safe choice has focus, so a stray Enter or Space never accepts an untrusted file.
+            DeclineButton.Focus();
 
             ImageSource previewImage = null;
             // Catch everything: this is an async void handler, so an escaping exception would take down
             // Dynamo, and the preview is optional. The failure is logged and the prompt still works.
             try
             {
+                // Read once, off the UI thread, and hash exactly the text the preview is built from.
+                var fileText = await Task.Run(() => File.ReadAllText(filePath));
+                ContentHash = FileChangedSincePreviewException.ComputeContentHash(fileText);
+                if (!IsLoaded) return;
+                AcceptButton.IsEnabled = true;
+
                 // Parse and draw off the UI thread so the prompt stays responsive for very large graphs.
                 var pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
                 previewImage = await Task.Run(() =>
                 {
-                    var preview = GraphPreview.FromFile(filePath);
+                    var preview = GraphPreview.FromText(fileText);
                     return GraphPreviewRenderer.Render(preview, pixelsPerDip);
                 });
             }
@@ -68,6 +86,7 @@ namespace Dynamo.Wpf.Views.FileTrust
             }
 
             if (!IsLoaded) return;
+            AcceptButton.IsEnabled = true;
 
             if (previewImage == null)
             {

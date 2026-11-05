@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
+using Dynamo.Exceptions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.ViewModels;
@@ -99,7 +100,7 @@ namespace DynamoCoreWpfTests
             ViewModel.TrustedLocationPrompt = p =>
             {
                 promptedPath = p;
-                return (DynamoViewModel.TrustedLocationPromptResult.Declined, false);
+                return (DynamoViewModel.TrustedLocationPromptResult.Declined, false, null);
             };
 
             DynamoModel.IsTestMode = false;
@@ -122,7 +123,7 @@ namespace DynamoCoreWpfTests
         public void WhenUntrustedFileAcceptedInPreviewPromptThenGraphLoadsWithoutRunBlock()
         {
             var path = CopyGraphToUntrustedFolder();
-            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, false);
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, false, null);
 
             DynamoModel.IsTestMode = false;
             try
@@ -146,7 +147,7 @@ namespace DynamoCoreWpfTests
         public void WhenUntrustedFileAcceptedWithTrustLocationThenLocationIsTrusted()
         {
             var path = CopyGraphToUntrustedFolder();
-            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, true);
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, true, null);
 
             DynamoModel.IsTestMode = false;
             try
@@ -163,10 +164,90 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WhenFileChangesAfterPreviewThenPromptIsShownAgainForNewContent()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            var currentHash = FileChangedSincePreviewException.ComputeContentHash(File.ReadAllText(path));
+            var prompts = 0;
+            ViewModel.TrustedLocationPrompt = _ =>
+            {
+                prompts++;
+                // The first answer approves content that no longer matches the file on disk.
+                var hash = prompts == 1 ? FileChangedSincePreviewException.ComputeContentHash("older content") : currentHash;
+                return (DynamoViewModel.TrustedLocationPromptResult.Accepted, false, hash);
+            };
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.AreEqual(2, prompts);
+            Assert.AreEqual(path, ViewModel.HomeSpace.FileName);
+        }
+
+        [Test]
+        public void WhenFileKeepsChangingAfterPreviewThenNothingIsLoaded()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            var prompts = 0;
+            ViewModel.TrustedLocationPrompt = _ =>
+            {
+                prompts++;
+                return (DynamoViewModel.TrustedLocationPromptResult.Accepted, true, FileChangedSincePreviewException.ComputeContentHash("older content"));
+            };
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.AreEqual(2, prompts);
+            Assert.AreNotEqual(path, ViewModel.HomeSpace.FileName);
+            Assert.IsEmpty(ViewModel.HomeSpace.Nodes);
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+        }
+
+        [Test]
+        public void WhenSaveIsCancelledAfterChoosingToTrustLocationThenLocationIsNotTrusted()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, true, null);
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+            // Leaving Success false is the same as the user cancelling the save prompt.
+            WorkspaceSaveEventHandler cancelSave = (o, e) => { };
+            ViewModel.RequestUserSaveWorkflow += cancelSave;
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+                ViewModel.RequestUserSaveWorkflow -= cancelSave;
+            }
+
+            Assert.AreNotEqual(path, ViewModel.HomeSpace.FileName);
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+        }
+
+        [Test]
         public void WhenUntrustedFileDeclinedFromOpenRecentThenUserIsNotAskedToSave()
         {
             var path = CopyGraphToUntrustedFolder();
-            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Declined, false);
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Declined, false, null);
             ViewModel.HomeSpace.HasUnsavedChanges = true;
             var saveRequests = 0;
             WorkspaceSaveEventHandler handler = (o, e) => saveRequests++;

@@ -3255,6 +3255,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file changed while it was being opened, so it wasn&apos;t opened. Open it again to review the latest version..
+        /// </summary>
+        public static string FileTrustPreviewFileChanged {
+            get {
+                return ResourceManager.GetString("FileTrustPreviewFileChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No, don&apos;t open.
         /// </summary>
         public static string FileTrustPreviewDecline {

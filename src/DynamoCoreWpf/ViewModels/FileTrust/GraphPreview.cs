@@ -60,14 +60,14 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
         internal bool IsEmpty => Nodes.Count == 0 && Groups.Count == 0 && Notes.Count == 0;
 
         /// <summary>
-        /// Reads a .dyn file from disk and builds a preview of its layout.
+        /// Builds a preview of a .dyn graph's layout from the file's text.
         /// </summary>
-        /// <param name="filePath">Path to the .dyn file.</param>
-        /// <returns>The preview, or null when the file is not a JSON graph.</returns>
-        internal static GraphPreview FromFile(string filePath)
+        /// <param name="fileText">The .dyn file content, as read from disk.</param>
+        /// <returns>The preview, or null when the text is not a JSON graph.</returns>
+        internal static GraphPreview FromText(string fileText)
         {
-            using (var streamReader = new StreamReader(filePath))
-            using (var jsonReader = new JsonTextReader(streamReader) { DateParseHandling = DateParseHandling.None })
+            using (var stringReader = new StringReader(fileText ?? string.Empty))
+            using (var jsonReader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None })
             {
                 JObject root;
                 try

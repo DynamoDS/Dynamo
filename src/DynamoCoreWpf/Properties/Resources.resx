@@ -3489,6 +3489,9 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
     <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
   </data>
+  <data name="FileTrustPreviewFileChanged" xml:space="preserve">
+    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+  </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
     <value>No, don't open</value>
   </data>

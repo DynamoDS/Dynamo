@@ -73,6 +73,7 @@ static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> st
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
 static Dynamo.Wpf.Properties.Resources.FileTrustPreviewCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.FileTrustPreviewDecline.get -> string
+static Dynamo.Wpf.Properties.Resources.FileTrustPreviewFileChanged.get -> string
 static Dynamo.Wpf.Properties.Resources.FileTrustPreviewLoading.get -> string
 static Dynamo.Wpf.Properties.Resources.FileTrustPreviewUnavailable.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
