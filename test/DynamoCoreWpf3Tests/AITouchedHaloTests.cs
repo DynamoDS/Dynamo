@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
@@ -16,12 +18,25 @@ namespace DynamoCoreWpfTests
 {
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
-    /// AI Assistant placed, modified or moved, and the AI Assistant badge (DYN-11000) drawn on
-    /// nodes it placed or modified.
+    /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), and the
+    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified.
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
     {
         private const string TurnA = "turn-a";
+
+        [SetUp]
+        public void StartEachTestWithANewStaggerBatch()
+        {
+            AIHaloGlow.EndBatch();
+        }
+
+        [TearDown]
+        public void RestoreTheGlowClock()
+        {
+            AIHaloGlow.Now = AIHaloGlow.DefaultClock;
+            AIHaloGlow.EndBatch();
+        }
 
         private WorkspaceModel Workspace => ViewModel.Model.CurrentWorkspace;
 
@@ -65,7 +80,9 @@ namespace DynamoCoreWpfTests
             var halo = ViewOf(node).AIHalo;
             Assert.IsNotNull(halo);
             Assert.AreEqual(Visibility.Visible, halo.Visibility);
-            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, halo.Opacity);
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
         }
 
         [Test]
@@ -79,7 +96,9 @@ namespace DynamoCoreWpfTests
             var halo = ViewOf(node).AIHalo;
             Assert.IsNotNull(halo);
             Assert.AreEqual(Visibility.Visible, halo.Visibility);
-            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, halo.Opacity);
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
         }
 
         [Test]
@@ -94,7 +113,9 @@ namespace DynamoCoreWpfTests
             var halo = ViewOf(node).AIHalo;
             Assert.IsNotNull(halo);
             Assert.AreEqual(Visibility.Visible, halo.Visibility);
-            Assert.AreEqual(NodeViewModel.AIHaloMovedOpacity, halo.Opacity);
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(NodeViewModel.AIHaloMovedOpacity, glow.Strength);
+            Assert.IsFalse(glow.Breathes, "Moved nodes fade in, hold and fade out, without breathing.");
         }
 
         [Test]
@@ -106,7 +127,10 @@ namespace DynamoCoreWpfTests
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
 
-            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewOf(node).AIHalo.Opacity);
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
         }
 
         [Test]
@@ -120,7 +144,9 @@ namespace DynamoCoreWpfTests
             Workspace.ClearAIChanges();
 
             Assert.AreEqual(0, ViewModelOf(node).AIHaloOpacity);
+            Assert.IsNull(ViewModelOf(node).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
+            Assert.IsFalse(ViewOf(node).AIHalo.HasAnimatedProperties, "The glow animation is stopped.");
         }
 
         [Test]
@@ -180,6 +206,117 @@ namespace DynamoCoreWpfTests
             Assert.AreSame(headerFill, NodePart<Border>(nodeView, "nameBackground").Background);
             Assert.AreEqual(1.0, nodeView.grid.Opacity);
         }
+
+        #region Lifetime and motion (DYN-11004)
+
+        [Test]
+        [Category("UnitTests")]
+        public void OnlyTheHaloOpacityIsAnimated()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            var halo = (Grid)ViewOf(node).AIHalo;
+            var glow = halo.Children.OfType<Border>().Single();
+
+            Assert.IsTrue(halo.HasAnimatedProperties, "The halo's opacity is animated.");
+            Assert.IsFalse(glow.HasAnimatedProperties, "The blurred glow itself never changes.");
+            Assert.IsFalse(glow.Effect.HasAnimatedProperties, "No blur changes.");
+            Assert.AreEqual(new Thickness(-8), halo.Margin, "No size changes.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloIsGoneAfterTheFadeOutButTheBadgeStays()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var nodeView = ViewOf(node);
+            Assert.AreEqual(Visibility.Visible, nodeView.AIHalo.Visibility);
+
+            // Just before the end of the fade-out the halo is still on
+            now += AIHaloGlow.FadeOutEnd - TimeSpan.FromMilliseconds(100);
+            nodeView.UpdateAIHalo();
+            Assert.AreEqual(Visibility.Visible, nodeView.AIHalo.Visibility);
+
+            // After it, only the badge remains, even if the view checks again (for example when rebuilt)
+            now += TimeSpan.FromMilliseconds(100);
+            nodeView.UpdateAIHalo();
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsFinished);
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility);
+            Assert.IsFalse(nodeView.AIHalo.HasAnimatedProperties);
+            Assert.AreEqual(Visibility.Visible, nodeView.AIBadge.Visibility, "The badge stays until the highlight is cleared.");
+            Assert.IsTrue(node.IsRecentlyModifiedByAI, "The change record is kept.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeBorderComesBackAfterTheFadeOut()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            var nodeView = ViewOf(node);
+            var borderBrushBefore = nodeView.nodeBorder.BorderBrush;
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Brushes.Transparent, nodeView.nodeBorder.BorderBrush);
+
+            now += AIHaloGlow.FadeOutEnd;
+            nodeView.UpdateAIHalo();
+
+            Assert.AreSame(borderBrushBefore, nodeView.nodeBorder.BorderBrush);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedAgainRestartsItsGlow()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var first = ViewModelOf(node).AIHaloGlow;
+
+            // Touched again late in the glow
+            now += TimeSpan.FromSeconds(14);
+            AIHaloGlow.EndBatch();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            var second = ViewModelOf(node).AIHaloGlow;
+            Assert.AreNotSame(first, second);
+            Assert.AreEqual(now, second.StartedAt, "The timer starts again from the new touch.");
+            Assert.IsFalse(second.IsFinished);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodesTouchedByTheSameActionAreStaggered()
+        {
+            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            AIHaloGlow.EndBatch();
+
+            // One action: no UI work in between
+            foreach (var node in nodes)
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+
+            var delays = nodes.Select(n => ViewModelOf(n).AIHaloGlow.Delay.TotalMilliseconds).ToList();
+            CollectionAssert.AreEqual(new[] { 0.0, 100.0, 200.0 }, delays, "100 ms apart, in the order touched.");
+
+            // A later action starts a new batch
+            DispatcherUtil.DoEvents();
+            var later = AddNumberNode();
+            Workspace.RecordAINodeChange(later.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(TimeSpan.Zero, ViewModelOf(later).AIHaloGlow.Delay);
+        }
+
+        #endregion
 
         private static T NodePart<T>(NodeView nodeView, string name) where T : FrameworkElement
         {
@@ -385,6 +522,177 @@ namespace DynamoCoreWpfTests
 
             var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+        }
+    }
+
+    /// <summary>
+    /// The halo glow's timeline (DYN-11004, Figma node 20:338), checked without a Dynamo window.
+    /// </summary>
+    [TestFixture]
+    public class AIHaloGlowTimelineTests
+    {
+        private const double Tolerance = 1e-6;
+        private static readonly TimeSpan Start = TimeSpan.FromMinutes(5);
+
+        [SetUp]
+        public void FixTheClock()
+        {
+            AIHaloGlow.Now = () => Start;
+            AIHaloGlow.EndBatch();
+        }
+
+        [TearDown]
+        public void RestoreTheClock()
+        {
+            AIHaloGlow.Now = AIHaloGlow.DefaultClock;
+            AIHaloGlow.EndBatch();
+        }
+
+        private static AIHaloGlow NewGlow(double strength = 1.0, bool breathes = true)
+        {
+            AIHaloGlow.EndBatch();
+            return AIHaloGlow.Start(strength, breathes);
+        }
+
+        /// <summary>The animation's value at a time, worked out from its key frames.</summary>
+        private static double ValueAt(DoubleAnimationUsingKeyFrames animation, double seconds)
+        {
+            var time = TimeSpan.FromSeconds(seconds);
+            var previousValue = 0.0;
+            var previousTime = TimeSpan.Zero;
+            foreach (DoubleKeyFrame frame in animation.KeyFrames)
+            {
+                var frameTime = frame.KeyTime.TimeSpan;
+                if (time <= frameTime)
+                {
+                    if (frameTime == previousTime) return frame.Value;
+                    var progress = (time - previousTime).TotalMilliseconds / (frameTime - previousTime).TotalMilliseconds;
+                    return frame.InterpolateValue(previousValue, progress);
+                }
+                previousValue = frame.Value;
+                previousTime = frameTime;
+            }
+            return previousValue;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BreathingGlowFollowsTheTimeline()
+        {
+            var animation = NewGlow().CreateAnimation();
+
+            Assert.AreEqual(14.9, animation.Duration.TimeSpan.TotalSeconds, Tolerance);
+            Assert.AreEqual(0.00, ValueAt(animation, 0.0), Tolerance, "Starts invisible");
+            Assert.AreEqual(1.00, ValueAt(animation, 0.6), Tolerance, "Fade-in complete");
+            Assert.AreEqual(0.65, ValueAt(animation, 1.6), Tolerance, "First breath trough");
+            Assert.AreEqual(1.00, ValueAt(animation, 2.6), Tolerance, "First breath peak");
+            Assert.AreEqual(0.65, ValueAt(animation, 3.6), Tolerance, "Second breath trough");
+            Assert.AreEqual(1.00, ValueAt(animation, 4.6), Tolerance, "Second breath peak");
+            Assert.AreEqual(0.70, ValueAt(animation, 5.4), Tolerance, "Settled");
+            Assert.AreEqual(0.70, ValueAt(animation, 9.0), Tolerance, "Steady hold");
+            Assert.AreEqual(0.70, ValueAt(animation, 13.4), Tolerance, "End of hold");
+            Assert.AreEqual(0.00, ValueAt(animation, 14.9), Tolerance, "Faded out");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BreathsNeverDropBelowSixtyFivePercent()
+        {
+            var animation = NewGlow().CreateAnimation();
+
+            for (var ms = 600; ms <= 4600; ms += 10)
+            {
+                var value = ValueAt(animation, ms / 1000.0);
+                Assert.GreaterOrEqual(value, 0.65 - Tolerance, $"at {ms} ms");
+                Assert.LessOrEqual(value, 1.0 + Tolerance, $"at {ms} ms");
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FadeInDeceleratesAndBreathsEaseInAndOut()
+        {
+            var animation = NewGlow().CreateAnimation();
+
+            // Ease-out cubic-bezier(0, 0, 0.2, 1): well past half way at half the time
+            Assert.Greater(ValueAt(animation, 0.3), 0.75);
+
+            // Ease-in-out cubic-bezier(0.4, 0, 0.6, 1): slow at both ends of a half breath, half way in the middle
+            Assert.AreEqual(0.825, ValueAt(animation, 1.1), 0.01);
+            Assert.Greater(ValueAt(animation, 0.7), 0.98);
+            Assert.Less(ValueAt(animation, 1.5), 0.67);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeGlowFadesInHoldsAndFadesOutWithoutBreathing()
+        {
+            var animation = NewGlow(NodeViewModel.AIHaloMovedOpacity, breathes: false).CreateAnimation();
+
+            Assert.AreEqual(14.9, animation.Duration.TimeSpan.TotalSeconds, Tolerance);
+            Assert.AreEqual(0.0, ValueAt(animation, 0.0), Tolerance);
+            for (var ms = 600; ms <= 13400; ms += 100)
+            {
+                Assert.AreEqual(0.4, ValueAt(animation, ms / 1000.0), Tolerance, $"steady 40% at {ms} ms");
+            }
+            Assert.AreEqual(0.0, ValueAt(animation, 14.9), Tolerance);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StaggerIsOneHundredMillisecondsPerNodeUpToOneSecond()
+        {
+            AIHaloGlow.EndBatch();
+            var delays = Enumerable.Range(0, 13)
+                .Select(_ => AIHaloGlow.Start(1.0, true).Delay.TotalMilliseconds)
+                .ToList();
+
+            CollectionAssert.AreEqual(
+                new[] { 0.0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1000, 1000 },
+                delays);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DelayedGlowWaitsThenRunsTheSameTimeline()
+        {
+            AIHaloGlow.EndBatch();
+            AIHaloGlow.Start(1.0, true);
+            AIHaloGlow.Start(1.0, true);
+            var third = AIHaloGlow.Start(1.0, true);
+            var animation = third.CreateAnimation();
+
+            Assert.AreEqual(0.2, third.Delay.TotalSeconds, Tolerance);
+            Assert.AreEqual(15.1, animation.Duration.TimeSpan.TotalSeconds, Tolerance);
+            Assert.AreEqual(0.0, ValueAt(animation, 0.1), Tolerance, "Waits its turn");
+            Assert.AreEqual(0.0, ValueAt(animation, 0.2), Tolerance);
+            Assert.AreEqual(1.0, ValueAt(animation, 0.8), Tolerance, "Fade-in complete 0.6 s after its start");
+            Assert.AreEqual(0.0, ValueAt(animation, 15.1), Tolerance);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RestartedGlowStartsFromTheCurrentOpacity()
+        {
+            var animation = NewGlow().CreateAnimation(startOpacity: 0.7);
+
+            Assert.AreEqual(0.7, ValueAt(animation, 0.0), Tolerance, "No dip to zero when a node is touched again");
+            Assert.AreEqual(1.0, ValueAt(animation, 0.6), Tolerance);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GlowIsFinishedAtTheEndOfTheFadeOut()
+        {
+            var now = Start;
+            AIHaloGlow.Now = () => now;
+            var glow = NewGlow();
+
+            now = Start + TimeSpan.FromSeconds(14.8);
+            Assert.IsFalse(glow.IsFinished);
+
+            now = Start + TimeSpan.FromSeconds(14.9);
+            Assert.IsTrue(glow.IsFinished);
         }
     }
 }

@@ -673,9 +673,10 @@ namespace Dynamo.ViewModels
         internal const double AIHaloMovedOpacity = 0.4;
 
         /// <summary>
-        /// How strongly the AI-touched halo behind this node is drawn, from 0 (no halo) to 1:
-        /// full strength when the AI Assistant placed or modified the node, 40% when it only moved
-        /// it, and 0 when the node has no AI change record (<see cref="NodeModel.AIChange"/>).
+        /// Peak strength of the AI-touched halo behind this node, from 0 (no halo) to 1: full
+        /// strength when the AI Assistant placed or modified the node, 40% when it only moved it, and
+        /// 0 when the node has no AI change record (<see cref="NodeModel.AIChange"/>). The halo
+        /// glows up to this strength and then fades out (<see cref="Dynamo.ViewModels.AIHaloGlow"/>).
         /// </summary>
         internal double AIHaloOpacity
         {
@@ -686,6 +687,35 @@ namespace Dynamo.ViewModels
 
                 return change.Kind == AIChangeKind.Moved ? AIHaloMovedOpacity : AIHaloFullOpacity;
             }
+        }
+
+        private AIHaloGlow aiHaloGlow;
+
+        /// <summary>
+        /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A new
+        /// glow starts each time the AI Assistant touches the node. Once it has faded out
+        /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the record is cleared.
+        /// </summary>
+        internal AIHaloGlow AIHaloGlow
+        {
+            get => aiHaloGlow;
+            private set
+            {
+                if (ReferenceEquals(aiHaloGlow, value)) return;
+                aiHaloGlow = value;
+                RaisePropertyChanged(nameof(AIHaloGlow));
+            }
+        }
+
+        /// <summary>
+        /// Starts a new glow when the AI Assistant touches the node.
+        /// </summary>
+        private void UpdateAIHaloGlow()
+        {
+            var change = NodeModel?.AIChange;
+            AIHaloGlow = change == null
+                ? null
+                : AIHaloGlow.Start(AIHaloOpacity, breathes: change.Kind != AIChangeKind.Moved);
         }
 
         /// <summary>
@@ -992,6 +1022,7 @@ namespace Dynamo.ViewModels
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
             UpdateBubbleContent();
+            UpdateAIHaloGlow();
         }
 
         private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1353,6 +1384,7 @@ namespace Dynamo.ViewModels
                     HandleColorOverlayChange();
                     break;
                 case nameof(NodeModel.AIChange):
+                    UpdateAIHaloGlow();
                     RaisePropertyChanged(nameof(AIHaloOpacity));
                     RaisePropertyChanged(nameof(ShowAIBadge));
                     break;
