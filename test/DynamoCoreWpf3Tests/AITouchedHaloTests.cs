@@ -263,10 +263,36 @@ namespace DynamoCoreWpfTests
 
             var clock = rebuilt.AIHaloClock;
             Assert.IsNotNull(clock);
-            WaitUntilPlayingFrom(clock, TimeSpan.FromSeconds(6));
+            PumpUntil(() => clock.CurrentTime >= TimeSpan.FromSeconds(6));
             Assert.GreaterOrEqual(clock.CurrentTime.Value, TimeSpan.FromSeconds(6), "Seeks to the glow's current time.");
             Assert.Less(clock.CurrentTime.Value, AIHaloGlow.HoldEnd);
             Assert.AreEqual(AIHaloGlow.HoldLevel, rebuilt.AIHalo.Opacity, 1e-6, "Shows the hold level straight away.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloHidesItselfWhenItsAnimationEnds()
+        {
+            // The glow's clock stays put, so only the animation finishing can hide the halo
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            var nodeView = ViewOf(node);
+            var borderBrushBefore = nodeView.nodeBorder.BorderBrush;
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var clock = ViewOf(node).AIHaloClock;
+            Assert.IsNotNull(clock);
+            PumpUntil(() => clock.CurrentTime != null);
+
+            clock.Controller.SkipToFill();
+            PumpUntil(() => nodeView.AIHaloClock == null);
+
+            Assert.IsFalse(ViewModelOf(node).AIHaloGlow.IsFinished, "Hidden by the animation, not by the view model.");
+            Assert.IsNull(nodeView.AIHaloClock);
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility);
+            Assert.IsFalse(nodeView.AIHalo.HasAnimatedProperties);
+            Assert.AreSame(borderBrushBefore, nodeView.nodeBorder.BorderBrush);
+            Assert.AreEqual(Visibility.Visible, nodeView.AIBadge.Visibility, "The badge stays until the highlight is cleared.");
         }
 
         [Test]
@@ -497,13 +523,14 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// A clock starts, and applies a seek, on WPF's next animation tick. Pumps the UI thread
-        /// until then, for at most 3 s (shorter than the seek, so time passing alone cannot pass).
+        /// WPF starts, seeks and completes animation clocks on its next animation tick. Pumps the UI
+        /// thread until <paramref name="done"/> is true, for at most 3 s (shorter than any wait the
+        /// tests check for, so time passing alone cannot make them pass).
         /// </summary>
-        private static void WaitUntilPlayingFrom(AnimationClock clock, TimeSpan time)
+        private static void PumpUntil(Func<bool> done)
         {
             var giveUpAt = System.DateTime.UtcNow + TimeSpan.FromSeconds(3);
-            while ((clock.CurrentTime == null || clock.CurrentTime < time) && System.DateTime.UtcNow < giveUpAt)
+            while (!done() && System.DateTime.UtcNow < giveUpAt)
             {
                 DispatcherUtil.DoEvents();
                 Thread.Sleep(15);
