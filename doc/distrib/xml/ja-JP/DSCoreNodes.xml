@@ -82,13 +82,13 @@
             <returns name="color">2 つの色の追加による色の結果</returns>
         </member>
         <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
-            <summary>入力された色を数値の乗数で乗算し、より暗い色を作成します。入力される色のアルファ成分の値は 255 未満でなければなりません。</summary>
+            <summary>Multiply an input color with a number multiplier to produce a brighter color, where the input color must have an alpha less than 255.</summary>
             <param name="color">乗算する色</param>
             <param name="multiplier">乗数の値</param>
             <returns name="color">乗算による色の結果</returns>
         </member>
         <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
-            <summary>入力された色を数値の除数で除算し、より明るい色を作成して、色の彩度を下げます</summary>
+            <summary>Divide an input color with a number divider to produce a darker color and remove color tint</summary>
             <param name="color">除算する色</param>
             <param name="dividend">除数の値</param>
             <returns name="color">除算による色の結果</returns>

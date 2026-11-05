@@ -82,13 +82,13 @@
             <returns name="color">相加兩種顏色後的顏色結果</returns>
         </member>
         <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
-            <summary>以乘以數倍數輸入顏色，從而產生較暗的顏色。輸入顏色必須具有小於 255 的 Alpha。</summary>
+            <summary>Multiply an input color with a number multiplier to produce a brighter color, where the input color must have an alpha less than 255.</summary>
             <param name="color">要相乘的顏色</param>
             <param name="multiplier">乘數值</param>
             <returns name="color">相乘後的顏色結果</returns>
         </member>
         <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
-            <summary>以數字分隔器分割輸入顏色，從而產生較亮的顏色並移除顏色暈白</summary>
+            <summary>Divide an input color with a number divider to produce a darker color and remove color tint</summary>
             <param name="color">要相除的顏色</param>
             <param name="dividend">被除數值</param>
             <returns name="color">相除後的顏色結果</returns>
