@@ -1574,6 +1574,11 @@ namespace Dynamo.Controls
         internal FrameworkElement AIHalo => aiHalo;
 
         /// <summary>
+        /// The clock playing the halo's glow, or null when none is playing. Exposed for tests.
+        /// </summary>
+        internal AnimationClock AIHaloClock => aiHaloClock;
+
+        /// <summary>
         /// Shows, plays, resumes or hides the halo to match the view model's glow. Internal for tests.
         /// </summary>
         internal void UpdateAIHalo()

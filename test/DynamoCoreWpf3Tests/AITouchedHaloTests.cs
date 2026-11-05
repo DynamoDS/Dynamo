@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -246,6 +247,30 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void ViewRebuiltMidGlowPicksUpWhereTheGlowIs()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.IsNotNull(ViewOf(node).AIHaloClock);
+
+            // 6 s in, the glow is in its steady hold. A new view for the same node, for example
+            // after switching tabs, must join it there rather than fade in from zero.
+            now += TimeSpan.FromSeconds(6);
+            var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
+            rebuilt.UpdateAIHalo();
+
+            var clock = rebuilt.AIHaloClock;
+            Assert.IsNotNull(clock);
+            WaitUntilPlayingFrom(clock, TimeSpan.FromSeconds(6));
+            Assert.GreaterOrEqual(clock.CurrentTime.Value, TimeSpan.FromSeconds(6), "Seeks to the glow's current time.");
+            Assert.Less(clock.CurrentTime.Value, AIHaloGlow.HoldEnd);
+            Assert.AreEqual(AIHaloGlow.HoldLevel, rebuilt.AIHalo.Opacity, 1e-6, "Shows the hold level straight away.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NodeBorderComesBackAfterTheFadeOut()
         {
             var now = TimeSpan.FromMinutes(1);
@@ -296,9 +321,12 @@ namespace DynamoCoreWpfTests
                 // Placed, then given a value
                 Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
                 var glow = ViewModelOf(node).AIHaloGlow;
+                var clock = ViewOf(node).AIHaloClock;
                 Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
 
                 Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The running glow is not restarted.");
+                Assert.IsNotNull(clock);
+                Assert.AreSame(clock, ViewOf(node).AIHaloClock, "The halo keeps playing the same animation.");
             });
         }
 
@@ -428,6 +456,20 @@ namespace DynamoCoreWpfTests
             }
 
             CollectionAssert.AreEqual(new[] { 0.0, 0.0 }, DelaysOf(nodes));
+        }
+
+        /// <summary>
+        /// A clock starts, and applies a seek, on WPF's next animation tick. Pumps the UI thread
+        /// until then, for at most 3 s (shorter than the seek, so time passing alone cannot pass).
+        /// </summary>
+        private static void WaitUntilPlayingFrom(AnimationClock clock, TimeSpan time)
+        {
+            var giveUpAt = System.DateTime.UtcNow + TimeSpan.FromSeconds(3);
+            while ((clock.CurrentTime == null || clock.CurrentTime < time) && System.DateTime.UtcNow < giveUpAt)
+            {
+                DispatcherUtil.DoEvents();
+                Thread.Sleep(15);
+            }
         }
 
         private void AsAIEdit(Action changes)
