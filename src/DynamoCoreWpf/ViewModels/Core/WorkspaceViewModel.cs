@@ -170,6 +170,87 @@ namespace Dynamo.ViewModels
             RequestHideAllPopup?.Invoke(param);
         }
 
+        #region AI-touched glow clock (DYN-11005)
+
+        /// <summary>
+        /// Share of a node that must be on screen before its glow starts.
+        /// </summary>
+        internal const double AIHaloVisibleShare = 0.5;
+
+        /// <summary>
+        /// Raised when a node has a glow waiting to come on screen, so the view checks what is on
+        /// screen. May be raised off the UI thread.
+        /// </summary>
+        internal event Action AIHaloGlowWaiting;
+
+        internal void OnAIHaloGlowWaiting()
+        {
+            AIHaloGlowWaiting?.Invoke();
+        }
+
+        /// <summary>
+        /// Starts the clock of every waiting glow whose node is on screen: at least half of it inside
+        /// <paramref name="visibleBounds"/>, and not hidden or collapsed in a group. The nodes that start
+        /// together are staggered 100 ms apart, in the order the AI Assistant touched them, up to 1 s.
+        /// Call on the UI thread.
+        /// </summary>
+        /// <param name="visibleBounds">The part of the canvas on screen, in canvas coordinates.</param>
+        /// <returns>The nodes whose glow started, in the order they start.</returns>
+        internal IReadOnlyList<NodeViewModel> StartAIHaloGlowsInView(Rect visibleBounds)
+        {
+            if (visibleBounds.IsEmpty || visibleBounds.Width <= 0 || visibleBounds.Height <= 0)
+            {
+                return Array.Empty<NodeViewModel>();
+            }
+
+            var starting = Nodes
+                .Where(n => n.AIHaloGlow?.IsWaiting == true && IsOnScreen(n, visibleBounds))
+                .OrderBy(n => n.AIHaloGlow.TouchOrder)
+                .ToList();
+
+            var started = new List<NodeViewModel>();
+            foreach (var node in starting)
+            {
+                if (node.BeginAIHaloGlow(AIHaloGlow.StaggerDelay(started.Count)))
+                {
+                    started.Add(node);
+                }
+            }
+            return started;
+        }
+
+        private static bool IsOnScreen(NodeViewModel node, Rect visibleBounds)
+        {
+            if (node.IsHidden || node.IsCollapsed) return false;
+
+            var width = node.NodeModel.Width;
+            var height = node.NodeModel.Height;
+
+            // Not measured yet: use its top-left corner
+            if (width <= 0 || height <= 0)
+            {
+                return visibleBounds.Contains(new Point(node.Left, node.Top));
+            }
+
+            var bounds = new Rect(node.Left, node.Top, width, height);
+            var inView = Rect.Intersect(bounds, visibleBounds);
+            if (inView.IsEmpty) return false;
+
+            return inView.Width * inView.Height >= AIHaloVisibleShare * width * height;
+        }
+
+        /// <summary>
+        /// Ends the glow of the node under the mouse (Esc). Other glowing nodes keep glowing.
+        /// </summary>
+        /// <returns>True if the hovered node was glowing.</returns>
+        internal bool DismissHoveredAIHaloGlow()
+        {
+            var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered && n.AIHaloGlow?.IsGlowing == true);
+            return hovered != null && hovered.DismissAIHaloGlow();
+        }
+
+        #endregion
+
         internal event Action RequestNodeAutoCompleteSearch;
         internal event Action<PortViewModel> RequestNodeAutoCompleteBar;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;

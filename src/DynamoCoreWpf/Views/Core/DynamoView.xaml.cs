@@ -75,6 +75,7 @@ namespace Dynamo.Controls
         internal const string McpViewExtensionId = "FAB268A8-6C83-4389-8AB8-F9AE92D6091E";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
+        private bool escEndedAIHaloGlow = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private double restoreWidth = 0;
@@ -2466,6 +2467,13 @@ namespace Dynamo.Controls
 
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
+            // Esc while hovering a glowing node ends that node's glow and does nothing else
+            if (escEndedAIHaloGlow || TryEndHoveredAIHaloGlow())
+            {
+                e.Handled = true;
+                return;
+            }
+
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 
 
@@ -2493,9 +2501,39 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
+        private bool TryEndHoveredAIHaloGlow()
+        {
+            if (IsEscKeyPressed || dynamoViewModel.BackgroundPreviewViewModel?.NavigationKeyIsDown == true)
+            {
+                return false;
+            }
+
+            var focused = Keyboard.FocusedElement;
+            if (focused is TextBoxBase || focused is ICSharpCode.AvalonEdit.Editing.TextArea)
+            {
+                return false;
+            }
+
+            if (dynamoViewModel.CurrentSpaceViewModel?.DismissHoveredAIHaloGlow() != true)
+            {
+                return false;
+            }
+
+            escEndedAIHaloGlow = true;
+            return true;
+        }
+
         private void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Escape) return;
+
+            if (escEndedAIHaloGlow)
+            {
+                escEndedAIHaloGlow = false;
+                IsEscKeyPressed = false;
+                e.Handled = true;
+                return;
+            }
 
             IsEscKeyPressed = false;
             if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
