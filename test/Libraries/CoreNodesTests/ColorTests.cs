@@ -116,6 +116,30 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public void WhenColorIsMultipliedByTwoThenResultIsBrighter()
+        {
+            Color color = Color.ByARGB(100, 100, 100, 100);
+
+            Color result = Color.Multiply(color, 2);
+
+            Assert.Greater(Color.Brightness(result), Color.Brightness(color));
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenColorIsDividedByTwoThenResultIsDarker()
+        {
+            Color color = Color.ByARGB(100, 100, 100, 100);
+
+            Color result = Color.Divide(color, 2);
+
+            Assert.Less(Color.Brightness(result), Color.Brightness(color));
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
         public void TestDivideColorByZero()
         {
             Color color = Color.ByARGB(100, 100, 100, 100);

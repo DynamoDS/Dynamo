@@ -277,7 +277,7 @@ namespace DSCore
                 color.Blue + otherColor.Blue);
         }
         /// <summary>
-        /// Multiply an input color with a number multiplier to produce a darker color. Input color must have an alpha less than 255.
+        /// Multiply an input color with a number multiplier to produce a brighter color, where the input color must have an alpha less than 255.
         /// </summary>
         /// <param name="color">Color to multiply</param>
         /// <param name="multiplier">Multiplier value</param>
@@ -291,7 +291,7 @@ namespace DSCore
                 (int)(color.Blue * multiplier));
         }
         /// <summary>
-        /// Divide an input color with a number divider to produce a brighter color and remove color tint
+        /// Divide an input color with a number divider to produce a darker color and remove color tint
         /// </summary>
         /// <param name="color">Color to divide</param>
         /// <param name="dividend">Dividend value</param>
