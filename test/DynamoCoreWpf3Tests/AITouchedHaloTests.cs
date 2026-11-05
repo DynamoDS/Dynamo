@@ -440,6 +440,44 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void DraggingANodeOnScreenStartsItsGlow()
+        {
+            var node = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsWaiting);
+
+            // The node moves into view; the view itself does not pan or zoom
+            node.X = 50;
+            node.Y = 50;
+
+            Assert.IsTrue(WaitUntil(() => ViewModelOf(node).AIHaloGlow?.IsStarted == true, TimeSpan.FromSeconds(3)),
+                "Moving the node into view starts its glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GlowWaitsBehindTheHomePageAndStartsOnReturn()
+        {
+            var node = AddNumberNode();
+            ViewModel.ShowStartPage = true;
+            try
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+                ShowGlows();
+                Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsWaiting, "The Home page covers the node.");
+            }
+            finally
+            {
+                ViewModel.ShowStartPage = false;
+            }
+
+            Assert.IsTrue(WaitUntil(() => ViewModelOf(node).AIHaloGlow.IsStarted, TimeSpan.FromSeconds(3)),
+                "Back on the graph, the glow starts.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NodesThatComeOnScreenTogetherAreStaggered()
         {
             var nodes = Enumerable.Range(0, 3).Select(i => AddNodeOffScreen(OffScreenX + i * 300)).ToList();
@@ -759,6 +797,37 @@ namespace DynamoCoreWpfTests
             StartGlowsIn(AroundNode(node));
             Assert.IsTrue(glow.IsGlowing);
             Assert.AreEqual(TimeSpan.Zero, glow.Elapsed);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ViewRebuiltDuringARestartedFadeInKeepsItsStartingStrength()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeView = ViewOf(node);
+
+            // 8 s in, the halo holds at 70%
+            now += TimeSpan.FromSeconds(8);
+            nodeView.UpdateAIHalo();
+            WaitUntilPlayingFrom(nodeView.AIHaloClock, TimeSpan.FromSeconds(8));
+            Assert.AreEqual(AIHaloGlow.HoldLevel, nodeView.AIHalo.Opacity, 0.01);
+
+            // Touched again: the glow restarts from 70%
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            ShowGlows();
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(AIHaloGlow.HoldLevel, glow.StartOpacityFor(glow.Version, 0), 0.01);
+
+            // A view rebuilt during the fade-in starts from the same strength, not from zero
+            var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
+            rebuilt.UpdateAIHalo();
+            WaitUntil(() => rebuilt.AIHaloClock?.CurrentTime != null, TimeSpan.FromSeconds(3));
+
+            Assert.GreaterOrEqual(rebuilt.AIHalo.Opacity, AIHaloGlow.HoldLevel - 0.01, "Not dimmed by the rebuild.");
         }
 
         [Test]
@@ -1436,6 +1505,24 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(glow.Restart());
             Assert.IsFalse(glow.WaitAgain());
             Assert.IsTrue(glow.IsFinished);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartOpacityIsKeptForEachVersion()
+        {
+            var glow = NewGlow();
+            Assert.AreEqual(0.0, glow.StartOpacityFor(glow.Version, 0), Tolerance, "A new halo starts from zero");
+
+            now += TimeSpan.FromSeconds(8);
+            glow.Retouch(1.0, true);
+            glow.Restart();
+            Assert.AreEqual(0.7, glow.StartOpacityFor(glow.Version, 0.7), Tolerance, "The first view keeps its current opacity");
+            Assert.AreEqual(0.7, glow.StartOpacityFor(glow.Version, 0), Tolerance, "A rebuilt view gets the same value");
+
+            glow.Retouch(1.0, true);
+            glow.WaitAgain();
+            Assert.AreEqual(0.0, glow.StartOpacityFor(glow.Version, 0), Tolerance, "A new version starts afresh");
         }
 
         [Test]

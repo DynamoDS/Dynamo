@@ -134,6 +134,9 @@ namespace Dynamo.ViewModels
         private bool isRestartPending;
         private int version;
 
+        private int startOpacityVersion = -1;
+        private double startOpacity;
+
         // Time on the timeline that has already counted, and since when the clock has been running
         private TimeSpan countedBefore;
         private TimeSpan? runningSince;
@@ -295,6 +298,22 @@ namespace Dynamo.ViewModels
                 if (running > TimeSpan.Zero) elapsed += running;
             }
             return elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
+        }
+
+        /// <summary>
+        /// The opacity this timeline version starts from: set by the first view to play it, reused by any rebuilt view.
+        /// </summary>
+        internal double StartOpacityFor(int forVersion, double currentOpacity)
+        {
+            lock (sync)
+            {
+                if (startOpacityVersion != forVersion)
+                {
+                    startOpacityVersion = forVersion;
+                    startOpacity = currentOpacity;
+                }
+                return startOpacity;
+            }
         }
 
         #endregion

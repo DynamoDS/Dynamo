@@ -1637,9 +1637,9 @@ namespace Dynamo.Controls
 
         private void PlayAIHalo(AIHaloGlow glow, int version)
         {
-            // A node touched again restarts its glow from where it is now, so it never blinks off.
-            // A new or hidden halo starts from 0.
-            var startOpacity = aiHalo?.Visibility == Visibility.Visible ? aiHalo.Opacity : 0;
+            // Restart from the current opacity so the halo never blinks off; a rebuilt view reuses it.
+            var currentOpacity = aiHalo?.Visibility == Visibility.Visible ? aiHalo.Opacity : 0;
+            var startOpacity = glow.StartOpacityFor(version, currentOpacity);
             StopAIHaloAnimation();
 
             if (aiHalo == null)
@@ -1655,11 +1655,8 @@ namespace Dynamo.Controls
             // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
             // pale ring between the node and the glow, so it is hidden while the halo is on. The
             // border keeps its thickness, so the node's size and layout do not change.
-            if (aiHalo.Visibility != Visibility.Visible)
-            {
-                aiHalo.Visibility = Visibility.Visible;
-                nodeBorder.BorderBrush = Brushes.Transparent;
-            }
+            aiHalo.Visibility = Visibility.Visible;
+            nodeBorder.BorderBrush = Brushes.Transparent;
 
             // Only the opacity animates. The blurred glow is a cached bitmap, so this never re-blurs.
             var clock = glow.CreateAnimation(startOpacity).CreateClock();

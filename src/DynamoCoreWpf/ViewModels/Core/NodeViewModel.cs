@@ -691,7 +691,10 @@ namespace Dynamo.ViewModels
         }
 
         private AIHaloGlow aiHaloGlow;
-        private bool isAIHaloHovered;
+        private volatile bool isAIHaloHovered;
+
+        // Guards glow replacement and hover state: an AI edit can replace the glow off the UI thread.
+        private readonly object aiHaloSync = new object();
 
         /// <summary>
         /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
@@ -701,16 +704,7 @@ namespace Dynamo.ViewModels
         /// record is cleared or the node is touched again. The glow changes in place (hover, Esc,
         /// restart); each change is announced under this property's name.
         /// </summary>
-        internal AIHaloGlow AIHaloGlow
-        {
-            get => aiHaloGlow;
-            private set
-            {
-                if (ReferenceEquals(aiHaloGlow, value)) return;
-                aiHaloGlow = value;
-                RaisePropertyChanged(nameof(AIHaloGlow));
-            }
-        }
+        internal AIHaloGlow AIHaloGlow => aiHaloGlow;
 
         /// <summary>
         /// True while the mouse is over the node. Esc then ends this node's glow (DYN-11005).
@@ -724,34 +718,44 @@ namespace Dynamo.ViewModels
         private void UpdateAIHaloGlow()
         {
             var change = NodeModel?.AIChange;
-            if (change == null)
-            {
-                AIHaloGlow = null;
-                return;
-            }
-
             var strength = AIHaloOpacity;
-            var breathes = change.Kind != AIChangeKind.Moved;
-            var current = AIHaloGlow;
+            var breathes = change != null && change.Kind != AIChangeKind.Moved;
+            bool changed;
 
-            if (current != null && !current.IsFinished)
+            lock (aiHaloSync)
             {
-                // Still waiting, or glowing with a restart now pending: the on-screen check decides
-                // whether it restarts here or waits until the node is back on screen
-                current.Retouch(strength, breathes);
-                RaisePropertyChanged(nameof(AIHaloGlow));
+                var current = aiHaloGlow;
+                if (change == null)
+                {
+                    changed = current != null;
+                    aiHaloGlow = null;
+                }
+                else if (current != null && !current.IsFinished)
+                {
+                    // Waiting, or a restart pending: the on-screen check decides what happens next.
+                    current.Retouch(strength, breathes);
+                    changed = true;
+                }
+                else
+                {
+                    // A new glow, including for a node touched again after its glow faded out or was dismissed
+                    var glow = AIHaloGlow.Create(strength, breathes);
+                    if (isAIHaloHovered)
+                    {
+                        glow.Hold();
+                    }
+                    aiHaloGlow = glow;
+                    changed = true;
+                }
+            }
+
+            if (!changed) return;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            if (change != null)
+            {
                 WorkspaceViewModel?.OnAIHaloGlowWaiting();
-                return;
             }
-
-            // A new glow, including for a node touched again after its glow faded out or was dismissed.
-            var glow = AIHaloGlow.Create(strength, breathes);
-            if (isAIHaloHovered)
-            {
-                glow.Hold();
-            }
-            AIHaloGlow = glow;
-            WorkspaceViewModel?.OnAIHaloGlowWaiting();
         }
 
         /// <summary>
@@ -774,13 +778,16 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SetAIHaloHovered(bool hovered)
         {
-            if (isAIHaloHovered == hovered) return;
-            isAIHaloHovered = hovered;
+            bool changed;
+            lock (aiHaloSync)
+            {
+                if (isAIHaloHovered == hovered) return;
+                isAIHaloHovered = hovered;
 
-            var glow = AIHaloGlow;
-            if (glow == null) return;
+                var glow = aiHaloGlow;
+                changed = glow != null && (hovered ? glow.Hold() : glow.Release());
+            }
 
-            var changed = hovered ? glow.Hold() : glow.Release();
             if (changed)
             {
                 RaisePropertyChanged(nameof(AIHaloGlow));
@@ -1439,10 +1446,12 @@ namespace Dynamo.ViewModels
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -1472,10 +1481,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case nameof(NodeModel.DisplayLabels):
                     RaisePropertyChanged(nameof(IsDisplayingLabels));
@@ -1488,6 +1499,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");

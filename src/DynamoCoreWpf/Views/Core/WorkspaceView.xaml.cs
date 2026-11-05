@@ -137,6 +137,12 @@ namespace Dynamo.Views
                     // or when go to start page, close InCanvasSearch and ContextMenu.
                     ShowHideInCanvasControl(ShowHideFlags.Hide);
                     ShowHideContextMenu(ShowHideFlags.Hide);
+
+                    // Back from the Home page: glows that waited behind it can start now
+                    if (e.PropertyName == "ShowStartPage" && ViewModel?.DynamoViewModel?.ShowStartPage == false)
+                    {
+                        RequestAIHaloVisibilityCheck();
+                    }
                     break;
             }
         }
@@ -1025,13 +1031,14 @@ namespace Dynamo.Views
 
         /// <summary>
         /// Starts the glow of every waiting node that is now on screen. Nothing starts while this view
-        /// is hidden (another tab, the start page) or the window is minimized. Internal for tests.
+        /// is hidden (another tab), the Home page covers it, or the window is minimized. Internal for tests.
         /// </summary>
         /// <returns>The nodes whose glow started, in the order they start.</returns>
         internal IReadOnlyList<NodeViewModel> CheckAIHaloVisibility()
         {
             if (ViewModel == null
                 || !IsVisible
+                || ViewModel.DynamoViewModel?.ShowStartPage == true
                 || outerCanvas.ActualWidth <= 0
                 || outerCanvas.ActualHeight <= 0
                 || Window.GetWindow(this)?.WindowState == WindowState.Minimized)
