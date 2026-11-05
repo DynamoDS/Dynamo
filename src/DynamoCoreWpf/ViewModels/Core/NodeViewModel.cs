@@ -692,9 +692,10 @@ namespace Dynamo.ViewModels
         private AIHaloGlow aiHaloGlow;
 
         /// <summary>
-        /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A new
-        /// glow starts each time the AI Assistant touches the node. Once it has faded out
-        /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the record is cleared.
+        /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
+        /// starts when the AI Assistant touches a node that is not glowing. Once it has faded out
+        /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the
+        /// record is cleared or the node is touched again.
         /// </summary>
         internal AIHaloGlow AIHaloGlow
         {
@@ -708,7 +709,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Starts a new glow when the AI Assistant touches the node.
+        /// Starts a glow when the AI Assistant touches the node, unless it is already glowing.
         /// </summary>
         private void UpdateAIHaloGlow()
         {
@@ -723,11 +724,9 @@ namespace Dynamo.ViewModels
             var breathes = change.Kind != AIChangeKind.Moved;
             var current = AIHaloGlow;
 
-            var aiEdit = WorkspaceViewModel?.Model?.CurrentAIEdit ?? 0;
-
-            // Another change to this node in the same AI edit (placed, then given a value): one glow
-            // and one stagger slot per node. A later AI edit restarts the glow.
-            if (current != null && !current.IsFinished && current.IsFromAIEdit(aiEdit))
+            // Still glowing: keep the glow and its stagger slot, so a node changed several times
+            // does not keep lighting up. A moved node that is then modified glows at full strength.
+            if (current != null && !current.IsFinished)
             {
                 if (current.Strength != strength || current.Breathes != breathes)
                 {
@@ -736,7 +735,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            AIHaloGlow = AIHaloGlow.Start(aiEdit, strength, breathes);
+            AIHaloGlow = AIHaloGlow.Start(WorkspaceViewModel?.Model?.CurrentAIEdit ?? 0, strength, breathes);
         }
 
         /// <summary>

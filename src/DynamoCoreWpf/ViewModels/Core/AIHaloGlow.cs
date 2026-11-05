@@ -109,9 +109,8 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        private AIHaloGlow(int aiEdit, TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
+        private AIHaloGlow(TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
         {
-            AIEdit = aiEdit;
             StartedAt = startedAt;
             Delay = delay;
             Strength = strength;
@@ -162,18 +161,6 @@ namespace Dynamo.ViewModels
         internal bool IsFinished => Elapsed >= Duration;
 
         /// <summary>
-        /// The AI edit that started this glow (<see cref="Dynamo.Graph.Workspaces.WorkspaceModel.CurrentAIEdit"/>),
-        /// or 0 if the node was touched outside one.
-        /// </summary>
-        internal int AIEdit { get; }
-
-        /// <summary>
-        /// True if this glow was started by the given AI edit. Further changes to the node in that
-        /// edit keep this glow and its place in the stagger.
-        /// </summary>
-        internal bool IsFromAIEdit(int aiEdit) => aiEdit != 0 && aiEdit == AIEdit;
-
-        /// <summary>
         /// Starts a glow for a node touched now. Nodes touched in the same AI edit are staggered;
         /// a node touched outside one starts without delay.
         /// </summary>
@@ -182,16 +169,16 @@ namespace Dynamo.ViewModels
         /// <param name="breathes">True for the breathing timeline (placed or modified nodes).</param>
         internal static AIHaloGlow Start(int aiEdit, double strength, bool breathes)
         {
-            return new AIHaloGlow(aiEdit, Now(), NextStaggerDelay(aiEdit), strength, breathes);
+            return new AIHaloGlow(Now(), NextStaggerDelay(aiEdit), strength, breathes);
         }
 
         /// <summary>
-        /// This glow at a new strength, for example a moved node the same AI edit then modified. Keeps
+        /// This glow at a new strength, for example a moved node that is modified while glowing. Keeps
         /// its start time and its place in the stagger.
         /// </summary>
         internal AIHaloGlow WithStrength(double strength, bool breathes)
         {
-            return new AIHaloGlow(AIEdit, StartedAt, Delay, strength, breathes);
+            return new AIHaloGlow(StartedAt, Delay, strength, breathes);
         }
 
         /// <summary>
@@ -199,8 +186,8 @@ namespace Dynamo.ViewModels
         /// Values already include <see cref="Strength"/>.
         /// </summary>
         /// <param name="startOpacity">
-        /// Opacity to start from. Zero for a new halo; the halo's current opacity when a node touched
-        /// again restarts its glow, so the restart never dips to zero.
+        /// Opacity to start from. Zero for a new halo; the halo's current opacity when a running glow
+        /// is replaced (a moved node that is then modified), so the halo never dips to zero.
         /// </param>
         internal DoubleAnimationUsingKeyFrames CreateAnimation(double startOpacity = 0)
         {

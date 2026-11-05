@@ -291,7 +291,45 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void NodeTouchedAgainInALaterAIEditRestartsItsGlow()
+        public void NodeTouchedAgainWhileGlowingKeepsItsGlow()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            var glow = ViewModelOf(node).AIHaloGlow;
+            var clock = ViewOf(node).AIHaloClock;
+
+            // A later AI edit, 8 s into the glow
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The glow is not restarted.");
+            Assert.AreSame(clock, ViewOf(node).AIHaloClock);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeMovedThenModifiedWhileGlowingGetsTheFullGlow()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50"));
+            var moved = ViewModelOf(node).AIHaloGlow;
+
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
+
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
+            Assert.AreEqual(moved.StartedAt, glow.StartedAt, "Stays on the same timeline; no restart.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedAgainAfterItsGlowFadedGlowsAgain()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
@@ -299,8 +337,8 @@ namespace DynamoCoreWpfTests
             AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
             var first = ViewModelOf(node).AIHaloGlow;
 
-            // Touched again late in the glow, by a later AI edit
-            now += TimeSpan.FromSeconds(14);
+            // Touched again after the fade-out, for example late in a long turn
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(45);
             AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2"));
 
             var second = ViewModelOf(node).AIHaloGlow;
@@ -824,18 +862,18 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void GlowBelongsToTheAIEditThatStartedIt()
+        public void StrongerGlowKeepsItsStartAndItsSlot()
         {
             var edit = NewAIEdit();
+            AIHaloGlow.Start(edit, 1.0, true);
             var glow = AIHaloGlow.Start(edit, NodeViewModel.AIHaloMovedOpacity, false);
-            Assert.IsTrue(glow.IsFromAIEdit(edit));
 
             var upgraded = glow.WithStrength(1.0, true);
-            Assert.IsTrue(upgraded.IsFromAIEdit(edit));
-            Assert.AreEqual(glow.StartedAt, upgraded.StartedAt);
-            Assert.AreEqual(glow.Delay, upgraded.Delay);
 
-            Assert.IsFalse(glow.IsFromAIEdit(NewAIEdit()), "A later AI edit starts a new glow.");
+            Assert.AreEqual(1.0, upgraded.Strength);
+            Assert.IsTrue(upgraded.Breathes);
+            Assert.AreEqual(glow.StartedAt, upgraded.StartedAt);
+            Assert.AreEqual(TimeSpan.FromMilliseconds(100), upgraded.Delay);
         }
 
         [Test]
@@ -847,7 +885,6 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(TimeSpan.Zero, first.Delay);
             Assert.AreEqual(TimeSpan.Zero, second.Delay);
-            Assert.IsFalse(first.IsFromAIEdit(0), "Every change outside an AI edit starts its own glow.");
         }
 
         [Test]
@@ -888,7 +925,7 @@ namespace DynamoCoreWpfTests
         {
             var animation = NewGlow().CreateAnimation(startOpacity: 0.7);
 
-            Assert.AreEqual(0.7, ValueAt(animation, 0.0), Tolerance, "No dip to zero when a node is touched again");
+            Assert.AreEqual(0.7, ValueAt(animation, 0.0), Tolerance, "No dip to zero when a running glow is replaced");
             Assert.AreEqual(1.0, ValueAt(animation, 0.6), Tolerance);
         }
 
