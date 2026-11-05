@@ -273,7 +273,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void NodeTouchedAgainRestartsItsGlow()
+        public void NodeTouchedAgainInALaterActionRestartsItsGlow()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
@@ -281,7 +281,7 @@ namespace DynamoCoreWpfTests
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             var first = ViewModelOf(node).AIHaloGlow;
 
-            // Touched again late in the glow
+            // Touched again late in the glow, by a later action
             now += TimeSpan.FromSeconds(14);
             AIHaloGlow.EndBatch();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
@@ -291,6 +291,63 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(now, second.StartedAt, "The timer starts again from the new touch.");
             Assert.IsFalse(second.IsFinished);
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeChangedAgainInTheSameActionKeepsItsGlow()
+        {
+            var node = AddNumberNode();
+            AIHaloGlow.EndBatch();
+
+            // One action: placed, then given a value
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The running glow is not restarted.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodesChangedSeveralTimesInOneActionTakeOneStaggerSlotEach()
+        {
+            var nodes = Enumerable.Range(0, 5).Select(_ => AddNumberNode()).ToList();
+            AIHaloGlow.EndBatch();
+
+            // One action: every node placed, then every node given a value
+            foreach (var node in nodes)
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            foreach (var node in nodes)
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            }
+
+            var delays = nodes.Select(n => ViewModelOf(n).AIHaloGlow.Delay.TotalMilliseconds).ToList();
+            CollectionAssert.AreEqual(new[] { 0.0, 100, 200, 300, 400 }, delays);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeMovedThenModifiedInOneActionGetsTheFullGlowInItsSlot()
+        {
+            var first = AddNumberNode();
+            var node = AddNumberNode();
+            AIHaloGlow.EndBatch();
+
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            var moved = ViewModelOf(node).AIHaloGlow;
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
+            Assert.IsTrue(glow.Breathes);
+            Assert.AreEqual(moved.Delay, glow.Delay, "Keeps its place in the stagger.");
+            Assert.AreEqual(moved.StartedAt, glow.StartedAt);
+            Assert.AreEqual(TimeSpan.FromMilliseconds(100), glow.Delay);
         }
 
         [Test]
@@ -636,6 +693,23 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(0.4, ValueAt(animation, ms / 1000.0), Tolerance, $"steady 40% at {ms} ms");
             }
             Assert.AreEqual(0.0, ValueAt(animation, 14.9), Tolerance);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GlowBelongsToTheActionThatStartedIt()
+        {
+            AIHaloGlow.EndBatch();
+            var glow = AIHaloGlow.Start(NodeViewModel.AIHaloMovedOpacity, false);
+            Assert.IsTrue(glow.IsInCurrentBatch);
+
+            var upgraded = glow.WithStrength(1.0, true);
+            Assert.IsTrue(upgraded.IsInCurrentBatch);
+            Assert.AreEqual(glow.StartedAt, upgraded.StartedAt);
+            Assert.AreEqual(glow.Delay, upgraded.Delay);
+
+            AIHaloGlow.EndBatch();
+            Assert.IsFalse(glow.IsInCurrentBatch, "A later action starts a new glow.");
         }
 
         [Test]

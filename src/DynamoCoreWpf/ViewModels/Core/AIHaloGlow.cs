@@ -111,8 +111,9 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        private AIHaloGlow(TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
+        private AIHaloGlow(int batch, TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
         {
+            this.batch = batch;
             StartedAt = startedAt;
             Delay = delay;
             Strength = strength;
@@ -162,6 +163,23 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal bool IsFinished => Elapsed >= Duration;
 
+        private readonly int batch;
+
+        /// <summary>
+        /// True while the action that started this glow is still running. Further changes to the node
+        /// in that action keep this glow and its place in the stagger.
+        /// </summary>
+        internal bool IsInCurrentBatch
+        {
+            get
+            {
+                lock (staggerLock)
+                {
+                    return batchStartedAt != null && batch == batchId && Now() - batchStartedAt.Value <= MaxStagger;
+                }
+            }
+        }
+
         /// <summary>
         /// Starts a glow for a node touched now. Nodes touched by the same action are staggered.
         /// </summary>
@@ -170,7 +188,17 @@ namespace Dynamo.ViewModels
         internal static AIHaloGlow Start(double strength, bool breathes)
         {
             var now = Now();
-            return new AIHaloGlow(now, NextStaggerDelay(now), strength, breathes);
+            var delay = NextStaggerDelay(now, out var batch);
+            return new AIHaloGlow(batch, now, delay, strength, breathes);
+        }
+
+        /// <summary>
+        /// This glow at a new strength, for example a moved node the same action then modified. Keeps
+        /// its start time and its place in the stagger.
+        /// </summary>
+        internal AIHaloGlow WithStrength(double strength, bool breathes)
+        {
+            return new AIHaloGlow(batch, StartedAt, Delay, strength, breathes);
         }
 
         /// <summary>
@@ -256,7 +284,7 @@ namespace Dynamo.ViewModels
         /// when the UI thread has finished the action's work, or after <see cref="MaxStagger"/> at the
         /// latest.
         /// </summary>
-        private static TimeSpan NextStaggerDelay(TimeSpan now)
+        private static TimeSpan NextStaggerDelay(TimeSpan now, out int batch)
         {
             lock (staggerLock)
             {
@@ -269,6 +297,7 @@ namespace Dynamo.ViewModels
 
                 var delay = TimeSpan.FromTicks(Math.Min(StaggerStep.Ticks * batchSize, MaxStagger.Ticks));
                 batchSize++;
+                batch = batchId;
                 return delay;
             }
         }

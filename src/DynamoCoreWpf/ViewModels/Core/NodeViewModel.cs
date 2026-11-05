@@ -713,9 +713,28 @@ namespace Dynamo.ViewModels
         private void UpdateAIHaloGlow()
         {
             var change = NodeModel?.AIChange;
-            AIHaloGlow = change == null
-                ? null
-                : AIHaloGlow.Start(AIHaloOpacity, breathes: change.Kind != AIChangeKind.Moved);
+            if (change == null)
+            {
+                AIHaloGlow = null;
+                return;
+            }
+
+            var strength = AIHaloOpacity;
+            var breathes = change.Kind != AIChangeKind.Moved;
+            var current = AIHaloGlow;
+
+            // Another change to this node in the same action (placed, then given a value): one glow
+            // and one stagger slot per node. A later action restarts the glow.
+            if (current != null && current.IsInCurrentBatch)
+            {
+                if (current.Strength != strength || current.Breathes != breathes)
+                {
+                    AIHaloGlow = current.WithStrength(strength, breathes);
+                }
+                return;
+            }
+
+            AIHaloGlow = AIHaloGlow.Start(strength, breathes);
         }
 
         /// <summary>
