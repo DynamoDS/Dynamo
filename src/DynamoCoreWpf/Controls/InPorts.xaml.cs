@@ -32,6 +32,12 @@ namespace Dynamo.UI.Controls
         private AIChangePopover aiChangePopover = null;
         private DispatcherTimer aiChangeOpenTimer = null;
 
+        // The workspace whose undo stack the open popover is watching, or null while it is closed
+        private Graph.Workspaces.WorkspaceModel aiChangeWorkspace = null;
+
+        // What WorkspaceModel raises when its undo stack changes (see UpdateUndoRedoStack)
+        private const string UndoRedoStackChangedPropertyName = "CanUndoRedoCommand";
+
         private bool _useLevelSpinnerInit = false;
 
         // The changed-input outline: purple dots along the edge of the port background
@@ -666,6 +672,8 @@ namespace Dynamo.UI.Controls
                 aiChangePopover = new AIChangePopover(this);
                 aiChangePopover.UndoRequested += OnAIChangeUndoRequested;
                 aiChangePopover.NextRequested += OnAIChangeNextRequested;
+                aiChangePopover.Opened += OnAIChangePopoverOpened;
+                aiChangePopover.Closed += OnAIChangePopoverClosed;
             }
 
             var node = viewModel.NodeViewModel;
@@ -674,6 +682,55 @@ namespace Dynamo.UI.Controls
                 change,
                 node.CanUndoAIChange,
                 node.GetNextAIChangedInput(viewModel) != null);
+        }
+
+        /// <summary>
+        /// Re-checks the open popover's "Undo this change" and "Next change ›", so they do not go
+        /// stale when an edit lands on the undo stack while the popover is open.
+        /// </summary>
+        private void UpdateAIChangePopoverActions()
+        {
+            if (aiChangePopover?.IsOpen != true || viewModel?.AIInputChange == null) return;
+
+            var node = viewModel.NodeViewModel;
+            aiChangePopover.UpdateActions(
+                node.CanUndoAIChange,
+                node.GetNextAIChangedInput(viewModel) != null);
+        }
+
+        // Only listen to the undo stack while the popover is open, so idle ports cost nothing
+        private void OnAIChangePopoverOpened()
+        {
+            if (aiChangeWorkspace != null) return;
+
+            aiChangeWorkspace = viewModel?.NodeViewModel?.WorkspaceViewModel?.Model;
+            if (aiChangeWorkspace != null)
+            {
+                aiChangeWorkspace.PropertyChanged += OnAIChangeWorkspacePropertyChanged;
+            }
+        }
+
+        private void OnAIChangePopoverClosed()
+        {
+            if (aiChangeWorkspace == null) return;
+
+            aiChangeWorkspace.PropertyChanged -= OnAIChangeWorkspacePropertyChanged;
+            aiChangeWorkspace = null;
+        }
+
+        private void OnAIChangeWorkspacePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Raised whenever an undo group is recorded (WorkspaceModel.UpdateUndoRedoStack)
+            if (e.PropertyName != UndoRedoStackChangedPropertyName) return;
+
+            if (Dispatcher.CheckAccess())
+            {
+                UpdateAIChangePopoverActions();
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIChangePopoverActions));
+            }
         }
 
         private void OnAIChangeUndoRequested()

@@ -41,6 +41,12 @@ namespace Dynamo.UI.Controls
         /// <summary>Raised when "Next change ›" is clicked.</summary>
         internal event Action NextRequested;
 
+        /// <summary>Raised when the popover opens.</summary>
+        internal event Action Opened;
+
+        /// <summary>Raised when the popover closes, however it was closed.</summary>
+        internal event Action Closed;
+
         /// <param name="target">The changed input's port, which the popover opens above.</param>
         internal AIChangePopover(FrameworkElement target)
         {
@@ -115,6 +121,8 @@ namespace Dynamo.UI.Controls
                 AllowsTransparency = true,
                 StaysOpen = true
             };
+            popup.Opened += (s, e) => Opened?.Invoke();
+            popup.Closed += (s, e) => Closed?.Invoke();
 
             closeTimer = new DispatcherTimer(DispatcherPriority.Input, target.Dispatcher) { Interval = CloseDelay };
             closeTimer.Tick += OnCloseTimerTick;
@@ -159,11 +167,22 @@ namespace Dynamo.UI.Controls
             BeforeText.Text = change.Before ?? Resources.AIChangePopoverNoValue;
             AfterText.Text = change.After ?? Resources.AIChangePopoverNoValue;
 
+            UpdateActions(canUndo, hasNext);
+
+            popup.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Updates "Undo this change" and "Next change ›" while the popover stays open, for example
+        /// after an edit puts a later step on top of the undo stack.
+        /// </summary>
+        /// <param name="canUndo">Whether undo would revert just the turn that made the change.</param>
+        /// <param name="hasNext">Whether the turn changed another input to move on to.</param>
+        internal void UpdateActions(bool canUndo, bool hasNext)
+        {
             UndoButton.IsEnabled = canUndo;
             UndoButton.ToolTip = canUndo ? Resources.AIChangePopoverUndoToolTip : Resources.AIChangePopoverUndoUnavailable;
             NextButton.IsEnabled = hasNext;
-
-            popup.IsOpen = true;
         }
 
         /// <summary>

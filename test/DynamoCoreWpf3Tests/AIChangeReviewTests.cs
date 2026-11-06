@@ -325,6 +325,32 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void OpenPopoverDisablesUndoThisChangeWhenALaterEditIsRecorded()
+        {
+            var number = AddNumberNode();
+            var other = AddNumberNode();
+            var node = AddTwoInputNode();
+
+            AsAITurn(() =>
+            {
+                SetValue(number, "2");
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "Number.out");
+            });
+
+            var popover = OpenPopover(PortViewOf(node, "a"));
+            Assert.IsTrue(popover.UndoButton.IsEnabled);
+
+            // An edit lands on the undo stack while the popover stays open
+            SetValue(other, "5");
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(popover.IsOpen);
+            Assert.IsFalse(popover.UndoButton.IsEnabled, "The button follows the undo stack without reopening.");
+            Assert.AreEqual("Only the latest change can be undone from here", popover.UndoButton.ToolTip);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NextChangeMovesThroughTheTurnsChangedInputsAndWrapsAround()
         {
             var first = AddTwoInputNode();
