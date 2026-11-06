@@ -488,6 +488,12 @@ namespace Dynamo.Models
             internal bool ForceManualExecutionMode { get; private set; }
             internal bool IsTemplate { get; private set; }
             internal bool ForceBlockRun { get; private set; }
+
+            /// <summary>
+            /// Hash of the file content the user approved in the trust preview, or null. When set, the
+            /// file is loaded only if its content still matches. Not recorded: it applies to one open.
+            /// </summary>
+            internal string ExpectedContentHash { get; set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -610,6 +616,12 @@ namespace Dynamo.Models
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
             internal bool ForceBlockRun { get; private set; }
+
+            /// <summary>
+            /// Hash of the file content the user approved in the trust preview, or null. When set, the
+            /// file is inserted only if its content still matches. Not recorded: it applies to one insert.
+            /// </summary>
+            internal string ExpectedContentHash { get; set; }
             private DynamoModel dynamoModel;
 
             #endregion
