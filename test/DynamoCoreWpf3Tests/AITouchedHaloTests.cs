@@ -326,6 +326,32 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void HaloHidesItselfWhenItsAnimationEnds()
+        {
+            // The glow's clock stays put, so only the animation finishing can hide the halo
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            var nodeView = ViewOf(node);
+            var borderBrushBefore = nodeView.nodeBorder.BorderBrush;
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var clock = ViewOf(node).AIHaloClock;
+            Assert.IsNotNull(clock);
+            WaitUntil(() => clock.CurrentTime != null, TimeSpan.FromSeconds(3));
+
+            clock.Controller.SkipToFill();
+            WaitUntil(() => nodeView.AIHaloClock == null, TimeSpan.FromSeconds(3));
+
+            Assert.IsFalse(ViewModelOf(node).AIHaloGlow.IsFinished, "Hidden by the animation, not by the view model.");
+            Assert.IsNull(nodeView.AIHaloClock);
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility);
+            Assert.IsFalse(nodeView.AIHalo.HasAnimatedProperties);
+            Assert.AreSame(borderBrushBefore, nodeView.nodeBorder.BorderBrush);
+            Assert.AreEqual(Visibility.Visible, nodeView.AIBadge.Visibility, "The badge stays until the highlight is cleared.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NodeBorderComesBackAfterTheFadeOut()
         {
             var now = TimeSpan.FromMinutes(1);
