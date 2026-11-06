@@ -4,11 +4,20 @@
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:rexs="clr-namespace:Dynamo.Wpf.Properties"
+       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
        d:DesignHeight="12"
        d:DesignWidth="12"
        DragDelta="Thumb_DragDelta"
        mc:Ignorable="d">
     <Thumb.Resources>
+        <ResourceDictionary>
+            <!--
+                Required for CurveMapperCurveBrush below: control points are created in code by
+                CurveMapperControl, so they cannot rely on an ancestor to supply the palette.
+            -->
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
         <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
             <Setter Property="OverridesDefaultStyle" Value="true" />
             <Setter Property="Template">
@@ -53,6 +62,7 @@
                 </Style>
             </Style.Resources>
         </Style>
+        </ResourceDictionary>
     </Thumb.Resources>
 
     <Thumb.Template>
@@ -62,7 +72,7 @@
                 Width="12"
                 Height="12"
                 Fill="#ffffff"
-                Stroke="#5BC9BD"
+                Stroke="{StaticResource CurveMapperCurveBrush}"
                 StrokeThickness="3">
                 <Ellipse.ToolTip>
                     <ToolTip Style="{StaticResource GenericToolTipLight}">

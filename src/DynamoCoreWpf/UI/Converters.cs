@@ -3671,7 +3671,9 @@ namespace Dynamo.Controls
                     default:
                         if (values[1].ToString() == "List")
                         {
-                            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                            // Role-named key: PrimaryCharcoal200Brush stays near-white in the
+                            // light theme, which made "List" invisible on the light watch tree.
+                            return resourceDictionary["WatchTreeListLabelBrush"] as SolidColorBrush;
                         }
                         else
                         {
@@ -3681,10 +3683,10 @@ namespace Dynamo.Controls
             }
             else
             {
-                return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                return resourceDictionary["WatchTreeListLabelBrush"] as SolidColorBrush;
             }
         }
-        
+
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

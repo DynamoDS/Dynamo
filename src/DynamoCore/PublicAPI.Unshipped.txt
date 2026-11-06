@@ -15,6 +15,12 @@ Dynamo.Models.EvaluationCompletedEventArgs.WasCancelled.get -> bool
 Dynamo.Graph.Workspaces.WorkspaceModel.MarkAsIndependentlyModified() -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup() -> System.IDisposable
 Dynamo.Graph.Workspaces.WorkspaceModel.IsUndoActionGroupOpen.get -> bool
+Dynamo.Configuration.DynamoTheme
+Dynamo.Configuration.DynamoTheme.Dark = 0 -> Dynamo.Configuration.DynamoTheme
+Dynamo.Configuration.DynamoTheme.Light = 1 -> Dynamo.Configuration.DynamoTheme
+Dynamo.Configuration.PreferenceSettings.Theme.get -> Dynamo.Configuration.DynamoTheme
+Dynamo.Configuration.PreferenceSettings.Theme.set -> void
+static readonly Dynamo.Configuration.Configurations.LightHighlightingFile -> string
 Dynamo.Graph.Nodes.AIChangeKind
 Dynamo.Graph.Nodes.AIChangeKind.Modified = 1 -> Dynamo.Graph.Nodes.AIChangeKind
 Dynamo.Graph.Nodes.AIChangeKind.Moved = 0 -> Dynamo.Graph.Nodes.AIChangeKind
