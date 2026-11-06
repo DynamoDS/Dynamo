@@ -61,12 +61,18 @@ namespace Dynamo.UI.Prompts
 
         private void configure_adp_button_Click(object sender, RoutedEventArgs e)
         {
-            IntPtr handle = new IntPtr();
-            if (Owner != null)
-            {
-                handle = new WindowInteropHelper(Owner).Handle;
-            }
-            AnalyticsService.ShowADPConsentDialog(handle);
+            AnalyticsService.ShowADPConsentDialog(GetADPConsentDialogHost());
+        }
+
+        /// <summary>
+        /// Returns the window handle to host the ADP consent dialog on, so that it is
+        /// shown in front of this prompt instead of behind it. Returns null when this
+        /// prompt has no native handle yet.
+        /// </summary>
+        internal IntPtr? GetADPConsentDialogHost()
+        {
+            var handle = new WindowInteropHelper(this).Handle;
+            return handle == IntPtr.Zero ? null : handle;
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)

@@ -134,3 +134,6 @@ dynamods-splash-screen-*.tgz
 /src/DynamoCoreWpf/.npmrc
 /src/Notifications/.npmrc
 /src/LibraryViewExtensionWebView2/.npmrc
+
+# Aida Jira attachment staging (auto-implement; do not commit these files)
+.aida/jira-staging/
