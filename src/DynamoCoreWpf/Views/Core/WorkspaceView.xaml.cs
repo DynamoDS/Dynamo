@@ -1261,7 +1261,6 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
-
             AddPythonEngineOptions(PythonEngineMenu);
             //Don't shrink. This prevents the popup menu from jumping when the height of the internal items is reduced.
             ContextMenuStackView.MinHeight = 0;
