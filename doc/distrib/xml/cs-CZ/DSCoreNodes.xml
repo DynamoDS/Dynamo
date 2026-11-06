@@ -82,13 +82,13 @@
             <returns name="color">Výsledek barvy při přidání dvou barev</returns>
         </member>
         <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
-            <summary>Vynásobte vstupní barvu číselným násobitelem a vytvořte tmavší barvu. Hodnota alfa vstupní barvy musí být menší než 255.</summary>
+            <summary>Multiply an input color with a number multiplier to produce a brighter color, where the input color must have an alpha less than 255.</summary>
             <param name="color">Barva pro násobení</param>
             <param name="multiplier">Hodnota násobitele</param>
             <returns name="color">Výsledek barvy z násobení</returns>
         </member>
         <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
-            <summary>Vydělte vstupní barvu číselným dělitelem a vytvořte jasnější barvu a odeberte barevný nádech.</summary>
+            <summary>Divide an input color with a number divider to produce a darker color and remove color tint</summary>
             <param name="color">Barva k dělení</param>
             <param name="dividend">Hodnota dělitele</param>
             <returns name="color">Výsledek barvy z dělení</returns>

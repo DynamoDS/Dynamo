@@ -1,5 +1,5 @@
 ## Podrobnosti
-Uzel Multiply vynásobí jednotlivé kanály barvy vstupním číslem a je vrácena výsledná barva. Vezměte na vědomí, že výsledné hodnoty musí být menší než 255. V níže uvedeném příkladu vytvoříme barvu pomocí uzlů ByARGB. Poté pomocí uzlu Multiply vynásobíme barvu číslem řízeným číselným posuvníkem. K vizualizaci výsledné barvy se použije uzel Display.ByGeometryColor společně s výchozím kvádrem.
+Multiply will multiply the individual channels of a color by an input number, and return the resulting color. Multiplying by a number greater than 1 produces a brighter color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Multiply node to multiply the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
 ___
 ## Vzorový soubor
 
