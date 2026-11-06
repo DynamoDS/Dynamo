@@ -22,7 +22,7 @@ namespace DynamoCoreWpfTests
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
     /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), its clock
-    /// (DYN-11005: starts on screen, hover holds it, Esc ends it, a new touch restarts it), and the
+    /// (DYN-11005: starts on screen, hover holds it, Esc clears the halo and badge, a new touch restarts it), and the
     /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified.
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
@@ -652,7 +652,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void EscEndsTheGlowOfTheHoveredNodeOnlyAndKeepsTheBadge()
+        public void EscClearsTheHaloAndBadgeOfTheHoveredNodeOnly()
         {
             var hovered = AddNumberNode();
             var other = AddNumberNode();
@@ -660,66 +660,115 @@ namespace DynamoCoreWpfTests
             Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
             var unsavedBefore = Workspace.HasUnsavedChanges;
+            var turnNodesBefore = Workspace.GetAITurnSummary(TurnA).Nodes.Count;
 
             ViewModelOf(hovered).SetAIHaloHovered(true);
-            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
             DispatcherUtil.DoEvents();
 
-            var glow = ViewModelOf(hovered).AIHaloGlow;
-            Assert.IsTrue(glow.IsDismissed);
-            Assert.IsTrue(glow.IsFinished);
+            Assert.IsFalse(hovered.IsRecentlyModifiedByAI, "The change record is cleared.");
+            Assert.IsNull(ViewModelOf(hovered).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(hovered).AIHalo.Visibility);
-            Assert.IsNull(ViewOf(hovered).AIHaloClock);
-            Assert.AreEqual(Visibility.Visible, ViewOf(hovered).AIBadge.Visibility, "Esc keeps the badge.");
-            Assert.IsTrue(hovered.IsRecentlyModifiedByAI, "The change record is kept.");
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(hovered).AIBadge.Visibility);
 
-            Assert.IsTrue(ViewModelOf(other).AIHaloGlow.IsGlowing, "Other nodes keep glowing.");
-            Assert.AreEqual(Visibility.Visible, ViewOf(other).AIHalo.Visibility);
-            Assert.AreEqual(unsavedBefore, Workspace.HasUnsavedChanges, "Dismissing never marks the workspace as changed.");
+            Assert.IsTrue(ViewModelOf(other).AIHaloGlow.IsGlowing, "Other nodes keep their halo.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(other).AIBadge.Visibility, "Other nodes keep their badge.");
+            Assert.AreEqual(unsavedBefore, Workspace.HasUnsavedChanges, "Clearing never marks the workspace as changed.");
+            Assert.AreEqual(turnNodesBefore, Workspace.GetAITurnSummary(TurnA).Nodes.Count, "The turn history is kept.");
         }
 
         [Test]
         [Category("UnitTests")]
-        public void EscDoesNothingWithoutAHoveredGlowingNode()
+        public void EscClearsTheBadgeAfterTheGlowHasFaded()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
-            var glowing = AddNumberNode();
-            var waiting = AddNodeOffScreen();
-            Workspace.RecordAINodeChange(glowing.GUID, AIChangeKind.Placed, TurnA);
-            Workspace.RecordAINodeChange(waiting.GUID, AIChangeKind.Placed, TurnA);
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
 
-            // Nothing hovered
-            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
-
-            // Hovering a node whose glow is still waiting
-            ViewModelOf(waiting).SetAIHaloHovered(true);
-            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
-            ViewModelOf(waiting).SetAIHaloHovered(false);
-
-            // Hovering a node whose glow has faded out: only the badge is left
+            // Only the badge is left
             now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
-            ViewModelOf(glowing).SetAIHaloHovered(true);
-            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
-            Assert.IsFalse(ViewModelOf(glowing).AIHaloGlow.IsDismissed);
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void DismissedGlowStaysGoneInARebuiltView()
+        public void EscClearsTheHaloOfAMovedNode()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsGlowing, "A moved node has a halo but no badge.");
+
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscDoesNothingWithoutAHoveredHaloOrBadge()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var placed = AddNumberNode();
+            var untouched = AddNumberNode();
+            var movedFaded = AddNumberNode();
+            var movedWaiting = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(movedFaded.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            Workspace.RecordAINodeChange(movedWaiting.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            // Nothing hovered
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+
+            // A node the AI Assistant never touched
+            ViewModelOf(untouched).SetAIHaloHovered(true);
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+            ViewModelOf(untouched).SetAIHaloHovered(false);
+
+            // A moved node whose glow is still waiting: no halo yet, and moved nodes have no badge
+            ViewModelOf(movedWaiting).SetAIHaloHovered(true);
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+            ViewModelOf(movedWaiting).SetAIHaloHovered(false);
+
+            // A moved node whose glow has faded out: nothing is shown
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
+            ViewModelOf(movedFaded).SetAIHaloHovered(true);
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+
+            Assert.IsTrue(placed.IsRecentlyModifiedByAI);
+            Assert.IsTrue(movedFaded.IsRecentlyModifiedByAI);
+            Assert.IsTrue(movedWaiting.IsRecentlyModifiedByAI);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ClearedHighlightStaysGoneInARebuiltView()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
             ViewModelOf(node).SetAIHaloHovered(true);
-            ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow();
+            ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight();
 
             var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
             rebuilt.UpdateAIHalo();
 
             Assert.IsNull(rebuilt.AIHaloClock);
-            Assert.IsNull(rebuilt.AIHalo, "No halo is created for a dismissed glow.");
+            Assert.IsNull(rebuilt.AIHalo, "No halo is created once the highlight is cleared.");
+            Assert.IsFalse(ViewModelOf(node).ShowAIBadge);
         }
 
         [Test]
@@ -889,7 +938,7 @@ namespace DynamoCoreWpfTests
             ShowGlows();
             var nodeViewModel = ViewModelOf(node);
             nodeViewModel.SetAIHaloHovered(true);
-            nodeViewModel.DismissAIHaloGlow();
+            ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight();
             nodeViewModel.SetAIHaloHovered(false);
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
@@ -897,6 +946,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(nodeViewModel.AIHaloGlow.IsGlowing, "A new change gets a new glow.");
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility, "And its badge back.");
         }
 
         #endregion
@@ -1520,22 +1570,6 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void DismissClearsAPendingRestart()
-        {
-            var glow = NewGlow();
-            now += TimeSpan.FromSeconds(3);
-            glow.Retouch(1.0, true);
-
-            Assert.IsTrue(glow.Dismiss());
-
-            Assert.IsFalse(glow.IsRestartPending);
-            Assert.IsFalse(glow.Restart());
-            Assert.IsFalse(glow.WaitAgain());
-            Assert.IsTrue(glow.IsFinished);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void StartOpacityIsKeptForEachVersion()
         {
             var glow = NewGlow();
@@ -1578,42 +1612,6 @@ namespace DynamoCoreWpfTests
             glow.Release();
 
             Assert.AreEqual(version, glow.Version);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void DismissEndsAGlowingGlowOnly()
-        {
-            var waiting = AIHaloGlow.Create(1.0, true);
-            Assert.IsFalse(waiting.Dismiss(), "Nothing to end before the node is seen.");
-
-            var glowing = NewGlow();
-            now += TimeSpan.FromSeconds(3);
-            Assert.IsTrue(glowing.Dismiss());
-            Assert.IsTrue(glowing.IsDismissed);
-            Assert.IsTrue(glowing.IsFinished);
-            Assert.IsFalse(glowing.IsGlowing);
-            Assert.IsFalse(glowing.Dismiss(), "Already dismissed.");
-
-            var fadedOut = NewGlow();
-            now += AIHaloGlow.FadeOutEnd;
-            Assert.IsFalse(fadedOut.Dismiss(), "Only the badge is left.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void DismissedGlowIgnoresRetouchAndRelease()
-        {
-            var glow = NewGlow();
-            glow.Hold();
-            glow.Dismiss();
-
-            glow.Retouch(1.0, true);
-            glow.Release();
-            now += TimeSpan.FromSeconds(1);
-
-            Assert.IsTrue(glow.IsFinished);
-            Assert.IsFalse(glow.Begin(TimeSpan.Zero));
         }
 
         #endregion

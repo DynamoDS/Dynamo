@@ -699,15 +699,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
         /// is created when the AI Assistant touches a node that is not glowing, and its clock starts
-        /// when the node comes on screen (DYN-11005). Once it has faded out or been dismissed
+        /// when the node comes on screen (DYN-11005). Once it has faded out
         /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the
-        /// record is cleared or the node is touched again. The glow changes in place (hover, Esc,
+        /// record is cleared or the node is touched again. The glow changes in place (hover,
         /// restart); each change is announced under this property's name.
         /// </summary>
         internal AIHaloGlow AIHaloGlow => aiHaloGlow;
 
         /// <summary>
-        /// True while the mouse is over the node. Esc then ends this node's glow (DYN-11005).
+        /// True while the mouse is over the node. Esc then clears this node's AI highlight (DYN-11005).
         /// </summary>
         internal bool IsAIHaloHovered => isAIHaloHovered;
 
@@ -738,7 +738,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    // A new glow, including for a node touched again after its glow faded out or was dismissed
+                    // A new glow, including for a node touched again after its glow faded out
                     var glow = AIHaloGlow.Create(strength, breathes);
                     if (isAIHaloHovered)
                     {
@@ -795,16 +795,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Ends this node's glow (Esc while hovering it). The badge and the change record stay, and
-        /// the workspace is not marked as changed.
+        /// True while the node shows an AI highlight: its halo is on screen, or it has the badge.
         /// </summary>
-        /// <returns>True if the node was glowing.</returns>
-        internal bool DismissAIHaloGlow()
-        {
-            var glow = AIHaloGlow;
-            if (glow == null || !glow.Dismiss()) return false;
+        internal bool HasVisibleAIHighlight => ShowAIBadge || AIHaloGlow?.IsGlowing == true;
 
-            RaisePropertyChanged(nameof(AIHaloGlow));
+        /// <summary>
+        /// Clears the node's AI change record (Esc while hovering it), which removes its halo and
+        /// badge. Never marks the workspace as unsaved, and the turn history is kept.
+        /// </summary>
+        /// <returns>True if the node showed an AI highlight.</returns>
+        internal bool ClearAIHighlight()
+        {
+            if (!HasVisibleAIHighlight) return false;
+
+            NodeModel.ClearAIChange();
             return true;
         }
 

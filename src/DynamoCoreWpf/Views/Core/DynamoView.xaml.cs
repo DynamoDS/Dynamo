@@ -75,7 +75,7 @@ namespace Dynamo.Controls
         internal const string McpViewExtensionId = "FAB268A8-6C83-4389-8AB8-F9AE92D6091E";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
-        private bool escEndedAIHaloGlow = false;
+        private bool escClearedAIHighlight = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private double restoreWidth = 0;
@@ -2467,8 +2467,8 @@ namespace Dynamo.Controls
 
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
-            // Esc while hovering a glowing node ends that node's glow and does nothing else
-            if (escEndedAIHaloGlow || TryEndHoveredAIHaloGlow())
+            // Esc while hovering a node with a halo or badge clears its AI highlight and does nothing else
+            if (escClearedAIHighlight || TryClearHoveredAIHighlight())
             {
                 e.Handled = true;
                 return;
@@ -2501,7 +2501,7 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private bool TryEndHoveredAIHaloGlow()
+        private bool TryClearHoveredAIHighlight()
         {
             if (IsEscKeyPressed || dynamoViewModel.BackgroundPreviewViewModel?.NavigationKeyIsDown == true)
             {
@@ -2514,12 +2514,12 @@ namespace Dynamo.Controls
                 return false;
             }
 
-            if (dynamoViewModel.CurrentSpaceViewModel?.DismissHoveredAIHaloGlow() != true)
+            if (dynamoViewModel.CurrentSpaceViewModel?.ClearHoveredAIHighlight() != true)
             {
                 return false;
             }
 
-            escEndedAIHaloGlow = true;
+            escClearedAIHighlight = true;
             return true;
         }
 
@@ -2527,9 +2527,9 @@ namespace Dynamo.Controls
         {
             if (e.Key != Key.Escape) return;
 
-            if (escEndedAIHaloGlow)
+            if (escClearedAIHighlight)
             {
-                escEndedAIHaloGlow = false;
+                escClearedAIHighlight = false;
                 IsEscKeyPressed = false;
                 e.Handled = true;
                 return;

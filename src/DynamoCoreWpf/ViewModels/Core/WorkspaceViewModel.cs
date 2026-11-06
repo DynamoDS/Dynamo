@@ -253,13 +253,13 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Ends the glow of the node under the mouse (Esc). Other glowing nodes keep glowing.
+        /// Clears the AI highlight (halo and badge) of the node under the mouse (Esc). Other nodes keep theirs.
         /// </summary>
-        /// <returns>True if the hovered node was glowing.</returns>
-        internal bool DismissHoveredAIHaloGlow()
+        /// <returns>True if the hovered node had a halo or a badge.</returns>
+        internal bool ClearHoveredAIHighlight()
         {
-            var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered && n.AIHaloGlow?.IsGlowing == true);
-            return hovered != null && hovered.DismissAIHaloGlow();
+            var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered && n.HasVisibleAIHighlight);
+            return hovered != null && hovered.ClearAIHighlight();
         }
 
         #endregion
