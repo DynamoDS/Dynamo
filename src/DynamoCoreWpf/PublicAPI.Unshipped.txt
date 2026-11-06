@@ -40,7 +40,6 @@ Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChec
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.GetGroupCollapsed(System.Guid groupId) -> bool
 Dynamo.ViewModels.WorkspaceViewModel.SetGroupCollapsed(System.Guid groupId, bool collapsed) -> void
-Dynamo.ViewModels.WorkspaceViewModel.ClearAIHighlightsCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
@@ -68,7 +67,6 @@ static Dynamo.UI.Prompts.DynamoMessageBox.ShowWithCheckbox(System.Windows.Window
 static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
 static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
-static Dynamo.Wpf.Properties.Resources.ContextMenuClearAIHighlights.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string

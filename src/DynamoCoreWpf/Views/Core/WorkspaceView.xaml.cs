@@ -1262,12 +1262,6 @@ namespace Dynamo.Views
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
 
-            // Only while a node has an AI highlight
-            ViewModel.ClearAIHighlightsCommand.RaiseCanExecuteChanged();
-            ClearAIHighlightsMenuItem.Visibility = ViewModel.ClearAIHighlightsCommand.CanExecute(null)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
             AddPythonEngineOptions(PythonEngineMenu);
             //Don't shrink. This prevents the popup menu from jumping when the height of the internal items is reduced.
             ContextMenuStackView.MinHeight = 0;

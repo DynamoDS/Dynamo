@@ -2034,18 +2034,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        /// <summary>Clears every node's AI highlight; turn history is kept.</summary>
-        internal void ClearAIHighlights(object o)
-        {
-            Model.DismissAIChanges();
-        }
-
-        /// <summary>True when any node has an AI highlight.</summary>
-        internal bool CanClearAIHighlights(object o)
-        {
-            return Model.Nodes.Any(n => n.IsRecentlyModifiedByAI);
-        }
-
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>

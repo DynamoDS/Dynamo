@@ -820,7 +820,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Starting a turn and dismissing (DYN-11002)
+        #region Starting a turn (DYN-11002)
 
         [Test]
         [Category("UnitTests")]
@@ -927,48 +927,13 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void DismissingClearsEveryRecordButKeepsTheTurnsHistory()
-        {
-            var first = AddNumberNode();
-            var second = AddNumberNode();
-            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
-            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
-
-            Workspace.DismissAIChanges();
-
-            Assert.IsNull(first.AIChange);
-            Assert.IsNull(second.AIChange);
-            CollectionAssert.AreEqual(new[] { first.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds);
-            CollectionAssert.AreEqual(new[] { second.GUID }, Workspace.GetAITurnSummary(TurnB).NodeIds);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TurnInProgressStillReportsEveryChangeAfterADismiss()
-        {
-            var before = AddNumberNode();
-            var after = AddNumberNode();
-            Workspace.RecordAINodeChange(before.GUID, AIChangeKind.Placed, TurnA);
-
-            Workspace.DismissAIChanges();
-            Workspace.RecordAINodeChange(after.GUID, AIChangeKind.Placed, TurnA);
-
-            Assert.IsNull(before.AIChange);
-            Assert.AreEqual(TurnA, after.AIChange?.TurnId);
-            CollectionAssert.AreEquivalent(new[] { before.GUID, after.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void StartingATurnAndDismissingAreNotUndoSteps()
+        public void StartingATurnIsNotAnUndoStep()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             var couldUndo = Workspace.UndoRecorder.CanUndo;
 
             Workspace.StartAITurn(TurnB);
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
-            Workspace.DismissAIChanges();
 
             Assert.AreEqual(couldUndo, Workspace.UndoRecorder.CanUndo);
         }
@@ -995,18 +960,14 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void StartingATurnAndDismissingNeverMarkTheGraphUnsaved()
+        public void StartingATurnNeverMarksTheGraphUnsaved()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             Workspace.HasUnsavedChanges = false;
 
             Workspace.StartAITurn(TurnB);
-            Assert.IsNull(node.AIChange);
-            Assert.IsFalse(Workspace.HasUnsavedChanges);
 
-            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
-            Workspace.DismissAIChanges();
             Assert.IsNull(node.AIChange);
             Assert.IsFalse(Workspace.HasUnsavedChanges);
         }

@@ -1317,18 +1317,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        /// <summary>
-        /// Clears every node's AI change record but, unlike <see cref="ClearAIChanges"/>, keeps turn history.
-        /// View-only: never marks the workspace unsaved and is not an undo step.
-        /// </summary>
-        internal void DismissAIChanges()
-        {
-            foreach (var node in Nodes)
-            {
-                node.ClearAIChange();
-            }
-        }
-
         private NodeModel FindNodeForAIRecord(Guid nodeId)
         {
             lock (nodes)
