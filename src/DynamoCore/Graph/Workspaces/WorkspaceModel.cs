@@ -1100,6 +1100,8 @@ namespace Dynamo.Graph.Workspaces
         private int lastAITurnNumber;
 
         private int aiEditDepth;
+        private int currentAIEdit;
+        private static int lastAIEdit;
 
         /// <summary>
         /// True while a <see cref="BeginAIEdit"/> scope is open; node edits then keep
@@ -1109,13 +1111,22 @@ namespace Dynamo.Graph.Workspaces
         public bool IsAIEditInProgress => Volatile.Read(ref aiEditDepth) > 0;
 
         /// <summary>
+        /// Number of the open <see cref="BeginAIEdit"/> scope, unique across workspaces; 0 when none
+        /// is open. Nested scopes share the number of the outermost one.
+        /// </summary>
+        internal int CurrentAIEdit => IsAIEditInProgress ? Volatile.Read(ref currentAIEdit) : 0;
+
+        /// <summary>
         /// Starts an AI-driven edit (DynamoMCP). Dispose to end it; disposing twice is safe and scopes
         /// nest. An undisposed scope stays open for the session, so a person's edits stop clearing AI
         /// change records.
         /// </summary>
         public IDisposable BeginAIEdit()
         {
-            Interlocked.Increment(ref aiEditDepth);
+            if (Interlocked.Increment(ref aiEditDepth) == 1)
+            {
+                Volatile.Write(ref currentAIEdit, Interlocked.Increment(ref lastAIEdit));
+            }
             return new AIEditScope(this);
         }
 

@@ -818,6 +818,32 @@ namespace Dynamo.Tests
             Assert.IsNull(property.GetSetMethod(nonPublic: true));
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void EachOutermostAIEditGetsItsOwnNumber()
+        {
+            Assert.AreEqual(0, Workspace.CurrentAIEdit, "No AI edit open");
+
+            int first;
+            using (Workspace.BeginAIEdit())
+            {
+                first = Workspace.CurrentAIEdit;
+                Assert.AreNotEqual(0, first);
+                using (Workspace.BeginAIEdit())
+                {
+                    Assert.AreEqual(first, Workspace.CurrentAIEdit, "A nested scope is part of the outer AI edit.");
+                }
+                Assert.AreEqual(first, Workspace.CurrentAIEdit);
+            }
+            Assert.AreEqual(0, Workspace.CurrentAIEdit);
+
+            using (Workspace.BeginAIEdit())
+            {
+                Assert.AreNotEqual(0, Workspace.CurrentAIEdit);
+                Assert.AreNotEqual(first, Workspace.CurrentAIEdit, "The next AI edit gets a new number.");
+            }
+        }
+
         #endregion
 
         #region Starting a turn (DYN-11002)

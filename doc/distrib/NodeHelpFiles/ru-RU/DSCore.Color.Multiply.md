@@ -1,5 +1,5 @@
 ## Подробности
-Multiply позволяет умножить отдельные каналы цвета на входное число и возвращает результирующий цвет. Обратите внимание, что результирующие значения должны быть меньше 255. В примере ниже создается цвет с помощью узлов ByARGB. Затем с помощью узла Multiply выполняется умножение цвета на число, заданное с помощью числового регулятора. Для визуализации результирующего цвета используются узел Display.ByGeometryColor и стандартный кубоид.
+Multiply will multiply the individual channels of a color by an input number, and return the resulting color. Multiplying by a number greater than 1 produces a brighter color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Multiply node to multiply the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
 ___
 ## Файл примера
 

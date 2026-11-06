@@ -2254,52 +2254,81 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Open(object parameters)
         {
-            if (CurrentSpaceViewModel != null && CurrentSpaceViewModel.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
+            Open(parameters, promptToSaveHomeSpace: false);
+        }
 
-            // try catch for exceptions thrown while opening files, say from a future version,
-            // that can't be handled reliably
+        /// <summary>
+        /// Opens a definition or workspace; see <see cref="Open(object)"/> for the parameters.
+        /// The trust decision for an untrusted file comes before the prompt to save unsaved changes,
+        /// so declining an untrusted file never asks the user to save.
+        /// </summary>
+        /// <param name="parameters">The file path, or a tuple of the path and run settings.</param>
+        /// <param name="promptToSaveHomeSpace">True to ask about unsaved changes in the home workspace
+        /// even when another workspace is current; false to ask only when the current workspace has them.</param>
+        private void Open(object parameters, bool promptToSaveHomeSpace)
+        {
             filePath = string.Empty;
             fileContents = string.Empty;
-            bool forceManualMode = false;
-            bool isTemplate = false;
+            // Everything runs inside the try, including the trust and save prompts, so a bad path or a
+            // failing prompt is reported like any other open failure instead of escaping the command.
             try
             {
-                if (parameters is Tuple<string, bool> packedParams)
-                {
-                    filePath = packedParams.Item1;
-                    forceManualMode = packedParams.Item2;
-                }
-                else if (parameters is Tuple<string, bool, bool> tupleParams)
-                {
-                    filePath = tupleParams.Item1;
-                    forceManualMode = tupleParams.Item2;
-                    isTemplate = tupleParams.Item3;
-                }
-                else
-                {
-                    filePath = parameters as string;
-                }
-
+                ParseOpenParameters(parameters, out var requestedPath, out var forceManualMode, out var isTemplate);
+                filePath = requestedPath;
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Decide whether the trust warning is needed and block the run BEFORE opening, so an
-                // untrusted graph cannot start running before the user has accepted the warning.
-                bool displayTrustWarning = ShouldForceBlockRun(filePath);
+                UntrustedFileDecision trust;
+                for (var attempt = 1; ; attempt++)
+                {
+                    // Decide about an untrusted file BEFORE anything is loaded, and before asking to save,
+                    // so declining it never loads the graph or prompts to save the current one.
+                    trust = ConfirmUntrustedFileBeforeLoad(filePath);
+                    if (trust.Declined) return;
 
-                // Execute graph open command
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate, displayTrustWarning));
+                    bool hasUnsavedChanges = promptToSaveHomeSpace
+                        ? HomeSpace.HasUnsavedChanges
+                        : CurrentSpaceViewModel != null && CurrentSpaceViewModel.HasUnsavedChanges;
+                    if (hasUnsavedChanges && !AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                        return;
+
+                    try
+                    {
+                        // When the trust prompt could not be shown before loading, block the run so an
+                        // untrusted graph cannot start running before the user accepts the post-load warning.
+                        // The content hash makes the model load only the content the user approved.
+                        ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate, trust.DisplayPostLoadWarning)
+                        {
+                            ExpectedContentHash = trust.ContentHash
+                        });
+                        break;
+                    }
+                    catch (FileChangedSincePreviewException) when (attempt < MaxTrustPromptAttempts)
+                    {
+                        // Nothing was loaded. Show the prompt again with the file's current content.
+                        model.Logger.Log($"'{filePath}' changed after it was previewed; asking again.");
+                    }
+                }
+
+                PersistTrustedLocationChoice(trust, directoryName);
 
                 // Apply annotation updates based on the preference setting
                 RefreshAnnotationDescriptions();
 
                 if (currentWorkspaceViewModel?.IsHomeSpace ?? false)
                 {
-                    UpdateFileTrustWarningUi(displayTrustWarning, directoryName);
+                    UpdateFileTrustWarningUi(trust.DisplayPostLoadWarning, directoryName);
+                    if (trust.AcceptedBeforeLoad && FileTrustViewModel != null)
+                    {
+                        FileTrustViewModel.AllowOneTimeTrust = true;
+                    }
                 }
+            }
+            catch (FileChangedSincePreviewException e)
+            {
+                // The file kept changing between preview and load. Nothing was loaded.
+                model.Logger.Log(e.Message);
+                ToastManager?.CreateRealTimeInfoWindow(WpfResources.FileTrustPreviewFileChanged);
+                return;
             }
             catch (Exception e)
             {
@@ -2341,6 +2370,136 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
+        private static void ParseOpenParameters(object parameters, out string path, out bool forceManualMode, out bool isTemplate)
+        {
+            forceManualMode = false;
+            isTemplate = false;
+            if (parameters is Tuple<string, bool> packedParams)
+            {
+                path = packedParams.Item1;
+                forceManualMode = packedParams.Item2;
+            }
+            else if (parameters is Tuple<string, bool, bool> tupleParams)
+            {
+                path = tupleParams.Item1;
+                forceManualMode = tupleParams.Item2;
+                isTemplate = tupleParams.Item3;
+            }
+            else
+            {
+                path = parameters as string;
+            }
+        }
+
+        /// <summary>
+        /// How many times the trust prompt is shown for one open or insert when the file keeps changing
+        /// between the preview and the load.
+        /// </summary>
+        private const int MaxTrustPromptAttempts = 2;
+
+        /// <summary>
+        /// Result of the trust prompt shown before a graph from an untrusted location is loaded.
+        /// </summary>
+        internal enum TrustedLocationPromptResult
+        {
+            /// <summary>The prompt could not be shown; fall back to the post-load trust warning.</summary>
+            NotShown,
+            /// <summary>The user declined; the graph must not be loaded.</summary>
+            Declined,
+            /// <summary>The user accepted; the graph can be loaded and run.</summary>
+            Accepted
+        }
+
+        /// <summary>
+        /// Shows the trust prompt for an untrusted file before it is loaded. Takes the file path and
+        /// returns the user's answer, whether "trust this location" was checked, and the hash of the
+        /// file content that was previewed (null when the file could not be read).
+        /// Defaults to the modal preview window; tests can replace it.
+        /// </summary>
+        internal Func<string, (TrustedLocationPromptResult result, bool trustLocation, string contentHash)> TrustedLocationPrompt { get; set; }
+
+        private (TrustedLocationPromptResult result, bool trustLocation, string contentHash) ShowTrustedLocationPreview(string path)
+        {
+            // Without a loaded main window there is nothing to own a modal prompt.
+            if (Owner == null || !Owner.IsLoaded) return (TrustedLocationPromptResult.NotShown, false, null);
+
+            var window = new Wpf.Views.FileTrust.FileTrustPreviewWindow(path, Model.Logger) { Owner = Owner };
+            window.ShowDialog();
+            return (window.Accepted ? TrustedLocationPromptResult.Accepted : TrustedLocationPromptResult.Declined,
+                window.TrustLocation,
+                window.ContentHash);
+        }
+
+        /// <summary>
+        /// The user's decision about a file from an untrusted location, made before it is loaded.
+        /// </summary>
+        private sealed class UntrustedFileDecision
+        {
+            /// <summary>The user declined; nothing must be loaded.</summary>
+            internal bool Declined { get; init; }
+
+            /// <summary>The user accepted the file in the pre-load prompt.</summary>
+            internal bool AcceptedBeforeLoad { get; init; }
+
+            /// <summary>The pre-load prompt was not shown, so the post-load warning and run block apply.</summary>
+            internal bool DisplayPostLoadWarning { get; init; }
+
+            /// <summary>"Trust this location" was checked. Applied only once the file has loaded.</summary>
+            internal bool TrustLocation { get; init; }
+
+            /// <summary>Hash of the previewed content, which the load must match; null to skip the check.</summary>
+            internal string ContentHash { get; init; }
+        }
+
+        /// <summary>
+        /// Asks the user whether to load a file from an untrusted location, before anything in it is loaded.
+        /// Nothing is persisted here: the trusted-location choice is applied by
+        /// <see cref="PersistTrustedLocationChoice"/> once the file has actually loaded.
+        /// </summary>
+        /// <param name="path">The file about to be opened or inserted.</param>
+        private UntrustedFileDecision ConfirmUntrustedFileBeforeLoad(string path)
+        {
+            if (!ShouldForceBlockRun(path)) return new UntrustedFileDecision();
+
+            var prompt = TrustedLocationPrompt ?? ShowTrustedLocationPreview;
+            var (result, trustLocation, contentHash) = prompt(path);
+
+            switch (result)
+            {
+                case TrustedLocationPromptResult.NotShown:
+                    return new UntrustedFileDecision { DisplayPostLoadWarning = true };
+
+                case TrustedLocationPromptResult.Declined:
+                    if (trustLocation)
+                    {
+                        ToastManager?.CreateRealTimeInfoWindow(WpfResources.TrustLocationSkippedNotification);
+                    }
+                    return new UntrustedFileDecision { Declined = true };
+
+                default:
+                    return new UntrustedFileDecision
+                    {
+                        AcceptedBeforeLoad = true,
+                        TrustLocation = trustLocation,
+                        ContentHash = contentHash
+                    };
+            }
+        }
+
+        /// <summary>
+        /// Adds the file's folder to the trusted locations when the user asked for it in the prompt.
+        /// Call only after the file has loaded, so a cancelled or failed open never trusts the folder.
+        /// </summary>
+        private void PersistTrustedLocationChoice(UntrustedFileDecision decision, string directoryName)
+        {
+            if (!decision.AcceptedBeforeLoad || !decision.TrustLocation) return;
+
+            if (PreferenceSettings.AddTrustedLocation(directoryName))
+            {
+                ToastManager?.CreateRealTimeInfoWindow(string.Format(WpfResources.TrustLocationAddedNotification, directoryName));
+            }
+        }
+
         private void UpdateFileTrustWarningUi(bool displayTrustWarning, string directoryName)
         {
             if (FileTrustViewModel == null) return;
@@ -2373,6 +2532,16 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Insert(object parameters)
         {
+            TryInsert(parameters);
+        }
+
+        /// <summary>
+        /// Inserts a definition or a custom node; see <see cref="Insert(object)"/> for the parameters.
+        /// </summary>
+        /// <param name="parameters">The file path, or a tuple of the path and the manual run flag.</param>
+        /// <returns>True when the file was inserted; false when the user declined it or inserting failed.</returns>
+        private bool TryInsert(object parameters)
+        {
             // try catch for exceptions thrown while opening files, say from a future version,
             // that can't be handled reliably
             filePath = string.Empty;
@@ -2392,18 +2561,47 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Decide whether the trust warning is needed and block the run BEFORE inserting, so an
-                // untrusted graph cannot start running before the user has accepted the warning.
-                bool displayTrustWarning = ShouldForceBlockRun(filePath);
+                UntrustedFileDecision trust;
+                for (var attempt = 1; ; attempt++)
+                {
+                    // Decide about an untrusted file BEFORE inserting, so a declined graph is never inserted.
+                    trust = ConfirmUntrustedFileBeforeLoad(filePath);
+                    if (trust.Declined) return false;
 
-                // Execute graph insert command
-                ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode, displayTrustWarning));
+                    try
+                    {
+                        // When the trust prompt could not be shown before inserting, block the run so the
+                        // untrusted graph cannot run before it is accepted. The content hash makes the model
+                        // insert only the content the user approved.
+                        ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode, trust.DisplayPostLoadWarning)
+                        {
+                            ExpectedContentHash = trust.ContentHash
+                        });
+                        break;
+                    }
+                    catch (FileChangedSincePreviewException) when (attempt < MaxTrustPromptAttempts)
+                    {
+                        // Nothing was inserted. Show the prompt again with the file's current content.
+                        model.Logger.Log($"'{filePath}' changed after it was previewed; asking again.");
+                    }
+                }
+
+                PersistTrustedLocationChoice(trust, directoryName);
                 this.FitViewCommand.Execute(null);
 
-                if (currentWorkspaceViewModel?.IsHomeSpace ?? false)
+                // An insert accepted in the preview prompt leaves the trust state of the current
+                // workspace as it was, so only the legacy post-load warning updates the popup.
+                if (!trust.AcceptedBeforeLoad && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
-                    UpdateFileTrustWarningUi(displayTrustWarning, directoryName);
+                    UpdateFileTrustWarningUi(trust.DisplayPostLoadWarning, directoryName);
                 }
+            }
+            catch (FileChangedSincePreviewException e)
+            {
+                // The file kept changing between preview and insert. Nothing was inserted.
+                model.Logger.Log(e.Message);
+                ToastManager?.CreateRealTimeInfoWindow(WpfResources.FileTrustPreviewFileChanged);
+                return false;
             }
             catch (Exception e)
             {
@@ -2433,9 +2631,10 @@ namespace Dynamo.ViewModels
                     throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
-                return;
+                return false;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
+            return true;
         }
 
         internal void OpenOnboardingGuideFile()
@@ -2554,12 +2753,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
         {
-            if (HomeSpace.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
-
+            // Unsaved changes are handled by Open, after the trust decision for the chosen file.
             bool isTemplate = parameter is string s && string.Equals(s, "Template", StringComparison.Ordinal);
             var fileExtensions = isTemplate ? "*.dyn" : "*.dyn;*.dyf";
             var dialogTitle = isTemplate
@@ -2626,11 +2820,11 @@ namespace Dynamo.ViewModels
                     if (isTemplate)
                     {
                         // File opening API which does not modify the original template file
-                        Open(new Tuple<string, bool, bool>(_fileDialog.FileName, _fileDialog.RunManualMode, true));
+                        Open(new Tuple<string, bool, bool>(_fileDialog.FileName, _fileDialog.RunManualMode, true), promptToSaveHomeSpace: true);
                     }
                     else
                     {
-                        Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                        Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode), promptToSaveHomeSpace: true);
                         LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
                     }
                 }
@@ -2718,9 +2912,9 @@ namespace Dynamo.ViewModels
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
-                    Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
-
-                    if (HomeSpace.RunSettings.RunType != RunType.Manual)
+                    // Nothing changes in the current workspace when the insert is declined or fails.
+                    if (TryInsert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode))
+                        && HomeSpace.RunSettings.RunType != RunType.Manual)
                     {
                         ToastManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
                         HomeSpace.RunSettings.RunType = RunType.Manual;
@@ -2736,12 +2930,7 @@ namespace Dynamo.ViewModels
 
         private void OpenRecent(object path)
         {
-            // Make sure user get chance to save unsaved changes first
-            if (CurrentSpaceViewModel.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
+            // Open asks to save unsaved changes, after the trust decision for the file.
             this.Open(path as string);
         }
 
