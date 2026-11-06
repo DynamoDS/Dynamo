@@ -253,13 +253,24 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Clears the AI highlight (halo and badge) of the node under the mouse (Esc). Other nodes keep theirs.
+        /// Clears the AI highlight (halo and badge) of the node under the mouse (Esc). If that node is
+        /// selected, clears every selected node that shows one. The selection itself is kept.
         /// </summary>
         /// <returns>True if the hovered node had a halo or a badge.</returns>
         internal bool ClearHoveredAIHighlight()
         {
             var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered && n.HasVisibleAIHighlight);
-            return hovered != null && hovered.ClearAIHighlight();
+            if (hovered == null) return false;
+
+            var targets = hovered.IsSelected
+                ? Nodes.Where(n => n.IsSelected && n.HasVisibleAIHighlight).ToList()
+                : new List<NodeViewModel> { hovered };
+
+            foreach (var node in targets)
+            {
+                node.ClearAIHighlight();
+            }
+            return true;
         }
 
         #endregion

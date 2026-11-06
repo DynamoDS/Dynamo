@@ -773,6 +773,92 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void EscOnASelectedNodeClearsTheWholeSelection()
+        {
+            var selected = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            var notSelected = AddNumberNode();
+            foreach (var node in selected.Append(notSelected))
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(selected);
+                ViewModelOf(selected[0]).SetAIHaloHovered(true);
+
+                Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+                DispatcherUtil.DoEvents();
+
+                foreach (var node in selected)
+                {
+                    Assert.IsFalse(node.IsRecentlyModifiedByAI, "Every selected node is cleared.");
+                    Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+                    Assert.IsTrue(node.IsSelected, "The selection is kept.");
+                }
+                Assert.IsTrue(notSelected.IsRecentlyModifiedByAI, "Nodes outside the selection keep their highlight.");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscOnANodeOutsideTheSelectionClearsOnlyThatNode()
+        {
+            var selected = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
+            var hovered = AddNumberNode();
+            foreach (var node in selected.Append(hovered))
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(selected);
+                ViewModelOf(hovered).SetAIHaloHovered(true);
+
+                Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+
+                Assert.IsFalse(hovered.IsRecentlyModifiedByAI);
+                Assert.IsTrue(selected.All(n => n.IsRecentlyModifiedByAI), "The selection is left alone.");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscOnASelectedNodeWithoutAHighlightDoesNothing()
+        {
+            var plain = AddNumberNode();
+            var touched = AddNumberNode();
+            Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(new[] { plain, touched });
+                ViewModelOf(plain).SetAIHaloHovered(true);
+
+                Assert.IsFalse(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight(),
+                    "Esc acts on what is under the mouse, so it keeps its usual meaning here.");
+                Assert.IsTrue(touched.IsRecentlyModifiedByAI);
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NodeTouchedAgainWhileGlowingRestartsItsGlow()
         {
             var now = TimeSpan.FromMinutes(1);
@@ -972,6 +1058,15 @@ namespace DynamoCoreWpfTests
                 Thread.Sleep(15);
             }
             return condition();
+        }
+
+        private static void SelectNodes(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                Dynamo.Selection.DynamoSelection.Instance.Selection.Add(node);
+            }
+            DispatcherUtil.DoEvents();
         }
 
         private static Rect AroundNode(NodeModel node)

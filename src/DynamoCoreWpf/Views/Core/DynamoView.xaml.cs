@@ -2467,7 +2467,8 @@ namespace Dynamo.Controls
 
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
-            // Esc while hovering a node with a halo or badge clears its AI highlight and does nothing else
+            // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
+            // selection's, if the node is selected) and does nothing else
             if (escClearedAIHighlight || TryClearHoveredAIHighlight())
             {
                 e.Handled = true;
