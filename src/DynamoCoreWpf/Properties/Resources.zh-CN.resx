@@ -3149,6 +3149,21 @@
   <data name="FileTrustWarningPopupYes" xml:space="preserve">
     <value>是</value>
   </data>
+  <data name="FileTrustPreviewCaption" xml:space="preserve">
+    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+  </data>
+  <data name="FileTrustPreviewFileChanged" xml:space="preserve">
+    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+  </data>
+  <data name="FileTrustPreviewDecline" xml:space="preserve">
+    <value>No, don't open</value>
+  </data>
+  <data name="FileTrustPreviewLoading" xml:space="preserve">
+    <value>正在加载预览...</value>
+  </data>
+  <data name="FileTrustPreviewUnavailable" xml:space="preserve">
+    <value>No preview available for this file.</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>在解决警告之前图形执行处于暂停状态</value>
   </data>
