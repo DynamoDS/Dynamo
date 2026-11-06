@@ -22,8 +22,9 @@ namespace DynamoCoreWpfTests
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
     /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), its clock
-    /// (DYN-11005: starts on screen, hover holds it, Esc clears the halo and badge, a new touch restarts it), and the
-    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified.
+    /// (DYN-11005: starts on screen, hover holds it, Esc clears the halo and badge, a new touch restarts it), the
+    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified, and the badge that rests
+    /// on the node until it is acknowledged (DYN-11006).
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
     {
@@ -1033,6 +1034,132 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeViewModel.AIHaloGlow.IsGlowing, "A new change gets a new glow.");
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility, "And its badge back.");
+        }
+
+        #endregion
+
+        #region Resting badge (DYN-11006)
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeStaysLongAfterTheGlowFades()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeView = ViewOf(node);
+
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromMinutes(10);
+            nodeView.UpdateAIHalo();
+
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility, "No glow.");
+            Assert.AreEqual(Visibility.Visible, nodeView.AIBadge.Visibility, "The badge rests on the node.");
+            Assert.IsTrue(node.IsRecentlyModifiedByAI);
+
+            // A view rebuilt later (for example after switching tabs) shows the badge but no glow
+            var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
+            rebuilt.UpdateAIHalo();
+            Assert.IsNull(rebuilt.AIHalo);
+            Assert.IsTrue(ViewModelOf(node).ShowAIBadge);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeKeepsNothingAfterTheGlowFades()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            var nodeView = ViewOf(node);
+
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
+            nodeView.UpdateAIHalo();
+
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility);
+            Assert.IsNull(nodeView.AIBadge, "Moved nodes never get a badge.");
+            Assert.IsTrue(node.IsRecentlyModifiedByAI, "The change record is still there.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeStaysThroughPanningHoverAndTheHomePage()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeViewModel = ViewModelOf(node);
+
+            // Pan away and back
+            var zoomBorder = WorkspaceViewOf().zoomBorder;
+            zoomBorder.SetTranslateTransformOrigin(new(-OffScreenX, 0));
+            DispatcherUtil.DoEvents();
+            zoomBorder.SetTranslateTransformOrigin(new(0, 0));
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after panning");
+
+            // Hover and leave
+            nodeViewModel.SetAIHaloHovered(true);
+            nodeViewModel.SetAIHaloHovered(false);
+            AssertBadgeRests(node, "after hovering");
+
+            // Visit the Home page and come back
+            ViewModel.ShowStartPage = true;
+            ViewModel.ShowStartPage = false;
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after the Home page");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectingOrMovingTheNodeKeepsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(new[] { node });
+                AssertBadgeRests(node, "while selected");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after deselecting");
+
+            // Moving a node is not an edit that takes it over
+            node.X += 200;
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after moving");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EditingTheNodeClearsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            // The user renames the node: they now own it
+            node.Name = "Renamed";
+            DispatcherUtil.DoEvents();
+
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsNull(ViewModelOf(node).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+        }
+
+        private void AssertBadgeRests(NodeModel node, string when)
+        {
+            Assert.IsTrue(node.IsRecentlyModifiedByAI, $"The change record is kept {when}.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility, $"The badge stays {when}.");
         }
 
         #endregion
