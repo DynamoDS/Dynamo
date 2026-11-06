@@ -129,6 +129,8 @@ namespace Dynamo.Controls
         private Rectangle nodeBackground;
         private Grid aiHalo;
         private Brush nodeBorderBrushWithoutHalo;
+        private AnimationClock aiHaloClock;
+        private AIHaloGlow aiHaloClockGlow;
         private Grid aiBadge;
         private TextBlock aiBadgeToolTipText;
         private ItemsControl outputPortControl;
@@ -1365,6 +1367,9 @@ namespace Dynamo.Controls
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
 
+            // The glow lives on the view model; a rebuilt view resumes it
+            StopAIHaloAnimation();
+
             nameBackground.MouseDown -= NameBlock_OnMouseDown;
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
             EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
@@ -1554,7 +1559,7 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(NodeViewModel.AIHaloOpacity))
+            if (e.PropertyName == nameof(NodeViewModel.AIHaloGlow))
             {
                 UpdateAIHalo();
             }
@@ -1570,7 +1575,15 @@ namespace Dynamo.Controls
         /// </summary>
         internal FrameworkElement AIHalo => aiHalo;
 
-        private void UpdateAIHalo()
+        /// <summary>
+        /// The clock playing the halo's glow, or null when none is playing. Exposed for tests.
+        /// </summary>
+        internal AnimationClock AIHaloClock => aiHaloClock;
+
+        /// <summary>
+        /// Shows, plays, resumes or hides the halo to match the view model's glow. Internal for tests.
+        /// </summary>
+        internal void UpdateAIHalo()
         {
             if (!Dispatcher.CheckAccess())
             {
@@ -1578,16 +1591,23 @@ namespace Dynamo.Controls
                 return;
             }
 
-            var opacity = ViewModel?.AIHaloOpacity ?? 0;
-            if (opacity <= 0)
+            var glow = ViewModel?.AIHaloGlow;
+            if (glow == null || glow.IsFinished)
             {
-                if (aiHalo != null)
-                {
-                    aiHalo.Visibility = Visibility.Collapsed;
-                    nodeBorder.BorderBrush = nodeBorderBrushWithoutHalo;
-                }
+                HideAIHalo();
                 return;
             }
+
+            // Already playing this glow
+            if (aiHaloClock != null && ReferenceEquals(aiHaloClockGlow, glow))
+            {
+                return;
+            }
+
+            // A node touched again restarts its glow from where it is now, so it never blinks off.
+            // A new or hidden halo starts from 0.
+            var startOpacity = aiHalo?.Visibility == Visibility.Visible ? aiHalo.Opacity : 0;
+            StopAIHaloAnimation();
 
             if (aiHalo == null)
             {
@@ -1596,13 +1616,59 @@ namespace Dynamo.Controls
                 grid.Children.Add(aiHalo);
             }
 
-            aiHalo.Opacity = opacity;
+            // Base value until the animation's first frame, so the halo never flashes at full strength
+            aiHalo.Opacity = startOpacity;
             aiHalo.Visibility = Visibility.Visible;
 
             // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
             // pale ring between the node and the glow, so it is hidden while the halo is on. The
             // border keeps its thickness, so the node's size and layout do not change.
             nodeBorder.BorderBrush = Brushes.Transparent;
+
+            // Only the opacity animates. The blurred glow is a cached bitmap, so this never re-blurs.
+            var clock = glow.CreateAnimation(startOpacity).CreateClock();
+            clock.Completed += AIHaloClock_Completed;
+            aiHaloClock = clock;
+            aiHaloClockGlow = glow;
+            aiHalo.ApplyAnimationClock(UIElement.OpacityProperty, clock);
+
+            // A view rebuilt mid-glow (for example after switching tabs) picks up where the glow is
+            var elapsed = glow.Elapsed;
+            if (elapsed > TimeSpan.Zero)
+            {
+                clock.Controller.Seek(elapsed, TimeSeekOrigin.BeginTime);
+            }
+        }
+
+        private void AIHaloClock_Completed(object sender, EventArgs e)
+        {
+            // Ignore a glow that was replaced before it finished
+            if (ReferenceEquals(sender, aiHaloClock))
+            {
+                HideAIHalo();
+            }
+        }
+
+        private void HideAIHalo()
+        {
+            StopAIHaloAnimation();
+
+            if (aiHalo != null && aiHalo.Visibility != Visibility.Collapsed)
+            {
+                aiHalo.Visibility = Visibility.Collapsed;
+                nodeBorder.BorderBrush = nodeBorderBrushWithoutHalo;
+            }
+        }
+
+        private void StopAIHaloAnimation()
+        {
+            if (aiHaloClock == null) return;
+
+            aiHaloClock.Completed -= AIHaloClock_Completed;
+            aiHaloClock.Controller?.Stop();
+            aiHalo?.ApplyAnimationClock(UIElement.OpacityProperty, null);
+            aiHaloClock = null;
+            aiHaloClockGlow = null;
         }
 
         private static Grid CreateAIHalo()

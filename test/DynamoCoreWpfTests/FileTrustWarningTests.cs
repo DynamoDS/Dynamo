@@ -1,6 +1,13 @@
-using Dynamo.Graph.Workspaces;
-using NUnit.Framework;
 using System.IO;
+using System.Linq;
+using System.Windows.Media;
+using Dynamo.Exceptions;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.FileTrust;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -69,6 +76,256 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ViewModel.HomeSpace.RunSettings.ForceBlockRun);
             Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
             Assert.IsTrue(string.IsNullOrEmpty(ViewModel.FileTrustViewModel.DynFileDirectoryName));
+        }
+
+        /// <summary>
+        /// Copies a known graph into an untrusted temp folder so the trust gate applies to it.
+        /// </summary>
+        private string CopyGraphToUntrustedFolder()
+        {
+            trustedDir = Path.Combine(TempFolder, "untrusted");
+            Directory.CreateDirectory(trustedDir);
+            var source = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\CustomNodes\TestAdd.dyn");
+            var target = Path.Combine(trustedDir, "UntrustedGraph.dyn");
+            File.Copy(source, target, overwrite: true);
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+            return target;
+        }
+
+        [Test]
+        public void WhenUntrustedFileDeclinedInPreviewPromptThenGraphIsNotLoaded()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            string promptedPath = null;
+            ViewModel.TrustedLocationPrompt = p =>
+            {
+                promptedPath = p;
+                return (DynamoViewModel.TrustedLocationPromptResult.Declined, false, null);
+            };
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.AreEqual(path, promptedPath);
+            Assert.AreNotEqual(path, ViewModel.HomeSpace.FileName);
+            Assert.IsEmpty(ViewModel.HomeSpace.Nodes);
+            Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
+        }
+
+        [Test]
+        public void WhenUntrustedFileAcceptedInPreviewPromptThenGraphLoadsWithoutRunBlock()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, false, null);
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.AreEqual(path, ViewModel.HomeSpace.FileName);
+            Assert.IsNotEmpty(ViewModel.HomeSpace.Nodes);
+            Assert.IsFalse(ViewModel.HomeSpace.RunSettings.ForceBlockRun);
+            Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
+            Assert.IsTrue(ViewModel.FileTrustViewModel.AllowOneTimeTrust);
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+        }
+
+        [Test]
+        public void WhenUntrustedFileAcceptedWithTrustLocationThenLocationIsTrusted()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, true, null);
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.IsTrue(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+            Assert.AreEqual(path, ViewModel.HomeSpace.FileName);
+        }
+
+        [Test]
+        public void WhenFileChangesAfterPreviewThenPromptIsShownAgainForNewContent()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            var currentHash = FileChangedSincePreviewException.ComputeContentHash(File.ReadAllText(path));
+            var prompts = 0;
+            ViewModel.TrustedLocationPrompt = _ =>
+            {
+                prompts++;
+                // The first answer approves content that no longer matches the file on disk.
+                var hash = prompts == 1 ? FileChangedSincePreviewException.ComputeContentHash("older content") : currentHash;
+                return (DynamoViewModel.TrustedLocationPromptResult.Accepted, false, hash);
+            };
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.AreEqual(2, prompts);
+            Assert.AreEqual(path, ViewModel.HomeSpace.FileName);
+        }
+
+        [Test]
+        public void WhenFileKeepsChangingAfterPreviewThenNothingIsLoaded()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            var prompts = 0;
+            ViewModel.TrustedLocationPrompt = _ =>
+            {
+                prompts++;
+                return (DynamoViewModel.TrustedLocationPromptResult.Accepted, true, FileChangedSincePreviewException.ComputeContentHash("older content"));
+            };
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.AreEqual(2, prompts);
+            Assert.AreNotEqual(path, ViewModel.HomeSpace.FileName);
+            Assert.IsEmpty(ViewModel.HomeSpace.Nodes);
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+        }
+
+        [Test]
+        public void WhenSaveIsCancelledAfterChoosingToTrustLocationThenLocationIsNotTrusted()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Accepted, true, null);
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+            // Leaving Success false is the same as the user cancelling the save prompt.
+            WorkspaceSaveEventHandler cancelSave = (o, e) => { };
+            ViewModel.RequestUserSaveWorkflow += cancelSave;
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+                ViewModel.RequestUserSaveWorkflow -= cancelSave;
+            }
+
+            Assert.AreNotEqual(path, ViewModel.HomeSpace.FileName);
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
+        }
+
+        [Test]
+        public void WhenUntrustedFileDeclinedFromOpenRecentThenUserIsNotAskedToSave()
+        {
+            var path = CopyGraphToUntrustedFolder();
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.Declined, false, null);
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+            var saveRequests = 0;
+            WorkspaceSaveEventHandler handler = (o, e) => saveRequests++;
+            ViewModel.RequestUserSaveWorkflow += handler;
+
+            DynamoModel.IsTestMode = false;
+            try
+            {
+                ViewModel.OpenRecentCommand.Execute(path);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = true;
+                ViewModel.RequestUserSaveWorkflow -= handler;
+            }
+
+            Assert.AreEqual(0, saveRequests);
+            Assert.IsTrue(ViewModel.HomeSpace.HasUnsavedChanges);
+        }
+
+        [TestCase("#FFC1D676", 0xC1, 0xD6, 0x76)]
+        [TestCase("#A4E1FF", 0xA4, 0xE1, 0xFF)]
+        public void WhenGroupColorIsHexThenPreviewUsesIt(string color, int red, int green, int blue)
+        {
+            var brush = (SolidColorBrush)GraphPreviewRenderer.ParseGroupBrush(color);
+
+            Assert.AreEqual(Color.FromArgb(0x80, (byte)red, (byte)green, (byte)blue), brush.Color);
+        }
+
+        [TestCase("ContextColor file://server/share/profile.icc 1,0,0,0")]
+        [TestCase("sc#1,0,0,0")]
+        [TestCase("Red")]
+        [TestCase("#GGGGGG")]
+        [TestCase("#12345")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void WhenGroupColorIsNotLiteralHexThenPreviewUsesDefault(string color)
+        {
+            var fallback = (SolidColorBrush)GraphPreviewRenderer.ParseGroupBrush(null);
+
+            var brush = (SolidColorBrush)GraphPreviewRenderer.ParseGroupBrush(color);
+
+            Assert.AreSame(fallback, brush);
+        }
+
+        [Test]
+        public void WhenDynJsonReadForPreviewThenLayoutIsReadWithoutLoadingNodes()
+        {
+            var json = JObject.Parse(@"{
+                ""Nodes"": [
+                    { ""Id"": ""a"", ""Inputs"": [], ""Outputs"": [ { ""Id"": ""a-out"" } ] },
+                    { ""Id"": ""b"", ""Inputs"": [ { ""Id"": ""b-in0"" }, { ""Id"": ""b-in1"" } ], ""Outputs"": [] }
+                ],
+                ""Connectors"": [ { ""Start"": ""a-out"", ""End"": ""b-in1"" } ],
+                ""View"": {
+                    ""NodeViews"": [
+                        { ""Id"": ""a"", ""Name"": ""Number"", ""X"": 10.0, ""Y"": 20.0 },
+                        { ""Id"": ""b"", ""Name"": ""Add"", ""X"": 300.0, ""Y"": 40.0 }
+                    ],
+                    ""Annotations"": [
+                        { ""Title"": ""A group"", ""Nodes"": [ ""a"", ""b"" ], ""Left"": 0.0, ""Top"": 0.0, ""Width"": 500.0, ""Height"": 200.0, ""Background"": ""#FFC1D676"" },
+                        { ""Title"": ""A note"", ""Nodes"": [], ""Left"": 50.0, ""Top"": 250.0, ""Width"": 0.0, ""Height"": 0.0 }
+                    ]
+                }
+            }");
+
+            var preview = GraphPreview.FromJson(json);
+
+            Assert.AreEqual(2, preview.Nodes.Count);
+            Assert.AreEqual("Add", preview.Nodes[1].Name);
+            Assert.AreEqual(2, preview.Nodes[1].InputCount);
+            Assert.AreEqual(1, preview.Connectors.Count);
+            Assert.AreEqual(0, preview.Connectors[0].StartNode);
+            Assert.AreEqual(1, preview.Connectors[0].EndNode);
+            Assert.AreEqual(1, preview.Connectors[0].EndPortIndex);
+            Assert.AreEqual("A group", preview.Groups.Single().Title);
+            Assert.AreEqual("A note", preview.Notes.Single().Text);
+            Assert.IsNotNull(GraphPreviewRenderer.Render(preview, 1.0));
         }
     }
 }

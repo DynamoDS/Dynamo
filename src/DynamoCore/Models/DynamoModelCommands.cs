@@ -51,7 +51,7 @@ namespace Dynamo.Models
             bool forceManualMode = command.ForceManualExecutionMode;
             bool isTemplate = command.IsTemplate;
             bool forceBlockRun = command.ForceBlockRun;
-            OpenFileFromPathCore(filePath, forceManualMode, forceBlockRun);
+            OpenFileFromPathCore(filePath, forceManualMode, forceBlockRun, command.ExpectedContentHash);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
@@ -61,7 +61,7 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
-            OpenTemplateFromPath(filePath, forceManualMode);
+            OpenTemplateFromPathCore(filePath, forceManualMode, command.ExpectedContentHash);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
@@ -76,7 +76,7 @@ namespace Dynamo.Models
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
             bool forceBlockRun = command.ForceBlockRun;
-            InsertFileFromPathCore(filePath, forceManualMode, forceBlockRun);
+            InsertFileFromPathCore(filePath, forceManualMode, forceBlockRun, command.ExpectedContentHash);
         }
 
         private void RunCancelImpl(RunCancelCommand command)

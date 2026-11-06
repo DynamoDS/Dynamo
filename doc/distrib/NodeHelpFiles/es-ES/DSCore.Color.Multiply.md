@@ -1,5 +1,5 @@
 ## En detalle:
-Multiply multiplicará los canales individuales de un color por un número de entrada y devolverá el color resultante. Tenga en cuenta que los valores resultantes deben ser inferiores a 255. En el siguiente ejemplo, se crea un color mediante nodos ByARGB. A continuación, se utiliza un nodo Multiply para multiplicar el color por un número gestionado con un control deslizante de número. Se utiliza un nodo Display.ByGeometryColor con un ortoedro por defecto para visualizar el color resultante.
+Multiply will multiply the individual channels of a color by an input number, and return the resulting color. Multiplying by a number greater than 1 produces a brighter color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Multiply node to multiply the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
 ___
 ## Archivo de ejemplo
 

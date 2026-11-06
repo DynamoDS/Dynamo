@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
@@ -586,10 +587,17 @@ namespace Dynamo.UI.Views
 
             try
             {
+                // This is called from a WebView2 host-object callback. Opening can show modal prompts
+                // (untrusted-location preview, save changes, missing file), and a nested message loop
+                // inside a WebView2 callback stalls other WebView2 controls such as the library.
+                // Leave the callback before doing any of that, as ShowOpenDialogAndOpenResultAsync does.
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+
                 // A childless sample folder can still reach here as a card; it is not a graph
                 // to open, so bail out instead of reporting it as a missing file (DYN-10736).
                 if (!IsSampleGraphPath(path))
                 {
+                    await ClearLoadingStateAsync();
                     return;
                 }
 
@@ -611,12 +619,29 @@ namespace Dynamo.UI.Views
                 {
                     dvm.OpenCommand.Execute(openArg);
                 }
+
+                // When the open was declined or cancelled the start page stays visible, so no
+                // ShowStartPage change reaches the page to clear its loading overlay.
+                if (dvm.ShowStartPage)
+                {
+                    await ClearLoadingStateAsync();
+                }
             }
             catch (Exception ex)
             {
                 startPage?.DynamoViewModel?.Model?.Logger?.Log("Failed to open file from Dynamo Home.");
                 startPage?.DynamoViewModel?.Model?.Logger?.Log(ex);
             }
+        }
+
+        /// <summary>
+        /// Clears the loading overlay the page shows after a graph card is clicked, by sending the
+        /// same "start page is visible" notification the page gets when Dynamo returns to Home.
+        /// </summary>
+        private async Task ClearLoadingStateAsync()
+        {
+            if (dynWebView?.CoreWebView2 == null) return;
+            await dynWebView.CoreWebView2.ExecuteScriptAsync("window.setShowStartPageChanged('True')");
         }
 
         private bool IsListedHomePageTemplate(string path)
