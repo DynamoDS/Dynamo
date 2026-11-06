@@ -3246,6 +3246,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read-only preview. Nodes, scripts, and packages load only after you choose Yes..
+        /// </summary>
+        public static string FileTrustPreviewCaption {
+            get {
+                return ResourceManager.GetString("FileTrustPreviewCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file changed while it was being opened, so it wasn&apos;t opened. Open it again to review the latest version..
+        /// </summary>
+        public static string FileTrustPreviewFileChanged {
+            get {
+                return ResourceManager.GetString("FileTrustPreviewFileChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, don&apos;t open.
+        /// </summary>
+        public static string FileTrustPreviewDecline {
+            get {
+                return ResourceManager.GetString("FileTrustPreviewDecline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading preview....
+        /// </summary>
+        public static string FileTrustPreviewLoading {
+            get {
+                return ResourceManager.GetString("FileTrustPreviewLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No preview available for this file..
+        /// </summary>
+        public static string FileTrustPreviewUnavailable {
+            get {
+                return ResourceManager.GetString("FileTrustPreviewUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trust this file’s location in the future..
         /// </summary>
         public static string FileTrustWarningCheckBoxText {
