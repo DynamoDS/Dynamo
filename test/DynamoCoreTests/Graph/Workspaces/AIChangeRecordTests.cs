@@ -945,6 +945,40 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void LateChangeFromAnEarlierTurnNeverBringsBackARecordClearedByANewTurn()
+        {
+            // Turn A takes the node over from an older turn, then a late call for A arrives after B started
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, "turn-older", "Value", "1", "2");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "2", "3");
+
+            Workspace.StartAITurn(TurnB);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "3", "2");
+
+            Assert.IsNull(node.AIChange, "The older turn's record, cleared when turn B started, must not come back.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnInsideItsAIEditClearsEarlierTurnsRecords()
+        {
+            // DynamoMCP starts a turn at its first recorded change, inside that turn's BeginAIEdit scope
+            var earlier = AddNumberNode();
+            var placed = AddNumberNode();
+            Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA);
+
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnB);
+            });
+
+            Assert.IsNull(earlier.AIChange);
+            Assert.AreEqual(TurnB, placed.AIChange?.TurnId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void StartingATurnWithoutATurnIdIsRejected()
         {
             Assert.Throws<ArgumentException>(() => Workspace.StartAITurn(null));
@@ -956,12 +990,18 @@ namespace Dynamo.Tests
         public void StartingATurnIsNotAnUndoStep()
         {
             var node = AddNumberNode();
+            using (Workspace.UndoRecorder.BeginActionGroup())
+            {
+                Workspace.UndoRecorder.RecordCreationForUndo(node);
+            }
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            var couldUndo = Workspace.UndoRecorder.CanUndo;
 
             Workspace.StartAITurn(TurnB);
 
-            Assert.AreEqual(couldUndo, Workspace.UndoRecorder.CanUndo);
+            // One undo must undo the node's creation, not the start of the turn
+            Workspace.UndoRecorder.Undo();
+            CollectionAssert.DoesNotContain(Workspace.Nodes, node);
+            Assert.IsFalse(Workspace.UndoRecorder.CanUndo);
         }
 
         #endregion

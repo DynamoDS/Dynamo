@@ -143,7 +143,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Forgets every record this turn would restore, so none comes back once the turn has started
+        /// Forgets every record this turn would restore, so none comes back once a turn has started
         /// (<see cref="WorkspaceModel.StartAITurn"/>). The turn's own changes are kept.
         /// </summary>
         internal void ForgetMarksBeforeTurn()
