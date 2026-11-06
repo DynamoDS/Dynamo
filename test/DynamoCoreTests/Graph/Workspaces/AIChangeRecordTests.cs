@@ -884,5 +884,145 @@ namespace Dynamo.Tests
         }
 
         #endregion
+
+        #region Undoing a turn
+
+        /// <summary>
+        /// Runs a turn as DynamoMCP does: one undo group holding its edits, inside a BeginAIEdit
+        /// scope, with the changes recorded before the group closes.
+        /// </summary>
+        private void AsAITurn(Action edit)
+        {
+            using (Workspace.BeginUndoActionGroup())
+            using (Workspace.BeginAIEdit())
+            {
+                edit();
+            }
+        }
+
+        /// <summary>Sets a number node's value through an undoable command.</summary>
+        private void SetValue(NodeModel node, string value)
+        {
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(node.GUID, "Value", value));
+        }
+
+        private void Undo()
+        {
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo));
+        }
+
+        private void Redo()
+        {
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TurnRecordedInsideItsUndoGroupCanBeUndone()
+        {
+            var node = (DoubleInput)AddNumberNode();
+            SetValue(node, "1");
+
+            AsAITurn(() =>
+            {
+                SetValue(node, "2");
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            });
+
+            Assert.IsTrue(Workspace.CanUndoAITurn(TurnA));
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnB), "Another turn's undo step is not this one.");
+
+            Undo();
+
+            Assert.AreEqual("1", node.Value);
+            Assert.IsNull(node.AIChange, "Undo counts as the person touching the node.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TurnRecordedOutsideAnUndoGroupCannotBeUndone()
+        {
+            var node = AddNumberNode();
+
+            using (Workspace.BeginAIEdit())
+            {
+                SetValue(node, "2");
+            }
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Assert.IsTrue(Workspace.CanUndo);
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnA), "Nothing ties the undo step to the turn.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TurnCannotBeUndoneOnceSomethingElseIsRecordedForUndo()
+        {
+            var node = AddNumberNode();
+            var other = AddNumberNode();
+
+            AsAITurn(() =>
+            {
+                SetValue(node, "2");
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            });
+            SetValue(other, "5");
+
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnA), "Undo would revert the later edit, not the turn.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoGroupHoldingTwoTurnsBelongsToNeither()
+        {
+            var node = AddNumberNode();
+            var other = AddNumberNode();
+
+            AsAITurn(() =>
+            {
+                SetValue(node, "2");
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+                SetValue(other, "3");
+                Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "3");
+            });
+
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnA));
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnB));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TurnStaysUndoableAcrossUndoAndRedo()
+        {
+            var node = AddNumberNode();
+
+            AsAITurn(() =>
+            {
+                SetValue(node, "2");
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            });
+
+            Undo();
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnA), "The turn is on the redo stack now.");
+
+            Redo();
+            Assert.IsTrue(Workspace.CanUndoAITurn(TurnA));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoGroupWithNothingToUndoNamesNoTurn()
+        {
+            var node = AddNumberNode();
+            SetValue(node, "1");
+
+            // A turn that only records, without editing, leaves no undo step of its own
+            AsAITurn(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+
+            Assert.IsTrue(Workspace.CanUndo);
+            Assert.IsFalse(Workspace.CanUndoAITurn(TurnA), "The undo step on top is the earlier edit.");
+        }
+
+        #endregion
     }
 }
