@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Runtime;
@@ -1949,19 +1950,19 @@ namespace DynamoUnits
             return string.Format("{0} {1}", feet, decimalInches).Trim();
         }
 
+        // This string pattern only handle for the case of input in whole feet without unit symbol 
+        // or fractional feet with/without unit symbol.
+        [StringSyntax("regex")]
+        private const string lengthInFeetPattern = @"(\A((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?))\Z)|(\A(?<ft>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)('|ft)?)\Z)";
+        private static readonly Regex lengthInFeetRegex = new Regex(lengthInFeetPattern, RegexOptions.Compiled);
+
         public static bool ParseLengthInFeetFromString(string value, out double feet, out double numerator, out double denominator)
         {
-            // This string pattern only handle for the case of input in whole feet without unit symbol 
-            // or fractional feet with/without unit symbol.
-            string pattern = @"(\A((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?))\Z)|(\A(?<ft>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)('|ft)?)\Z)";
-
             feet = 0.0;
             numerator = 0.0;
             denominator = 0.0;
 
-            const RegexOptions opts = RegexOptions.None;
-            var regex = new Regex(pattern, opts);
-            Match match = regex.Match(value.Trim().ToLower());
+            Match match = lengthInFeetRegex.Match(value.Trim().ToLower());
             if (match.Success)
             {
                 double.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out feet);
@@ -1977,11 +1978,13 @@ namespace DynamoUnits
             }
         }
 
+        [StringSyntax("regex")]
+        private const string lengthFromStringPattern = @"(((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d{1,}?)(\s|-)*(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)m($|\s))*((?<cm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)mm($|\s))*";
+        private static readonly Regex lengthFromStringRegex = new Regex(lengthFromStringPattern, RegexOptions.Compiled);
+
         public static void ParseLengthFromString(string value, out double feet, 
             out double inch, out double m, out double cm, out double mm, out double numerator, out double denominator )
         {
-            string pattern = @"(((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d{1,}?)(\s|-)*(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)m($|\s))*((?<cm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)mm($|\s))*";
-
             feet = 0.0;
             inch = 0.0;
             m = 0.0;
@@ -1990,9 +1993,7 @@ namespace DynamoUnits
             numerator = 0.0;
             denominator = 0.0;
 
-            const RegexOptions opts = RegexOptions.None;
-            var regex = new Regex(pattern, opts);
-            Match match = regex.Match(value.Trim().ToLower());
+            Match match = lengthFromStringRegex.Match(value.Trim().ToLower());
             if (match.Success)
             {
                 //parse imperial values
@@ -2010,20 +2011,19 @@ namespace DynamoUnits
             }
         }
 
+        [StringSyntax("regex")]
+        private const string areaFromStringPattern = @"((?<square_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m2|sqm|m²))*\s*";
+        private static readonly Regex areaFromStringRegex = new Regex(areaFromStringPattern, RegexOptions.Compiled);
+
         public static void ParseAreaFromString(string value, out double square_inch, out double square_foot, out double square_millimeter,  out double square_centimeter, out double square_meter)
         {
-            const string pattern =
-                @"((?<square_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m2|sqm|m²))*\s*";
-            
             square_inch = 0.0;
             square_foot = 0.0;
             square_millimeter = 0.0;
             square_centimeter = 0.0;
             square_meter = 0.0;
 
-            const RegexOptions opts = RegexOptions.None;
-            var regex = new Regex(pattern, opts);
-            Match match = regex.Match(value.Trim().ToLower());
+            Match match = areaFromStringRegex.Match(value.Trim().ToLower());
             if (match.Success)
             {
                 double.TryParse(match.Groups["square_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_inch);
@@ -2040,20 +2040,19 @@ namespace DynamoUnits
             }
         }
 
+        [StringSyntax("regex")]
+        private const string volumeFromStringPattern = @"((?<cubic_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in3|cuin|in³))*\s*((?<cubic_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft3|cuft|ft³))*\s*((?<cubic_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm3|cumm|mm³))*\s*((?<cubic_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm3|cucm|cm³))*\s*((?<cubic_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m3|cum|m³))*\s*";
+        private static readonly Regex volumeFromStringRegex = new Regex(volumeFromStringPattern, RegexOptions.Compiled);
+
         public static void ParseVolumeFromString(string value, out double cubic_inch, out double cubic_foot, out double cubic_millimeter, out double cubic_centimeter, out double cubic_meter)
         {
-            const string pattern =
-                @"((?<cubic_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in3|cuin|in³))*\s*((?<cubic_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft3|cuft|ft³))*\s*((?<cubic_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm3|cumm|mm³))*\s*((?<cubic_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm3|cucm|cm³))*\s*((?<cubic_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m3|cum|m³))*\s*";
-
             cubic_inch = 0.0;
             cubic_foot = 0.0;
             cubic_millimeter = 0.0;
             cubic_centimeter = 0.0;
             cubic_meter = 0.0;
 
-            const RegexOptions opts = RegexOptions.None;
-            var regex = new Regex(pattern, opts);
-            Match match = regex.Match(value.Trim().ToLower());
+            Match match = volumeFromStringRegex.Match(value.Trim().ToLower());
             if (match.Success)
             {
                 double.TryParse(match.Groups["cubic_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_inch);

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -17,6 +19,30 @@ namespace Dynamo.Wpf.Views
     /// </summary>
     public static class CodeHighlightingRuleFactory
     {
+        // These Regex's must match with the grammars in the DS ATG for digits
+        // Refer to the 'number' and 'float' tokens in Start.atg
+        //*******************************************************************************
+        // number = digit {digit} .
+        // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+        //*******************************************************************************
+
+        [StringSyntax("regex")]
+        private const string digit = @"(-?\b\d+)";
+
+        [StringSyntax("regex")]
+        private const string floatingPoint = @"(\.[0-9]+)";
+
+        [StringSyntax("regex")]
+        private const string exponent = @"([eE][+-]?[0-9]+)";
+
+        private const string numberWithExponent = digit + floatingPoint + exponent;
+        private const string numberWithOptionalDecimal = digit + floatingPoint + "?";
+        private const string finalRegex = numberWithExponent + "|" + numberWithOptionalDecimal;
+
+        private static readonly Regex highlightRegex = new Regex(finalRegex, RegexOptions.Compiled);
+
+        private static readonly Dictionary<string, Regex> presetRegexes = new();
+
         /// <summary>
         /// Create hight lighting rule for number.
         /// </summary>
@@ -30,22 +56,7 @@ namespace Dynamo.Wpf.Views
             {
                 Foreground = new CustomizedBrush(color)
             };
-
-            // These Regex's must match with the grammars in the DS ATG for digits
-            // Refer to the 'number' and 'float' tokens in Start.atg
-            //*******************************************************************************
-            // number = digit {digit} .
-            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-            //*******************************************************************************
-
-            string digit = @"(-?\b\d+)";
-            string floatingPoint = @"(\.[0-9]+)";
-            string numberWithOptionalDecimal = digit + floatingPoint + "?";
-
-            string exponent = @"([eE][+-]?[0-9]+)";
-            string numberWithExponent = digit + floatingPoint + exponent;
-
-            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
+            digitRule.Regex = highlightRegex;
 
             return digitRule;
         }
@@ -57,6 +68,9 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateClassHighlightRule(EngineController engineController)
         {
+            var wordList = engineController.CodeCompletionServices.GetClasses();
+            if (!wordList.Any()) return null;
+
             Color color = (Color)ColorConverter.ConvertFromString("#b7d78c");
             var classHighlightRule = new HighlightingRule
             {
@@ -66,11 +80,14 @@ namespace Dynamo.Wpf.Views
                 }
             };
 
-            var wordList = engineController.CodeCompletionServices.GetClasses();
-            if (!wordList.Any()) return null;
+            var words = string.Join("|", wordList);
+            if (!presetRegexes.TryGetValue(words, out var regex))
+            {
+                regex = new Regex(string.Format(@"\b({0})\b", words), RegexOptions.Compiled);
+                presetRegexes[words] = regex;
+            }
 
-            String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
-            classHighlightRule.Regex = new Regex(regex);
+            classHighlightRule.Regex = regex;
 
             return classHighlightRule;
         }
@@ -81,6 +98,9 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateMethodHighlightRule(EngineController engineController)
         {
+            var wordList = engineController.CodeCompletionServices.GetGlobals();
+            if (!wordList.Any()) return null;
+
             Color color = (Color)ColorConverter.ConvertFromString("#84d7ce");
             var methodHighlightRule = new HighlightingRule
             {
@@ -90,11 +110,14 @@ namespace Dynamo.Wpf.Views
                 }
             };
 
-            var wordList = engineController.CodeCompletionServices.GetGlobals();
-            if (!wordList.Any()) return null;
+            var words = string.Join("|", wordList);
+            if (!presetRegexes.TryGetValue(words, out var regex))
+            {
+                regex = new Regex(string.Format(@"\b({0})\b", words), RegexOptions.Compiled);
+                presetRegexes[words] = regex;
+            }
 
-            String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
-            methodHighlightRule.Regex = new Regex(regex);
+            methodHighlightRule.Regex = regex;
 
             return methodHighlightRule;
         }
