@@ -903,6 +903,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
+    <Compile Include="ViewModels\Core\AIHaloGlow.cs" />
     <Compile Include="ViewModels\Core\NodeViewModel.cs" />
     <Compile Include="ViewModels\Core\NoteViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
