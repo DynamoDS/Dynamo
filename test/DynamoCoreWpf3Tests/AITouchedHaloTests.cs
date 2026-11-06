@@ -335,6 +335,7 @@ namespace DynamoCoreWpfTests
             var nodeView = ViewOf(node);
             var borderBrushBefore = nodeView.nodeBorder.BorderBrush;
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             var clock = ViewOf(node).AIHaloClock;
             Assert.IsNotNull(clock);
             WaitUntil(() => clock.CurrentTime != null, TimeSpan.FromSeconds(3));
