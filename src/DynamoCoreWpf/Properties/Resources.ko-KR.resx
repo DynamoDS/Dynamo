@@ -3148,6 +3148,21 @@
   <data name="FileTrustWarningPopupYes" xml:space="preserve">
     <value>예</value>
   </data>
+  <data name="FileTrustPreviewCaption" xml:space="preserve">
+    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+  </data>
+  <data name="FileTrustPreviewFileChanged" xml:space="preserve">
+    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+  </data>
+  <data name="FileTrustPreviewDecline" xml:space="preserve">
+    <value>No, don't open</value>
+  </data>
+  <data name="FileTrustPreviewLoading" xml:space="preserve">
+    <value>미리보기를 로드하는 중...</value>
+  </data>
+  <data name="FileTrustPreviewUnavailable" xml:space="preserve">
+    <value>No preview available for this file.</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>경고가 해결될 때까지 그래프 실행이 일시 중단됩니다.</value>
   </data>
