@@ -1408,6 +1408,7 @@ namespace Dynamo.ViewModels
                     UpdateAIHaloGlow();
                     RaisePropertyChanged(nameof(AIHaloOpacity));
                     RaisePropertyChanged(nameof(ShowAIBadge));
+                    HandleColorOverlayChange();
                     break;
             }
         }
