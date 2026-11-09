@@ -2465,15 +2465,18 @@ namespace Dynamo.Controls
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
 
-            if (e.Key != Key.Escape || !IsMouseOver) return;
+            if (e.Key != Key.Escape) return;
 
             // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
-            // selection's, if the node is selected) and does nothing else
+            // selection's, if the node is selected) and does nothing else. A hovered node implies the
+            // mouse is over the window.
             if (escClearedAIHighlight || TryClearHoveredAIHighlight())
             {
                 e.Handled = true;
                 return;
             }
+
+            if (!IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 

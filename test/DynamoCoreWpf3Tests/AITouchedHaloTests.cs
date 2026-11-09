@@ -776,6 +776,72 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void EscKeyOnAHoveredNodeClearsItsHighlightAndNothingElse()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            Assert.IsTrue(SendEscape(down: true), "The press is used up.");
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsTrue(SendEscape(down: false), "The release is used up too.");
+            Assert.IsFalse(ViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown, "3D navigation is not started.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HoldingEscClearsOnceAndDoesNothingElse()
+        {
+            var hovered = AddNumberNode();
+            var other = AddNumberNode();
+            Workspace.RecordAINodeChange(hovered.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(hovered).SetAIHaloHovered(true);
+
+            Assert.IsTrue(SendEscape(down: true));
+            Assert.IsTrue(SendEscape(down: true), "A repeat while held is used up.");
+            Assert.IsTrue(SendEscape(down: false));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsFalse(hovered.IsRecentlyModifiedByAI);
+            Assert.IsTrue(other.IsRecentlyModifiedByAI, "Only the hovered node is cleared.");
+            Assert.IsFalse(ViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscKeyWhileTypingKeepsTheHighlight()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            var textBox = new TextBox();
+            var typingWindow = new Window { Content = textBox, Width = 200, Height = 100 };
+            try
+            {
+                typingWindow.Show();
+                typingWindow.Activate();
+                System.Windows.Input.Keyboard.Focus(textBox);
+                DispatcherUtil.DoEvents();
+                Assume.That(System.Windows.Input.Keyboard.FocusedElement, Is.SameAs(textBox), "Keyboard focus could not be set.");
+
+                SendEscape(down: true);
+                SendEscape(down: false);
+
+                Assert.IsTrue(node.IsRecentlyModifiedByAI, "Esc belongs to the text box while typing.");
+            }
+            finally
+            {
+                typingWindow.Close();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void EscOnASelectedNodeClearsTheWholeSelection()
         {
             var selected = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
@@ -1228,6 +1294,20 @@ namespace DynamoCoreWpfTests
                 Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
             }
             DispatcherUtil.DoEvents();
+        }
+
+        private bool SendEscape(bool down)
+        {
+            var args = new System.Windows.Input.KeyEventArgs(
+                System.Windows.Input.Keyboard.PrimaryDevice,
+                PresentationSource.FromVisual(View),
+                0,
+                System.Windows.Input.Key.Escape)
+            {
+                RoutedEvent = down ? System.Windows.Input.Keyboard.KeyDownEvent : System.Windows.Input.Keyboard.KeyUpEvent
+            };
+            View.RaiseEvent(args);
+            return args.Handled;
         }
 
         private void AssertBadgeRests(NodeModel node, string when)
