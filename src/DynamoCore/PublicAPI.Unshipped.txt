@@ -15,3 +15,6 @@ Dynamo.Models.EvaluationCompletedEventArgs.WasCancelled.get -> bool
 Dynamo.Graph.Workspaces.WorkspaceModel.MarkAsIndependentlyModified() -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup() -> System.IDisposable
 Dynamo.Graph.Workspaces.WorkspaceModel.IsUndoActionGroupOpen.get -> bool
+static Dynamo.Properties.Resources.SettingsMigratedFromPreviousVersion.get -> string
+static Dynamo.Properties.Resources.UnreadableProfileBackupFailed.get -> string
+static Dynamo.Properties.Resources.UnreadableProfileSavedAs.get -> string

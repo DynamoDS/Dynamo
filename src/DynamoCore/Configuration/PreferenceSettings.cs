@@ -78,6 +78,12 @@ namespace Dynamo.Configuration
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
+
+        // Set once the unreadable file is copied, so later saves do not back up the replacement.
+        private bool unreadableFileBackedUp;
+        // Set once the unreadable file has been replaced by a valid one on disk.
+        private bool unreadableFileReplaced;
+        private const string ProfileBackupDirectoryName = "profiles";
         private string backupLocation;
         private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
@@ -1154,7 +1160,62 @@ namespace Dynamo.Configuration
                 preferenceFilePath = DynamoTestPath;
             }
 
-            return Save(preferenceFilePath);
+            // The file could not be read, so these are defaults; keep a copy before replacing it.
+            if (IsProfileUnreadable && !unreadableFileBackedUp && !TryBackUpUnreadableFile(preferenceFilePath))
+            {
+                return false;
+            }
+
+            var saved = Save(preferenceFilePath);
+            if (saved && !IsCreatedFromValidFile)
+            {
+                unreadableFileReplaced = true;
+            }
+            return saved;
+        }
+
+        /// <summary>
+        /// Copies the unreadable profile to the profiles folder in the backup location,
+        /// using the first free name among DynamoSettings.xml.bak, DynamoSettings.xml.bak1, DynamoSettings.xml.bak2 and so on.
+        /// </summary>
+        /// <returns>True if there is nothing to copy or the copy succeeded; false if it failed.</returns>
+        private bool TryBackUpUnreadableFile(string preferenceFilePath)
+        {
+            if (!File.Exists(preferenceFilePath))
+            {
+                return true;
+            }
+
+            try
+            {
+                if (string.IsNullOrEmpty(BackupLocation))
+                {
+                    throw new InvalidOperationException("The backup location is not set.");
+                }
+
+                var profileDirectory = Path.Combine(BackupLocation, ProfileBackupDirectoryName);
+                Directory.CreateDirectory(profileDirectory);
+
+                var baseName = Path.Combine(profileDirectory, Path.GetFileName(preferenceFilePath) + ".bak");
+                var backupPath = baseName;
+                for (var i = 1; File.Exists(backupPath); i++)
+                {
+                    backupPath = baseName + i;
+                }
+
+                File.Copy(preferenceFilePath, backupPath);
+                unreadableFileBackedUp = true;
+                OnMessageLogged(LogMessage.Info(string.Format(global::Dynamo.Properties.Resources.UnreadableProfileSavedAs, backupPath)));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Do not replace a file that could not be backed up.
+                OnMessageLogged(LogMessage.Warning(
+                    string.Format(global::Dynamo.Properties.Resources.UnreadableProfileBackupFailed, ex.Message),
+                    WarningLevel.Moderate));
+                return false;
+            }
         }
 
         /// <summary>
@@ -1554,6 +1615,13 @@ namespace Dynamo.Configuration
         {
             get { return isCreatedFromValidFile; }
         }
+
+        /// <summary>
+        /// True while the profile could not be read and has not yet been replaced on disk by a valid one.
+        /// Unlike <see cref="IsCreatedFromValidFile"/>, which describes how the instance was loaded, this
+        /// becomes false after a successful save.
+        /// </summary>
+        internal bool IsProfileUnreadable => !isCreatedFromValidFile && !unreadableFileReplaced;
 
     }
 }

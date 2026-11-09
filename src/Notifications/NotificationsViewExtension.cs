@@ -139,6 +139,14 @@ namespace Dynamo.Notifications
                     notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
                 }
             }
+
+            // Load falls back to defaults when the settings file cannot be parsed; tell the user.
+            if (!viewModel.Model.PreferenceSettings.IsCreatedFromValidFile)
+            {
+                string detail = Properties.Resources.InvalidSettingsFileDetail + "\n" + viewModel.Model.PathManager.PreferenceFilePath;
+                Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.InvalidSettingsFileTitle, detail));
+                notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
+            }
         }
 
         private void LoadNotificationCenter()

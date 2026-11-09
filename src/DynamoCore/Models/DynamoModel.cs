@@ -843,6 +843,8 @@ namespace Dynamo.Models
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
+
+                    Logger.Log(Resources.SettingsMigratedFromPreviousVersion);
                 }
             }
 
