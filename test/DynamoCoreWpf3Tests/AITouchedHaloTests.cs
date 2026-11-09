@@ -959,17 +959,34 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void StateIconsAddedAfterTheAIChangeTakePriority()
+        public void WarningAddedAfterTheAIChangeTakesPriority()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, AIIcon, null }, ZoomedOutIconsOf(node));
+
+            // A warning is a state change, not a user edit, so the AI change record is kept
+            AddWarning(node);
+
+            Assert.IsNotNull(node.AIChange);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, WarningIcon, null }, ZoomedOutIconsOf(node),
+                "The warning pushes the AI icon out.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FreezingAnAINodeRemovesItsAIIcon()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             CollectionAssert.AreEqual(new[] { AIIcon, null, null }, ZoomedOutIconsOf(node));
 
+            // Freezing is a user edit: the user takes over the node and its AI change record is cleared
             Freeze(node);
-            CollectionAssert.AreEqual(new[] { FrozenIcon, AIIcon, null }, ZoomedOutIconsOf(node));
 
-            TurnPreviewOff(node);
-            CollectionAssert.AreEqual(new[] { FrozenIcon, PreviewOffIcon, null }, ZoomedOutIconsOf(node));
+            Assert.IsNull(node.AIChange);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, null, null }, ZoomedOutIconsOf(node));
         }
 
         [Test]
