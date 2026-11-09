@@ -221,6 +221,59 @@ namespace Dynamo.Tests
             Assert.IsTrue(model.PreferenceSettings.IsFirstRun);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsAreMigratedThenTheMigrationIsLogged()
+        {
+            CreatePreviousVersionSettings();
+
+            StartModel(new PreferenceSettings());
+
+            Assert.AreEqual(PreviousVersionNumberFormat, model.PreferenceSettings.NumberFormat, "The settings should have been migrated.");
+            StringAssert.Contains(global::Dynamo.Properties.Resources.SettingsMigratedFromPreviousVersion, model.Logger.LogText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileExistsThenNoMigrationIsLogged()
+        {
+            CreatePreviousVersionSettings();
+            CreateCurrentVersionSettings(isFirstRun: true);
+
+            StartModel(PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
+
+            Assert.AreEqual(CurrentVersionNumberFormat, model.PreferenceSettings.NumberFormat, "The settings should not have been migrated.");
+            StringAssert.DoesNotContain(global::Dynamo.Properties.Resources.SettingsMigratedFromPreviousVersion, model.Logger.LogText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [TestCase("")]
+        [TestCase("<PreferenceSettings><NotClosed>")]
+        public void WhenSettingsFileIsUnreadableThenShutdownBacksItUpAndReplacesIt(string content)
+        {
+            // Arrange
+            CreatePreviousVersionSettings();
+            var settingsPath = PathManager.Instance.PreferenceFilePath;
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath));
+            File.WriteAllText(settingsPath, content);
+            StartModel(PreferenceSettings.Load(settingsPath));
+            Assert.IsFalse(model.PreferenceSettings.IsCreatedFromValidFile, "The file should have been rejected on load.");
+            var backupPath = Path.Combine(model.PreferenceSettings.BackupLocation, "profiles", "DynamoSettings.xml.bak");
+            // Writing outside the temporary user data root would touch the real profile folders.
+            Assert.That(backupPath, Does.StartWith(userDataRoot));
+            Assert.IsFalse(File.Exists(backupPath));
+
+            // Act
+            model.ShutDown(false);
+            model = null;
+
+            // Assert
+            Assert.IsTrue(File.Exists(backupPath), "The unreadable profile should have been copied.");
+            Assert.AreEqual(content, File.ReadAllText(backupPath));
+            Assert.IsTrue(PreferenceSettings.Load(settingsPath).IsCreatedFromValidFile, "The profile should have been replaced.");
+        }
+
         private void StartModel(PreferenceSettings preferences)
         {
             model = DynamoModel.Start(new DynamoModel.DefaultStartConfiguration
