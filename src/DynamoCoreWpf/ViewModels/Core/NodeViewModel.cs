@@ -612,6 +612,7 @@ namespace Dynamo.ViewModels
         private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
+        private static readonly string aiGlyph = "/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png";
 
         [JsonIgnore]
         public bool IsNodeAddedRecently
@@ -1407,6 +1408,7 @@ namespace Dynamo.ViewModels
                     UpdateAIHaloGlow();
                     RaisePropertyChanged(nameof(AIHaloOpacity));
                     RaisePropertyChanged(nameof(ShowAIBadge));
+                    HandleColorOverlayChange();
                     break;
             }
         }
@@ -1662,6 +1664,19 @@ namespace Dynamo.ViewModels
                 else
                 {
                     ImgGlyphThreeSource = errorGlyph;
+                }
+            }
+
+            // AI marker (DYN-11010): last in priority, bottom row only, dropped when the row is full
+            if (ShowAIBadge)
+            {
+                if (ImgGlyphOneSource == null)
+                {
+                    ImgGlyphOneSource = aiGlyph;
+                }
+                else if (ImgGlyphTwoSource == null)
+                {
+                    ImgGlyphTwoSource = aiGlyph;
                 }
             }
 
