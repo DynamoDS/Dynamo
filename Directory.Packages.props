@@ -17,7 +17,7 @@
     <!-- Dynamo-published packages -->
     <PackageVersion Include="DynamoVisualProgramming.Analytics" Version="4.2.4.13791" />
     <PackageVersion Include="DynamoVisualProgramming.AutodeskAssistant" Version="[0.4.1]" />
-    <PackageVersion Include="DynamoVisualProgramming.DynamoMCP" Version="[0.7.0]" />
+    <PackageVersion Include="DynamoVisualProgramming.DynamoMCP" Version="[0.8.2]" />
     <PackageVersion Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.6510" />
     <PackageVersion Include="DynamoVisualProgramming.LibG_233_0_0" Version="4.0.0.6510" />
     <PackageVersion Include="DynamoVisualProgramming.LibG_233_0_0_debug" Version="4.0.0.6510" />
@@ -50,7 +50,7 @@
     <PackageVersion Include="System.Resources.Extensions" Version="5.0.0" />
     
     <!-- Third-party -->
-    <PackageVersion Include="Autodesk.IDSDK" Version="1.2.11" />
+    <PackageVersion Include="Autodesk.IDSDK" Version="1.2.12" />
     <PackageVersion Include="AvalonEdit" Version="6.3.0.90" />
     <PackageVersion Include="Castle.Core" Version=" 5.1.1" />
     <PackageVersion Include="CommandLineParser" Version="2.9.1" />

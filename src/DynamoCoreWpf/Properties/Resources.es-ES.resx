@@ -3150,6 +3150,21 @@ Puede administrar esto en Preferencias - &gt; Seguridad.</value>
   <data name="FileTrustWarningPopupYes" xml:space="preserve">
     <value>Sí</value>
   </data>
+  <data name="FileTrustPreviewCaption" xml:space="preserve">
+    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+  </data>
+  <data name="FileTrustPreviewFileChanged" xml:space="preserve">
+    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+  </data>
+  <data name="FileTrustPreviewDecline" xml:space="preserve">
+    <value>No, don't open</value>
+  </data>
+  <data name="FileTrustPreviewLoading" xml:space="preserve">
+    <value>Cargando la vista preliminar...</value>
+  </data>
+  <data name="FileTrustPreviewUnavailable" xml:space="preserve">
+    <value>No preview available for this file.</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>La ejecución del gráfico se suspenderá hasta que se resuelva la advertencia.</value>
   </data>

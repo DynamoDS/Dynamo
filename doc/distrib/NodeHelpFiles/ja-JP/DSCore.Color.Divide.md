@@ -1,5 +1,5 @@
 ## 詳細
-Divide は、色の個々のチャネルを入力された数値で除算し、結果の色を返します。結果の値は 255 未満である必要があります。次の例では、ByARGB ノードを使用して色を作成します。次に、Divide ノードを使用して、数値スライダでコントロールされる数値でその色を除算します。結果の色を可視化するために、既定の直方体に Display.ByGeometryColor ノードが使用されています。
+Divide will divide the individual channels of a color by an input number, and return the resulting color. Dividing by a number greater than 1 produces a darker color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Divide node to divide the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
 ___
 ## サンプル ファイル
 

@@ -15,6 +15,7 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Exceptions;
 using Dynamo.Events;
 using Dynamo.Extensions;
 using Dynamo.Graph;
@@ -2219,27 +2220,36 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
-        internal void OpenFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        /// <param name="expectedContentHash">Hash of the content the user approved in the trust preview,
+        /// or null. When set, the file is loaded only if the text read now still has that hash.</param>
+        internal void OpenFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun, string expectedContentHash = null)
         {
 
             Exception ex;
             string fileContents;
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+            bool isJson = DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex);
+            // These kind of exceptions indicate that file is not accessible
+            if (!isJson && (ex is IOException || ex is UnauthorizedAccessException))
+            {
+                ExceptionDispatchInfo.Capture(ex).Throw();
+            }
+
+            // Load only what the user approved: the check runs on the exact text that is loaded below.
+            if (isJson || ex is JsonReaderException)
+            {
+                FileChangedSincePreviewException.ThrowIfChanged(filePath, fileContents, expectedContentHash);
+            }
+
+            if (isJson)
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun: forceBlockRun);
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible
-                if (ex is IOException || ex is UnauthorizedAccessException)
-                {
-                    ExceptionDispatchInfo.Capture(ex).Throw();
-                }
-
                 XmlDocument xmlDoc;
 
                 // When Json opening failed, either this file is corrupted or file might be XML
-                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                if (ex is JsonReaderException && TryLoadXml(filePath, fileContents, expectedContentHash, out xmlDoc, out ex))
                 {
                     OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, forceBlockRun: forceBlockRun);
                 }
@@ -2259,9 +2269,28 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            OpenTemplateFromPathCore(filePath, forceManualExecutionMode, expectedContentHash: null);
+        }
+
+        /// <summary>
+        /// Opens a template; see <see cref="OpenTemplateFromPath"/>.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <param name="expectedContentHash">Hash of the content the user approved in the trust preview,
+        /// or null. When set, the template is opened only if the text read now still has that hash.</param>
+        internal void OpenTemplateFromPathCore(string filePath, bool forceManualExecutionMode, string expectedContentHash)
+        {
             Exception ex;
             string fileContents;
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+            bool isJson = DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex);
+            if (isJson || ex is JsonReaderException)
+            {
+                FileChangedSincePreviewException.ThrowIfChanged(filePath, fileContents, expectedContentHash);
+            }
+
+            if (isJson)
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
                 return;
@@ -2275,7 +2304,7 @@ namespace Dynamo.Models
 
                 XmlDocument xmlDoc;
 
-                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                if (ex is JsonReaderException && TryLoadXml(filePath, fileContents, expectedContentHash, out xmlDoc, out ex))
                 {
                     OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, isTemplate: true);
                     return;
@@ -2298,32 +2327,68 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Loads a legacy XML graph. When <paramref name="expectedContentHash"/> is set, the XML is
+        /// parsed from <paramref name="fileContents"/>, the text that was already checked against the
+        /// previewed content, instead of reading the file again.
+        /// </summary>
+        private static bool TryLoadXml(string filePath, string fileContents, string expectedContentHash, out XmlDocument xmlDoc, out Exception ex)
+        {
+            if (expectedContentHash == null)
+            {
+                return DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex);
+            }
+
+            try
+            {
+                xmlDoc = new XmlDocument { XmlResolver = null };
+                xmlDoc.LoadXml(fileContents);
+                ex = null;
+                return true;
+            }
+            catch (XmlException e)
+            {
+                xmlDoc = null;
+                ex = e;
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="forceManualExecutionMode"></param>
         /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
-        internal void InsertFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        /// <param name="expectedContentHash">Hash of the content the user approved in the trust preview,
+        /// or null. When set, the file is inserted only if the text read now still has that hash.</param>
+        internal void InsertFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun, string expectedContentHash = null)
         {
             Exception ex;
             string fileContents;
 
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+            bool isJson = DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex);
+            // These kind of exceptions indicate that file is not accessible
+            if (!isJson && (ex is IOException || ex is UnauthorizedAccessException))
+            {
+                throw ex;
+            }
+
+            // Insert only what the user approved: the check runs on the exact text that is inserted below.
+            if (isJson || ex is JsonReaderException)
+            {
+                FileChangedSincePreviewException.ThrowIfChanged(filePath, fileContents, expectedContentHash);
+            }
+
+            if (isJson)
             {
                 InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun);
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible
-                if (ex is IOException || ex is UnauthorizedAccessException)
-                {
-                    throw ex;
-                }
-
                 if (ex is JsonReaderException)
                 {
                     XmlDocument xmlDoc;
-                    if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                    if (TryLoadXml(filePath, fileContents, expectedContentHash, out xmlDoc, out ex))
                     {
                         InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                     }
