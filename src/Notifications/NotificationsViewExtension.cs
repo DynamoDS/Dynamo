@@ -141,6 +141,8 @@ namespace Dynamo.Notifications
             }
 
             // Load falls back to defaults when the settings file cannot be parsed; tell the user.
+            // Checked once at startup, when the profile was unreadable, so this uses IsCreatedFromValidFile
+            // (how it loaded) and not IsProfileUnreadable (the file on disk, which can change later).
             if (!viewModel.Model.PreferenceSettings.IsCreatedFromValidFile)
             {
                 string detail = Properties.Resources.InvalidSettingsFileDetail + "\n" + viewModel.Model.PathManager.PreferenceFilePath;

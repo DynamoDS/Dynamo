@@ -160,7 +160,7 @@ namespace Dynamo.Notifications.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo could not read your profile and will use default settings for this session. When Dynamo closes, the original profile is saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile is updated with this session's settings..
+        ///   Looks up a localized string similar to Dynamo could not read your profile and will use default settings for this session. The original profile will be saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile will be updated with this session's settings..
         /// </summary>
         public static string InvalidSettingsFileDetail {
             get {

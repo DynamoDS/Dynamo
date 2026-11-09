@@ -151,7 +151,7 @@
     <value>Notifications</value>
   </data>
   <data name="InvalidSettingsFileDetail" xml:space="preserve">
-    <value>Dynamo could not read your profile and will use default settings for this session. When Dynamo closes, the original profile is saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile is updated with this session's settings.</value>
+    <value>Dynamo could not read your profile and will use default settings for this session. The original profile will be saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile will be updated with this session's settings.</value>
   </data>
   <data name="InvalidSettingsFileTitle" xml:space="preserve">
     <value>The profile could not be read</value>
