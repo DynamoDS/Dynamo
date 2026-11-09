@@ -1198,9 +1198,11 @@ namespace Dynamo.Configuration
 
                 var baseName = Path.Combine(profileDirectory, Path.GetFileName(preferenceFilePath) + ".bak");
                 var backupPath = baseName;
-                for (var i = 1; File.Exists(backupPath); i++)
+                var index = 0;
+                while (File.Exists(backupPath))
                 {
-                    backupPath = baseName + i;
+                    index++;
+                    backupPath = baseName + index;
                 }
 
                 File.Copy(preferenceFilePath, backupPath);
