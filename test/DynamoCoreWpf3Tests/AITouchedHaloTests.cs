@@ -468,16 +468,18 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void DraggingANodeOnScreenStartsItsGlow()
+        public void NodeMovedOnScreenByTheAssistantStartsItsGlow()
         {
             var node = AddNodeOffScreen();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
             Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsWaiting);
 
-            // The node moves into view; the view itself does not pan or zoom
-            node.X = 50;
-            node.Y = 50;
+            AsAIEdit(() =>
+            {
+                node.X = 50;
+                node.Y = 50;
+            });
 
             Assert.IsTrue(WaitUntil(() => ViewModelOf(node).AIHaloGlow?.IsStarted == true, TimeSpan.FromSeconds(3)),
                 "Moving the node into view starts its glow.");
@@ -1115,7 +1117,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void SelectingOrMovingTheNodeKeepsTheBadge()
+        public void SelectingTheNodeKeepsTheBadge()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
@@ -1132,11 +1134,64 @@ namespace DynamoCoreWpfTests
             }
             DispatcherUtil.DoEvents();
             AssertBadgeRests(node, "after deselecting");
+        }
 
-            // Moving a node is not an edit that takes it over
-            node.X += 200;
+        [Test]
+        [Category("UnitTests")]
+        public void DraggingTheNodeClearsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            Drag(node, 200);
+
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsNull(ViewModelOf(node).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ClickingTheNodeWithoutDraggingKeepsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            Drag(node, 0);
+
+            AssertBadgeRests(node, "after a click");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AligningOrMovingNodesInCodeKeepsTheBadge()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            second.X = first.X + 300;
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(new[] { first, second });
+                ViewModel.CurrentSpaceViewModel.AlignSelected("HorizontalLeft");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            Assert.AreEqual(first.X, second.X, 1e-6, "The nodes were aligned.");
+
+            // Layout and groups expanding move nodes the same way
+            first.Y += 150;
             DispatcherUtil.DoEvents();
-            AssertBadgeRests(node, "after moving");
+
+            AssertBadgeRests(first, "after aligning and moving in code");
+            AssertBadgeRests(second, "after aligning");
         }
 
         [Test]
@@ -1154,6 +1209,25 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(node.IsRecentlyModifiedByAI);
             Assert.IsNull(ViewModelOf(node).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+        }
+
+        private void Drag(NodeModel node, double distance)
+        {
+            var workspace = ViewModel.CurrentSpaceViewModel;
+            var x = node.X + 5;
+            var y = node.Y + 5;
+            try
+            {
+                SelectNodes(new[] { node });
+                workspace.BeginDragSelection(new(x, y));
+                workspace.UpdateDraggedSelection(new(x + distance, y));
+                workspace.EndDragSelection(new(x + distance, y));
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            DispatcherUtil.DoEvents();
         }
 
         private void AssertBadgeRests(NodeModel node, string when)
