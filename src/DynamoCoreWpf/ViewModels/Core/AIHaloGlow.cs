@@ -548,6 +548,21 @@ namespace Dynamo.ViewModels
             return spline;
         }
 
+        #region Stagger
+
+        private static readonly object staggerLock = new object();
+        private static int staggerAIEdit;
+        private static int staggerCount;
+        private static int lastReplay;
+
+        /// <summary>
+        /// A new stagger group for replayed glows (DYN-11011). Negative, so it never matches an AI edit.
+        /// </summary>
+        internal static int NewReplayGroup()
+        {
+            return Interlocked.Decrement(ref lastReplay);
+        }
+
         /// <summary>
         /// The delay for a node's place in a group that came on screen together: 100 ms per place,
         /// up to 1 s.

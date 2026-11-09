@@ -96,3 +96,13 @@ static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsResetSuccess.get -> s
 static Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText.get -> string
 static readonly Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndWhenSelectedProperty -> System.Windows.DependencyProperty
 static Dynamo.Wpf.Properties.Resources.ExportSettingsUnreadableFileMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipChangedNodes.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipChangedOneNode.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDeletedNodes.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDeletedOneNode.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDismiss.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipShow.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipAddedNodes.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipAddedOneNode.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipChangedCount.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDeletedCount.get -> string

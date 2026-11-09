@@ -1104,6 +1104,16 @@ namespace Dynamo.Graph.Workspaces
         private static int lastAIEdit;
 
         /// <summary>
+        /// Raised when the AI change record changes (DYN-11011 summary chip).
+        /// </summary>
+        internal event Action AIChangesUpdated;
+
+        private void OnAIChangesUpdated()
+        {
+            AIChangesUpdated?.Invoke();
+        }
+
+        /// <summary>
         /// True while a <see cref="BeginAIEdit"/> scope is open; node edits then keep
         /// <see cref="NodeModel.AIChange"/>. Never saved to the .dyn file.
         /// </summary>
@@ -1203,6 +1213,7 @@ namespace Dynamo.Graph.Workspaces
             if (change != null)
             {
                 node.AIChange = change;
+                OnAIChangesUpdated();
                 return;
             }
 
@@ -1213,6 +1224,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 node.AIChange = markBeforeTurn;
             }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1242,6 +1255,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 turn.NodeDeleted(nodeId);
             }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1302,6 +1317,7 @@ namespace Dynamo.Graph.Workspaces
 
             aiTurns.Clear();
             lastAITurnNumber = 0;
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1327,6 +1343,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 turn.ForgetMarksBeforeTurn();
             }
+
+            OnAIChangesUpdated();
         }
 
         private NodeModel FindNodeForAIRecord(Guid nodeId)
@@ -1409,6 +1427,15 @@ namespace Dynamo.Graph.Workspaces
             }
 
             node.ClearAIChange();
+        }
+
+        // A node's record changed outside the Record methods, e.g. cleared by a person's edit or undo
+        private void RaiseAIChangesUpdatedOnNodeRecordChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NodeModel.AIChange))
+            {
+                OnAIChangesUpdated();
+            }
         }
 
         /// <summary>
@@ -1884,6 +1911,7 @@ namespace Dynamo.Graph.Workspaces
             // Turns belong to this graph; a cleared workspace has none
             aiTurns.Clear();
             lastAITurnNumber = 0;
+            OnAIChangesUpdated();
 
             DynamoSelection.Instance.ClearSelection();
 
@@ -2014,6 +2042,7 @@ namespace Dynamo.Graph.Workspaces
             node.Modified += NodeModified;
             node.EditedWhileFrozen += ClearAIChangeOnFrozenEdit;
             node.PropertyChanged += ClearAIChangeOnSettingChange;
+            node.PropertyChanged += RaiseAIChangesUpdatedOnNodeRecordChange;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -2107,6 +2136,7 @@ namespace Dynamo.Graph.Workspaces
             node.Modified -= NodeModified;
             node.EditedWhileFrozen -= ClearAIChangeOnFrozenEdit;
             node.PropertyChanged -= ClearAIChangeOnSettingChange;
+            node.PropertyChanged -= RaiseAIChangesUpdatedOnNodeRecordChange;
             node.Dispose();
         }
 

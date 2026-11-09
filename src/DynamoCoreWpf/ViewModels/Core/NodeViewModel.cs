@@ -890,6 +890,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Restarts the halo's glow, even if it faded out (DYN-11011). No-op without an AI change record.
+        /// </summary>
+        internal void ReplayAIHaloGlow(int replayGroup)
+        {
+            var change = NodeModel?.AIChange;
+            if (change == null) return;
+
+            AIHaloGlow = AIHaloGlow.Start(replayGroup, AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+        }
+
+        /// <summary>
         /// True when the AI Assistant badge should be drawn on this node: the node was placed or
         /// modified by the Assistant. Nodes it only moved get no badge, so they stay the quietest
         /// (<see cref="NodeModel.AIChange"/>).
