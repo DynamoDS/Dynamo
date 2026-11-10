@@ -1,5 +1,6 @@
 using CoreNodeModels;
 using Dynamo.Graph.Workspaces;
+using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using System;
@@ -435,7 +436,8 @@ namespace Dynamo.Wpf.CurveMapper
                 Y1 = y1,
                 X2 = x2,
                 Y2 = y2,
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")),
+                // Themed so the grid stays subtle against a light node body.
+                Stroke = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["CurveMapperGridLineBrush"] as Brush,
                 StrokeThickness = 0.6,
                 Tag = "GridLine"
             };

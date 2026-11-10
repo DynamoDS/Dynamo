@@ -85,30 +85,30 @@
                             <Setter.Value>
                                 <ControlTemplate>
                                     <Border x:Name="container" BorderThickness="1"
-                                            BorderBrush="#4A4A4A" Padding="0">
-                                        <Grid x:Name="inner" Background="#666666">
+                                            BorderBrush="{StaticResource NodeDropDownBorderBrush}" Padding="0">
+                                        <Grid x:Name="inner" Background="{StaticResource NodeDropDownBackgroundBrush}">
                                             <TextBlock x:Name="text"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
                                                        FontSize="14px"
-                                                       Foreground="#DCDCDC"
+                                                       Foreground="{StaticResource NodeDropDownForegroundBrush}"
                                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="Button.IsMouseOver" Value="true">
-                                            <Setter TargetName="inner" Property="Background" Value="#373737" />
+                                            <Setter TargetName="inner" Property="Background" Value="{StaticResource NodeDropDownButtonHoverBrush}" />
                                         </Trigger>
                                         <Trigger Property="Button.IsPressed" Value="true">
-                                            <Setter TargetName="inner" Property="Background" Value="#272727" />
+                                            <Setter TargetName="inner" Property="Background" Value="{StaticResource NodeDropDownButtonPressedBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsEnabled" Value="true">
-                                            <Setter TargetName="text" Property="Foreground" Value="#DCDCDC" />
+                                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource NodeDropDownForegroundBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsEnabled" Value="false">
                                             <Setter TargetName="container" Property="BorderBrush" Value="Transparent" />
-                                            <Setter TargetName="inner" Property="Background" Value="#373737" />
-                                            <Setter TargetName="text" Property="Foreground" Value="#555555" />
+                                            <Setter TargetName="inner" Property="Background" Value="{StaticResource NodeDropDownButtonDisabledBackgroundBrush}" />
+                                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource NodeDropDownButtonDisabledForegroundBrush}" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

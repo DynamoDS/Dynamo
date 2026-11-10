@@ -185,8 +185,13 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeDismissedWarningsGlyphForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeDismissedWarningsGlyphForeground"] as SolidColorBrush;
         private static SolidColorBrush nodeDismissedWarningsGlyphBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeDismissedWarningsGlyphBackground"] as SolidColorBrush;
         private static SolidColorBrush midGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"] as SolidColorBrush;
-        private static SolidColorBrush darkerGreyBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGreyBrush"] as SolidColorBrush;
-        private static SolidColorBrush darkMidGreyBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkMidGreyBrush"] as SolidColorBrush;
+        // Resolved through role-named keys rather than the palette greys so that a theme can
+        // recolor the node surfaces without affecting every other consumer of those shades.
+        private static SolidColorBrush nodeBodyBackgroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeBodyBackgroundBrush"] as SolidColorBrush;
+        private static SolidColorBrush nodeHeaderBackgroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeHeaderBackgroundBrush"] as SolidColorBrush;
+        private static SolidColorBrush nodeContextMenuForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuForeground"] as SolidColorBrush;
+        private static SolidColorBrush nodeContextMenuForegroundHighlight = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuForegroundHighlight"] as SolidColorBrush;
+        private static SolidColorBrush nodeContextMenuBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuBackground"] as SolidColorBrush;
         private static SolidColorBrush nodeContextMenuBackgroundHighlight = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuBackgroundHighlight"] as SolidColorBrush;
         private static SolidColorBrush nodeContextMenuSeparatorColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeContextMenuSeparatorColor"] as SolidColorBrush;
         private static SolidColorBrush nodeOptionsButtonBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeOptionsButtonBackground"] as SolidColorBrush;
@@ -268,8 +273,11 @@ namespace Dynamo.Controls
             nodeDismissedWarningsGlyphBackground.Freeze();
             nodeDismissedWarningsGlyphForeground.Freeze();
             midGrey.Freeze();
-            darkerGreyBrush.Freeze();
-            darkMidGreyBrush.Freeze();
+            nodeBodyBackgroundBrush.Freeze();
+            nodeHeaderBackgroundBrush.Freeze();
+            nodeContextMenuForeground.Freeze();
+            nodeContextMenuForegroundHighlight.Freeze();
+            nodeContextMenuBackground.Freeze();
             nodeContextMenuBackgroundHighlight.Freeze();
             nodeContextMenuSeparatorColor.Freeze();
             nodeOptionsButtonBackground.Freeze();
@@ -305,7 +313,7 @@ namespace Dynamo.Controls
             nodeBackground = new Rectangle()
             {
                 Name = "nodeBackground",
-                Fill = darkerGreyBrush
+                Fill = nodeBodyBackgroundBrush
             };
 
             Grid.SetRow(nodeBackground, 2);
@@ -320,7 +328,7 @@ namespace Dynamo.Controls
             {
                 Name = "nameBackground",
                 CornerRadius = new CornerRadius(8, 8, 0, 0),
-                Background = darkMidGreyBrush,
+                Background = nodeHeaderBackgroundBrush,
                 IsHitTestVisible = true,
             };
 
@@ -2452,7 +2460,7 @@ namespace Dynamo.Controls
         {
             var contextMenuStyle = new Style(typeof(ContextMenu));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.PlacementProperty, PlacementMode.MousePoint));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, primaryCharcoal100));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, nodeContextMenuForeground));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontSizeProperty, 13.0));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontFamilyProperty, artifactElementReg));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontWeightProperty, FontWeights.Medium));
@@ -2483,7 +2491,7 @@ namespace Dynamo.Controls
             var mainContextMenu = new ContextMenu
             {
                 Name = "MainContextMenu",
-                Background = midGrey,
+                Background = nodeContextMenuBackground,
                 Style = GetContextMenuStyle(),
             };
 
@@ -2509,7 +2517,7 @@ namespace Dynamo.Controls
             checkBox.SetValue(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
             checkBox.SetValue(Label.ContentProperty, "✓");
             checkBox.SetValue(Label.FontSizeProperty, 9.0);
-            checkBox.SetValue(Label.ForegroundProperty, Brushes.White);
+            checkBox.SetValue(Label.ForegroundProperty, nodeContextMenuForeground);
             checkBox.SetValue(Label.VisibilityProperty, Visibility.Collapsed);
             checkBox.SetValue(DockPanel.DockProperty, Dock.Left);
 
@@ -2638,8 +2646,8 @@ namespace Dynamo.Controls
                 Property = UIElement.IsMouseOverProperty,
                 Value = true
             };
-            isMouseOverTrueTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.White, "ContentPresenter"));
-            isMouseOverTrueTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White, "subMenuArrow"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, nodeContextMenuForegroundHighlight, "ContentPresenter"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(Control.ForegroundProperty, nodeContextMenuForegroundHighlight, "subMenuArrow"));
             isMouseOverTrueTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, nodeContextMenuBackgroundHighlight, "dockPanel"));
 
             // Trigger for IsMouseOver property (false)
@@ -2648,7 +2656,7 @@ namespace Dynamo.Controls
                 Property = UIElement.IsMouseOverProperty,
                 Value = false
             };
-            isMouseOverFalseTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, midGrey, "dockPanel"));
+            isMouseOverFalseTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, nodeContextMenuBackground, "dockPanel"));
 
             // DataTrigger for Content property
             var dataTrigger = new DataTrigger

@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.UI;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
@@ -18,14 +20,32 @@ namespace Dynamo.Wpf.Views
     public static class CodeHighlightingRuleFactory
     {
         /// <summary>
+        /// Reads a token color from the themed palette so that code block highlighting stays
+        /// legible against the themed editor background.
+        /// </summary>
+        private static Color GetThemedColor(string resourceKey, bool useBaseThemeColors = false)
+        {
+            var palette = useBaseThemeColors
+                ? new ResourceDictionary { Source = SharedDictionaryManager.BaseDynamoColorsAndBrushesDictionaryUri }
+                : SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+            var brush = palette[resourceKey] as SolidColorBrush;
+            return brush.Color;
+        }
+
+        /// <summary>
         /// Create hight lighting rule for number.
         /// </summary>
         /// <returns></returns>
         public static HighlightingRule CreateNumberHighlightingRule()
         {
+            return CreateNumberHighlightingRule(false);
+        }
+
+        private static HighlightingRule CreateNumberHighlightingRule(bool useBaseThemeColors)
+        {
             var digitRule = new HighlightingRule();
 
-            Color color = (Color)ColorConverter.ConvertFromString("#6ac0e7");
+            Color color = GetThemedColor("CodeEditorNumberBrush", useBaseThemeColors);
             digitRule.Color = new HighlightingColor()
             {
                 Foreground = new CustomizedBrush(color)
@@ -57,7 +77,12 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateClassHighlightRule(EngineController engineController)
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#b7d78c");
+            return CreateClassHighlightRule(engineController, false);
+        }
+
+        private static HighlightingRule CreateClassHighlightRule(EngineController engineController, bool useBaseThemeColors)
+        {
+            Color color = GetThemedColor("CodeEditorClassBrush", useBaseThemeColors);
             var classHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -81,7 +106,12 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateMethodHighlightRule(EngineController engineController)
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#84d7ce");
+            return CreateMethodHighlightRule(engineController, false);
+        }
+
+        private static HighlightingRule CreateMethodHighlightRule(EngineController engineController, bool useBaseThemeColors)
+        {
+            Color color = GetThemedColor("CodeEditorMethodBrush", useBaseThemeColors);
             var methodHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -130,12 +160,18 @@ namespace Dynamo.Wpf.Views
 
         public static void CreateHighlightingRules(ICSharpCode.AvalonEdit.TextEditor editor, EngineController controller)
         {
+            // The light theme needs its own definition: the default one is bright-on-dark, which
+            // is unreadable on a light editor background.
+            var highlightingFile = SharedDictionaryManager.CurrentTheme == DynamoTheme.Dark
+                ? Configurations.HighlightingFile
+                : Configurations.LightHighlightingFile;
+
             using var stream = typeof(CodeHighlightingRuleFactory).Assembly.GetManifestResourceStream(
-                       "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
+                       "Dynamo.Wpf.UI.Resources." + highlightingFile);
 
             // Hyperlink color
             editor.TextArea.TextView.LinkTextForegroundBrush =
-                new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["CodeEditorLinkBrush"] as SolidColorBrush;
 
             editor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
@@ -148,15 +184,20 @@ namespace Dynamo.Wpf.Views
         // Allows each individual eidtor to have their own set of rules, and aligns the common ones
         internal static void AddCommonHighlighingRules(TextEditor editor, EngineController controller)
         {
+            AddCommonHighlighingRules(editor, controller, false);
+        }
+
+        internal static void AddCommonHighlighingRules(TextEditor editor, EngineController controller, bool useBaseThemeColors)
+        {
             // Highlighting Digits
             var rules = editor.SyntaxHighlighting.MainRuleSet.Rules;
 
-            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
+            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule(useBaseThemeColors));
 
-            var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller);
+            var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller, useBaseThemeColors);
             if (classRule != null) rules.Add(classRule);
 
-            var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller);
+            var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller, useBaseThemeColors);
             if (methodRule != null) rules.Add(methodRule);
         }
     }

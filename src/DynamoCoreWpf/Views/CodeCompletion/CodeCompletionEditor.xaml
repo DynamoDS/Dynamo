@@ -19,7 +19,7 @@
         <Border Padding="10,5,10,6"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                BorderBrush="#959595"
+                BorderBrush="{StaticResource CodeEditorBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="3"
                 SnapsToDevicePixels="True">
@@ -27,11 +27,11 @@
                                    MaxWidth="677"
                                    Margin="0,0,0,-2"
                                    Padding="0"
-                                   Background="#3A3B3B"
+                                   Background="{StaticResource CodeEditorBackgroundBrush}"
                                    FontFamily="{StaticResource SourceCodePro}"
                                    FontSize="13px"
-                                   Foreground="#DCDCDC"
-                                   LineNumbersForeground="#AAAAAA"
+                                   Foreground="{StaticResource CodeEditorForegroundBrush}"
+                                   LineNumbersForeground="{StaticResource CodeEditorLineNumbersBrush}"
                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                    WordWrap="False" />
@@ -41,7 +41,7 @@
                    Padding="11,3"
                    FontFamily="{StaticResource SourceCodePro}"
                    FontSize="13px"
-                   Foreground="#AAAAAA"
+                   Foreground="{StaticResource CodeEditorLineNumbersBrush}"
                    IsHitTestVisible="False" />
     </Grid>
 </UserControl>

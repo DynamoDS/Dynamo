@@ -24,13 +24,13 @@
             <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontSize" Value="11" />
-                <Setter Property="Foreground" Value="#979797" />
+                <Setter Property="Foreground" Value="{StaticResource CurveMapperAxisLabelBrush}" />
             </Style>
             <!--Style for Axis Titles ("x" and "y") -->
             <Style x:Key="AxisTitleStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontSize" Value="12" />
-                <Setter Property="Foreground" Value="#979797" />
+                <Setter Property="Foreground" Value="{StaticResource CurveMapperAxisLabelBrush}" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
         </ResourceDictionary>
@@ -147,7 +147,7 @@
                        VerticalAlignment="Center"
                        FontSize="14px"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                       Foreground="{StaticResource DefaultFontColorBrush}"
+                       Foreground="{StaticResource CurveMapperLabelForegroundBrush}"
                        Text="{x:Static resx:CoreNodeModelWpfResources.CurveMapperCurveTypesLabel}" />
                 <ComboBox Grid.Column="1"
                           MinWidth="160"
@@ -160,7 +160,7 @@
                         <Style BasedOn="{StaticResource RefreshComboBox}" TargetType="ComboBox">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding SelectedItem, RelativeSource={RelativeSource Self}}" Value="Empty">
-                                    <Setter Property="Foreground" Value="#AFAFAF" />
+                                    <Setter Property="Foreground" Value="{StaticResource NodeDropDownPlaceholderBrush}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

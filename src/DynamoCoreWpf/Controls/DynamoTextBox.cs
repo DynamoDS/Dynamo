@@ -65,8 +65,10 @@ namespace Dynamo.Nodes
     {
         public event Action OnChangeCommitted;
 
-        private static Brush clear = new SolidColorBrush(Color.FromArgb(255, 102, 102, 102));
-        private static Brush highlighted = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255));
+        // Read from the themed palette rather than hard-coded, so node input widgets recolor
+        // along with the node body they sit on.
+        private static Brush clear = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInputBackgroundBrush"] as Brush;
+        private static Brush highlighted = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInputHighlightBrush"] as Brush;
 
         private NodeViewModel nodeViewModel;
         private NodeViewModel NodeViewModel
@@ -94,9 +96,9 @@ namespace Dynamo.Nodes
             //turn off the border
             Background = clear;
             BorderThickness = new Thickness(1);
-            BorderBrush = new SolidColorBrush(Color.FromArgb(255, 74, 74, 74));
-            Foreground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 238));
-            CaretBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+            BorderBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInputBorderBrush"] as Brush;
+            Foreground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInputForegroundBrush"] as Brush;
+            CaretBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInputCaretBrush"] as Brush;
             GotFocus += OnGotFocus;
             FontSize = 16;
             LostFocus += OnLostFocus;

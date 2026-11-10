@@ -1,10 +1,13 @@
 using System.IO;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Tests;
+using Dynamo.UI;
 using NUnit.Framework;
 using TestServices;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace DynamoCoreWpfTests
 {
@@ -185,5 +188,69 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates));
             Assert.IsFalse(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
         }
+
+        #region Theme selection (DYN-6228)
+
+        [Test]
+        public void WhenPreferencesOpenThenThemesListOffersBothThemes()
+        {
+            var preferencesVM = ViewModel.PreferencesViewModel;
+
+            Assert.AreEqual(2, preferencesVM.ThemesList.Count);
+            CollectionAssert.Contains(preferencesVM.ThemesList, Res.PreferencesViewThemeDark);
+            CollectionAssert.Contains(preferencesVM.ThemesList, Res.PreferencesViewThemeLight);
+        }
+
+        [Test]
+        public void WhenPreferencesOpenThenSelectedThemeMatchesThePersistedPreference()
+        {
+            var preferencesVM = ViewModel.PreferencesViewModel;
+
+            Assert.AreEqual(DynamoTheme.Dark, ViewModel.PreferenceSettings.Theme);
+            Assert.AreEqual(Res.PreferencesViewThemeDark, preferencesVM.SelectedTheme);
+        }
+
+        [Test]
+        public void WhenLightThemeIsSelectedThenThePreferenceIsUpdated()
+        {
+            var preferencesVM = ViewModel.PreferencesViewModel;
+
+            preferencesVM.SelectedTheme = Res.PreferencesViewThemeLight;
+
+            Assert.AreEqual(DynamoTheme.Light, ViewModel.PreferenceSettings.Theme);
+
+            // Restore, so the preference does not leak into other tests in this fixture.
+            preferencesVM.SelectedTheme = Res.PreferencesViewThemeDark;
+            Assert.AreEqual(DynamoTheme.Dark, ViewModel.PreferenceSettings.Theme);
+        }
+
+        /// <summary>
+        /// The theme is resolved once during startup, so changing the preference must not alter
+        /// the dictionaries already loaded by the running session.
+        /// </summary>
+        [Test]
+        public void WhenAThemeIsSelectedThenTheRunningSessionThemeIsUnchanged()
+        {
+            var preferencesVM = ViewModel.PreferencesViewModel;
+            var themeInUse = SharedDictionaryManager.CurrentTheme;
+
+            preferencesVM.SelectedTheme = Res.PreferencesViewThemeLight;
+
+            Assert.AreEqual(themeInUse, SharedDictionaryManager.CurrentTheme);
+
+            preferencesVM.SelectedTheme = Res.PreferencesViewThemeDark;
+        }
+
+        [Test]
+        public void WhenAnUnknownThemeNameIsSelectedThenThePreferenceIsUnchanged()
+        {
+            var preferencesVM = ViewModel.PreferencesViewModel;
+
+            preferencesVM.SelectedTheme = "NotATheme";
+
+            Assert.AreEqual(DynamoTheme.Dark, ViewModel.PreferenceSettings.Theme);
+        }
+
+        #endregion
     }
 }

@@ -73,7 +73,7 @@
                     <MenuItem Header="{x:Static p:Resources.ContextMenuCopy}" Click="OnCopyToClipboardClick"/>
                 </ContextMenu>
             </Grid.ContextMenu>
-            <Border Background="{StaticResource DarkerGreyBrush}"
+            <Border Background="{StaticResource PreviewBubbleBackgroundBrush}"
                     CornerRadius="2"
                     BorderThickness="0"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
