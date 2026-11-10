@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
@@ -20,7 +21,8 @@ namespace DynamoCoreWpfTests
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
     /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), and the
-    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified.
+    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified, and the zoomed-out
+    /// treatment (DYN-11010) that shows the badge as a zoom-state icon.
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
     {
@@ -768,6 +770,286 @@ namespace DynamoCoreWpfTests
             var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
         }
+
+        #region Zoomed-out treatment (DYN-11010)
+
+        private const string AIIcon = "ai-badge-96px.png";
+        private const string FrozenIcon = "frozen-64px.png";
+        private const string PreviewOffIcon = "hidden-64px.png";
+        private const string WarningIcon = "alert-64px.png";
+
+        /// <summary>
+        /// The node's zoomed-out icons by file name: the two bottom-row places (left, right),
+        /// then the place above them. Null where a place is empty.
+        /// </summary>
+        private string[] ZoomedOutIconsOf(NodeModel node)
+        {
+            DispatcherUtil.DoEvents();
+            var nodeViewModel = ViewModelOf(node);
+            return new[]
+            {
+                nodeViewModel.ImgGlyphOneSource?.Split('/').Last(),
+                nodeViewModel.ImgGlyphTwoSource?.Split('/').Last(),
+                nodeViewModel.ImgGlyphThreeSource?.Split('/').Last()
+            };
+        }
+
+        private static void Freeze(NodeModel node)
+        {
+            node.UpdateValue(new UpdateValueParams(nameof(NodeModel.IsFrozen), "true"));
+        }
+
+        private static void TurnPreviewOff(NodeModel node)
+        {
+            node.UpdateValue(new UpdateValueParams(nameof(NodeModel.IsVisible), "false"));
+        }
+
+        private static void AddWarning(NodeModel node)
+        {
+            // Persistent, so a graph run does not clear it during the test
+            node.Warning("A warning", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UntouchedNodeHasNoZoomedOutAIIcon()
+        {
+            var node = AddNumberNode();
+
+            CollectionAssert.AreEqual(new string[] { null, null, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PlacedNodeShowsTheAIIconWhenZoomedOut()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { AIIcon, null, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ModifiedNodeShowsTheAIIconWhenZoomedOut()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            CollectionAssert.AreEqual(new[] { AIIcon, null, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedOnlyNodeHasNoZoomedOutAIIcon()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+
+            CollectionAssert.AreEqual(new string[] { null, null, null }, ZoomedOutIconsOf(node),
+                "Like the corner badge, moved nodes get the halo only.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconIsShownOnTheNodeOnlyWhenZoomedOut()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var nodeView = ViewOf(node);
+            var badgeImage = ((Grid)nodeView.AIBadge).Children.OfType<Image>().Single();
+            var aiIconImage = (Image)LogicalTreeHelper.FindLogicalNode(nodeView.zoomGlyphsGrid, "ZoomStateImgTwo");
+            var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
+
+            // Zoomed out: the corner badge is dropped and the icon is shown on the node
+            workspaceViewModel.Zoom = 0.3;
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+            Assert.AreEqual(Visibility.Visible, nodeView.zoomGlyphsGrid.Visibility);
+            Assert.AreEqual(Visibility.Visible, aiIconImage.Visibility);
+            Assert.IsNotNull(aiIconImage.Source);
+
+            // Zoomed back in: the corner badge is back and the zoomed-out icons are hidden
+            workspaceViewModel.Zoom = 0.6;
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(Visibility.Visible, badgeImage.Visibility);
+            Assert.AreEqual(Visibility.Collapsed, nodeView.zoomGlyphsGrid.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconSitsNextToTheFrozenIcon()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { FrozenIcon, AIIcon, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconSitsNextToThePreviewOffIcon()
+        {
+            var node = AddNumberNode();
+            TurnPreviewOff(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { PreviewOffIcon, AIIcon, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconTakesTheFreeBottomPlaceAndLeavesTheWarningWhereItIs()
+        {
+            var node = AddNumberNode();
+            AddWarning(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { AIIcon, WarningIcon, null }, ZoomedOutIconsOf(node),
+                "The warning keeps its place; the AI icon never goes above the bottom row.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconIsLeftOutWhenFrozenAndPreviewOffFillTheBottomRow()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+            TurnPreviewOff(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { FrozenIcon, PreviewOffIcon, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconIsLeftOutWhenAStateIconAndAWarningFillTheBottomRow()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+            AddWarning(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { FrozenIcon, WarningIcon, null }, ZoomedOutIconsOf(node),
+                "The free place above the bottom row is not used for the AI icon.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconIsLeftOutWhenAllPlacesAreTaken()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+            TurnPreviewOff(node);
+            AddWarning(node);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            CollectionAssert.AreEqual(new[] { FrozenIcon, PreviewOffIcon, WarningIcon }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WarningAddedAfterTheAIChangeTakesPriority()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, AIIcon, null }, ZoomedOutIconsOf(node));
+
+            // A warning is a state change, not a user edit, so the AI change record is kept
+            AddWarning(node);
+
+            Assert.IsNotNull(node.AIChange);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, WarningIcon, null }, ZoomedOutIconsOf(node),
+                "The warning pushes the AI icon out.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FreezingAnAINodeRemovesItsAIIcon()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            CollectionAssert.AreEqual(new[] { AIIcon, null, null }, ZoomedOutIconsOf(node));
+
+            // Freezing is a user edit: the user takes over the node and its AI change record is cleared
+            Freeze(node);
+
+            Assert.IsNull(node.AIChange);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, null, null }, ZoomedOutIconsOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconGoesWhenTheChangeRecordIsCleared()
+        {
+            var node = AddNumberNode();
+            Freeze(node);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            CollectionAssert.AreEqual(new[] { FrozenIcon, AIIcon, null }, ZoomedOutIconsOf(node));
+
+            Workspace.ClearAIChanges();
+
+            CollectionAssert.AreEqual(new[] { FrozenIcon, null, null }, ZoomedOutIconsOf(node),
+                "Only the AI icon goes; the frozen icon stays.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AIIconStaysAfterTheHaloFadesOut()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var nodeView = ViewOf(node);
+
+            now += AIHaloGlow.FadeOutEnd;
+            nodeView.UpdateAIHalo();
+
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility, "The halo still fades out on time.");
+            CollectionAssert.AreEqual(new[] { AIIcon, null, null }, ZoomedOutIconsOf(node),
+                "Like the corner badge, the icon stays until the change record is cleared.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AINodeIsNotTintedWhenZoomedOut()
+        {
+            var node = AddNumberNode();
+            var overlayBefore = ViewModelOf(node).NodeOverlayColor;
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(overlayBefore, ViewModelOf(node).NodeOverlayColor, "The halo is the AI colour signal.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloStillShowsWhenZoomedOut()
+        {
+            ViewModel.CurrentSpaceViewModel.Zoom = 0.3;
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var nodeView = ViewOf(node);
+
+            Assert.AreEqual(Visibility.Visible, nodeView.AIHalo.Visibility);
+            Assert.IsNotNull(nodeView.AIHaloClock, "The glow plays as usual.");
+        }
+
+        #endregion
     }
 
     /// <summary>
