@@ -13,8 +13,8 @@ namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Canvas chip summarising the latest Assistant turn, e.g. "Autodesk Assistant added 3 nodes · changed 9 ·
-    /// deleted 2" (DYN-11011). Hidden when the turn changed nothing, or when no node still carries the turn's marker
-    /// and nothing was deleted. The text does not change when a person edits a node afterwards.
+    /// deleted 2" (DYN-11011). The chip is the turn's history: it stays until Dismiss or the next Assistant turn,
+    /// and later edits or undo do not change it (to revisit with per-turn undo, DYN-11008).
     /// </summary>
     internal sealed class AIChangeSummaryChipViewModel : ViewModelBase
     {
@@ -37,7 +37,8 @@ namespace Dynamo.ViewModels
 
             var model = workspaceViewModel.Model;
             model.AIChangesUpdated += OnAIChangesUpdated;
-            model.NodeRemoved += OnNodeRemoved;
+            model.NodeAdded += OnNodeAddedOrRemoved;
+            model.NodeRemoved += OnNodeAddedOrRemoved;
             model.NodesCleared += OnAIChangesUpdated;
 
             Refresh();
@@ -56,7 +57,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// True when at least one node still carries the turn's marker.
+        /// True when at least one of the turn's nodes is still on the canvas.
         /// </summary>
         public bool CanShow
         {
@@ -93,8 +94,7 @@ namespace Dynamo.ViewModels
         {
             var turn = LatestTurn();
             var nodes = turn == null ? new List<NodeModel>() : TurnNodes(turn);
-            var marked = nodes.Where(n => IsMarkedBy(n, turn)).ToList();
-            if (marked.Count == 0)
+            if (nodes.Count == 0)
             {
                 Refresh();
                 return;
@@ -106,7 +106,7 @@ namespace Dynamo.ViewModels
                 .ToDictionary(g => g.Key, g => g.First());
 
             var replayGroup = AIHaloGlow.NewReplayGroup();
-            foreach (var node in marked)
+            foreach (var node in nodes.Where(n => IsMarkedBy(n, turn)))
             {
                 if (nodeViewModels.TryGetValue(node.GUID, out var nodeViewModel))
                 {
@@ -126,7 +126,7 @@ namespace Dynamo.ViewModels
             workspaceViewModel.Model.ClearAIChanges();
         }
 
-        private void OnNodeRemoved(NodeModel node)
+        private void OnNodeAddedOrRemoved(NodeModel node)
         {
             OnAIChangesUpdated();
         }
@@ -151,9 +151,8 @@ namespace Dynamo.ViewModels
             var added = turn?.Nodes.Count(n => n.Kind == AIChangeKind.Placed) ?? 0;
             var changed = (turn?.Nodes.Count ?? 0) - added;
             var deleted = turn?.DeletedNodeCount ?? 0;
-            var stillMarked = turn == null ? 0 : TurnNodes(turn).Count(n => IsMarkedBy(n, turn));
 
-            if (stillMarked == 0 && deleted == 0)
+            if (added + changed == 0 && deleted == 0)
             {
                 CanShow = false;
                 IsVisible = false;
@@ -161,7 +160,7 @@ namespace Dynamo.ViewModels
             }
 
             Message = FormatMessage(added, changed, deleted);
-            CanShow = stillMarked > 0;
+            CanShow = TurnNodes(turn).Count > 0;
             IsVisible = true;
         }
 
@@ -224,7 +223,8 @@ namespace Dynamo.ViewModels
 
             var model = workspaceViewModel.Model;
             model.AIChangesUpdated -= OnAIChangesUpdated;
-            model.NodeRemoved -= OnNodeRemoved;
+            model.NodeAdded -= OnNodeAddedOrRemoved;
+            model.NodeRemoved -= OnNodeAddedOrRemoved;
             model.NodesCleared -= OnAIChangesUpdated;
 
             base.Dispose();
