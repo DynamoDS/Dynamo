@@ -86,13 +86,15 @@ namespace Dynamo.ViewModels
         public DelegateCommand DismissCommand { get; }
 
         /// <summary>
-        /// Replays the halo on the turn's still-marked nodes and zooms to fit them.
+        /// Zooms to fit the turn's nodes still on the canvas, and replays the halo on those that still carry
+        /// the turn's marker. Nodes a person has edited since are framed but do not glow.
         /// </summary>
         internal void Show()
         {
             var turn = LatestTurn();
-            var nodes = turn == null ? new List<NodeModel>() : MarkedNodes(turn);
-            if (nodes.Count == 0)
+            var nodes = turn == null ? new List<NodeModel>() : TurnNodes(turn);
+            var marked = nodes.Where(n => IsMarkedBy(n, turn)).ToList();
+            if (marked.Count == 0)
             {
                 Refresh();
                 return;
@@ -104,7 +106,7 @@ namespace Dynamo.ViewModels
                 .ToDictionary(g => g.Key, g => g.First());
 
             var replayGroup = AIHaloGlow.NewReplayGroup();
-            foreach (var node in nodes)
+            foreach (var node in marked)
             {
                 if (nodeViewModels.TryGetValue(node.GUID, out var nodeViewModel))
                 {
@@ -149,7 +151,7 @@ namespace Dynamo.ViewModels
             var added = turn?.Nodes.Count(n => n.Kind == AIChangeKind.Placed) ?? 0;
             var changed = (turn?.Nodes.Count ?? 0) - added;
             var deleted = turn?.DeletedNodeCount ?? 0;
-            var stillMarked = turn == null ? 0 : MarkedNodes(turn).Count;
+            var stillMarked = turn == null ? 0 : TurnNodes(turn).Count(n => IsMarkedBy(n, turn));
 
             if (stillMarked == 0 && deleted == 0)
             {
@@ -195,9 +197,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The turn's nodes that still exist and still carry this turn's marker, in turn order.
+        /// The turn's nodes that are still on the canvas, in turn order.
         /// </summary>
-        private List<NodeModel> MarkedNodes(AITurnSummary turn)
+        private List<NodeModel> TurnNodes(AITurnSummary turn)
         {
             var nodesById = workspaceViewModel.Model.Nodes
                 .GroupBy(n => n.GUID)
@@ -205,9 +207,14 @@ namespace Dynamo.ViewModels
 
             return turn.NodeIds
                 .Select(id => nodesById.TryGetValue(id, out var node) ? node : null)
-                .Where(node => node?.AIChange != null
-                    && string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+                .Where(node => node != null)
                 .ToList();
+        }
+
+        private static bool IsMarkedBy(NodeModel node, AITurnSummary turn)
+        {
+            return node.AIChange != null
+                && string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal);
         }
 
         public override void Dispose()
