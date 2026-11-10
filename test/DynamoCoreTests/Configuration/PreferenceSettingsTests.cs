@@ -528,5 +528,158 @@ namespace Dynamo.Tests.Configuration
             var expectedPathSegment = Path.Combine("samples", "es-ES");
             Assert.That(samplesPath, Does.EndWith(expectedPathSegment));
         }
+
+        #region RefreshDefaultGroupStyleNames
+
+        private static readonly Guid ActionsStyleId = new Guid("4d68be4a-a04d-4945-9dd5-cdf61079d790");
+        private static readonly Guid ReviewStyleId = new Guid("bc688959-ce34-4bf5-90f8-6ddd23f80989");
+
+        private static void RunWithUICulture(string cultureName, Action action)
+        {
+            var thread = System.Threading.Thread.CurrentThread;
+            var originalUICulture = thread.CurrentUICulture;
+            var originalCulture = thread.CurrentCulture;
+            var defaultNames = GroupStyleItem.DefaultGroupStyleItems.Select(style => style.Name).ToList();
+            try
+            {
+                thread.CurrentUICulture = new System.Globalization.CultureInfo(cultureName);
+                thread.CurrentCulture = new System.Globalization.CultureInfo(cultureName);
+                action();
+            }
+            finally
+            {
+                thread.CurrentUICulture = originalUICulture;
+                thread.CurrentCulture = originalCulture;
+                // The refresh also renames the shared static defaults, so put them back for other tests.
+                for (int i = 0; i < defaultNames.Count; i++)
+                {
+                    GroupStyleItem.DefaultGroupStyleItems[i].Name = defaultNames[i];
+                }
+            }
+        }
+
+        private static PreferenceSettings CreateSettingsWithEnglishDefaultStyles()
+        {
+            var settings = new PreferenceSettings();
+            settings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems
+                .Select(style => new GroupStyleItem
+                {
+                    Name = style.Name,
+                    HexColorString = style.HexColorString,
+                    FontSize = style.FontSize,
+                    GroupStyleId = style.GroupStyleId,
+                    IsDefault = true
+                })
+                .ToList();
+            // Names as a file saved by an English session would hold them.
+            settings.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name = "Actions";
+            settings.GroupStyleItemsList.First(style => style.GroupStyleId == ReviewStyleId).Name = "Review";
+            return settings;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUICultureIsGermanThenRefreshRenamesDefaultGroupStyles()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Aktionen", settings.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+                Assert.AreEqual("Überprüfung", settings.GroupStyleItemsList.First(style => style.GroupStyleId == ReviewStyleId).Name);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRefreshRunsThenSharedDefaultGroupStyleNamesFollowTheUICulture()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Aktionen", GroupStyleItem.DefaultGroupStyleItems.First(style => style.GroupStyleId == ActionsStyleId).Name);
+                Assert.AreEqual("Aktionen", GroupStyleItem.CloneDefaultGroupStyleItems().First(style => style.GroupStyleId == ActionsStyleId).Name);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRefreshRunsThenCustomGroupStylesKeepTheirNames()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "My style", HexColorString = "#FF0000", FontSize = 36, GroupStyleId = Guid.NewGuid(), IsDefault = false });
+            // A custom style that reuses the id of a default one must not be renamed either.
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Custom actions", HexColorString = "#00FF00", FontSize = 36, GroupStyleId = ActionsStyleId, IsDefault = false });
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.IsTrue(settings.GroupStyleItemsList.Any(style => style.Name == "My style" && !style.IsDefault));
+                Assert.IsTrue(settings.GroupStyleItemsList.Any(style => style.Name == "Custom actions" && !style.IsDefault));
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenDefaultStyleHasUnknownIdThenRefreshLeavesItUntouched()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Imported", HexColorString = "#0000FF", FontSize = 36, GroupStyleId = Guid.NewGuid(), IsDefault = true });
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.IsTrue(settings.GroupStyleItemsList.Any(style => style.Name == "Imported"));
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAnotherStyleAlreadyUsesTheLocalizedNameThenRefreshKeepsTheDefaultName()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Aktionen", HexColorString = "#FF00FF", FontSize = 36, GroupStyleId = Guid.NewGuid(), IsDefault = false });
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Actions", settings.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+                Assert.AreEqual(settings.GroupStyleItemsList.Count, settings.GroupStyleItemsList.Select(style => style.Name).Distinct().Count());
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRefreshRunsTwiceThenTheSecondRunChangesNothing()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+                var afterFirst = settings.GroupStyleItemsList.Select(style => style.Name).ToList();
+
+                settings.RefreshDefaultGroupStyleNames();
+
+                CollectionAssert.AreEqual(afterFirst, settings.GroupStyleItemsList.Select(style => style.Name).ToList());
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenGroupStyleIdIsNotADefaultThenLocalizedDefaultNameIsNull()
+        {
+            Assert.IsNull(GroupStyleItem.GetLocalizedDefaultName(Guid.NewGuid()));
+        }
+
+        #endregion
     }
 }

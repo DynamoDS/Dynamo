@@ -1285,6 +1285,34 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Renames the default group styles to the current UI culture. The names of the default styles are
+        /// saved in the settings file, so without this they keep the language Dynamo had when the file was
+        /// written. Custom styles are never changed, and a default style keeps its name if the new name
+        /// is already used by another style. Call it after the UI culture has been applied.
+        /// </summary>
+        internal void RefreshDefaultGroupStyleNames()
+        {
+            foreach (var defaultStyle in GroupStyleItem.DefaultGroupStyleItems)
+            {
+                var localizedName = GroupStyleItem.GetLocalizedDefaultName(defaultStyle.GroupStyleId);
+                if (localizedName != null) defaultStyle.Name = localizedName;
+            }
+
+            if (GroupStyleItemsList == null) return;
+
+            foreach (var style in GroupStyleItemsList)
+            {
+                if (!style.IsDefault) continue;
+
+                var localizedName = GroupStyleItem.GetLocalizedDefaultName(style.GroupStyleId);
+                if (localizedName == null || style.Name == localizedName) continue;
+                if (GroupStyleItemsList.Any(other => !ReferenceEquals(other, style) && other.Name == localizedName)) continue;
+
+                style.Name = localizedName;
+            }
+        }
+
+        /// <summary>
         /// Checking for invalid values or tainted data and sanitize them
         /// </summary>
         internal void SanitizeValues()

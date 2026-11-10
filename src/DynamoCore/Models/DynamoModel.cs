@@ -757,6 +757,7 @@ namespace Dynamo.Models
                 // Pass EnableUnTrustedLocationsNotifications from config to PreferenceSettings
                 PreferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
                 SetUICulture(CLILocale ?? PreferenceSettings.Locale);
+                PreferenceSettings.RefreshDefaultGroupStyleNames();
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -843,6 +844,7 @@ namespace Dynamo.Models
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
+                    PreferenceSettings.RefreshDefaultGroupStyleNames();
                 }
             }
 
