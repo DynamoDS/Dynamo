@@ -1772,11 +1772,15 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
-                // Takes the pointer and keyboard focus for its tooltip. Clicks still reach the node,
-                // so the node can be selected and dragged by its badge.
+                // Takes the pointer and keyboard focus for its tooltip
                 Focusable = true
             };
             badge.Children.Add(image);
+
+            // Clicks bubble to the node, which selects it. Most of the badge sits outside the
+            // node's bounds, so mark it as a drag handle: pressing it then drags the node instead
+            // of starting a selection box.
+            WorkspaceViewModel.SetIsNodeDragHandle(badge, true);
 
             toolTipText = new TextBlock
             {

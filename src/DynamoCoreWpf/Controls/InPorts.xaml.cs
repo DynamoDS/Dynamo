@@ -32,6 +32,12 @@ namespace Dynamo.UI.Controls
         private AIChangePopover aiChangePopover = null;
         private DispatcherTimer aiChangeOpenTimer = null;
 
+        // Whether the hover and keyboard handlers for AI change review are attached
+        private bool aiChangeInputHooked = false;
+
+        // The view model whose AI change events this view is subscribed to, or null while unloaded
+        private InPortViewModel aiChangeViewModel = null;
+
         // The workspace whose undo stack the open popover is watching, or null while it is closed
         private Graph.Workspaces.WorkspaceModel aiChangeWorkspace = null;
 
@@ -246,6 +252,10 @@ namespace Dynamo.UI.Controls
             DataContextChanged += OnDataContextChanged;
             Loaded += OnPortViewLoaded;
             Unloaded += OnPortViewUnloaded;
+            // Kept for the life of the view (unlike the two above), so AI change review is wired
+            // again each time the port view is loaded, not just the first time
+            Loaded += OnPortViewLoadedAIChange;
+            Unloaded += OnPortViewUnloadedAIChange;
             MainGrid.PreviewMouseRightButtonUp += OnMainGridPreviewMouseRightButtonUp;
         }
 
@@ -261,7 +271,10 @@ namespace Dynamo.UI.Controls
 
             viewModel = e.NewValue as InPortViewModel;
             viewModel.PropertyChanged += OnPropertyChanged;
-            viewModel.RequestShowAIChange += OnRequestShowAIChange;
+            if (IsLoaded)
+            {
+                HookAIChange();
+            }
 
             //Initialize the PortBackgroundColor
             PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
@@ -504,9 +517,6 @@ namespace Dynamo.UI.Controls
                         }
                     }
                     break;
-                case nameof(InPortViewModel.AIInputChange):
-                    UpdateAIChange();
-                    break;
                 case "UseLevels":
 
                     //Add the spinner if it was not added in the constructor
@@ -554,14 +564,6 @@ namespace Dynamo.UI.Controls
         private void OnPortViewUnloaded(object sender, RoutedEventArgs e)
         {
             viewModel.PropertyChanged -= OnPropertyChanged;
-            viewModel.RequestShowAIChange -= OnRequestShowAIChange;
-            aiChangeOpenTimer?.Stop();
-            aiChangePopover?.Close();
-            MainGrid.MouseEnter -= OnMouseEnterAIChange;
-            MainGrid.MouseLeave -= OnMouseLeaveAIChange;
-            GotKeyboardFocus -= OnGotKeyboardFocusAIChange;
-            LostKeyboardFocus -= OnLostKeyboardFocusAIChange;
-            PreviewKeyDown -= OnPreviewKeyDownAIChange;
 
             CleanupUITriggers();
 
@@ -592,13 +594,83 @@ namespace Dynamo.UI.Controls
             PortBackgroundBorder.MouseLeave += OnMouseLeaveBackground;
             NodeAutoCompleteHover.MouseEnter += OnMouseEnterHover;
             NodeAutoCompleteHover.MouseLeave += OnMouseLeaveHover;
-            MainGrid.MouseEnter += OnMouseEnterAIChange;
-            MainGrid.MouseLeave += OnMouseLeaveAIChange;
-            GotKeyboardFocus += OnGotKeyboardFocusAIChange;
-            LostKeyboardFocus += OnLostKeyboardFocusAIChange;
-            PreviewKeyDown += OnPreviewKeyDownAIChange;
 
             Loaded -= OnPortViewLoaded;
+        }
+
+        private void OnPortViewLoadedAIChange(object sender, RoutedEventArgs e)
+        {
+            HookAIChange();
+        }
+
+        private void OnPortViewUnloadedAIChange(object sender, RoutedEventArgs e)
+        {
+            UnhookAIChange();
+        }
+
+        /// <summary>
+        /// Wires hover, keyboard focus and "Next change" for AI change review, and catches the
+        /// outline up with any change made while the view was unloaded. Safe to call repeatedly.
+        /// </summary>
+        private void HookAIChange()
+        {
+            if (!aiChangeInputHooked)
+            {
+                MainGrid.MouseEnter += OnMouseEnterAIChange;
+                MainGrid.MouseLeave += OnMouseLeaveAIChange;
+                GotKeyboardFocus += OnGotKeyboardFocusAIChange;
+                LostKeyboardFocus += OnLostKeyboardFocusAIChange;
+                PreviewKeyDown += OnPreviewKeyDownAIChange;
+                aiChangeInputHooked = true;
+            }
+
+            // The general view model subscription is dropped for good on the first unload, so AI
+            // change review listens for its own property on a subscription it manages itself
+            if (aiChangeViewModel == null && viewModel != null)
+            {
+                aiChangeViewModel = viewModel;
+                aiChangeViewModel.PropertyChanged += OnViewModelPropertyChangedAIChange;
+                aiChangeViewModel.RequestShowAIChange += OnRequestShowAIChange;
+            }
+
+            UpdateAIChange();
+        }
+
+        /// <summary>
+        /// Undoes <see cref="HookAIChange"/> and closes the popover, so an unloaded port view is not
+        /// kept alive by its view model or the workspace.
+        /// </summary>
+        private void UnhookAIChange()
+        {
+            if (aiChangeInputHooked)
+            {
+                MainGrid.MouseEnter -= OnMouseEnterAIChange;
+                MainGrid.MouseLeave -= OnMouseLeaveAIChange;
+                GotKeyboardFocus -= OnGotKeyboardFocusAIChange;
+                LostKeyboardFocus -= OnLostKeyboardFocusAIChange;
+                PreviewKeyDown -= OnPreviewKeyDownAIChange;
+                aiChangeInputHooked = false;
+            }
+
+            // Unsubscribe from the view model that was subscribed to, not whatever is current
+            if (aiChangeViewModel != null)
+            {
+                aiChangeViewModel.PropertyChanged -= OnViewModelPropertyChangedAIChange;
+                aiChangeViewModel.RequestShowAIChange -= OnRequestShowAIChange;
+                aiChangeViewModel = null;
+            }
+
+            aiChangeOpenTimer?.Stop();
+            // Closing also stops listening to the workspace's undo stack (OnAIChangePopoverClosed)
+            aiChangePopover?.Close();
+        }
+
+        private void OnViewModelPropertyChangedAIChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(InPortViewModel.AIInputChange))
+            {
+                UpdateAIChange();
+            }
         }
 
         #region AI change review

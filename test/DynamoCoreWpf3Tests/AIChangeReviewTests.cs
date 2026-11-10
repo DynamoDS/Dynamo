@@ -152,6 +152,36 @@ namespace DynamoCoreWpfTests
             Assert.IsInstanceOf<DynamoToolTip>(badge.ToolTip);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAIBadgeIsPressedThenItsNodeIsSelectedAndDragged()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var badgeImage = ViewOf(node).AIBadge.ChildrenOfType<Image>().Single();
+            var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
+
+            try
+            {
+                // Most of the badge is outside the node's bounds, where a press on the canvas
+                // would clear the selection and start a selection box
+                badgeImage.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Mouse.MouseDownEvent
+                });
+                DispatcherUtil.DoEvents();
+
+                Assert.IsTrue(node.IsSelected, "Pressing the badge selects its node and keeps it selected.");
+                Assert.IsTrue(workspaceViewModel.IsDragging, "Pressing the badge starts dragging its node.");
+                Assert.IsFalse(workspaceViewModel.IsSelecting, "Pressing the badge does not start a selection box.");
+            }
+            finally
+            {
+                workspaceViewModel.CancelActiveState();
+                Mouse.Capture(null);
+            }
+        }
+
         #endregion
 
         #region Changed input outline
@@ -261,6 +291,62 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(port.IsKeyboardFocused);
             Assert.IsNotNull(port.AIChangePopover);
             Assert.IsTrue(port.AIChangePopover.IsOpen);
+        }
+
+        /// <summary>Unloads and reloads a port view, as removing it from the visual tree and adding it back does.</summary>
+        private static void Reload(InPorts portView)
+        {
+            portView.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+            DispatcherUtil.DoEvents();
+            portView.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            DispatcherUtil.DoEvents();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPortViewIsReloadedThenKeyboardFocusStillOpensItsPopover()
+        {
+            var node = AddTwoInputNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "A.out");
+            DispatcherUtil.DoEvents();
+            var port = PortViewOf(node, "a");
+
+            Reload(port);
+            Keyboard.Focus(port);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(port.IsKeyboardFocused);
+            Assert.IsNotNull(port.AIChangePopover);
+            Assert.IsTrue(port.AIChangePopover.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPortViewIsUnloadedThenItsPopoverClosesAndLaterChangesShowOnReload()
+        {
+            var node = AddTwoInputNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "A.out");
+            DispatcherUtil.DoEvents();
+            var port = PortViewOf(node, "a");
+            var popover = OpenPopover(port);
+
+            port.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(popover.IsOpen, "Unloading closes the popover.");
+
+            Workspace.ClearAIChanges();
+            DispatcherUtil.DoEvents();
+            port.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsFalse(port.Focusable, "A change cleared while unloaded is picked up on reload.");
+            Assert.AreEqual(Visibility.Collapsed, port.AIChangeOutline.Visibility);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "a", null, "B.out");
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(port.Focusable, "A reloaded port still follows new changes.");
+            Assert.AreEqual(Visibility.Visible, port.AIChangeOutline.Visibility);
         }
 
         [Test]
