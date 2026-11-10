@@ -1393,6 +1393,7 @@ namespace DynamoCoreWpfTests
             AIHaloGlow.Now = () => now;
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             var nodeView = ViewOf(node);
 
             now += AIHaloGlow.FadeOutEnd;
@@ -1424,6 +1425,7 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
             var nodeView = ViewOf(node);
 
             Assert.AreEqual(Visibility.Visible, nodeView.AIHalo.Visibility);
