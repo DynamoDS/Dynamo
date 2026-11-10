@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Microsoft.Xaml.Behaviors;
 using Dynamo.ViewModels;
@@ -27,8 +28,31 @@ namespace Dynamo.UI.Controls
         private Border nodeAutoCompleteMarker = null;
         private Rectangle PortSnapping = null;
         private Border chevronHighlightOverlay = null;
+        private Grid aiChangeOutline = null;
+        private AIChangePopover aiChangePopover = null;
+        private DispatcherTimer aiChangeOpenTimer = null;
+
+        // Whether the hover and keyboard handlers for AI change review are attached
+        private bool aiChangeInputHooked = false;
+
+        // The view model whose AI change events this view is subscribed to, or null while unloaded
+        private InPortViewModel aiChangeViewModel = null;
+
+        // The workspace whose undo stack the open popover is watching, or null while it is closed
+        private Graph.Workspaces.WorkspaceModel aiChangeWorkspace = null;
+
+        // What WorkspaceModel raises when its undo stack changes (see UpdateUndoRedoStack)
+        private const string UndoRedoStackChangedPropertyName = "CanUndoRedoCommand";
 
         private bool _useLevelSpinnerInit = false;
+
+        // The changed-input outline: purple dots along the edge of the port background
+        private const double AIChangeOutlineThickness = 1.5;
+        private const double PortCornerRadius = 11;
+
+        // Hover delay before the change popover opens, so it does not flash up while the pointer
+        // only passes over the port (for example while drawing a wire)
+        private static readonly TimeSpan AIChangeOpenDelay = TimeSpan.FromMilliseconds(400);
 
         // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
         private static SolidColorBrush _primaryCharcoal200Brush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
@@ -36,6 +60,7 @@ namespace Dynamo.UI.Controls
         private static SolidColorBrush _portMouseOverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortMouseOverColor"] as SolidColorBrush;
         private static SolidColorBrush _nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
         private static SolidColorBrush _darkGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkGreyBrush"] as SolidColorBrush;
+        private static SolidColorBrush _aiChangedInputOutlineBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAIChangedInputOutlineBrush"] as SolidColorBrush;
 
         private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
@@ -48,6 +73,7 @@ namespace Dynamo.UI.Controls
             _portMouseOverColor.Freeze();
             _nodeTransientOverlayColor.Freeze();
             _darkGrey.Freeze();
+            _aiChangedInputOutlineBrush.Freeze();
         }
         public InPorts()
         {
@@ -226,6 +252,10 @@ namespace Dynamo.UI.Controls
             DataContextChanged += OnDataContextChanged;
             Loaded += OnPortViewLoaded;
             Unloaded += OnPortViewUnloaded;
+            // Kept for the life of the view (unlike the two above), so AI change review is wired
+            // again each time the port view is loaded, not just the first time
+            Loaded += OnPortViewLoadedAIChange;
+            Unloaded += OnPortViewUnloadedAIChange;
             MainGrid.PreviewMouseRightButtonUp += OnMainGridPreviewMouseRightButtonUp;
         }
 
@@ -241,6 +271,10 @@ namespace Dynamo.UI.Controls
 
             viewModel = e.NewValue as InPortViewModel;
             viewModel.PropertyChanged += OnPropertyChanged;
+            if (IsLoaded)
+            {
+                HookAIChange();
+            }
 
             //Initialize the PortBackgroundColor
             PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
@@ -288,6 +322,9 @@ namespace Dynamo.UI.Controls
             {
                 SetLevelVisibility();
             }
+
+            // The input may already carry an AI change, for example when the node view is rebuilt
+            UpdateAIChange();
         }
 
         private void SetLevelVisibility()
@@ -560,6 +597,363 @@ namespace Dynamo.UI.Controls
 
             Loaded -= OnPortViewLoaded;
         }
+
+        private void OnPortViewLoadedAIChange(object sender, RoutedEventArgs e)
+        {
+            HookAIChange();
+        }
+
+        private void OnPortViewUnloadedAIChange(object sender, RoutedEventArgs e)
+        {
+            UnhookAIChange();
+        }
+
+        /// <summary>
+        /// Wires hover, keyboard focus and "Next change" for AI change review, and catches the
+        /// outline up with any change made while the view was unloaded. Safe to call repeatedly.
+        /// </summary>
+        private void HookAIChange()
+        {
+            if (!aiChangeInputHooked)
+            {
+                MainGrid.MouseEnter += OnMouseEnterAIChange;
+                MainGrid.MouseLeave += OnMouseLeaveAIChange;
+                GotKeyboardFocus += OnGotKeyboardFocusAIChange;
+                LostKeyboardFocus += OnLostKeyboardFocusAIChange;
+                PreviewKeyDown += OnPreviewKeyDownAIChange;
+                aiChangeInputHooked = true;
+            }
+
+            // The general view model subscription is dropped for good on the first unload, so AI
+            // change review listens for its own property on a subscription it manages itself
+            if (aiChangeViewModel == null && viewModel != null)
+            {
+                aiChangeViewModel = viewModel;
+                aiChangeViewModel.PropertyChanged += OnViewModelPropertyChangedAIChange;
+                aiChangeViewModel.RequestShowAIChange += OnRequestShowAIChange;
+            }
+
+            UpdateAIChange();
+        }
+
+        /// <summary>
+        /// Undoes <see cref="HookAIChange"/> and closes the popover, so an unloaded port view is not
+        /// kept alive by its view model or the workspace.
+        /// </summary>
+        private void UnhookAIChange()
+        {
+            if (aiChangeInputHooked)
+            {
+                MainGrid.MouseEnter -= OnMouseEnterAIChange;
+                MainGrid.MouseLeave -= OnMouseLeaveAIChange;
+                GotKeyboardFocus -= OnGotKeyboardFocusAIChange;
+                LostKeyboardFocus -= OnLostKeyboardFocusAIChange;
+                PreviewKeyDown -= OnPreviewKeyDownAIChange;
+                aiChangeInputHooked = false;
+            }
+
+            // Unsubscribe from the view model that was subscribed to, not whatever is current
+            if (aiChangeViewModel != null)
+            {
+                aiChangeViewModel.PropertyChanged -= OnViewModelPropertyChangedAIChange;
+                aiChangeViewModel.RequestShowAIChange -= OnRequestShowAIChange;
+                aiChangeViewModel = null;
+            }
+
+            aiChangeOpenTimer?.Stop();
+            // Closing also stops listening to the workspace's undo stack (OnAIChangePopoverClosed)
+            aiChangePopover?.Close();
+        }
+
+        private void OnViewModelPropertyChangedAIChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(InPortViewModel.AIInputChange))
+            {
+                UpdateAIChange();
+            }
+        }
+
+        #region AI change review
+
+        /// <summary>
+        /// The dotted outline marking an input the AI Assistant changed, or null if this input has
+        /// never needed one. Exposed for tests.
+        /// </summary>
+        internal FrameworkElement AIChangeOutline => aiChangeOutline;
+
+        /// <summary>
+        /// The input's change popover, or null if it has never been opened. Exposed for tests.
+        /// </summary>
+        internal AIChangePopover AIChangePopover => aiChangePopover;
+
+        /// <summary>
+        /// Shows or hides the changed-input outline to match the view model, and makes the port
+        /// focusable while it has a change to review, so the popover can be reached by keyboard.
+        /// </summary>
+        private void UpdateAIChange()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIChange));
+                return;
+            }
+
+            if (viewModel?.AIInputChange == null)
+            {
+                if (aiChangeOutline != null)
+                {
+                    aiChangeOutline.Visibility = Visibility.Collapsed;
+                }
+
+                aiChangeOpenTimer?.Stop();
+                aiChangePopover?.Close();
+                ToolTipService.SetIsEnabled(PortBackgroundBorder, true);
+                Focusable = false;
+                return;
+            }
+
+            if (aiChangeOutline == null)
+            {
+                aiChangeOutline = CreateAIChangeOutline();
+                MainGrid.Children.Add(aiChangeOutline);
+            }
+
+            aiChangeOutline.Visibility = Visibility.Visible;
+
+            // The popover takes the place of the port's own tooltip while there is a change to review
+            ToolTipService.SetIsEnabled(PortBackgroundBorder, false);
+            Focusable = true;
+
+            // An open popover follows the change, for example a later edit in the same turn
+            if (aiChangePopover?.IsOpen == true)
+            {
+                ShowAIChangePopover();
+            }
+        }
+
+        /// <summary>
+        /// Opens the change popover for this input, filled in from the view model.
+        /// </summary>
+        internal void ShowAIChangePopover()
+        {
+            var change = viewModel?.AIInputChange;
+            if (change == null) return;
+
+            if (aiChangePopover == null)
+            {
+                aiChangePopover = new AIChangePopover(this);
+                aiChangePopover.UndoRequested += OnAIChangeUndoRequested;
+                aiChangePopover.NextRequested += OnAIChangeNextRequested;
+                aiChangePopover.Opened += OnAIChangePopoverOpened;
+                aiChangePopover.Closed += OnAIChangePopoverClosed;
+            }
+
+            var node = viewModel.NodeViewModel;
+            aiChangePopover.Show(
+                viewModel.PortName,
+                change,
+                node.CanUndoAIChange,
+                node.GetNextAIChangedInput(viewModel) != null);
+        }
+
+        /// <summary>
+        /// Re-checks the open popover's "Undo this change" and "Next change ›", so they do not go
+        /// stale when an edit lands on the undo stack while the popover is open.
+        /// </summary>
+        private void UpdateAIChangePopoverActions()
+        {
+            if (aiChangePopover?.IsOpen != true || viewModel?.AIInputChange == null) return;
+
+            var node = viewModel.NodeViewModel;
+            aiChangePopover.UpdateActions(
+                node.CanUndoAIChange,
+                node.GetNextAIChangedInput(viewModel) != null);
+        }
+
+        // Only listen to the undo stack while the popover is open, so idle ports cost nothing
+        private void OnAIChangePopoverOpened()
+        {
+            if (aiChangeWorkspace != null) return;
+
+            aiChangeWorkspace = viewModel?.NodeViewModel?.WorkspaceViewModel?.Model;
+            if (aiChangeWorkspace != null)
+            {
+                aiChangeWorkspace.PropertyChanged += OnAIChangeWorkspacePropertyChanged;
+            }
+        }
+
+        private void OnAIChangePopoverClosed()
+        {
+            if (aiChangeWorkspace == null) return;
+
+            aiChangeWorkspace.PropertyChanged -= OnAIChangeWorkspacePropertyChanged;
+            aiChangeWorkspace = null;
+        }
+
+        private void OnAIChangeWorkspacePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Raised whenever an undo group is recorded (WorkspaceModel.UpdateUndoRedoStack)
+            if (e.PropertyName != UndoRedoStackChangedPropertyName) return;
+
+            if (Dispatcher.CheckAccess())
+            {
+                UpdateAIChangePopoverActions();
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIChangePopoverActions));
+            }
+        }
+
+        private void OnAIChangeUndoRequested()
+        {
+            aiChangePopover.Close();
+            viewModel.NodeViewModel.UndoAIChange();
+        }
+
+        private void OnAIChangeNextRequested()
+        {
+            aiChangePopover.Close();
+            viewModel.NodeViewModel.ShowNextAIChange(viewModel);
+        }
+
+        /// <summary>
+        /// "Next change" moved the review to this input: open its popover with keyboard focus on
+        /// "Next change", so repeated Enter keeps walking through the turn's changes.
+        /// </summary>
+        private void OnRequestShowAIChange()
+        {
+            // Wait for the canvas to finish centring on the node, so the popover opens in place
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (viewModel?.AIInputChange == null) return;
+
+                Keyboard.Focus(this);
+                ShowAIChangePopover();
+                aiChangePopover.FocusContent(preferNext: true);
+            }), DispatcherPriority.Loaded);
+        }
+
+        private void OnMouseEnterAIChange(object sender, MouseEventArgs e)
+        {
+            if (viewModel?.AIInputChange == null) return;
+
+            if (aiChangePopover?.IsOpen == true)
+            {
+                // Back over the port before the popover closed: keep it open
+                ShowAIChangePopover();
+                return;
+            }
+
+            if (aiChangeOpenTimer == null)
+            {
+                aiChangeOpenTimer = new DispatcherTimer(DispatcherPriority.Input, Dispatcher) { Interval = AIChangeOpenDelay };
+                aiChangeOpenTimer.Tick += OnAIChangeOpenTimerTick;
+            }
+
+            aiChangeOpenTimer.Start();
+        }
+
+        private void OnAIChangeOpenTimerTick(object sender, EventArgs e)
+        {
+            aiChangeOpenTimer.Stop();
+
+            if (IsMouseOver)
+            {
+                ShowAIChangePopover();
+            }
+        }
+
+        private void OnMouseLeaveAIChange(object sender, MouseEventArgs e)
+        {
+            aiChangeOpenTimer?.Stop();
+            aiChangePopover?.CloseSoon();
+        }
+
+        private void OnGotKeyboardFocusAIChange(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            // Only the port itself, not a control inside it such as the list level spinner. Focus
+            // handed back by Escape leaves the popover closed.
+            if (!ReferenceEquals(e.NewFocus, this) || aiChangePopover?.IsReturningFocus == true) return;
+
+            ShowAIChangePopover();
+        }
+
+        private void OnLostKeyboardFocusAIChange(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            aiChangePopover?.CloseSoon();
+        }
+
+        private void OnPreviewKeyDownAIChange(object sender, KeyEventArgs e)
+        {
+            // Enter or Down moves from the focused port into its popover
+            if (!ReferenceEquals(e.OriginalSource, this) || (e.Key != Key.Enter && e.Key != Key.Down)) return;
+            if (viewModel?.AIInputChange == null) return;
+
+            ShowAIChangePopover();
+            aiChangePopover.FocusContent(preferNext: false);
+            e.Handled = true;
+        }
+
+        private static Grid CreateAIChangeOutline()
+        {
+            var path = new Path
+            {
+                Stroke = _aiChangedInputOutlineBrush,
+                StrokeThickness = AIChangeOutlineThickness,
+                // Zero-length dashes with round caps draw dots, one every two stroke widths
+                StrokeDashArray = new DoubleCollection { 0, 2 },
+                StrokeDashCap = PenLineCap.Round
+            };
+
+            // Same place and shape as the port background, and never takes mouse clicks
+            var outline = new Grid
+            {
+                Name = "aiChangeOutline",
+                Height = 29,
+                VerticalAlignment = VerticalAlignment.Center,
+                IsHitTestVisible = false
+            };
+            outline.Children.Add(path);
+            outline.SizeChanged += (s, e) => path.Data = CreateAIChangeOutlineGeometry(e.NewSize);
+
+            Grid.SetColumn(outline, 1);
+            Grid.SetColumnSpan(outline, 6);
+            Canvas.SetZIndex(outline, 1);
+
+            return outline;
+        }
+
+        /// <summary>
+        /// The port background's shape: square on the node side, rounded on the right. Inset by half
+        /// the stroke, so the dots stay inside the port.
+        /// </summary>
+        private static Geometry CreateAIChangeOutlineGeometry(Size size)
+        {
+            var inset = AIChangeOutlineThickness / 2;
+            var left = inset;
+            var top = inset;
+            var right = Math.Max(left, size.Width - inset);
+            var bottom = Math.Max(top, size.Height - inset);
+            var radius = Math.Max(0, Math.Min(PortCornerRadius, Math.Min((bottom - top) / 2, right - left)));
+            var corner = new Size(radius, radius);
+
+            var geometry = new StreamGeometry();
+            using (var context = geometry.Open())
+            {
+                context.BeginFigure(new Point(left, top), false, true);
+                context.LineTo(new Point(right - radius, top), true, false);
+                context.ArcTo(new Point(right, top + radius), corner, 0, false, SweepDirection.Clockwise, true, false);
+                context.LineTo(new Point(right, bottom - radius), true, false);
+                context.ArcTo(new Point(right - radius, bottom), corner, 0, false, SweepDirection.Clockwise, true, false);
+                context.LineTo(new Point(left, bottom), true, false);
+            }
+
+            geometry.Freeze();
+            return geometry;
+        }
+
+        #endregion
 
         private void OnMainGridPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {

@@ -754,6 +754,98 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// The AI Assistant badge's tooltip: "Placed by" or "Edited by Autodesk Assistant", or null
+        /// when the node shows no badge (<see cref="ShowAIBadge"/>).
+        /// </summary>
+        internal string AIBadgeToolTip
+        {
+            get
+            {
+                switch (NodeModel?.AIChange?.Kind)
+                {
+                    case AIChangeKind.Placed:
+                        return Wpf.Properties.Resources.AIBadgeToolTipPlaced;
+                    case AIChangeKind.Modified:
+                        return Wpf.Properties.Resources.AIBadgeToolTipEdited;
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// True if undo would revert the AI Assistant turn that changed this node, and only that turn
+        /// (<see cref="WorkspaceModel.CanUndoAITurn"/>).
+        /// </summary>
+        internal bool CanUndoAIChange
+        {
+            get
+            {
+                var change = NodeModel?.AIChange;
+                return change != null && WorkspaceViewModel.Model.CanUndoAITurn(change.TurnId);
+            }
+        }
+
+        /// <summary>
+        /// Undoes the AI Assistant turn that changed this node, if it is the latest undo step. The
+        /// turn's whole undo step is reverted, so every node it touched goes back.
+        /// </summary>
+        internal void UndoAIChange()
+        {
+            if (!CanUndoAIChange) return;
+
+            DynamoViewModel.UndoCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// The changed input to review after the given one: the next input the same AI Assistant turn
+        /// changed on this node, then on the turn's other nodes in the order it first touched them,
+        /// wrapping around. Null if the given input is the turn's only changed input.
+        /// </summary>
+        /// <param name="current">The changed input being reviewed, on this node.</param>
+        internal InPortViewModel GetNextAIChangedInput(InPortViewModel current)
+        {
+            var turnId = NodeModel?.AIChange?.TurnId;
+            var turn = turnId == null ? null : WorkspaceViewModel.Model.GetAITurnSummary(turnId);
+            if (turn == null) return null;
+
+            var changedInputs = new List<InPortViewModel>();
+            foreach (var nodeId in turn.NodeIds)
+            {
+                var nodeViewModel = WorkspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID == nodeId);
+
+                // Skip nodes a person or a later turn has since taken over
+                var change = nodeViewModel?.NodeModel.AIChange;
+                if (change == null || !string.Equals(change.TurnId, turnId, StringComparison.Ordinal)) continue;
+
+                changedInputs.AddRange(nodeViewModel.InPorts.OfType<InPortViewModel>().Where(p => p.AIInputChange != null));
+            }
+
+            var index = changedInputs.IndexOf(current);
+            if (index < 0 || changedInputs.Count < 2) return null;
+
+            return changedInputs[(index + 1) % changedInputs.Count];
+        }
+
+        /// <summary>
+        /// Moves the review on to the next changed input (<see cref="GetNextAIChangedInput"/>):
+        /// selects and centres its node and opens that input's change popover.
+        /// </summary>
+        /// <param name="current">The changed input being reviewed, on this node.</param>
+        internal void ShowNextAIChange(InPortViewModel current)
+        {
+            var next = GetNextAIChangedInput(current);
+            if (next == null) return;
+
+            if (next.NodeViewModel != this)
+            {
+                WorkspaceViewModel.FocusNodeCommand.Execute(next.NodeViewModel.NodeModel.GUID.ToString());
+            }
+
+            next.ShowAIChange();
+        }
+
+        /// <summary>
         /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
         /// <value>
@@ -1408,6 +1500,7 @@ namespace Dynamo.ViewModels
                     UpdateAIHaloGlow();
                     RaisePropertyChanged(nameof(AIHaloOpacity));
                     RaisePropertyChanged(nameof(ShowAIBadge));
+                    RaisePropertyChanged(nameof(AIBadgeToolTip));
                     HandleColorOverlayChange();
                     break;
             }

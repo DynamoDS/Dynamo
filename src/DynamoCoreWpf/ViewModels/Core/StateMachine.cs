@@ -45,6 +45,25 @@ namespace Dynamo.ViewModels
         // connections are all connected to firstStartPort.
         private PortModel firstStartPort;
 
+        /// <summary>
+        /// Marks an element inside a node view that moves its node when dragged, even where it sits
+        /// outside the node's bounds, such as the AI Assistant badge on the node's corner. The
+        /// element's DataContext must be the node's <see cref="NodeViewModel"/>.
+        /// </summary>
+        internal static readonly DependencyProperty IsNodeDragHandleProperty =
+            DependencyProperty.RegisterAttached(
+                "IsNodeDragHandle", typeof(bool), typeof(WorkspaceViewModel), new PropertyMetadata(false));
+
+        internal static void SetIsNodeDragHandle(DependencyObject element, bool value)
+        {
+            element.SetValue(IsNodeDragHandleProperty, value);
+        }
+
+        internal static bool GetIsNodeDragHandle(DependencyObject element)
+        {
+            return (bool)element.GetValue(IsNodeDragHandleProperty);
+        }
+
         [JsonIgnore]
         // These properties need to be public for data-binding to work.
         public bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
@@ -682,7 +701,8 @@ namespace Dynamo.ViewModels
 
                     // Check if there is any Dynamo Element (e.g. node, note, group) being clicked on. If so, 
                     // then the state machine should initiate a drag operation if user keeps dragging the mouse .
-                    if (null != GetSelectableFromPoint(mouseDownPos))
+                    if (null != GetSelectableFromPoint(mouseDownPos)
+                        || null != GetSelectableFromDragHandle(e.OriginalSource as DependencyObject))
                     {
                         InitiateDragSequence();
                         returnFocus = ShouldDraggingReturnFocus();
@@ -1229,6 +1249,27 @@ namespace Dynamo.ViewModels
                         continue;
 
                     return selectable;
+                }
+
+                return null;
+            }
+
+            /// <summary>
+            /// The selected node whose drag handle (see <see cref="IsNodeDragHandleProperty"/>) was
+            /// pressed, or null. Lets a handle that extends past the node's bounds start a drag
+            /// there, where <see cref="GetSelectableFromPoint"/> finds nothing.
+            /// </summary>
+            private static ISelectable GetSelectableFromDragHandle(DependencyObject pressed)
+            {
+                // Stops at non-visuals such as a Run, which have no visual parent (the AI badge has none)
+                for (var element = pressed;
+                    element is System.Windows.Media.Visual;
+                    element = System.Windows.Media.VisualTreeHelper.GetParent(element))
+                {
+                    if (!GetIsNodeDragHandle(element)) continue;
+
+                    var node = ((element as FrameworkElement)?.DataContext as NodeViewModel)?.NodeModel;
+                    return node != null && DynamoSelection.Instance.Selection.Contains(node) ? node : null;
                 }
 
                 return null;

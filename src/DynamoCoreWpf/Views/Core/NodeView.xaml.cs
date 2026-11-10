@@ -132,6 +132,7 @@ namespace Dynamo.Controls
         private AnimationClock aiHaloClock;
         private AIHaloGlow aiHaloClockGlow;
         private Grid aiBadge;
+        private TextBlock aiBadgeToolTipText;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -1562,7 +1563,8 @@ namespace Dynamo.Controls
             {
                 UpdateAIHalo();
             }
-            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge))
+            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge)
+                || e.PropertyName == nameof(NodeViewModel.AIBadgeToolTip))
             {
                 UpdateAIBadge();
             }
@@ -1729,14 +1731,21 @@ namespace Dynamo.Controls
 
             if (aiBadge == null)
             {
-                aiBadge = CreateAIBadge();
+                aiBadge = CreateAIBadge(out aiBadgeToolTipText);
                 grid.Children.Add(aiBadge);
             }
 
+            aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
             aiBadge.Visibility = Visibility.Visible;
         }
 
-        private static Grid CreateAIBadge()
+        /// <summary>
+        /// The text of the AI Assistant badge's tooltip, or null if this node has never needed a
+        /// badge. Exposed for tests.
+        /// </summary>
+        internal string AIBadgeToolTipText => aiBadgeToolTipText?.Text;
+
+        private static Grid CreateAIBadge(out TextBlock toolTipText)
         {
             var image = new Image
             {
@@ -1763,9 +1772,35 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
-                IsHitTestVisible = false
+                // Takes the pointer and keyboard focus for its tooltip
+                Focusable = true
             };
             badge.Children.Add(image);
+
+            // Clicks bubble to the node, which selects it. Most of the badge sits outside the
+            // node's bounds, so mark it as a drag handle: pressing it then drags the node instead
+            // of starting a selection box.
+            WorkspaceViewModel.SetIsNodeDragHandle(badge, true);
+
+            toolTipText = new TextBlock
+            {
+                Padding = new Thickness(10),
+                FontFamily = artifactElementReg,
+                FontSize = 14,
+                FontWeight = FontWeights.Medium,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap,
+            };
+
+            badge.ToolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                OverridesDefaultStyle = true,
+                HasDropShadow = false,
+                Style = DynamoToolTipTopStyle,
+                Content = toolTipText
+            };
+            ToolTipService.SetShowsToolTipOnKeyboardFocus(badge, true);
 
             Grid.SetRow(badge, 1);
             Grid.SetColumnSpan(badge, 3);
