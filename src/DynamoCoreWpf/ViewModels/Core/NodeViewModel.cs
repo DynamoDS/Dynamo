@@ -387,6 +387,7 @@ namespace Dynamo.ViewModels
                 {
                     isHidden = value;
                     RaisePropertyChanged(nameof(IsHidden));
+                    if (!value) RequestAIHaloCheckIfWaiting();
                 }
             }
         }
@@ -691,52 +692,158 @@ namespace Dynamo.ViewModels
         }
 
         private AIHaloGlow aiHaloGlow;
+        private volatile bool isAIHaloHovered;
+
+        // Guards glow replacement and hover state: an AI edit can replace the glow off the UI thread.
+        private readonly object aiHaloSync = new object();
 
         /// <summary>
         /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
-        /// starts when the AI Assistant touches a node that is not glowing. Once it has faded out
+        /// is created when the AI Assistant touches a node that is not glowing, and its clock starts
+        /// when the node comes on screen (DYN-11005). Once it has faded out or been dismissed
         /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the
-        /// record is cleared or the node is touched again.
+        /// record is cleared or the node is touched again. The glow changes in place (hover, Esc,
+        /// restart); each change is announced under this property's name.
         /// </summary>
-        internal AIHaloGlow AIHaloGlow
+        internal AIHaloGlow AIHaloGlow => aiHaloGlow;
+
+        /// <summary>
+        /// True while the mouse is over the node. Esc then ends this node's glow (DYN-11005).
+        /// </summary>
+        internal bool IsAIHaloHovered => isAIHaloHovered;
+
+        /// <summary>
+        /// Starts a glow when the AI Assistant touches the node. A node touched again while its glow
+        /// is waiting or running restarts it (DYN-11005); see <see cref="Dynamo.ViewModels.AIHaloGlow.Retouch"/>.
+        /// </summary>
+        private void UpdateAIHaloGlow()
         {
-            get => aiHaloGlow;
-            private set
+            var change = NodeModel?.AIChange;
+            var strength = AIHaloOpacity;
+            var breathes = change != null && change.Kind != AIChangeKind.Moved;
+            bool changed;
+
+            lock (aiHaloSync)
             {
-                if (ReferenceEquals(aiHaloGlow, value)) return;
-                aiHaloGlow = value;
+                var current = aiHaloGlow;
+                if (change == null)
+                {
+                    changed = current != null;
+                    aiHaloGlow = null;
+                }
+                else if (current != null && !current.IsFinished)
+                {
+                    // Waiting, or a restart pending: the on-screen check decides what happens next.
+                    current.Retouch(strength, breathes);
+                    changed = true;
+                }
+                else
+                {
+                    // A new glow, including for a node touched again after its glow faded out or was dismissed
+                    var glow = AIHaloGlow.Create(strength, breathes);
+                    if (isAIHaloHovered)
+                    {
+                        glow.Hold();
+                    }
+                    aiHaloGlow = glow;
+                    changed = true;
+                }
+            }
+
+            if (!changed) return;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            if (change != null)
+            {
+                WorkspaceViewModel?.OnAIHaloGlowWaiting();
+            }
+        }
+
+        /// <summary>
+        /// Starts the glow's clock because the node has come on screen. Called by the workspace's
+        /// on-screen check; see <see cref="Dynamo.ViewModels.WorkspaceViewModel.StartAIHaloGlowsInView"/>.
+        /// </summary>
+        /// <returns>True if the clock started.</returns>
+        internal bool BeginAIHaloGlow(TimeSpan staggerDelay)
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Begin(staggerDelay)) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        /// <summary>
+        /// The mouse entered or left the node. Hovering holds the glow at its current value; leaving
+        /// lets it run on.
+        /// </summary>
+        internal void SetAIHaloHovered(bool hovered)
+        {
+            bool changed;
+            lock (aiHaloSync)
+            {
+                if (isAIHaloHovered == hovered) return;
+                isAIHaloHovered = hovered;
+
+                var glow = aiHaloGlow;
+                changed = glow != null && (hovered ? glow.Hold() : glow.Release());
+            }
+
+            if (changed)
+            {
                 RaisePropertyChanged(nameof(AIHaloGlow));
             }
         }
 
         /// <summary>
-        /// Starts a glow when the AI Assistant touches the node, unless it is already glowing.
+        /// Ends this node's glow (Esc while hovering it). The badge and the change record stay, and
+        /// the workspace is not marked as changed.
         /// </summary>
-        private void UpdateAIHaloGlow()
+        /// <returns>True if the node was glowing.</returns>
+        internal bool DismissAIHaloGlow()
         {
-            var change = NodeModel?.AIChange;
-            if (change == null)
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Dismiss()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        private void RequestAIHaloCheckIfWaiting()
+        {
+            var glow = AIHaloGlow;
+            if (glow != null && (glow.IsWaiting || glow.IsRestartPending))
             {
-                AIHaloGlow = null;
-                return;
+                WorkspaceViewModel?.OnAIHaloGlowWaiting();
             }
+        }
 
-            var strength = AIHaloOpacity;
-            var breathes = change.Kind != AIChangeKind.Moved;
-            var current = AIHaloGlow;
+        /// <summary>
+        /// Restarts the glow of a node touched again while glowing, because it is on screen. Called by
+        /// the workspace's on-screen check.
+        /// </summary>
+        /// <returns>True if the glow restarted.</returns>
+        internal bool RestartAIHaloGlow()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Restart()) return false;
 
-            // Still glowing: keep the glow and its stagger slot, so a node changed several times
-            // does not keep lighting up. A moved node that is then modified glows at full strength.
-            if (current != null && !current.IsFinished)
-            {
-                if (current.Breathes != breathes)
-                {
-                    AIHaloGlow = current.WithStrength(strength, breathes);
-                }
-                return;
-            }
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
 
-            AIHaloGlow = AIHaloGlow.Start(WorkspaceViewModel?.Model?.CurrentAIEdit ?? 0, strength, breathes);
+        /// <summary>
+        /// Sends the glow of a node touched again while glowing back to waiting, because the node has
+        /// left the screen. Called by the workspace's on-screen check.
+        /// </summary>
+        /// <returns>True if the glow is waiting again.</returns>
+        internal bool WaitAIHaloGlowAgain()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.WaitAgain()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
         }
 
         /// <summary>
@@ -889,6 +996,7 @@ namespace Dynamo.ViewModels
             set
             {
                 base.IsCollapsed = value;
+                if (!value) RequestAIHaloCheckIfWaiting();
                 if (ErrorBubble == null) return;
                 ErrorBubble.IsCollapsed = value;
                 RaisePropertyChanged(nameof(NodeWarningBarVisible));
@@ -1339,10 +1447,12 @@ namespace Dynamo.ViewModels
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -1372,10 +1482,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case nameof(NodeModel.DisplayLabels):
                     RaisePropertyChanged(nameof(IsDisplayingLabels));
@@ -1388,6 +1500,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
