@@ -339,7 +339,7 @@
         </StackPanel>
 
         <!-- AI summary chip -->
-        <ui:AIChangeSummaryChip HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="16,0,16,24" />
+        <ui:AIChangeSummaryChip x:Name="aiChangeSummaryChip" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="16,0,16,24" />
 
         <Popup Name="PortContextMenu"
                StaysOpen="True"
