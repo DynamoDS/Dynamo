@@ -393,7 +393,7 @@ namespace Dynamo.UI.Controls
             if (e.Key != Key.Escape)
                 return;
 
-            // Leave-editor / delete-empty on short press (not while key is held).
+            // Leave the editor on a short press (not while the key is held).
             if (!escapeClosedCompletion)
             {
                 OnEscape();

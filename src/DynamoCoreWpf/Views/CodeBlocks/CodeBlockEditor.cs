@@ -3,7 +3,6 @@ using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
-using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -92,12 +91,6 @@ namespace Dynamo.UI.Controls
             var text = InnerTextEditor.Text;
             if (codeBlockNode.Code != null && text.Equals(codeBlockNode.Code))
                 ReturnFocus();
-            
-            if (string.IsNullOrEmpty(text))
-            {
-                nodeViewModel.DynamoViewModel.ExecuteCommand(
-                   new DynCmd.DeleteModelCommand(codeBlockNode.GUID));
-            }
         }
 
         protected override void OnCommitChange()
