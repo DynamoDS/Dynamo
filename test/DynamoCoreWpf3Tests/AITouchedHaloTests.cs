@@ -803,7 +803,7 @@ namespace DynamoCoreWpfTests
             ViewModelOf(hovered).SetAIHaloHovered(true);
 
             Assert.IsTrue(SendEscape(down: true));
-            Assert.IsTrue(SendEscape(down: true), "A repeat while held is used up.");
+            Assert.IsTrue(SendEscape(down: true, repeat: true), "A repeat while held is used up.");
             Assert.IsTrue(SendEscape(down: false));
             DispatcherUtil.DoEvents();
 
@@ -826,15 +826,37 @@ namespace DynamoCoreWpfTests
 
             try
             {
-                Assert.IsFalse(SendEscape(down: true), "The press is left to the wire drag.");
+                SendEscape(down: true);
                 SendEscape(down: false);
 
-                Assert.IsTrue(node.IsRecentlyModifiedByAI, "Esc cancels the wire, not the highlight.");
+                Assert.IsTrue(node.IsRecentlyModifiedByAI, "Esc is left to the wire drag.");
             }
             finally
             {
                 workspace.CancelActiveState();
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AMissedEscReleaseDoesNotSwallowTheNextPress()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            // Focus moves away before the release, so the window never sees it
+            ViewModelOf(first).SetAIHaloHovered(true);
+            SendEscape(down: true);
+            ViewModelOf(first).SetAIHaloHovered(false);
+
+            ViewModelOf(second).SetAIHaloHovered(true);
+            SendEscape(down: true);
+            SendEscape(down: false);
+
+            Assert.IsFalse(second.IsRecentlyModifiedByAI, "The next press is not swallowed.");
         }
 
         [Test]
@@ -1323,7 +1345,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        private bool SendEscape(bool down)
+        private bool SendEscape(bool down, bool repeat = false)
         {
             var args = new System.Windows.Input.KeyEventArgs(
                 System.Windows.Input.Keyboard.PrimaryDevice,
@@ -1333,6 +1355,14 @@ namespace DynamoCoreWpfTests
             {
                 RoutedEvent = down ? System.Windows.Input.Keyboard.KeyDownEvent : System.Windows.Input.Keyboard.KeyUpEvent
             };
+            if (repeat)
+            {
+                // WPF sets IsRepeat itself; tests can only reach it through its internal setter
+                var setRepeat = typeof(System.Windows.Input.KeyEventArgs).GetMethod(
+                    "SetRepeat", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                Assume.That(setRepeat, Is.Not.Null, "KeyEventArgs.SetRepeat was not found.");
+                setRepeat.Invoke(args, new object[] { true });
+            }
             View.RaiseEvent(args);
             return args.Handled;
         }

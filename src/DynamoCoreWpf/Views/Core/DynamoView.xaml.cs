@@ -2467,6 +2467,9 @@ namespace Dynamo.Controls
 
             if (e.Key != Key.Escape) return;
 
+            // A new press starts fresh, even if the last release never reached the window
+            if (!e.IsRepeat) escClearedAIHighlight = false;
+
             // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
             // selection's, if the node is selected), but only when Esc has no other job. Controls that use
             // Esc themselves (combo boxes, menus, text boxes) handle it before it gets here.
