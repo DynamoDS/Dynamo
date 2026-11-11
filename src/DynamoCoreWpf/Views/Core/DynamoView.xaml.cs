@@ -2468,8 +2468,8 @@ namespace Dynamo.Controls
             if (e.Key != Key.Escape) return;
 
             // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
-            // selection's, if the node is selected) and does nothing else. A hovered node implies the
-            // mouse is over the window.
+            // selection's, if the node is selected), but only when Esc has no other job. Controls that use
+            // Esc themselves (combo boxes, menus, text boxes) handle it before it gets here.
             if (escClearedAIHighlight || TryClearHoveredAIHighlight())
             {
                 e.Handled = true;
@@ -2507,7 +2507,11 @@ namespace Dynamo.Controls
 
         private bool TryClearHoveredAIHighlight()
         {
-            if (IsEscKeyPressed || dynamoViewModel.BackgroundPreviewViewModel?.NavigationKeyIsDown == true)
+            var workspace = dynamoViewModel.CurrentSpaceViewModel;
+
+            // Esc first cancels a wire drag, pan or orbit, and drives 3D navigation
+            if (workspace == null || !workspace.IsInIdleState || IsEscKeyPressed
+                || dynamoViewModel.BackgroundPreviewViewModel?.CanNavigateBackground == true)
             {
                 return false;
             }
@@ -2518,7 +2522,7 @@ namespace Dynamo.Controls
                 return false;
             }
 
-            if (dynamoViewModel.CurrentSpaceViewModel?.ClearHoveredAIHighlight() != true)
+            if (!workspace.ClearHoveredAIHighlight())
             {
                 return false;
             }

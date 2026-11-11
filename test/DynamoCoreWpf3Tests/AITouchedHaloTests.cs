@@ -814,6 +814,31 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void EscKeyDuringAWireDragKeepsTheHighlight()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+            var workspace = ViewModel.CurrentSpaceViewModel;
+            workspace.HandlePortClicked(ViewModelOf(node).OutPorts[0]);
+            Assume.That(workspace.IsConnecting, "The wire drag could not be started.");
+
+            try
+            {
+                Assert.IsFalse(SendEscape(down: true), "The press is left to the wire drag.");
+                SendEscape(down: false);
+
+                Assert.IsTrue(node.IsRecentlyModifiedByAI, "Esc cancels the wire, not the highlight.");
+            }
+            finally
+            {
+                workspace.CancelActiveState();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void EscKeyWhileTypingKeepsTheHighlight()
         {
             var node = AddNumberNode();
