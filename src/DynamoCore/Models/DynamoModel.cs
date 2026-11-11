@@ -757,6 +757,10 @@ namespace Dynamo.Models
                 // Pass EnableUnTrustedLocationsNotifications from config to PreferenceSettings
                 PreferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
                 SetUICulture(CLILocale ?? PreferenceSettings.Locale);
+                // The shipped templates folder was resolved during PathManager construction,
+                // before this culture was applied. Recompute it so Recent and From Template
+                // open templates\<locale> instead of templates\en-US.
+                pathManager.RefreshDefaultTemplatesDirectory();
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
