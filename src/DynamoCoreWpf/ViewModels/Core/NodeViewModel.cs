@@ -387,6 +387,7 @@ namespace Dynamo.ViewModels
                 {
                     isHidden = value;
                     RaisePropertyChanged(nameof(IsHidden));
+                    if (!value) RequestAIHaloCheckIfWaiting();
                 }
             }
         }
@@ -612,6 +613,7 @@ namespace Dynamo.ViewModels
         private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
+        private static readonly string aiGlyph = "/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png";
 
         [JsonIgnore]
         public bool IsNodeAddedRecently
@@ -659,6 +661,203 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsTransient));
             }
             get { return NodeModel.IsTransient; }
+        }
+
+        /// <summary>
+        /// Halo opacity for a node the AI Assistant placed or modified.
+        /// </summary>
+        internal const double AIHaloFullOpacity = 1.0;
+
+        /// <summary>
+        /// Halo opacity for a node the AI Assistant only moved. Moved nodes are deliberately the
+        /// quietest: position changes are rarely what a reviewer needs to catch.
+        /// </summary>
+        internal const double AIHaloMovedOpacity = 0.4;
+
+        /// <summary>
+        /// Peak strength of the AI-touched halo behind this node, from 0 (no halo) to 1: full
+        /// strength when the AI Assistant placed or modified the node, 40% when it only moved it, and
+        /// 0 when the node has no AI change record (<see cref="NodeModel.AIChange"/>). The halo
+        /// glows up to this strength and then fades out (<see cref="Dynamo.ViewModels.AIHaloGlow"/>).
+        /// </summary>
+        internal double AIHaloOpacity
+        {
+            get
+            {
+                var change = NodeModel?.AIChange;
+                if (change == null) return 0;
+
+                return change.Kind == AIChangeKind.Moved ? AIHaloMovedOpacity : AIHaloFullOpacity;
+            }
+        }
+
+        private AIHaloGlow aiHaloGlow;
+        private volatile bool isAIHaloHovered;
+
+        // Guards glow replacement and hover state: an AI edit can replace the glow off the UI thread.
+        private readonly object aiHaloSync = new object();
+
+        /// <summary>
+        /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
+        /// is created when the AI Assistant touches a node that is not glowing, and its clock starts
+        /// when the node comes on screen (DYN-11005). Once it has faded out or been dismissed
+        /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the
+        /// record is cleared or the node is touched again. The glow changes in place (hover, Esc,
+        /// restart); each change is announced under this property's name.
+        /// </summary>
+        internal AIHaloGlow AIHaloGlow => aiHaloGlow;
+
+        /// <summary>
+        /// True while the mouse is over the node. Esc then ends this node's glow (DYN-11005).
+        /// </summary>
+        internal bool IsAIHaloHovered => isAIHaloHovered;
+
+        /// <summary>
+        /// Starts a glow when the AI Assistant touches the node. A node touched again while its glow
+        /// is waiting or running restarts it (DYN-11005); see <see cref="Dynamo.ViewModels.AIHaloGlow.Retouch"/>.
+        /// </summary>
+        private void UpdateAIHaloGlow()
+        {
+            var change = NodeModel?.AIChange;
+            var strength = AIHaloOpacity;
+            var breathes = change != null && change.Kind != AIChangeKind.Moved;
+            bool changed;
+
+            lock (aiHaloSync)
+            {
+                var current = aiHaloGlow;
+                if (change == null)
+                {
+                    changed = current != null;
+                    aiHaloGlow = null;
+                }
+                else if (current != null && !current.IsFinished)
+                {
+                    // Waiting, or a restart pending: the on-screen check decides what happens next.
+                    current.Retouch(strength, breathes);
+                    changed = true;
+                }
+                else
+                {
+                    // A new glow, including for a node touched again after its glow faded out or was dismissed
+                    var glow = AIHaloGlow.Create(strength, breathes);
+                    if (isAIHaloHovered)
+                    {
+                        glow.Hold();
+                    }
+                    aiHaloGlow = glow;
+                    changed = true;
+                }
+            }
+
+            if (!changed) return;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            if (change != null)
+            {
+                WorkspaceViewModel?.OnAIHaloGlowWaiting();
+            }
+        }
+
+        /// <summary>
+        /// Starts the glow's clock because the node has come on screen. Called by the workspace's
+        /// on-screen check; see <see cref="Dynamo.ViewModels.WorkspaceViewModel.StartAIHaloGlowsInView"/>.
+        /// </summary>
+        /// <returns>True if the clock started.</returns>
+        internal bool BeginAIHaloGlow(TimeSpan staggerDelay)
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Begin(staggerDelay)) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        /// <summary>
+        /// The mouse entered or left the node. Hovering holds the glow at its current value; leaving
+        /// lets it run on.
+        /// </summary>
+        internal void SetAIHaloHovered(bool hovered)
+        {
+            bool changed;
+            lock (aiHaloSync)
+            {
+                if (isAIHaloHovered == hovered) return;
+                isAIHaloHovered = hovered;
+
+                var glow = aiHaloGlow;
+                changed = glow != null && (hovered ? glow.Hold() : glow.Release());
+            }
+
+            if (changed)
+            {
+                RaisePropertyChanged(nameof(AIHaloGlow));
+            }
+        }
+
+        /// <summary>
+        /// Ends this node's glow (Esc while hovering it). The badge and the change record stay, and
+        /// the workspace is not marked as changed.
+        /// </summary>
+        /// <returns>True if the node was glowing.</returns>
+        internal bool DismissAIHaloGlow()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Dismiss()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        private void RequestAIHaloCheckIfWaiting()
+        {
+            var glow = AIHaloGlow;
+            if (glow != null && (glow.IsWaiting || glow.IsRestartPending))
+            {
+                WorkspaceViewModel?.OnAIHaloGlowWaiting();
+            }
+        }
+
+        /// <summary>
+        /// Restarts the glow of a node touched again while glowing, because it is on screen. Called by
+        /// the workspace's on-screen check.
+        /// </summary>
+        /// <returns>True if the glow restarted.</returns>
+        internal bool RestartAIHaloGlow()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.Restart()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        /// <summary>
+        /// Sends the glow of a node touched again while glowing back to waiting, because the node has
+        /// left the screen. Called by the workspace's on-screen check.
+        /// </summary>
+        /// <returns>True if the glow is waiting again.</returns>
+        internal bool WaitAIHaloGlowAgain()
+        {
+            var glow = AIHaloGlow;
+            if (glow == null || !glow.WaitAgain()) return false;
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            return true;
+        }
+
+        /// <summary>
+        /// True when the AI Assistant badge should be drawn on this node: the node was placed or
+        /// modified by the Assistant. Nodes it only moved get no badge, so they stay the quietest
+        /// (<see cref="NodeModel.AIChange"/>).
+        /// </summary>
+        internal bool ShowAIBadge
+        {
+            get
+            {
+                var change = NodeModel?.AIChange;
+                return change != null && change.Kind != AIChangeKind.Moved;
+            }
         }
 
         /// <summary>
@@ -797,6 +996,7 @@ namespace Dynamo.ViewModels
             set
             {
                 base.IsCollapsed = value;
+                if (!value) RequestAIHaloCheckIfWaiting();
                 if (ErrorBubble == null) return;
                 ErrorBubble.IsCollapsed = value;
                 RaisePropertyChanged(nameof(NodeWarningBarVisible));
@@ -951,6 +1151,7 @@ namespace Dynamo.ViewModels
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
             UpdateBubbleContent();
+            UpdateAIHaloGlow();
         }
 
         private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1246,10 +1447,12 @@ namespace Dynamo.ViewModels
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -1279,10 +1482,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case nameof(NodeModel.DisplayLabels):
                     RaisePropertyChanged(nameof(IsDisplayingLabels));
@@ -1295,6 +1500,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
+                    RequestAIHaloCheckIfWaiting();
                     break;
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
@@ -1309,6 +1515,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(NodeOverlayVisible));
                     break;
                 case "IsTransient":
+                    HandleColorOverlayChange();
+                    break;
+                case nameof(NodeModel.AIChange):
+                    UpdateAIHaloGlow();
+                    RaisePropertyChanged(nameof(AIHaloOpacity));
+                    RaisePropertyChanged(nameof(ShowAIBadge));
                     HandleColorOverlayChange();
                     break;
             }
@@ -1565,6 +1777,19 @@ namespace Dynamo.ViewModels
                 else
                 {
                     ImgGlyphThreeSource = errorGlyph;
+                }
+            }
+
+            // AI marker (DYN-11010): last in priority, bottom row only, dropped when the row is full
+            if (ShowAIBadge)
+            {
+                if (ImgGlyphOneSource == null)
+                {
+                    ImgGlyphOneSource = aiGlyph;
+                }
+                else if (ImgGlyphTwoSource == null)
+                {
+                    ImgGlyphTwoSource = aiGlyph;
                 }
             }
 

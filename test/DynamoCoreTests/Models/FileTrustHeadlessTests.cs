@@ -1,4 +1,5 @@
 using Dynamo.Configuration;
+using Dynamo.Exceptions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -98,6 +99,54 @@ namespace Dynamo.Tests.ModelsTests
             Assert.IsFalse(evaluationCompleted, "Explicit ForceBlockRun must block graph execution until trust is acknowledged.");
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WhenOpenedWithMatchingContentHashThenFileLoads()
+        {
+            // Arrange
+            var filePath = Path.Combine(TestDirectory, SampleDynPath);
+            var hash = FileChangedSincePreviewException.ComputeContentHash(File.ReadAllText(filePath));
+
+            // Act
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath) { ExpectedContentHash = hash });
+
+            // Assert
+            Assert.AreEqual(filePath, GetHomeWorkspace().FileName);
+            Assert.IsNotEmpty(GetHomeWorkspace().Nodes);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenOpenedWithStaleContentHashThenNothingIsLoaded()
+        {
+            // Arrange
+            var filePath = Path.Combine(TestDirectory, SampleDynPath);
+            var staleHash = FileChangedSincePreviewException.ComputeContentHash("content the user previewed");
+
+            // Act
+            Assert.Throws<FileChangedSincePreviewException>(() =>
+                CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath) { ExpectedContentHash = staleHash }));
+
+            // Assert
+            Assert.AreNotEqual(filePath, GetHomeWorkspace().FileName);
+            Assert.IsEmpty(GetHomeWorkspace().Nodes);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenInsertedWithStaleContentHashThenNothingIsInserted()
+        {
+            // Arrange
+            var filePath = Path.Combine(TestDirectory, SampleDynPath);
+            var staleHash = FileChangedSincePreviewException.ComputeContentHash("content the user previewed");
+
+            // Act
+            Assert.Throws<FileChangedSincePreviewException>(() =>
+                CurrentDynamoModel.ExecuteCommand(new DynamoModel.InsertFileCommand(filePath) { ExpectedContentHash = staleHash }));
+
+            // Assert
+            Assert.IsEmpty(GetHomeWorkspace().Nodes);
+        }
 
         private void AssertHeadlessTrustPreconditions()
         {

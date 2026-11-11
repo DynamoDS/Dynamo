@@ -96,6 +96,8 @@ namespace DynamoCoreWpfTests
         {
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
+            // Exercise the post-load warning used when the pre-load preview prompt cannot be shown.
+            ViewModel.TrustedLocationPrompt = _ => (DynamoViewModel.TrustedLocationPromptResult.NotShown, false, null);
             Open(@"core\CustomNodes\TestAdd.dyn");
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
             Assert.IsTrue(ViewModel.HomeSpace.RunSettings.ForceBlockRun);

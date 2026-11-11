@@ -160,6 +160,24 @@ namespace Dynamo.Notifications.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo could not read your profile and will use default settings for this session. The original profile will be saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile will be updated with this session's settings..
+        /// </summary>
+        public static string InvalidSettingsFileDetail {
+            get {
+                return ResourceManager.GetString("InvalidSettingsFileDetail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The profile could not be read.
+        /// </summary>
+        public static string InvalidSettingsFileTitle {
+            get {
+                return ResourceManager.GetString("InvalidSettingsFileTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to An unsafe path has been detected in Trusted Locations:.
         /// </summary>
         public static string UnsafePathDetectedDetail {

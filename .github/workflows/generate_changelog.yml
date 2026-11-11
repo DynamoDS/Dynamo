@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v7
       - name: Generate changelog
         id: generate_changelog
-        uses: metcalfc/changelog-generator@0440d0932f9a0dd1cc9ecd8412830761351323bd # v4.7.0
+        uses: metcalfc/changelog-generator@031a6408a9ad7fa6dcda49b7222ab2b54110a680 # v5.0.1
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: ${{ github.event.inputs.head-ref }}

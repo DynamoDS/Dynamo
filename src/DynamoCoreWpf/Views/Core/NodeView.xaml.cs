@@ -21,6 +21,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -81,8 +82,17 @@ namespace Dynamo.Controls
 
         private void NodeView_MouseLeave(object sender, MouseEventArgs e)
         {
+            // Leaving the node lets its glow run on
+            viewModel?.SetAIHaloHovered(false);
+
             if (viewModel != null && viewModel.OnMouseLeave != null)
                 viewModel.OnMouseLeave();
+        }
+
+        private void NodeView_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Hovering the node holds its glow at its current value
+            viewModel?.SetAIHaloHovered(true);
         }
 
         internal PreviewControl PreviewControl
@@ -126,6 +136,12 @@ namespace Dynamo.Controls
         private TextBox EditableNameBox;
         private Rectangle nodeIcon;
         private Rectangle nodeBackground;
+        private Grid aiHalo;
+        private Brush nodeBorderBrushWithoutHalo;
+        private AnimationClock aiHaloClock;
+        private AIHaloGlow aiHaloClockGlow;
+        private int aiHaloClockVersion;
+        private Grid aiBadge;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -186,6 +202,23 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeOptionsButtonBackground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeOptionsButtonBackground"] as SolidColorBrush;
         private static SolidColorBrush nodeHoverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal300Brush"] as SolidColorBrush;
         private static SolidColorBrush nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
+        private static SolidColorBrush nodeAITouchedHaloBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAITouchedHaloBrush"] as SolidColorBrush;
+
+        // AI-touched halo - a glow that extends 8px past the node edge with an 18px Figma layer blur.
+        // Figma's layer blur value is twice the Gaussian standard deviation (18 -> 9),
+        // and WPF's BlurEffect uses a standard deviation of about Radius/3, so a radius of 27 gives the same falloff
+        private const double AIHaloSpread = 8;
+        private const double AIHaloBlurRadius = 27;
+        private static readonly BlurEffect aiHaloBlur = new BlurEffect
+        {
+            Radius = AIHaloBlurRadius,
+            KernelType = KernelType.Gaussian,
+            RenderingBias = RenderingBias.Quality
+        };
+
+        // AI Assistant badge - a 24px purple disc with the Weave ai-assistant icon and a white outer ring
+        internal const double AIBadgeSize = 27;
+        private const double AIBadgeOffset = AIBadgeSize / 2;
 
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
@@ -194,6 +227,7 @@ namespace Dynamo.Controls
         private static BoolToVisibilityConverter booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
         private static ZoomToVisibilityCollapsedConverter zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static ZoomToInverseVisibilityCollapsedConverter zoomToInverseVisibilityCollapsedConverter = new ZoomToInverseVisibilityCollapsedConverter();
         private static IValueConverter sZoomFadeControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeControl"] as IValueConverter;
         private static IValueConverter sZoomFadeInControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeInControl"] as IValueConverter;
         private static IValueConverter sZoomFadeOutPreview = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeOutPreview"] as IValueConverter;
@@ -209,6 +243,7 @@ namespace Dynamo.Controls
         private static readonly BitmapImage hiddenEyeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"));
         private static readonly BitmapImage nodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
         private static readonly BitmapImage nodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
+        private static readonly BitmapImage aiBadgeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png"));
         private static ImageBrush defaultNodeIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
             Stretch = Stretch.UniformToFill
@@ -249,6 +284,9 @@ namespace Dynamo.Controls
             nodeContextMenuSeparatorColor.Freeze();
             nodeOptionsButtonBackground.Freeze();
             nodeHoverColor.Freeze();
+            nodeAITouchedHaloBrush.Freeze();
+            aiHaloBlur.Freeze();
+            aiBadgeImageSource.Freeze();
         }
 
         public NodeView()
@@ -1327,6 +1365,7 @@ namespace Dynamo.Controls
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
+            ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
@@ -1336,6 +1375,13 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
+            MouseEnter -= NodeView_MouseEnter;
+
+            // A view that goes away under the mouse gets no MouseLeave; let the glow run on
+            ViewModel.SetAIHaloHovered(false);
+
+            // The glow lives on the view model; a rebuilt view resumes it
+            StopAIHaloAnimation();
 
             nameBackground.MouseDown -= NameBlock_OnMouseDown;
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
@@ -1508,6 +1554,7 @@ namespace Dynamo.Controls
             // OnNodeViewLoaded, and it needs ViewModel for size computation).
 
             ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
@@ -1517,6 +1564,243 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
+            MouseEnter += NodeView_MouseEnter;
+
+            // The node may already carry an AI change record, for example when its view is rebuilt
+            UpdateAIHalo();
+            UpdateAIBadge();
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NodeViewModel.AIHaloGlow))
+            {
+                UpdateAIHalo();
+            }
+            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge))
+            {
+                UpdateAIBadge();
+            }
+        }
+
+        /// <summary>
+        /// The AI-touched halo, or null if this node has never needed one. Exposed for tests.
+        /// </summary>
+        internal FrameworkElement AIHalo => aiHalo;
+
+        /// <summary>
+        /// The clock playing the halo's glow, or null when none is playing. Exposed for tests.
+        /// </summary>
+        internal AnimationClock AIHaloClock => aiHaloClock;
+
+        /// <summary>
+        /// Shows, plays, resumes or hides the halo to match the view model's glow. Internal for tests.
+        /// </summary>
+        internal void UpdateAIHalo()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIHalo));
+                return;
+            }
+
+            var glow = ViewModel?.AIHaloGlow;
+
+            // No glow, still waiting to come on screen, faded out or dismissed: no halo
+            if (glow == null || !glow.IsGlowing)
+            {
+                HideAIHalo();
+                return;
+            }
+
+            var version = glow.Version;
+            if (aiHaloClock == null || !ReferenceEquals(aiHaloClockGlow, glow) || aiHaloClockVersion != version)
+            {
+                PlayAIHalo(glow, version);
+            }
+
+            // Hover holds the halo at its current value; leaving lets it run on from there. The
+            // glow's clock is the reference, so the halo matches it after every hold.
+            var controller = aiHaloClock?.Controller;
+            if (controller == null) return;
+
+            controller.Seek(glow.Elapsed, TimeSeekOrigin.BeginTime);
+            if (glow.IsHeld)
+            {
+                controller.Pause();
+            }
+            else
+            {
+                controller.Resume();
+            }
+        }
+
+        private void PlayAIHalo(AIHaloGlow glow, int version)
+        {
+            // Restart from the current opacity so the halo never blinks off; a rebuilt view reuses it.
+            var currentOpacity = aiHalo?.Visibility == Visibility.Visible ? aiHalo.Opacity : 0;
+            var startOpacity = glow.StartOpacityFor(version, currentOpacity);
+            StopAIHaloAnimation();
+
+            if (aiHalo == null)
+            {
+                nodeBorderBrushWithoutHalo = nodeBorder.BorderBrush;
+                aiHalo = CreateAIHalo();
+                grid.Children.Add(aiHalo);
+            }
+
+            // Base value until the animation's first frame, so the halo never flashes at full strength
+            aiHalo.Opacity = startOpacity;
+
+            // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
+            // pale ring between the node and the glow, so it is hidden while the halo is on. The
+            // border keeps its thickness, so the node's size and layout do not change.
+            aiHalo.Visibility = Visibility.Visible;
+            nodeBorder.BorderBrush = Brushes.Transparent;
+
+            // Only the opacity animates. The blurred glow is a cached bitmap, so this never re-blurs.
+            var clock = glow.CreateAnimation(startOpacity).CreateClock();
+            clock.Completed += AIHaloClock_Completed;
+            aiHaloClock = clock;
+            aiHaloClockGlow = glow;
+            aiHaloClockVersion = version;
+            aiHalo.ApplyAnimationClock(UIElement.OpacityProperty, clock);
+        }
+
+        private void AIHaloClock_Completed(object sender, EventArgs e)
+        {
+            // Ignore a glow that was replaced before it finished
+            if (ReferenceEquals(sender, aiHaloClock))
+            {
+                HideAIHalo();
+            }
+        }
+
+        private void HideAIHalo()
+        {
+            StopAIHaloAnimation();
+
+            if (aiHalo != null && aiHalo.Visibility != Visibility.Collapsed)
+            {
+                aiHalo.Visibility = Visibility.Collapsed;
+                nodeBorder.BorderBrush = nodeBorderBrushWithoutHalo;
+            }
+        }
+
+        private void StopAIHaloAnimation()
+        {
+            if (aiHaloClock == null) return;
+
+            aiHaloClock.Completed -= AIHaloClock_Completed;
+            aiHaloClock.Controller?.Stop();
+            aiHalo?.ApplyAnimationClock(UIElement.OpacityProperty, null);
+            aiHaloClock = null;
+            aiHaloClockGlow = null;
+        }
+
+        private static Grid CreateAIHalo()
+        {
+            var glow = new Border
+            {
+                Background = nodeAITouchedHaloBrush,
+                CornerRadius = new CornerRadius(8 + AIHaloSpread, 8 + AIHaloSpread, 0, 0),
+                Effect = aiHaloBlur
+            };
+
+            // Blur is the expensive part, so the wrapper keeps the blurred result as a cached
+            // bitmap. It is redrawn only when the node changes size; panning, zooming and opacity
+            // changes reuse it. Scale 1 is enough: the content is already soft, so stretching it
+            // when zoomed in loses no visible detail.
+            var halo = new Grid
+            {
+                Name = "aiHalo",
+                Margin = new Thickness(-AIHaloSpread),
+                IsHitTestVisible = false,
+                CacheMode = new BitmapCache
+                {
+                    RenderAtScale = 1,
+                    SnapsToDevicePixels = false,
+                    EnableClearType = false
+                }
+            };
+            halo.Children.Add(glow);
+
+            // Same rows and columns as the node border, and behind every other part of the node
+            Grid.SetRow(halo, 1);
+            Grid.SetRowSpan(halo, 4);
+            Grid.SetColumnSpan(halo, 3);
+            Canvas.SetZIndex(halo, -1);
+
+            return halo;
+        }
+
+        /// <summary>
+        /// The AI Assistant badge, or null if this node has never needed one. Exposed for tests.
+        /// </summary>
+        internal FrameworkElement AIBadge => aiBadge;
+
+        private void UpdateAIBadge()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(UpdateAIBadge));
+                return;
+            }
+
+            if (ViewModel?.ShowAIBadge != true)
+            {
+                if (aiBadge != null)
+                {
+                    aiBadge.Visibility = Visibility.Collapsed;
+                }
+                return;
+            }
+
+            if (aiBadge == null)
+            {
+                aiBadge = CreateAIBadge();
+                grid.Children.Add(aiBadge);
+            }
+
+            aiBadge.Visibility = Visibility.Visible;
+        }
+
+        private static Grid CreateAIBadge()
+        {
+            var image = new Image
+            {
+                Name = "aiBadgeImage",
+                Source = aiBadgeImageSource,
+                Stretch = Stretch.Uniform
+            };
+
+            // The image is drawn at 1/4 of its size to keep the ring and icon edges smooth
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            // Not shown when zoomed out
+            image.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = zoomToInverseVisibilityCollapsedConverter
+            });
+
+            var badge = new Grid
+            {
+                Name = "aiBadge",
+                Width = AIBadgeSize,
+                Height = AIBadgeSize,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
+                IsHitTestVisible = false
+            };
+            badge.Children.Add(image);
+
+            Grid.SetRow(badge, 1);
+            Grid.SetColumnSpan(badge, 3);
+            Canvas.SetZIndex(badge, 60);
+
+            return badge;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

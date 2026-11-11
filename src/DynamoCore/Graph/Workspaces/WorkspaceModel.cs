@@ -300,6 +300,8 @@ namespace Dynamo.Graph.Workspaces
         private bool independentDirtyFlag;
         private bool isReadOnly;
         private readonly List<NodeModel> nodes;
+        // GUID index for the AI change record. Kept in sync with nodes, under lock (nodes).
+        private readonly Dictionary<Guid, NodeModel> nodesByGuid = new Dictionary<Guid, NodeModel>();
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
         internal readonly List<PresetModel> presets;
@@ -1092,6 +1094,315 @@ namespace Dynamo.Graph.Workspaces
             HasUnsavedChanges = true;
         }
 
+        #region AI change record
+
+        private readonly Dictionary<string, AITurnState> aiTurns = new Dictionary<string, AITurnState>(StringComparer.Ordinal);
+        private int lastAITurnNumber;
+
+        private int aiEditDepth;
+        private int currentAIEdit;
+        private static int lastAIEdit;
+
+        /// <summary>
+        /// True while a <see cref="BeginAIEdit"/> scope is open; node edits then keep
+        /// <see cref="NodeModel.AIChange"/>. Never saved to the .dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAIEditInProgress => Volatile.Read(ref aiEditDepth) > 0;
+
+        /// <summary>
+        /// Number of the open <see cref="BeginAIEdit"/> scope, unique across workspaces; 0 when none
+        /// is open. Nested scopes share the number of the outermost one.
+        /// </summary>
+        internal int CurrentAIEdit => IsAIEditInProgress ? Volatile.Read(ref currentAIEdit) : 0;
+
+        /// <summary>
+        /// Starts an AI-driven edit (DynamoMCP). Dispose to end it; disposing twice is safe and scopes
+        /// nest. An undisposed scope stays open for the session, so a person's edits stop clearing AI
+        /// change records.
+        /// </summary>
+        public IDisposable BeginAIEdit()
+        {
+            if (Interlocked.Increment(ref aiEditDepth) == 1)
+            {
+                Volatile.Write(ref currentAIEdit, Interlocked.Increment(ref lastAIEdit));
+            }
+            return new AIEditScope(this);
+        }
+
+        private sealed class AIEditScope : IDisposable
+        {
+            private WorkspaceModel workspace;
+
+            internal AIEditScope(WorkspaceModel workspace)
+            {
+                this.workspace = workspace;
+            }
+
+            public void Dispose()
+            {
+                var owner = Interlocked.Exchange(ref workspace, null);
+                if (owner != null)
+                {
+                    Interlocked.Decrement(ref owner.aiEditDepth);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records that an AI Assistant turn placed, modified or moved a node. A turn's changes combine
+        /// into its net effect (see <see cref="AINodeChange"/>). The turn keeps its own copy;
+        /// <see cref="NodeModel.AIChange"/> shows it too, replacing an earlier turn's record. Never marks
+        /// the workspace as unsaved.
+        /// </summary>
+        /// <param name="nodeId">The node. Unknown and transient nodes are ignored.</param>
+        /// <param name="kind">What the change was.</param>
+        /// <param name="turnId">Identifies the turn, for example the id of the undo group holding its edits.</param>
+        /// <param name="inputName">Required for <see cref="AIChangeKind.Modified"/>: the port or setting that changed.</param>
+        /// <param name="before">Value before the change (position, for a move), as display text.</param>
+        /// <param name="after">Value after the change (position, for a move), as display text.</param>
+        public void RecordAINodeChange(
+            Guid nodeId,
+            AIChangeKind kind,
+            string turnId,
+            string inputName = null,
+            string before = null,
+            string after = null)
+        {
+            ValidateAITurnId(turnId);
+            if (kind == AIChangeKind.Modified && string.IsNullOrEmpty(inputName))
+            {
+                throw new ArgumentException("A modified node must name the input that changed.", nameof(inputName));
+            }
+
+            var node = FindNodeForAIRecord(nodeId);
+            if (node == null || node.IsTransient)
+            {
+                return;
+            }
+
+            // Combine with the turn's own copy: the node's current record may have been cleared by a
+            // person or belong to an earlier turn.
+            var turn = GetOrCreateAITurn(turnId);
+            if (node.AIChange == null || !string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+            {
+                // The turn takes over the node's record (first touch, or after a person cleared it or
+                // another turn replaced it). Remember what it shows now, to restore if the net effect
+                // becomes nothing, so a cleared record is not brought back.
+                turn.RememberMarkBeforeTurn(nodeId, node.AIChange);
+            }
+
+            var change = AINodeChange.Apply(
+                turn.GetNodeChange(nodeId),
+                nodeId,
+                turn.TurnId,
+                turn.TurnNumber,
+                new AIChangeReport(kind, inputName, before, after));
+            turn.SetNodeChange(nodeId, change);
+
+            if (change != null)
+            {
+                node.AIChange = change;
+                return;
+            }
+
+            // Net effect is now nothing: restore the record from before this turn (none if a person has
+            // edited the node since).
+            var markBeforeTurn = turn.TakeMarkBeforeTurn(nodeId);
+            if (node.AIChange != null && string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+            {
+                node.AIChange = markBeforeTurn;
+            }
+        }
+
+        /// <summary>
+        /// Records that an AI Assistant turn is deleting a node. Call before deleting; nodes not in the
+        /// workspace are ignored. A node the same turn placed is neither listed nor counted. Any other is
+        /// counted once and dropped from the turn's changed nodes. Report the removed connections with
+        /// <see cref="RecordAIConnectorRemoved"/>.
+        /// </summary>
+        /// <param name="nodeId">The node being deleted.</param>
+        /// <param name="turnId">Identifies the turn.</param>
+        public void RecordAINodeDeleted(Guid nodeId, string turnId)
+        {
+            ValidateAITurnId(turnId);
+            var node = FindNodeForAIRecord(nodeId);
+            if (node == null || node.IsTransient)
+            {
+                return;
+            }
+
+            var turn = GetOrCreateAITurn(turnId);
+            turn.SetNodeChange(nodeId, null);
+            turn.TakeMarkBeforeTurn(nodeId);
+
+            // Ask the turn, not its node changes: the first report removes the change, but a repeat must
+            // still know the turn placed it.
+            if (!turn.PlacedNode(nodeId))
+            {
+                turn.NodeDeleted(nodeId);
+            }
+        }
+
+        /// <summary>
+        /// Records that an AI Assistant turn added a connection, so one the same turn removes again (or
+        /// puts back) is not counted.
+        /// </summary>
+        public void RecordAIConnectorAdded(Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex, string turnId)
+        {
+            GetOrCreateAITurn(turnId).ConnectorAdded(
+                AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
+        }
+
+        /// <summary>
+        /// Records that an AI Assistant turn removed a connection, including by deleting a node at either end.
+        /// </summary>
+        public void RecordAIConnectorRemoved(Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex, string turnId)
+        {
+            GetOrCreateAITurn(turnId).ConnectorRemoved(
+                AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
+        }
+
+        /// <summary>
+        /// What one AI Assistant turn did to this workspace, or null if nothing was recorded for it.
+        /// </summary>
+        /// <param name="turnId">Identifies the turn.</param>
+        public AITurnSummary GetAITurnSummary(string turnId)
+        {
+            if (string.IsNullOrEmpty(turnId) || !aiTurns.TryGetValue(turnId, out var turn))
+            {
+                return null;
+            }
+
+            return BuildAITurnSummary(turn);
+        }
+
+        /// <summary>
+        /// Every AI Assistant turn recorded in this workspace, oldest first.
+        /// </summary>
+        public IReadOnlyList<AITurnSummary> GetAITurnSummaries()
+        {
+            return aiTurns.Values
+                .OrderBy(t => t.TurnNumber)
+                .Select(BuildAITurnSummary)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
+        /// Removes every AI change record: each node's record and every turn's totals. Never marks the
+        /// workspace as unsaved.
+        /// </summary>
+        public void ClearAIChanges()
+        {
+            foreach (var node in Nodes)
+            {
+                node.ClearAIChange();
+            }
+
+            aiTurns.Clear();
+            lastAITurnNumber = 0;
+        }
+
+        private NodeModel FindNodeForAIRecord(Guid nodeId)
+        {
+            lock (nodes)
+            {
+                if (nodesByGuid.TryGetValue(nodeId, out var node) && node.GUID == nodeId)
+                {
+                    return node;
+                }
+
+                // Not indexed under this GUID, for example because it changed after the node was added
+                node = nodes.FirstOrDefault(n => n.GUID == nodeId);
+                if (node != null)
+                {
+                    nodesByGuid[nodeId] = node;
+                }
+
+                return node;
+            }
+        }
+
+        private static void ValidateAITurnId(string turnId)
+        {
+            if (string.IsNullOrEmpty(turnId))
+            {
+                throw new ArgumentException("An AI change must name the turn that made it.", nameof(turnId));
+            }
+        }
+
+        private AITurnState GetOrCreateAITurn(string turnId)
+        {
+            ValidateAITurnId(turnId);
+
+            if (!aiTurns.TryGetValue(turnId, out var turn))
+            {
+                turn = new AITurnState(turnId, ++lastAITurnNumber);
+                aiTurns.Add(turnId, turn);
+            }
+
+            return turn;
+        }
+
+        private static AITurnSummary BuildAITurnSummary(AITurnState turn)
+        {
+            return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount, turn.RemovedConnectorCount);
+        }
+
+        /// <summary>
+        /// Settings whose change counts as a person's edit. They do not raise
+        /// <see cref="NodeModel.Modified"/> (freeze, preview, labels, input/output) or not always (name,
+        /// lacing), so they are watched through property notifications.
+        /// </summary>
+        private static readonly HashSet<string> aiChangeClearingSettings = new HashSet<string>(StringComparer.Ordinal)
+        {
+            nameof(NodeModel.IsFrozen),
+            nameof(NodeModel.IsVisible),
+            nameof(NodeModel.DisplayLabels),
+            nameof(NodeModel.IsSetAsInput),
+            nameof(NodeModel.IsSetAsOutput),
+            nameof(NodeModel.ArgumentLacing),
+            nameof(NodeModel.Name),
+        };
+
+        /// <summary>
+        /// A person changed a node setting (for example froze it), which clears its AI change record.
+        /// </summary>
+        private void ClearAIChangeOnSettingChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (IsAIEditInProgress
+                || sender is not NodeModel node
+                || node.IsTransient
+                || node.AIChange == null
+                || e.PropertyName == null
+                || !aiChangeClearingSettings.Contains(e.PropertyName)
+                // A cache refresh, not a freeze
+                || (e.PropertyName == nameof(NodeModel.IsFrozen) && node.IsUpstreamCacheRefreshInProgress))
+            {
+                return;
+            }
+
+            node.ClearAIChange();
+        }
+
+        /// <summary>
+        /// A person edited a frozen node. Frozen nodes do not raise <see cref="NodeModel.Modified"/>, so
+        /// this is where such an edit clears the AI change record. An outside change (a watched file)
+        /// keeps it.
+        /// </summary>
+        private void ClearAIChangeOnFrozenEdit(NodeModel node)
+        {
+            if (node.IsTransient || IsAIEditInProgress || node.IsExternalChangeInProgress)
+            {
+                return;
+            }
+
+            node.ClearAIChange();
+        }
+
+        #endregion
+
         /// <summary>
         /// Returns if current workspace is readonly.
         /// </summary>
@@ -1135,6 +1446,7 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 nodes.Add(node);
+                nodesByGuid[node.GUID] = node;
             }
 
             OnNodeAdded(node);
@@ -1145,6 +1457,7 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 nodes.Clear();
+                nodesByGuid.Clear();
             }
 
             OnNodesCleared();
@@ -1410,6 +1723,11 @@ namespace Dynamo.Graph.Workspaces
             guid = Guid.NewGuid();
 
             this.nodes = new List<NodeModel>(nodes);
+            foreach (var node in this.nodes)
+            {
+                nodesByGuid[node.GUID] = node;
+            }
+
             this.notes = new List<NoteModel>(notes);
             foreach (var note in this.notes)
                 note.Workspace = this;
@@ -1538,6 +1856,10 @@ namespace Dynamo.Graph.Workspaces
             workspaceLoaded = false;
             Log(Resources.ClearingWorkSpace);
 
+            // Turns belong to this graph; a cleared workspace has none
+            aiTurns.Clear();
+            lastAITurnNumber = 0;
+
             DynamoSelection.Instance.ClearSelection();
 
             // The deletion of connectors in the following step will trigger a
@@ -1665,6 +1987,8 @@ namespace Dynamo.Graph.Workspaces
         protected virtual void RegisterNode(NodeModel node)
         {
             node.Modified += NodeModified;
+            node.EditedWhileFrozen += ClearAIChangeOnFrozenEdit;
+            node.PropertyChanged += ClearAIChangeOnSettingChange;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -1696,6 +2020,13 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
+            // A person's edit clears the AI change record. BeginAIEdit scopes (DynamoMCP) and outside
+            // changes (a watched file) keep it.
+            if (!IsAIEditInProgress && !node.IsExternalChangeInProgress)
+            {
+                node.ClearAIChange();
+            }
+
             HasUnsavedChanges = true;
         }
 
@@ -1710,6 +2041,11 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 if (!nodes.Remove(model)) return;
+
+                if (nodesByGuid.TryGetValue(model.GUID, out var indexed) && ReferenceEquals(indexed, model))
+                {
+                    nodesByGuid.Remove(model.GUID);
+                }
             }
 
             // Ensure the node is removed from the global selection set. In the undo path,
@@ -1744,6 +2080,8 @@ namespace Dynamo.Graph.Workspaces
             node.ConnectorAdded -= OnConnectorAdded;
             node.UpdateASTCollection -= OnToggleNodeFreeze;
             node.Modified -= NodeModified;
+            node.EditedWhileFrozen -= ClearAIChangeOnFrozenEdit;
+            node.PropertyChanged -= ClearAIChangeOnSettingChange;
             node.Dispose();
         }
 

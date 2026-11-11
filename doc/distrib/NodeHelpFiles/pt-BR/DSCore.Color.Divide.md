@@ -1,5 +1,5 @@
 ## Em profundidade
-Divide dividirá os canais individuais de uma cor por um número de entrada e retornará a cor resultante. Observe que os valores resultantes devem ser menores que 255. No exemplo abaixo, criaremos uma cor usando nós ByARGB. Em seguida, usaremos um nó Divide para dividir a cor por um número controlado por um controle deslizante de número. Um nó Display.ByGeometryColor é usado com um cuboide padrão para visualizar a cor resultante.
+Divide will divide the individual channels of a color by an input number, and return the resulting color. Dividing by a number greater than 1 produces a darker color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Divide node to divide the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
 ___
 ## Arquivo de exemplo
 

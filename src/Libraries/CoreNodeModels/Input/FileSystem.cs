@@ -216,7 +216,8 @@ namespace CoreNodeModels.Input
 
             protected void Modified()
             {
-                node.OnNodeModified(forceExecute: true);
+                // Changed on disk, not edited: the node runs again but keeps its AI change record
+                node.OnNodeModifiedByExternalChange(forceExecute: true);
             }
 
             public abstract void Dispose();
