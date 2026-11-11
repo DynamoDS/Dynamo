@@ -1183,6 +1183,86 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAFrozenBorderAndReturns()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            // The assistant froze it, so the change record stays. A person's freeze would clear it.
+            AsAIEdit(() => node.IsFrozen = true);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
+
+            AsAIEdit(() => node.IsFrozen = false);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAPreviewOffBorder()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            AsAIEdit(() => node.UpdateValue(new UpdateValueParams("IsVisible", "false")));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.IsFalse(node.IsVisible);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity,
+                "Preview off draws a border. It does not dim the glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AlertCapsTheHaloAtSixtyPercentUntilItClears()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity);
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloAlertOpacity, ViewModelOf(node).AIHaloOpacity);
+
+            node.ClearErrorsAndWarnings();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeWithAnAlertStaysAtTheMovedOpacity()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloMovedOpacity, ViewModelOf(node).AIHaloOpacity,
+                "40% is already under the 60% alert cap.");
+        }
+
+        private Border HaloGlow(NodeModel node)
+        {
+            return ((Grid)ViewOf(node).AIHalo).Children.OfType<Border>().Single();
+        }
+
         #region Zoomed-out treatment (DYN-11010)
 
         private const string AIIcon = "ai-badge-96px.png";
