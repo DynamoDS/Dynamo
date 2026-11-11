@@ -1159,20 +1159,20 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
-            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
 
             // The assistant froze it, so the change record stays. A person's freeze would clear it.
             AsAIEdit(() => node.IsFrozen = true);
             DispatcherUtil.DoEvents();
 
             Assert.IsNotNull(node.AIChange);
-            Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
             Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
 
             AsAIEdit(() => node.IsFrozen = false);
             DispatcherUtil.DoEvents();
 
-            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
         }
 
         [Test]
@@ -1182,14 +1182,14 @@ namespace DynamoCoreWpfTests
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
-            Assert.AreEqual(new Thickness(-8), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
 
             AsAIEdit(() => node.UpdateValue(new UpdateValueParams("IsVisible", "false")));
             DispatcherUtil.DoEvents();
 
             Assert.IsNotNull(node.AIChange);
             Assert.IsFalse(node.IsVisible);
-            Assert.AreEqual(new Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
             Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity,
                 "Preview off draws a border. It does not dim the glow.");
         }
