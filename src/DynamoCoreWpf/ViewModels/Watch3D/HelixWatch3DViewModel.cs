@@ -931,7 +931,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if DEBUG
             renderTimer.Start();
 #endif
-            var packages = taskPackages.Packages;
+            var packages = ExcludePackagesOfRemovedNodes(taskPackages.Packages);
 
             var meshPackages = packages.Where(renderPackage => (renderPackage as HelixRenderPackage)?.MeshVertexCount % 3 == 0)
                 .Select(renderPackage => renderPackage as HelixRenderPackage);
@@ -1645,6 +1645,39 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Camera.UpDirection = data.UpDirection;
             Camera.NearPlaneDistance = data.NearPlaneDistance;
             Camera.FarPlaneDistance = data.FarPlaneDistance;
+        }
+
+        /// <summary>
+        /// Drops render packages produced by a node that is no longer in any workspace.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="GenerateViewGeometryFromRenderPackagesAndRequestUpdate"/> is queued with
+        /// Dispatcher.BeginInvoke when the render task completes off the UI thread, so it can run after
+        /// the node has been removed. This happens when one undo step reloads a node, which requests a
+        /// render update, and then deletes it. Adding the packages then creates geometry for a node that
+        /// no longer exists, and nothing ever removes it from the background preview.
+        /// Packages whose description does not start with a node identifier are kept.
+        /// </remarks>
+        /// <param name="packages">The packages that are about to be added to the scene.</param>
+        /// <returns>The packages whose node still exists, or whose owner cannot be identified.</returns>
+        private IEnumerable<IRenderPackage> ExcludePackagesOfRemovedNodes(IEnumerable<IRenderPackage> packages)
+        {
+            var liveNodes = dynamoModel.Workspaces.SelectMany(ws => ws.Nodes).ToList();
+            var liveIdentifiers = new HashSet<string>(liveNodes.Select(n => n.AstIdentifierBase));
+            var liveGuids = liveNodes.Select(n => n.AstIdentifierGuid).ToList();
+
+            return packages.Where(package =>
+            {
+                var identifier = package.Description?.Split(':')[0];
+                if (identifier == null
+                    || !identifier.StartsWith(Dynamo.Engine.CodeGeneration.AstBuilder.StringConstants.VarPrefix, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+
+                // The identifier can carry a suffix, so fall back to matching the node's guid inside it.
+                return liveIdentifiers.Contains(identifier) || liveGuids.Any(guid => identifier.Contains(guid));
+            }).ToList();
         }
 
         private void RemoveGeometryForUpdatedPackages(IEnumerable<IRenderPackage> packages)
