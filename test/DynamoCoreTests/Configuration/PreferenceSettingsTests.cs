@@ -675,6 +675,32 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
+        public void WhenMigratedLocaleDiffersFromSessionCultureThenNamesFollowTheSessionAndNextStartCatchesUp()
+        {
+            // Settings migrated from an older version: Locale is German, default names are still English.
+            // The session culture was applied from the pre-migration settings, so it is English here.
+            var migrated = CreateSettingsWithEnglishDefaultStyles();
+            migrated.Locale = "de-DE";
+
+            RunWithUICulture("en-US", () =>
+            {
+                migrated.RefreshDefaultGroupStyleNames();
+
+                // The names match the language the session is running in, which is what gets saved on exit.
+                Assert.AreEqual("Actions", migrated.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+            });
+
+            // The next start applies the saved Locale before the refresh, so the names switch then.
+            RunWithUICulture(migrated.Locale, () =>
+            {
+                migrated.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Aktionen", migrated.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void WhenGroupStyleIdIsNotADefaultThenLocalizedDefaultNameIsNull()
         {
             Assert.IsNull(GroupStyleItem.GetLocalizedDefaultName(Guid.NewGuid()));

@@ -1530,6 +1530,8 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            // The imported file carries the default group style names of the language it was saved in.
+            preferenceSettings.RefreshDefaultGroupStyleNames();
             preferenceSettings.SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
