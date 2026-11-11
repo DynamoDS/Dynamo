@@ -3460,6 +3460,9 @@
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>输出失败</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>启用后，由于工作从中央处理单元(CPU)转移到图形处理单元(GPU)，因此 Dynamo 可利用硬件加速来提高图形的平滑度和整体性能。</value>
   </data>

@@ -3462,6 +3462,9 @@ Em alguns gráficos complexos ou cenários de programas hospedeiros, o modo Auto
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Falha na exportação</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Quando ativado, o Dynamo se beneficia da aceleração por hardware para melhorar a suavidade dos gráficos e o desempenho geral, já que o trabalho é descarregado das unidades de processamento central (CPUs) para as unidades de processamento gráfico (GPUs).</value>
   </data>

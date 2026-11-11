@@ -3462,6 +3462,9 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Niepowodzenie eksportu</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Po włączeniu dodatek Dynamo korzysta z przyspieszenia sprzętowego, aby poprawić gładkość grafiki i ogólną wydajność, przez przeniesienie pracy z procesorów głównych (CPU) do procesorów graficznych (GPU).</value>
   </data>
