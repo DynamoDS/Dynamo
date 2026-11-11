@@ -568,64 +568,102 @@ namespace Dynamo.UI.Controls
             }
 
             var pathManager = DynamoViewModel?.Model?.PathManager as PathManager;
+            var logger = DynamoViewModel?.Model?.Logger;
             var seenPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var storedPath in filePaths.Where(x => x != null))
+            foreach (var storedPath in filePaths)
             {
-                try
+                if (storedPath == null)
                 {
-                    var filePath = localizeTemplates
-                        ? pathManager?.LocalizeTemplateFilePath(storedPath) ?? storedPath
-                        : storedPath;
-
-                    // Skip files which were moved or deleted (consistent with Revit behavior).
-                    // Several stored paths can map to one localized template; show that file once.
-                    if (!DynamoUtilities.PathHelper.IsValidPath(filePath) || !seenPaths.Add(filePath)) continue;
-
-                    var extension = Path.GetExtension(filePath).ToUpper();
-                    // If not extension specified and code reach here, this means this is still a valid file
-                    // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                    var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
-                    var properties = GetFileProperties(filePath);
-                    var caption = Path.GetFileNameWithoutExtension(filePath);
-                    if (localizeTemplates &&
-                        !string.IsNullOrEmpty(pathManager?.TemplatesDirectory) &&
-                        string.Equals(Path.GetDirectoryName(filePath), pathManager.TemplatesDirectory, StringComparison.OrdinalIgnoreCase) &&
-                        !string.IsNullOrWhiteSpace(properties.name))
-                    {
-                        caption = properties.name;
-                    }
-
-                    var startItem = new StartPageListItem(caption)
-                    {
-                        ContextData = filePath,
-                        ToolTip = filePath,
-                        SubScript = subScript,
-                        Description = properties.description,
-                        Thumbnail = properties.thumbnail,
-                        Author = properties.author,
-                        DateModified = properties.date,
-                        ClickAction = StartPageListItem.Action.FilePath,
-                    };
-
-                    if (fullRefresh)
-                    {
-                        files.Add(startItem);
-                    }
-                    else
-                    {
-                        files.Insert(0, startItem);
-                    }
+                    continue;
                 }
-                catch (ArgumentException ex)
+
+                var startItem = TryCreateFileListItem(storedPath, localizeTemplates, pathManager, seenPaths, logger);
+                if (startItem == null)
                 {
-                    DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
+                    continue;
                 }
-                catch (Exception ex)
+
+                if (fullRefresh)
                 {
-                    DynamoViewModel.Model.Logger.Log("Error loading the file: " + ex.StackTrace);
+                    files.Add(startItem);
+                }
+                else
+                {
+                    files.Insert(0, startItem);
                 }
             }
+        }
+
+        private StartPageListItem TryCreateFileListItem(
+            string storedPath,
+            bool localizeTemplates,
+            PathManager pathManager,
+            HashSet<string> seenPaths,
+            DynamoLogger logger)
+        {
+            try
+            {
+                var filePath = localizeTemplates && pathManager != null
+                    ? pathManager.LocalizeTemplateFilePath(storedPath)
+                    : storedPath;
+
+                // Skip files which were moved or deleted (consistent with Revit behavior).
+                // Several stored paths can map to one localized template; show that file once.
+                if (!DynamoUtilities.PathHelper.IsValidPath(filePath) || !seenPaths.Add(filePath))
+                {
+                    return null;
+                }
+
+                var extension = Path.GetExtension(filePath).ToUpper();
+                var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
+                var properties = GetFileProperties(filePath);
+                var caption = CaptionForListedFile(filePath, localizeTemplates, pathManager, properties.name);
+
+                return new StartPageListItem(caption)
+                {
+                    ContextData = filePath,
+                    ToolTip = filePath,
+                    SubScript = subScript,
+                    Description = properties.description,
+                    Thumbnail = properties.thumbnail,
+                    Author = properties.author,
+                    DateModified = properties.date,
+                    ClickAction = StartPageListItem.Action.FilePath,
+                };
+            }
+            catch (ArgumentException ex)
+            {
+                logger?.Log("File path is not valid: " + ex.StackTrace);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger?.Log("Error loading the file: " + ex.StackTrace);
+                return null;
+            }
+        }
+
+        private static string CaptionForListedFile(string filePath, bool localizeTemplates, PathManager pathManager, string graphName)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            if (!localizeTemplates || pathManager == null || string.IsNullOrWhiteSpace(graphName))
+            {
+                return fileName;
+            }
+
+            var templatesDirectory = pathManager.TemplatesDirectory;
+            if (string.IsNullOrEmpty(templatesDirectory))
+            {
+                return fileName;
+            }
+
+            if (!string.Equals(Path.GetDirectoryName(filePath), templatesDirectory, StringComparison.OrdinalIgnoreCase))
+            {
+                return fileName;
+            }
+
+            return graphName;
         }
 
         private Dictionary<string, object> DeserializeJsonFile(string filePath)
@@ -668,7 +706,7 @@ namespace Dynamo.UI.Controls
             return description as string;
         }
 
-        private string GetGraphName(Dictionary<string, object> jsonObject)
+        private static string GetGraphName(Dictionary<string, object> jsonObject)
         {
             jsonObject.TryGetValue("Name", out object name);
 
@@ -811,7 +849,7 @@ namespace Dynamo.UI.Controls
             }
             catch (Exception ex)
             {
-                DynamoViewModel.Model.Logger.Log("Error deserializing dynamo graph file: " + ex.StackTrace);
+                DynamoViewModel?.Model?.Logger?.Log("Error deserializing dynamo graph file: " + ex.StackTrace);
                 return (null, null, null, null, null);
             }
         }
