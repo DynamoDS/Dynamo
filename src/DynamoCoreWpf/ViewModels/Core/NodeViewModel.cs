@@ -721,15 +721,29 @@ namespace Dynamo.ViewModels
             var change = NodeModel?.AIChange;
             var strength = AIHaloOpacity;
             var breathes = change != null && change.Kind != AIChangeKind.Moved;
+            var dispatcher = DynamoViewModel?.UIDispatcher;
             bool changed;
+            AIHaloGlow dropLater = null;
 
             lock (aiHaloSync)
             {
                 var current = aiHaloGlow;
                 if (change == null)
                 {
-                    changed = current != null;
-                    aiHaloGlow = null;
+                    // A new turn clears the record inside an AI edit, then records the node again if
+                    // the turn touches it. Keep a running glow until that edit is done, so it restarts
+                    // instead of blinking off.
+                    if (current != null && !current.IsFinished && dispatcher != null
+                        && WorkspaceViewModel?.Model?.IsAIEditInProgress == true)
+                    {
+                        dropLater = current;
+                        changed = false;
+                    }
+                    else
+                    {
+                        changed = current != null;
+                        aiHaloGlow = null;
+                    }
                 }
                 else if (current != null && !current.IsFinished)
                 {
@@ -750,6 +764,12 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            if (dropLater != null)
+            {
+                dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                    new Action(() => DropAIHaloGlowIfStillCleared(dropLater)));
+            }
+
             if (!changed) return;
 
             RaisePropertyChanged(nameof(AIHaloGlow));
@@ -757,6 +777,17 @@ namespace Dynamo.ViewModels
             {
                 WorkspaceViewModel?.OnAIHaloGlowWaiting();
             }
+        }
+
+        private void DropAIHaloGlowIfStillCleared(AIHaloGlow glow)
+        {
+            lock (aiHaloSync)
+            {
+                if (NodeModel?.AIChange != null || !ReferenceEquals(aiHaloGlow, glow)) return;
+                aiHaloGlow = null;
+            }
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
         }
 
         /// <summary>
@@ -1519,7 +1550,6 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(NodeModel.AIChange):
                     UpdateAIHaloGlow();
-                    RaisePropertyChanged(nameof(AIHaloOpacity));
                     RaisePropertyChanged(nameof(ShowAIBadge));
                     HandleColorOverlayChange();
                     break;

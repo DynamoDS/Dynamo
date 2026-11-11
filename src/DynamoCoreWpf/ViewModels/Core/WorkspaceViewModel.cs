@@ -258,7 +258,7 @@ namespace Dynamo.ViewModels
         /// <returns>True if the hovered node was glowing.</returns>
         internal bool DismissHoveredAIHaloGlow()
         {
-            var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered && n.AIHaloGlow?.IsGlowing == true);
+            var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered);
             return hovered != null && hovered.DismissAIHaloGlow();
         }
 

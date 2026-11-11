@@ -30,6 +30,7 @@ namespace DynamoCoreWpfTests
     public class AITouchedHaloTests : DynamoTestUIBase
     {
         private const string TurnA = "turn-a";
+        private const string TurnB = "turn-b";
 
         [TearDown]
         public void RestoreTheGlowClock()
@@ -194,27 +195,6 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(ViewModelOf(node).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
             Assert.IsFalse(ViewOf(node).AIHalo.HasAnimatedProperties, "The glow animation is stopped.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void HaloOpacityChangeIsAnnounced()
-        {
-            var node = AddNumberNode();
-            var raised = new List<string>();
-            System.ComponentModel.PropertyChangedEventHandler handler = (s, e) => raised.Add(e.PropertyName);
-            var nodeViewModel = ViewModelOf(node);
-            nodeViewModel.PropertyChanged += handler;
-            try
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
-            finally
-            {
-                nodeViewModel.PropertyChanged -= handler;
-            }
-
-            CollectionAssert.Contains(raised, nameof(NodeViewModel.AIHaloOpacity));
         }
 
         [Test]
@@ -753,6 +733,57 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(TimeSpan.Zero, glow.Delay, "No stagger wait on a restart.");
             Assert.AreNotSame(clock, ViewOf(node).AIHaloClock, "The halo plays the restarted glow.");
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedByTheNextTurnWhileGlowingRestartsWithoutBlinking()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+            var glow = ViewModelOf(node).AIHaloGlow;
+
+            // The next message's first change, 8 s into the glow: DynamoMCP starts the new turn, which
+            // clears the node's record, then records the node again
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The glow is kept, not replaced.");
+            Assert.IsTrue(glow.IsRestartPending);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility, "The halo never blinks off.");
+
+            ShowGlows();
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "The timer restarts from the new touch.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NextTurnClearsTheHaloOfANodeItDoesNotTouch()
+        {
+            var earlier = AddNumberNode();
+            var touched = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnB);
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNull(ViewModelOf(earlier).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(earlier).AIHalo.Visibility);
+            Assert.IsFalse(ViewModelOf(earlier).ShowAIBadge);
         }
 
         [Test]
