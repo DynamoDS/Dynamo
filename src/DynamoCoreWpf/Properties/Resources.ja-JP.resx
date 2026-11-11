@@ -3462,6 +3462,9 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>書き出しに失敗しました</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>オンに切り替えると、Dynamo でハードウェア アクセラレーションを利用できるようになり、中央処理装置(CPU)からグラフィックス処理装置(GPU)に作業がオフロードされるため、グラフィックスが滑らかになって、全体的なパフォーマンスが向上します。</value>
   </data>

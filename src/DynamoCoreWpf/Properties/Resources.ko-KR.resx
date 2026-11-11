@@ -3460,6 +3460,9 @@
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>내보내기 실패</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>이 옵션을 켜면 작업이 CPU(중앙 처리 장치)에서 GPU(그래픽 처리 장치)로 오프로드되므로 Dynamo는 하드웨어 가속을 통해 그래픽의 부드러움과 전체 성능을 향상시킬 수 있습니다.</value>
   </data>

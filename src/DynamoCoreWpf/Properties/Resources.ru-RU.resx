@@ -3462,6 +3462,9 @@
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Ошибка экспорта</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Если этот параметр включен, то в Dynamo используется аппаратное ускорение для более плавного отображения графики и повышения производительности в целом, так как работа переносится с центральных процессоров на графические.</value>
   </data>

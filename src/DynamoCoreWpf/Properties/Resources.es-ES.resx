@@ -3462,6 +3462,9 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Error de exportación</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Si se ha activado, Dynamo se beneficia de la aceleración de hardware para mejorar la uniformidad de los gráficos y el rendimiento general, ya que el trabajo se descarga de las unidades de procesamiento central (CPU) a las unidades de procesamiento de gráficos (GPU).</value>
   </data>

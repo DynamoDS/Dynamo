@@ -3461,6 +3461,9 @@
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>匯出失敗</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>開啟時，Dynamo 可受益於硬體加速，提升圖形的平滑度和整體效能，因為工作會從中央處理器 (CPU) 卸載到圖形處理器 (GPU)。</value>
   </data>
