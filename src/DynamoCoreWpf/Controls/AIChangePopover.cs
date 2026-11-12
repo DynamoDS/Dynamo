@@ -1,8 +1,12 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
@@ -206,7 +210,11 @@ namespace Dynamo.UI.Controls
 
                 if (button != null)
                 {
+                    // A click wakes this popup for Narrator. Keyboard focus alone does not,
+                    // so wake it the same way before asking Narrator to say the button.
+                    ActivateForNarrator();
                     Keyboard.Focus(button);
+                    AccessibleAnnouncement.Speak(button, button.Content as string);
                 }
             }), DispatcherPriority.Input);
         }
@@ -307,6 +315,61 @@ namespace Dynamo.UI.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(0)
             };
+        }
+
+        /// <summary>
+        /// The popover is a transparent popup, which Windows leaves inactive until a click.
+        /// Narrator ignores keyboard focus there. Clearing that flag is what a click does.
+        /// </summary>
+        private void ActivateForNarrator()
+        {
+            if (PresentationSource.FromVisual(content) is not HwndSource source)
+            {
+                return;
+            }
+
+            const int GWL_EXSTYLE = -20;
+            const int WS_EX_NOACTIVATE = 0x08000000;
+            var handle = source.Handle;
+            var style = GetWindowLongPtr(handle, GWL_EXSTYLE).ToInt64();
+            if ((style & WS_EX_NOACTIVATE) != 0)
+            {
+                SetWindowLongPtr(handle, GWL_EXSTYLE, new IntPtr(style & ~WS_EX_NOACTIVATE));
+            }
+
+            SetFocus(handle);
+        }
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
+        private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetFocus(IntPtr hWnd);
+    }
+
+    /// <summary>
+    /// Narrator does not announce keyboard focus inside the graph, or inside a popup it has not
+    /// woken up. A notification is the sentence it will speak.
+    /// </summary>
+    internal static class AccessibleAnnouncement
+    {
+        internal static void Speak(UIElement element, string message)
+        {
+            if (element == null || string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
+            var peer = UIElementAutomationPeer.FromElement(element)
+                ?? UIElementAutomationPeer.CreatePeerForElement(element);
+            peer?.RaiseNotificationEvent(
+                AutomationNotificationKind.Other,
+                AutomationNotificationProcessing.ImportantMostRecent,
+                message,
+                "Dynamo");
         }
     }
 }

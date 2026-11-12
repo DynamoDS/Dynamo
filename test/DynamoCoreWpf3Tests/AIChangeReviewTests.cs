@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -163,6 +164,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(KeyboardNavigation.GetIsTabStop(placedBadge), "Tab can stop on the badge.");
             Assert.AreEqual("Placed by Autodesk Assistant", AutomationProperties.GetName(placedBadge));
+            AssertBadgeName(placedBadge, "Placed by Autodesk Assistant");
 
             var edited = AddNumberNode();
             Workspace.RecordAINodeChange(edited.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
@@ -170,6 +172,18 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(KeyboardNavigation.GetIsTabStop(editedBadge));
             Assert.AreEqual("Edited by Autodesk Assistant", AutomationProperties.GetName(editedBadge));
+            AssertBadgeName(editedBadge, "Edited by Autodesk Assistant");
+        }
+
+        /// <summary>
+        /// Narrator reads a button name. It does not read the same words on a grid or a tooltip.
+        /// </summary>
+        private static void AssertBadgeName(UIElement badge, string expected)
+        {
+            var peer = UIElementAutomationPeer.CreatePeerForElement(badge);
+            Assert.IsNotNull(peer, "The badge has no automation peer, so Narrator cannot read it.");
+            Assert.AreEqual(expected, peer.GetName());
+            Assert.AreEqual(AutomationControlType.Button, peer.GetAutomationControlType());
         }
 
         [Test]
@@ -178,14 +192,14 @@ namespace DynamoCoreWpfTests
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            var badgeImage = ViewOf(node).AIBadge.ChildrenOfType<Image>().Single();
+            var badge = ViewOf(node).AIBadge;
             var workspaceViewModel = ViewModel.CurrentSpaceViewModel;
 
             try
             {
                 // Most of the badge is outside the node's bounds, where a press on the canvas
                 // would clear the selection and start a selection box
-                badgeImage.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                badge.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
                 {
                     RoutedEvent = Mouse.MouseDownEvent
                 });

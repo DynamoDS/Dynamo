@@ -133,7 +133,7 @@ namespace Dynamo.Controls
         private Brush nodeBorderBrushWithoutHalo;
         private AnimationClock aiHaloClock;
         private AIHaloGlow aiHaloClockGlow;
-        private Grid aiBadge;
+        private Button aiBadge;
         private TextBlock aiBadgeToolTipText;
         private ItemsControl outputPortControl;
         private Button optionsButton;
@@ -1738,7 +1738,7 @@ namespace Dynamo.Controls
             }
 
             aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
-            // Narrator reads this name. The tooltip is only the popup a sighted user sees.
+            // Narrator does not read the tooltip popup. It reads this name because the badge is a button.
             AutomationProperties.SetName(aiBadge, ViewModel.AIBadgeToolTip);
             aiBadge.Visibility = Visibility.Visible;
         }
@@ -1749,7 +1749,7 @@ namespace Dynamo.Controls
         /// </summary>
         internal string AIBadgeToolTipText => aiBadgeToolTipText?.Text;
 
-        private static Grid CreateAIBadge(out TextBlock toolTipText)
+        private static Button CreateAIBadge(out TextBlock toolTipText)
         {
             var image = new Image
             {
@@ -1768,7 +1768,10 @@ namespace Dynamo.Controls
                 Converter = zoomToInverseVisibilityCollapsedConverter
             });
 
-            var badge = new Grid
+            // Narrator reads buttons and skips a plain grid. The template is only the sparkle,
+            // so this does not look like a button.
+            var presenter = new FrameworkElementFactory(typeof(ContentPresenter));
+            var badge = new AIBadgeButton
             {
                 Name = "aiBadge",
                 Width = AIBadgeSize,
@@ -1776,15 +1779,20 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
-                // Takes the pointer and keyboard focus for its tooltip.
-                Focusable = true
+                Focusable = true,
+                IsTabStop = true,
+                FocusVisualStyle = null,
+                Background = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(0),
+                OverridesDefaultStyle = true,
+                Template = new ControlTemplate(typeof(AIBadgeButton)) { VisualTree = presenter },
+                Content = image
             };
-            badge.Children.Add(image);
-            // A Grid has no IsTabStop property. Without this, Tab skips the badge.
-            KeyboardNavigation.SetIsTabStop(badge, true);
-            // Tab on the canvas selects neighbouring nodes. Once the badge has focus, Tab
-            // leaves that shortcut and opens the change panel instead.
+            // Tab on the canvas selects neighbouring nodes. The window sends Tab here, and this
+            // keeps the following Tab from leaving the sparkle.
             badge.PreviewKeyDown += OnAIBadgePreviewKeyDown;
+            badge.GotKeyboardFocus += OnAIBadgeGotKeyboardFocus;
 
             // Clicks bubble to the node, which selects it. Most of the badge sits outside the
             // node's bounds, so mark it as a drag handle: pressing it then drags the node instead
@@ -1820,22 +1828,34 @@ namespace Dynamo.Controls
 
         private static void OnAIBadgePreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Tab || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift) return;
-
-            var element = (DependencyObject)sender;
-            NodeView nodeView = null;
-            while (element != null && nodeView == null)
+            if (e.Key != Key.Tab || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
-                nodeView = element as NodeView;
-                element = VisualTreeHelper.GetParent(element);
+                return;
             }
 
-            var port = nodeView?.ViewModel?.InPorts.OfType<InPortViewModel>()
-                .FirstOrDefault(p => p.AIInputChange != null);
-            if (port == null) return;
-
-            port.ShowAIChange();
             e.Handled = true;
+        }
+
+        private static void OnAIBadgeGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (!ReferenceEquals(e.OriginalSource, sender))
+            {
+                return;
+            }
+
+            var badge = (UIElement)sender;
+            AccessibleAnnouncement.Speak(badge, AutomationProperties.GetName(badge));
+        }
+
+        /// <summary>
+        /// The sparkle. Narrator announces a button's name and says nothing for a grid.
+        /// The press is left unhandled so the canvas can still drag the node from the badge.
+        /// </summary>
+        private sealed class AIBadgeButton : Button
+        {
+            protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+            {
+            }
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

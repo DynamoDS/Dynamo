@@ -1,4 +1,5 @@
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -1050,6 +1051,69 @@ namespace Dynamo.Controls
             FocusableGrid.Focus();
             // keep handling input bindings of DynamoView
             Keyboard.Focus(this);
+        }
+
+        /// <summary>
+        /// Tab on the window selects neighbouring nodes, so it never lands on the sparkle.
+        /// While a sparkle is showing, Tab goes there and stays there.
+        /// </summary>
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+            if (e.Handled || e.Key != Key.Tab || Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None)
+            {
+                return;
+            }
+
+            if (IsTyping(Keyboard.FocusedElement as DependencyObject))
+            {
+                return;
+            }
+
+            var badge = FindVisibleAIBadge();
+            if (badge == null)
+            {
+                return;
+            }
+
+            if (!ReferenceEquals(Keyboard.FocusedElement, badge))
+            {
+                Keyboard.Focus(badge);
+            }
+
+            e.Handled = true;
+        }
+
+        private static bool IsTyping(DependencyObject element)
+        {
+            for (var current = element; current != null; current = VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current))
+            {
+                if (current is TextBoxBase or PasswordBox)
+                {
+                    return true;
+                }
+
+                // Code block and Python editors
+                if (current.GetType().Name == "TextArea")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Button FindVisibleAIBadge()
+        {
+            foreach (var node in this.ChildrenOfType<NodeView>())
+            {
+                if (node.AIBadge is Button badge && badge.IsVisible)
+                {
+                    return badge;
+                }
+            }
+
+            return null;
         }
 
         private void OnRequestPaste()
