@@ -56,16 +56,20 @@ namespace Dynamo.Graph.Workspaces
         // exactly as before, which graphs saved by earlier versions rely on.
         // Any other occurrence inside a string value is left alone.
         private const RegexOptions typeDeclarationRegexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
+        // The patterns are linear in the input, without nested quantifiers. A match timeout applies to the whole
+        // Replace over the whole graph json, so a fixed limit could fail to open or save a large graph,
+        // for example one with megabytes of cached geometry, on a slow machine.
+        private static readonly TimeSpan typeDeclarationRegexTimeout = Regex.InfiniteMatchTimeout;
         private static readonly Regex concreteTypePropertyRegex =
-            new Regex(@"(?<!\\)(?<quote>\\*"")ConcreteType(?<suffix>(?:id)?)\k<quote>(?=\s*:)", typeDeclarationRegexOptions);
+            new Regex(@"(?<!\\)(?<quote>\\*"")ConcreteType(?<suffix>(?:id)?)\k<quote>(?=\s*:)", typeDeclarationRegexOptions, typeDeclarationRegexTimeout);
         private static readonly Regex typePropertyRegex =
-            new Regex(@"(?<!\\)(?<quote>\\*"")\$type(?<suffix>(?:id)?)\k<quote>(?=\s*:)", typeDeclarationRegexOptions);
+            new Regex(@"(?<!\\)(?<quote>\\*"")\$type(?<suffix>(?:id)?)\k<quote>(?=\s*:)", typeDeclarationRegexOptions, typeDeclarationRegexTimeout);
 
         /// <summary>
         /// Strips $type references from the generated json, replacing them with 
         /// type names matching those expected by the server.
-        /// Only property names are replaced, including those of json stored inside a string value.
-        /// Other text in string values is preserved.
+        /// Only quoted names followed by a colon are replaced, including the property names of json
+        /// stored inside a string value. Other occurrences in string values are preserved.
         /// </summary>
         /// <param name="json">The json to parse.</param>
         /// <param name="fromServer">A flag indicating whether this json is coming from the server, and thus
