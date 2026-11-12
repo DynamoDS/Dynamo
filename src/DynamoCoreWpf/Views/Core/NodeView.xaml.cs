@@ -13,7 +13,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
@@ -1736,6 +1738,8 @@ namespace Dynamo.Controls
             }
 
             aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
+            // Narrator reads this name. The tooltip is only the popup a sighted user sees.
+            AutomationProperties.SetName(aiBadge, ViewModel.AIBadgeToolTip);
             aiBadge.Visibility = Visibility.Visible;
         }
 
@@ -1772,10 +1776,15 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
-                // Takes the pointer and keyboard focus for its tooltip
+                // Takes the pointer and keyboard focus for its tooltip.
                 Focusable = true
             };
             badge.Children.Add(image);
+            // A Grid has no IsTabStop property. Without this, Tab skips the badge.
+            KeyboardNavigation.SetIsTabStop(badge, true);
+            // Tab on the canvas selects neighbouring nodes. Once the badge has focus, Tab
+            // leaves that shortcut and opens the change panel instead.
+            badge.PreviewKeyDown += OnAIBadgePreviewKeyDown;
 
             // Clicks bubble to the node, which selects it. Most of the badge sits outside the
             // node's bounds, so mark it as a drag handle: pressing it then drags the node instead
@@ -1807,6 +1816,26 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(badge, 60);
 
             return badge;
+        }
+
+        private static void OnAIBadgePreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Tab || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift) return;
+
+            var element = (DependencyObject)sender;
+            NodeView nodeView = null;
+            while (element != null && nodeView == null)
+            {
+                nodeView = element as NodeView;
+                element = VisualTreeHelper.GetParent(element);
+            }
+
+            var port = nodeView?.ViewModel?.InPorts.OfType<InPortViewModel>()
+                .FirstOrDefault(p => p.AIInputChange != null);
+            if (port == null) return;
+
+            port.ShowAIChange();
+            e.Handled = true;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

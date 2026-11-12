@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -154,6 +155,25 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void BadgeIsATabStopAndAnnouncesPlacedOrEdited()
+        {
+            var placed = AddNumberNode();
+            Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnA);
+            var placedBadge = ViewOf(placed).AIBadge;
+
+            Assert.IsTrue(KeyboardNavigation.GetIsTabStop(placedBadge), "Tab can stop on the badge.");
+            Assert.AreEqual("Placed by Autodesk Assistant", AutomationProperties.GetName(placedBadge));
+
+            var edited = AddNumberNode();
+            Workspace.RecordAINodeChange(edited.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+            var editedBadge = ViewOf(edited).AIBadge;
+
+            Assert.IsTrue(KeyboardNavigation.GetIsTabStop(editedBadge));
+            Assert.AreEqual("Edited by Autodesk Assistant", AutomationProperties.GetName(editedBadge));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void WhenAIBadgeIsPressedThenItsNodeIsSelectedAndDragged()
         {
             var node = AddNumberNode();
@@ -291,6 +311,29 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(port.IsKeyboardFocused);
             Assert.IsNotNull(port.AIChangePopover);
             Assert.IsTrue(port.AIChangePopover.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TabOnAChangedInputMovesIntoItsPopover()
+        {
+            var node = AddTwoInputNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "1");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "b", null, "2");
+            DispatcherUtil.DoEvents();
+            var port = PortViewOf(node, "a");
+
+            Keyboard.Focus(port);
+            port.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(port), 0, Key.Tab)
+            {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(port.AIChangePopover.IsOpen);
+            Assert.IsTrue(
+                port.AIChangePopover.UndoButton.IsKeyboardFocused
+                || port.AIChangePopover.NextButton.IsKeyboardFocused);
         }
 
         /// <summary>Unloads and reloads a port view, as removing it from the visual tree and adding it back does.</summary>

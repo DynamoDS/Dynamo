@@ -886,8 +886,11 @@ namespace Dynamo.UI.Controls
 
         private void OnPreviewKeyDownAIChange(object sender, KeyEventArgs e)
         {
-            // Enter or Down moves from the focused port into its popover
-            if (!ReferenceEquals(e.OriginalSource, this) || (e.Key != Key.Enter && e.Key != Key.Down)) return;
+            // Enter, Down, or Tab moves from the focused port into its popover. Tab on the
+            // canvas otherwise selects neighbouring nodes, so the port takes the key itself.
+            if (!ReferenceEquals(e.OriginalSource, this)) return;
+            if (e.Key == Key.Tab && Keyboard.Modifiers == ModifierKeys.Shift) return;
+            if (e.Key != Key.Enter && e.Key != Key.Down && e.Key != Key.Tab) return;
             if (viewModel?.AIInputChange == null) return;
 
             ShowAIChangePopover();
