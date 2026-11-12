@@ -3444,6 +3444,9 @@ In alcuni scenari complessi di programmi host o grafici, la modalità Automatico
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Esportazione non riuscita</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Quando l'opzione è attivata, Dynamo sfrutta l'accelerazione hardware per migliorare la levigatezza della grafica e le prestazioni generali, poiché il lavoro viene scaricato dalle unità di elaborazione centrali (CPU) alle unità di elaborazione grafica (GPU).</value>
   </data>

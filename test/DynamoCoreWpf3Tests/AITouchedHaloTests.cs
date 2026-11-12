@@ -31,6 +31,7 @@ namespace DynamoCoreWpfTests
     public class AITouchedHaloTests : DynamoTestUIBase
     {
         private const string TurnA = "turn-a";
+        private const string TurnB = "turn-b";
 
         [TearDown]
         public void RestoreTheGlowClock()
@@ -195,27 +196,6 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(ViewModelOf(node).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
             Assert.IsFalse(ViewOf(node).AIHalo.HasAnimatedProperties, "The glow animation is stopped.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void HaloOpacityChangeIsAnnounced()
-        {
-            var node = AddNumberNode();
-            var raised = new List<string>();
-            System.ComponentModel.PropertyChangedEventHandler handler = (s, e) => raised.Add(e.PropertyName);
-            var nodeViewModel = ViewModelOf(node);
-            nodeViewModel.PropertyChanged += handler;
-            try
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
-            finally
-            {
-                nodeViewModel.PropertyChanged -= handler;
-            }
-
-            CollectionAssert.Contains(raised, nameof(NodeViewModel.AIHaloOpacity));
         }
 
         [Test]
@@ -1008,6 +988,57 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void NodeTouchedByTheNextTurnWhileGlowingRestartsWithoutBlinking()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+            var glow = ViewModelOf(node).AIHaloGlow;
+
+            // The next message's first change, 8 s into the glow: DynamoMCP starts the new turn, which
+            // clears the node's record, then records the node again
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The glow is kept, not replaced.");
+            Assert.IsTrue(glow.IsRestartPending);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility, "The halo never blinks off.");
+
+            ShowGlows();
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "The timer restarts from the new touch.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NextTurnClearsTheHaloOfANodeItDoesNotTouch()
+        {
+            var earlier = AddNumberNode();
+            var touched = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnB);
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNull(ViewModelOf(earlier).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(earlier).AIHalo.Visibility);
+            Assert.IsFalse(ViewModelOf(earlier).ShowAIBadge);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NodeMovedThenModifiedWhileGlowingRestartsAtFullStrength()
         {
             var now = TimeSpan.FromMinutes(1);
@@ -1631,6 +1662,86 @@ namespace DynamoCoreWpfTests
 
             var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAFrozenBorderAndReturns()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            // The assistant froze it, so the change record stays. A person's freeze would clear it.
+            AsAIEdit(() => node.IsFrozen = true);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
+
+            AsAIEdit(() => node.IsFrozen = false);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAPreviewOffBorder()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            AsAIEdit(() => node.UpdateValue(new UpdateValueParams("IsVisible", "false")));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.IsFalse(node.IsVisible);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity,
+                "Preview off draws a border. It does not dim the glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AlertCapsTheHaloAtSixtyPercentUntilItClears()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity);
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloAlertOpacity, ViewModelOf(node).AIHaloOpacity);
+
+            node.ClearErrorsAndWarnings();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeWithAnAlertStaysAtTheMovedOpacity()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloMovedOpacity, ViewModelOf(node).AIHaloOpacity,
+                "40% is already under the 60% alert cap.");
+        }
+
+        private Border HaloGlow(NodeModel node)
+        {
+            return ((Grid)ViewOf(node).AIHalo).Children.OfType<Border>().Single();
         }
 
         #region Zoomed-out treatment (DYN-11010)

@@ -3461,6 +3461,9 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export se nezdařil</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Pokud je tato možnost zapnuta, aplikace Dynamo využívá hardwarovou akceleraci ke zlepšení hladkosti grafiky a celkového výkonu, protože výpočetní zatížení je přesměrováno z hlavních procesorů (CPU) na grafické procesory (GPU).</value>
   </data>
