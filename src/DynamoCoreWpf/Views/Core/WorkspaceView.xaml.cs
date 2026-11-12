@@ -997,6 +997,7 @@ namespace Dynamo.Views
         internal static readonly TimeSpan AIHaloCheckDelay = TimeSpan.FromMilliseconds(150);
 
         private DispatcherTimer aiHaloCheckTimer;
+        private bool isDisposed;
 
         /// <summary>
         /// Checks for glows to start once the view has settled; see <see cref="AIHaloCheckDelay"/>.
@@ -1004,6 +1005,8 @@ namespace Dynamo.Views
         /// </summary>
         internal void RequestAIHaloVisibilityCheck()
         {
+            if (isDisposed) return;
+
             if (!Dispatcher.CheckAccess())
             {
                 Dispatcher.BeginInvoke(new Action(RequestAIHaloVisibilityCheck));
@@ -1424,6 +1427,7 @@ namespace Dynamo.Views
 
         public void Dispose()
         {
+            isDisposed = true;
             RemoveViewModelsubscriptions(ViewModel);
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
             Loaded -= WorkspaceView_Loaded;

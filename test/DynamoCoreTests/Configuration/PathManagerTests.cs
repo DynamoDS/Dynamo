@@ -1,7 +1,10 @@
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using NUnit.Framework;
+using TestServices;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -130,6 +133,141 @@ namespace Dynamo.Tests.Configuration
             Assert.That(updated, Is.False, "An unusable location should be rejected.");
             Assert.That(pathManager.TemplatesDirectory, Is.EqualTo(pathManager.DefaultTemplatesDirectory),
                 "A rejected templates location must leave the default in effect, not null.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLocaleTemplateFolderHasNoSubdirectoriesThenThatFolderIsUsed()
+        {
+            var root = Path.Combine(TempFolder, "shipped-templates");
+            var germanTemplates = Path.Combine(root, "templates", "de-DE");
+            var englishTemplates = Path.Combine(root, "templates", "en-US");
+            Directory.CreateDirectory(germanTemplates);
+            Directory.CreateDirectory(englishTemplates);
+            File.WriteAllText(Path.Combine(germanTemplates, "Grafik erstellen.dyn"), "{}");
+            File.WriteAllText(Path.Combine(englishTemplates, "Create a Graph.dyn"), "{}");
+
+            var pathManager = MakeHostPathManager(root, new CultureInfo("de-DE"));
+
+            Assert.AreEqual(
+                Path.GetFullPath(germanTemplates),
+                Path.GetFullPath(pathManager.DefaultTemplatesDirectory));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLocaleTemplateFolderIsMissingThenTemplatesFallBackToEnUs()
+        {
+            var root = Path.Combine(TempFolder, "english-only-templates");
+            var englishTemplates = Path.Combine(root, "templates", "en-US");
+            Directory.CreateDirectory(englishTemplates);
+            File.WriteAllText(Path.Combine(englishTemplates, "Create a Graph.dyn"), "{}");
+
+            var pathManager = MakeHostPathManager(root, new CultureInfo("fr-FR"));
+
+            Assert.AreEqual(
+                Path.GetFullPath(englishTemplates),
+                Path.GetFullPath(pathManager.DefaultTemplatesDirectory));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRecentTemplatePathIsAnotherLocaleThenItMapsToTheActiveTemplatesFolder()
+        {
+            var root = Path.Combine(TempFolder, "recent-templates");
+            var germanTemplates = Path.Combine(root, "templates", "de-DE");
+            var englishTemplates = Path.Combine(root, "templates", "en-US");
+            Directory.CreateDirectory(germanTemplates);
+            Directory.CreateDirectory(englishTemplates);
+            File.WriteAllText(Path.Combine(germanTemplates, "Create a Graph.dyn"), "{\"Description\":\"German\"}");
+            File.WriteAllText(Path.Combine(englishTemplates, "Create a Graph.dyn"), "{\"Description\":\"English\"}");
+
+            var pathManager = MakeHostPathManager(root, new CultureInfo("de-DE"));
+            var englishFile = Path.Combine(englishTemplates, "Create a Graph.dyn");
+
+            var localized = pathManager.LocalizeTemplateFilePath(englishFile);
+
+            Assert.AreEqual(Path.GetFullPath(Path.Combine(germanTemplates, "Create a Graph.dyn")), Path.GetFullPath(localized));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRecentPathIsNotAShippedTemplateThenItIsLeftUnchanged()
+        {
+            var root = Path.Combine(TempFolder, "recent-custom");
+            var germanTemplates = Path.Combine(root, "templates", "de-DE");
+            Directory.CreateDirectory(germanTemplates);
+            File.WriteAllText(Path.Combine(germanTemplates, "Create a Graph.dyn"), "{}");
+            var customFile = Path.Combine(TempFolder, "MyGraph.dyn");
+            File.WriteAllText(customFile, "{}");
+
+            var pathManager = MakeHostPathManager(root, new CultureInfo("de-DE"));
+
+            Assert.AreEqual(customFile, pathManager.LocalizeTemplateFilePath(customFile));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUiCultureChangesAfterConstructionThenDefaultTemplatesDirectoryFollowsNewCulture()
+        {
+            var root = Path.Combine(TempFolder, "refresh-templates");
+            var germanTemplates = Path.Combine(root, "templates", "de-DE");
+            var englishTemplates = Path.Combine(root, "templates", "en-US");
+            Directory.CreateDirectory(germanTemplates);
+            Directory.CreateDirectory(englishTemplates);
+            File.WriteAllText(Path.Combine(germanTemplates, "Grafik erstellen.dyn"), "{}");
+            File.WriteAllText(Path.Combine(englishTemplates, "Create a Graph.dyn"), "{}");
+
+            var pathManager = MakeHostPathManager(root, new CultureInfo("en-US"));
+            Assert.AreEqual(
+                Path.GetFullPath(englishTemplates),
+                Path.GetFullPath(pathManager.DefaultTemplatesDirectory));
+
+            WithCulture(new CultureInfo("de-DE"), () => pathManager.RefreshDefaultTemplatesDirectory());
+
+            Assert.AreEqual(
+                Path.GetFullPath(germanTemplates),
+                Path.GetFullPath(pathManager.DefaultTemplatesDirectory));
+            Assert.AreEqual(pathManager.DefaultTemplatesDirectory, pathManager.TemplatesDirectory);
+        }
+
+        private static PathManager MakeHostPathManager(string commonDataRoot, CultureInfo culture)
+        {
+            PathManager pathManager = null;
+            WithCulture(culture, () =>
+            {
+                pathManager = new PathManager(new PathManagerParams
+                {
+                    CorePath = Path.GetDirectoryName(typeof(PathManager).Assembly.Location),
+                    HostPath = Path.GetDirectoryName(typeof(PathManager).Assembly.Location),
+                    PathResolver = new TestPathResolver(new TestPathResolverParams
+                    {
+                        CommonDataRootFolder = commonDataRoot
+                    }),
+                    // Unversioned templates live next to this root. A version folder that
+                    // does not exist makes GetTemplateFolder walk up to commonDataRoot.
+                    MajorFileVersion = 9,
+                    MinorFileVersion = 9
+                });
+            });
+            return pathManager;
+        }
+
+        private static void WithCulture(CultureInfo culture, System.Action action)
+        {
+            var previousUiCulture = Thread.CurrentThread.CurrentUICulture;
+            var previousCulture = Thread.CurrentThread.CurrentCulture;
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = culture;
+                Thread.CurrentThread.CurrentCulture = culture;
+                action();
+            }
+            finally
+            {
+                Thread.CurrentThread.CurrentUICulture = previousUiCulture;
+                Thread.CurrentThread.CurrentCulture = previousCulture;
+            }
         }
 
         private void RestartDynamoWithTemplatePath(string templatePath)

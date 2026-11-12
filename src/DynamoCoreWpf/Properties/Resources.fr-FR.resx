@@ -3456,6 +3456,9 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Échec de l'exportation</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Lorsque cette option est activée, Dynamo bénéficie de l'accélération matérielle pour améliorer la fluidité des graphiques et les performances globales, car le travail est déchargé des unités centrales de traitement (CPU) vers les unités de traitement graphiques (GPU).</value>
   </data>

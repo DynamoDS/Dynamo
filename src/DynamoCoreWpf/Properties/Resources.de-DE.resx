@@ -3460,6 +3460,9 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export fehlgeschlagen</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Wenn diese Option aktiviert ist, sorgt die Hardwarebeschleunigung für glattere Grafiken und eine bessere Gesamtleistung in Dynamo, da Arbeitsprozesse von CPUs (Central Processing Units) auf GPUs (Graphics Processing Units) verlagert werden.</value>
   </data>
