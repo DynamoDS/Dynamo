@@ -3034,6 +3034,15 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ExportSettingsFailedMessage", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The profile {0} was not exported because Dynamo could not read it.
+        /// </summary>
+        public static string ExportSettingsUnreadableFileMessage {
+            get {
+                return ResourceManager.GetString("ExportSettingsUnreadableFileMessage", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Workspace has been exported as a 3D image to .

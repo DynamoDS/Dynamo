@@ -749,17 +749,22 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
-            PreferenceSettings.Instance = PreferenceSettings;
+            var preferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            PreferenceSettings = preferenceSettings;
 
-            if (PreferenceSettings != null)
+            if (preferenceSettings != null)
             {
+                PreferenceSettings.Instance = preferenceSettings;
                 // Pass EnableUnTrustedLocationsNotifications from config to PreferenceSettings
-                PreferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
-                SetUICulture(CLILocale ?? PreferenceSettings.Locale);
-                PreferenceSettings.RefreshDefaultGroupStyleNames();
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-                PreferenceSettings.MessageLogged += LogMessage;
+                preferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
+                SetUICulture(CLILocale ?? preferenceSettings.Locale);
+                preferenceSettings.RefreshDefaultGroupStyleNames();
+                // The shipped templates folder was resolved during PathManager construction,
+                // before this culture was applied. Recompute it so Recent and From Template
+                // open templates\<locale> instead of templates\en-US.
+                pathManager.RefreshDefaultTemplatesDirectory();
+                preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                preferenceSettings.MessageLogged += LogMessage;
             }
 
             HostName = HostAnalyticsInfo.HostName;
@@ -822,7 +827,8 @@ namespace Dynamo.Models
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
-            if (!IsServiceMode && !IsTestMode && PreferenceSettings.IsFirstRun)
+            // Migration must not replace settings the user already has on disk.
+            if (!IsServiceMode && !IsTestMode && PreferenceSettings?.IsFirstRun == true && !File.Exists(pathManager.PreferenceFilePath))
             {
                 DynamoMigratorBase migrator = null;
 
@@ -845,6 +851,8 @@ namespace Dynamo.Models
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
                     PreferenceSettings.RefreshDefaultGroupStyleNames();
+
+                    Logger.Log(Resources.SettingsMigratedFromPreviousVersion);
                 }
             }
 

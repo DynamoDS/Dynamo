@@ -113,6 +113,11 @@ namespace Dynamo.Views
             Loaded += WorkspaceView_Loaded;
             Unloaded += WorkspaceView_Unloaded;
 
+            // The AI-touched glow clock starts when a node comes on screen
+            zoomBorder.ViewSettingsChanged += ZoomBorder_ViewSettingsChanged;
+            outerCanvas.SizeChanged += OuterCanvas_SizeChanged;
+            IsVisibleChanged += WorkspaceView_IsVisibleChanged;
+
             // view of items to drag
             draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
             var dictionaries = draggedSelectionTemplate.Resources.MergedDictionaries;
@@ -132,6 +137,12 @@ namespace Dynamo.Views
                     // or when go to start page, close InCanvasSearch and ContextMenu.
                     ShowHideInCanvasControl(ShowHideFlags.Hide);
                     ShowHideContextMenu(ShowHideFlags.Hide);
+
+                    // Back from the Home page: glows that waited behind it can start now
+                    if (e.PropertyName == "ShowStartPage" && ViewModel?.DynamoViewModel?.ShowStartPage == false)
+                    {
+                        RequestAIHaloVisibilityCheck();
+                    }
                     break;
             }
         }
@@ -162,6 +173,7 @@ namespace Dynamo.Views
 
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+            ViewModel.AIHaloGlowWaiting -= RequestAIHaloVisibilityCheck;
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
 
@@ -194,8 +206,12 @@ namespace Dynamo.Views
 
             ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
+            ViewModel.AIHaloGlowWaiting += RequestAIHaloVisibilityCheck;
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
             infiniteGridView.AttachToZoomBorder(zoomBorder);
+
+            // A workspace shown in this view (for example after switching tabs) may have glows waiting
+            RequestAIHaloVisibilityCheck();
         }
 
         private void ShowNodeAutoCompleteControl()
@@ -944,11 +960,19 @@ namespace Dynamo.Views
         private void WorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
             if (ownerWindow != null)
+            {
                 ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+                ownerWindow.StateChanged -= OwnerWindow_StateChanged;
+            }
 
             ownerWindow = Window.GetWindow(this);
             if (ownerWindow != null)
+            {
                 ownerWindow.Deactivated += OwnerWindow_Deactivated;
+                ownerWindow.StateChanged += OwnerWindow_StateChanged;
+            }
+
+            RequestAIHaloVisibilityCheck();
         }
 
         private void WorkspaceView_Unloaded(object sender, RoutedEventArgs e)
@@ -956,9 +980,102 @@ namespace Dynamo.Views
             if (ownerWindow != null)
             {
                 ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+                ownerWindow.StateChanged -= OwnerWindow_StateChanged;
                 ownerWindow = null;
             }
+
+            aiHaloCheckTimer?.Stop();
         }
+
+        #region AI-touched glow clock (DYN-11005)
+
+        /// <summary>
+        /// How long the view must stay still before glows waiting for their node to come on screen
+        /// are checked. Groups nodes that come on screen together, keeps panning cheap, and lets a
+        /// node that only flashes past during a fast pan keep its glow for later.
+        /// </summary>
+        internal static readonly TimeSpan AIHaloCheckDelay = TimeSpan.FromMilliseconds(150);
+
+        private DispatcherTimer aiHaloCheckTimer;
+        private bool isDisposed;
+
+        /// <summary>
+        /// Checks for glows to start once the view has settled; see <see cref="AIHaloCheckDelay"/>.
+        /// Each request restarts the wait. Safe to call off the UI thread.
+        /// </summary>
+        internal void RequestAIHaloVisibilityCheck()
+        {
+            if (isDisposed) return;
+
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(RequestAIHaloVisibilityCheck));
+                return;
+            }
+
+            if (aiHaloCheckTimer == null)
+            {
+                aiHaloCheckTimer = new DispatcherTimer(DispatcherPriority.Background, Dispatcher)
+                {
+                    Interval = AIHaloCheckDelay
+                };
+                aiHaloCheckTimer.Tick += AIHaloCheckTimer_Tick;
+            }
+
+            aiHaloCheckTimer.Stop();
+            aiHaloCheckTimer.Start();
+        }
+
+        private void AIHaloCheckTimer_Tick(object sender, EventArgs e)
+        {
+            aiHaloCheckTimer.Stop();
+            CheckAIHaloVisibility();
+        }
+
+        /// <summary>
+        /// Starts the glow of every waiting node that is now on screen. Nothing starts while this view
+        /// is hidden (another tab), the Home page covers it, or the window is minimized. Internal for tests.
+        /// </summary>
+        /// <returns>The nodes whose glow started, in the order they start.</returns>
+        internal IReadOnlyList<NodeViewModel> CheckAIHaloVisibility()
+        {
+            if (ViewModel == null
+                || !IsVisible
+                || ViewModel.DynamoViewModel?.ShowStartPage == true
+                || outerCanvas.ActualWidth <= 0
+                || outerCanvas.ActualHeight <= 0
+                || Window.GetWindow(this)?.WindowState == WindowState.Minimized)
+            {
+                return Array.Empty<NodeViewModel>();
+            }
+
+            return ViewModel.StartAIHaloGlowsInView(GetVisibleBounds());
+        }
+
+        private void ZoomBorder_ViewSettingsChanged(ViewSettingsChangedEventArgs args)
+        {
+            RequestAIHaloVisibilityCheck();
+        }
+
+        private void OuterCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RequestAIHaloVisibilityCheck();
+        }
+
+        private void WorkspaceView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (IsVisible)
+            {
+                RequestAIHaloVisibilityCheck();
+            }
+        }
+
+        private void OwnerWindow_StateChanged(object sender, EventArgs e)
+        {
+            RequestAIHaloVisibilityCheck();
+        }
+
+        #endregion
 
         private void OwnerWindow_Deactivated(object sender, EventArgs e)
         {
@@ -1310,13 +1427,24 @@ namespace Dynamo.Views
 
         public void Dispose()
         {
+            isDisposed = true;
             RemoveViewModelsubscriptions(ViewModel);
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
             Loaded -= WorkspaceView_Loaded;
             Unloaded -= WorkspaceView_Unloaded;
+            zoomBorder.ViewSettingsChanged -= ZoomBorder_ViewSettingsChanged;
+            outerCanvas.SizeChanged -= OuterCanvas_SizeChanged;
+            IsVisibleChanged -= WorkspaceView_IsVisibleChanged;
+            if (aiHaloCheckTimer != null)
+            {
+                aiHaloCheckTimer.Stop();
+                aiHaloCheckTimer.Tick -= AIHaloCheckTimer_Tick;
+                aiHaloCheckTimer = null;
+            }
             if (ownerWindow != null)
             {
                 ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+                ownerWindow.StateChanged -= OwnerWindow_StateChanged;
                 ownerWindow = null;
             }
         }

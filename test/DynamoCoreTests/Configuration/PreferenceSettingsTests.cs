@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -707,5 +708,209 @@ namespace Dynamo.Tests.Configuration
         }
 
         #endregion
+
+        [Test]
+        [Category("UnitTests")]
+        [TestCase("")]
+        [TestCase("<PreferenceSettings><NotClosed>")]
+        public void WhenSettingsFileCannotBeReadThenSaveInternalBacksItUpAndReplacesIt(string content)
+        {
+            WithUnreadableSettingsFile(content, (settings, path, backupRoot) =>
+            {
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                var backupPath = Path.Combine(backupRoot, "profiles", Path.GetFileName(path) + ".bak");
+                Assert.IsTrue(File.Exists(backupPath), "The unreadable file should have been copied.");
+                Assert.AreEqual(content, File.ReadAllText(backupPath));
+                Assert.IsTrue(PreferenceSettings.Load(path).IsCreatedFromValidFile, "The settings file should have been replaced.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBackupAlreadyExistsThenSaveInternalUsesTheNextNumber()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                var profileDirectory = Path.Combine(backupRoot, "profiles");
+                var baseName = Path.Combine(profileDirectory, Path.GetFileName(path) + ".bak");
+                Directory.CreateDirectory(profileDirectory);
+                File.WriteAllText(baseName, "first");
+                File.WriteAllText(baseName + "1", "second");
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                Assert.AreEqual("first", File.ReadAllText(baseName), "An existing backup should not be overwritten.");
+                Assert.AreEqual("second", File.ReadAllText(baseName + "1"), "An existing backup should not be overwritten.");
+                Assert.AreEqual("<PreferenceSettings><NotClosed>", File.ReadAllText(baseName + "2"));
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileWasReplacedThenLaterSavesDoNotBackItUpAgain()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                Assert.IsTrue(settings.SaveInternal(path));
+                Assert.IsTrue(settings.SaveInternal(path));
+
+                var backups = Directory.GetFiles(Path.Combine(backupRoot, "profiles"));
+                Assert.AreEqual(1, backups.Length, "Only the unreadable file should be backed up.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUnreadableSettingsFileIsReplacedThenProfileIsNoLongerUnreadable()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                Assert.IsTrue(settings.IsProfileUnreadable);
+
+                Assert.IsTrue(settings.SaveInternal(path));
+
+                Assert.IsFalse(settings.IsProfileUnreadable, "The profile on disk is valid after the save.");
+                // IsCreatedFromValidFile keeps describing how the settings were loaded.
+                Assert.IsFalse(settings.IsCreatedFromValidFile);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUnreadableSettingsFileIsNotReplacedThenProfileStaysUnreadable()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                settings.BackupLocation = string.Empty;
+
+                Assert.IsFalse(settings.SaveInternal(path));
+
+                Assert.IsTrue(settings.IsProfileUnreadable);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBackupLocationIsNotSetThenSaveInternalDoesNotOverwriteTheUnreadableFile()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                settings.BackupLocation = string.Empty;
+                var logged = new List<ILogMessage>();
+                settings.MessageLogged += logged.Add;
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsFalse(saved);
+                Assert.AreEqual("<PreferenceSettings><NotClosed>", File.ReadAllText(path));
+                Assert.AreEqual(1, logged.Count, "The skipped save should have been logged.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBackupCannotBeCreatedThenSaveInternalDoesNotOverwriteTheUnreadableFile()
+        {
+            const string content = "<PreferenceSettings><NotClosed>";
+            WithUnreadableSettingsFile(content, (settings, path, backupRoot) =>
+            {
+                // A file where the backup folder should be makes creating the profiles folder fail.
+                File.WriteAllText(backupRoot, string.Empty);
+                var logged = new List<ILogMessage>();
+                settings.MessageLogged += logged.Add;
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsFalse(saved);
+                Assert.AreEqual(content, File.ReadAllText(path));
+                Assert.AreEqual(1, logged.Count, "The skipped save should have been logged.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileIsReadableThenSaveInternalDoesNotBackItUp()
+        {
+            var originalTestPath = PreferenceSettings.DynamoTestPath;
+            PreferenceSettings.DynamoTestPath = null;
+            var backupRoot = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            try
+            {
+                var path = GetNewFileNameOnTempPath(".xml");
+                new PreferenceSettings().Save(path);
+                var settings = PreferenceSettings.Load(path);
+                Assert.IsTrue(settings.IsCreatedFromValidFile);
+                settings.BackupLocation = backupRoot;
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                Assert.IsFalse(Directory.Exists(backupRoot), "A readable profile should not be backed up.");
+            }
+            finally
+            {
+                PreferenceSettings.DynamoTestPath = originalTestPath;
+                if (Directory.Exists(backupRoot))
+                {
+                    Directory.Delete(backupRoot, true);
+                }
+            }
+        }
+
+        // Loads an unreadable settings file and points the backup location at a temporary folder.
+        private void WithUnreadableSettingsFile(string content, Action<PreferenceSettings, string, string> test)
+        {
+            var originalTestPath = PreferenceSettings.DynamoTestPath;
+            PreferenceSettings.DynamoTestPath = null;
+            var backupRoot = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            try
+            {
+                var path = GetNewFileNameOnTempPath(".xml");
+                File.WriteAllText(path, content);
+                var settings = PreferenceSettings.Load(path);
+                Assert.IsFalse(settings.IsCreatedFromValidFile, "The file should have been rejected on load.");
+                settings.BackupLocation = backupRoot;
+
+                test(settings, path, backupRoot);
+            }
+            finally
+            {
+                PreferenceSettings.DynamoTestPath = originalTestPath;
+                if (Directory.Exists(backupRoot))
+                {
+                    Directory.Delete(backupRoot, true);
+                }
+                if (File.Exists(backupRoot))
+                {
+                    File.Delete(backupRoot);
+                }
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileDoesNotExistThenSaveInternalCreatesIt()
+        {
+            var originalTestPath = PreferenceSettings.DynamoTestPath;
+            PreferenceSettings.DynamoTestPath = null;
+            try
+            {
+                var path = GetNewFileNameOnTempPath(".xml");
+                var settings = PreferenceSettings.Load(path);
+                Assert.IsTrue(settings.IsCreatedFromValidFile);
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                Assert.IsTrue(File.Exists(path));
+            }
+            finally
+            {
+                PreferenceSettings.DynamoTestPath = originalTestPath;
+            }
+        }
     }
 }
