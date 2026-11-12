@@ -23,13 +23,15 @@ namespace DynamoCoreWpfTests
     /// <summary>
     /// Tests for the AI-touched halo (DYN-10999): the soft purple glow drawn behind nodes the
     /// AI Assistant placed, modified or moved, its breathing glow and fade-out (DYN-11004), its clock
-    /// (DYN-11005: starts on screen, hover holds it, Esc ends it, a new touch restarts it), the
-    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified, and the zoomed-out
-    /// treatment (DYN-11010) that shows the badge as a zoom-state icon.
+    /// (DYN-11005: starts on screen, hover holds it, Esc clears the halo and badge, a new touch restarts it), the
+    /// AI Assistant badge (DYN-11000) drawn on nodes it placed or modified, the badge that rests
+    /// on the node until it is acknowledged (DYN-11006), and the zoomed-out treatment (DYN-11010)
+    /// that shows the badge as a zoom-state icon.
     /// </summary>
     public class AITouchedHaloTests : DynamoTestUIBase
     {
         private const string TurnA = "turn-a";
+        private const string TurnB = "turn-b";
 
         [TearDown]
         public void RestoreTheGlowClock()
@@ -194,27 +196,6 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(ViewModelOf(node).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
             Assert.IsFalse(ViewOf(node).AIHalo.HasAnimatedProperties, "The glow animation is stopped.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void HaloOpacityChangeIsAnnounced()
-        {
-            var node = AddNumberNode();
-            var raised = new List<string>();
-            System.ComponentModel.PropertyChangedEventHandler handler = (s, e) => raised.Add(e.PropertyName);
-            var nodeViewModel = ViewModelOf(node);
-            nodeViewModel.PropertyChanged += handler;
-            try
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
-            finally
-            {
-                nodeViewModel.PropertyChanged -= handler;
-            }
-
-            CollectionAssert.Contains(raised, nameof(NodeViewModel.AIHaloOpacity));
         }
 
         [Test]
@@ -469,16 +450,18 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void DraggingANodeOnScreenStartsItsGlow()
+        public void NodeMovedOnScreenByTheAssistantStartsItsGlow()
         {
             var node = AddNodeOffScreen();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
             Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsWaiting);
 
-            // The node moves into view; the view itself does not pan or zoom
-            node.X = 50;
-            node.Y = 50;
+            AsAIEdit(() =>
+            {
+                node.X = 50;
+                node.Y = 50;
+            });
 
             Assert.IsTrue(WaitUntil(() => ViewModelOf(node).AIHaloGlow?.IsStarted == true, TimeSpan.FromSeconds(3)),
                 "Moving the node into view starts its glow.");
@@ -654,7 +637,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void EscEndsTheGlowOfTheHoveredNodeOnlyAndKeepsTheBadge()
+        public void EscClearsTheHaloAndBadgeOfTheHoveredNodeOnly()
         {
             var hovered = AddNumberNode();
             var other = AddNumberNode();
@@ -662,66 +645,314 @@ namespace DynamoCoreWpfTests
             Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
             var unsavedBefore = Workspace.HasUnsavedChanges;
+            var turnNodesBefore = Workspace.GetAITurnSummary(TurnA).Nodes.Count;
 
             ViewModelOf(hovered).SetAIHaloHovered(true);
-            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
             DispatcherUtil.DoEvents();
 
-            var glow = ViewModelOf(hovered).AIHaloGlow;
-            Assert.IsTrue(glow.IsDismissed);
-            Assert.IsTrue(glow.IsFinished);
+            Assert.IsFalse(hovered.IsRecentlyModifiedByAI, "The change record is cleared.");
+            Assert.IsNull(ViewModelOf(hovered).AIHaloGlow);
             Assert.AreEqual(Visibility.Collapsed, ViewOf(hovered).AIHalo.Visibility);
-            Assert.IsNull(ViewOf(hovered).AIHaloClock);
-            Assert.AreEqual(Visibility.Visible, ViewOf(hovered).AIBadge.Visibility, "Esc keeps the badge.");
-            Assert.IsTrue(hovered.IsRecentlyModifiedByAI, "The change record is kept.");
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(hovered).AIBadge.Visibility);
 
-            Assert.IsTrue(ViewModelOf(other).AIHaloGlow.IsGlowing, "Other nodes keep glowing.");
-            Assert.AreEqual(Visibility.Visible, ViewOf(other).AIHalo.Visibility);
-            Assert.AreEqual(unsavedBefore, Workspace.HasUnsavedChanges, "Dismissing never marks the workspace as changed.");
+            Assert.IsTrue(ViewModelOf(other).AIHaloGlow.IsGlowing, "Other nodes keep their halo.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(other).AIBadge.Visibility, "Other nodes keep their badge.");
+            Assert.AreEqual(unsavedBefore, Workspace.HasUnsavedChanges, "Clearing never marks the workspace as changed.");
+            Assert.AreEqual(turnNodesBefore, Workspace.GetAITurnSummary(TurnA).Nodes.Count, "The turn history is kept.");
         }
 
         [Test]
         [Category("UnitTests")]
-        public void EscDoesNothingWithoutAHoveredGlowingNode()
+        public void EscClearsTheBadgeAfterTheGlowHasFaded()
         {
             var now = TimeSpan.FromMinutes(1);
             AIHaloGlow.Now = () => now;
-            var glowing = AddNumberNode();
-            var waiting = AddNodeOffScreen();
-            Workspace.RecordAINodeChange(glowing.GUID, AIChangeKind.Placed, TurnA);
-            Workspace.RecordAINodeChange(waiting.GUID, AIChangeKind.Placed, TurnA);
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
 
-            // Nothing hovered
-            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
-
-            // Hovering a node whose glow is still waiting
-            ViewModelOf(waiting).SetAIHaloHovered(true);
-            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
-            ViewModelOf(waiting).SetAIHaloHovered(false);
-
-            // Hovering a node whose glow has faded out: only the badge is left
+            // Only the badge is left
             now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
-            ViewModelOf(glowing).SetAIHaloHovered(true);
-            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow());
-            Assert.IsFalse(ViewModelOf(glowing).AIHaloGlow.IsDismissed);
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void DismissedGlowStaysGoneInARebuiltView()
+        public void EscClearsTheHaloOfAMovedNode()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            Assert.IsTrue(ViewModelOf(node).AIHaloGlow.IsGlowing, "A moved node has a halo but no badge.");
+
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscDoesNothingWithoutAHoveredHaloOrBadge()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var placed = AddNumberNode();
+            var untouched = AddNumberNode();
+            var movedFaded = AddNumberNode();
+            var movedWaiting = AddNodeOffScreen();
+            Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(movedFaded.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            Workspace.RecordAINodeChange(movedWaiting.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            // Nothing hovered
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+
+            // A node the AI Assistant never touched
+            ViewModelOf(untouched).SetAIHaloHovered(true);
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+            ViewModelOf(untouched).SetAIHaloHovered(false);
+
+            // A moved node whose glow is still waiting: no halo yet, and moved nodes have no badge
+            ViewModelOf(movedWaiting).SetAIHaloHovered(true);
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+            ViewModelOf(movedWaiting).SetAIHaloHovered(false);
+
+            // A moved node whose glow has faded out: nothing is shown
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
+            ViewModelOf(movedFaded).SetAIHaloHovered(true);
+            Assert.IsFalse(workspace.ClearHoveredAIHighlight());
+
+            Assert.IsTrue(placed.IsRecentlyModifiedByAI);
+            Assert.IsTrue(movedFaded.IsRecentlyModifiedByAI);
+            Assert.IsTrue(movedWaiting.IsRecentlyModifiedByAI);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ClearedHighlightStaysGoneInARebuiltView()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
             ViewModelOf(node).SetAIHaloHovered(true);
-            ViewModel.CurrentSpaceViewModel.DismissHoveredAIHaloGlow();
+            ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight();
 
             var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
             rebuilt.UpdateAIHalo();
 
             Assert.IsNull(rebuilt.AIHaloClock);
-            Assert.IsNull(rebuilt.AIHalo, "No halo is created for a dismissed glow.");
+            Assert.IsNull(rebuilt.AIHalo, "No halo is created once the highlight is cleared.");
+            Assert.IsFalse(ViewModelOf(node).ShowAIBadge);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscKeyOnAHoveredNodeClearsItsHighlightAndNothingElse()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            Assert.IsTrue(SendEscape(down: true), "The press is used up.");
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsTrue(SendEscape(down: false), "The release is used up too.");
+            Assert.IsFalse(ViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown, "3D navigation is not started.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HoldingEscClearsOnceAndDoesNothingElse()
+        {
+            var hovered = AddNumberNode();
+            var other = AddNumberNode();
+            Workspace.RecordAINodeChange(hovered.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(hovered).SetAIHaloHovered(true);
+
+            Assert.IsTrue(SendEscape(down: true));
+            Assert.IsTrue(SendEscape(down: true, repeat: true), "A repeat while held is used up.");
+            Assert.IsTrue(SendEscape(down: false));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsFalse(hovered.IsRecentlyModifiedByAI);
+            Assert.IsTrue(other.IsRecentlyModifiedByAI, "Only the hovered node is cleared.");
+            Assert.IsFalse(ViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscKeyDuringAWireDragKeepsTheHighlight()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+            var workspace = ViewModel.CurrentSpaceViewModel;
+            workspace.HandlePortClicked(ViewModelOf(node).OutPorts[0]);
+            Assume.That(workspace.IsConnecting, "The wire drag could not be started.");
+
+            try
+            {
+                SendEscape(down: true);
+                SendEscape(down: false);
+
+                Assert.IsTrue(node.IsRecentlyModifiedByAI, "Esc is left to the wire drag.");
+            }
+            finally
+            {
+                workspace.CancelActiveState();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AMissedEscReleaseDoesNotSwallowTheNextPress()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            // Focus moves away before the release, so the window never sees it
+            ViewModelOf(first).SetAIHaloHovered(true);
+            SendEscape(down: true);
+            ViewModelOf(first).SetAIHaloHovered(false);
+
+            ViewModelOf(second).SetAIHaloHovered(true);
+            SendEscape(down: true);
+            SendEscape(down: false);
+
+            Assert.IsFalse(second.IsRecentlyModifiedByAI, "The next press is not swallowed.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscKeyWhileTypingKeepsTheHighlight()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            ViewModelOf(node).SetAIHaloHovered(true);
+
+            var textBox = new TextBox();
+            var typingWindow = new Window { Content = textBox, Width = 200, Height = 100 };
+            try
+            {
+                typingWindow.Show();
+                typingWindow.Activate();
+                System.Windows.Input.Keyboard.Focus(textBox);
+                DispatcherUtil.DoEvents();
+                Assume.That(System.Windows.Input.Keyboard.FocusedElement, Is.SameAs(textBox), "Keyboard focus could not be set.");
+
+                SendEscape(down: true);
+                SendEscape(down: false);
+
+                Assert.IsTrue(node.IsRecentlyModifiedByAI, "Esc belongs to the text box while typing.");
+            }
+            finally
+            {
+                typingWindow.Close();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscOnASelectedNodeClearsTheWholeSelection()
+        {
+            var selected = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            var notSelected = AddNumberNode();
+            foreach (var node in selected.Append(notSelected))
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(selected);
+                ViewModelOf(selected[0]).SetAIHaloHovered(true);
+
+                Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+                DispatcherUtil.DoEvents();
+
+                foreach (var node in selected)
+                {
+                    Assert.IsFalse(node.IsRecentlyModifiedByAI, "Every selected node is cleared.");
+                    Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+                    Assert.IsTrue(node.IsSelected, "The selection is kept.");
+                }
+                Assert.IsTrue(notSelected.IsRecentlyModifiedByAI, "Nodes outside the selection keep their highlight.");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscOnANodeOutsideTheSelectionClearsOnlyThatNode()
+        {
+            var selected = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
+            var hovered = AddNumberNode();
+            foreach (var node in selected.Append(hovered))
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(selected);
+                ViewModelOf(hovered).SetAIHaloHovered(true);
+
+                Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
+
+                Assert.IsFalse(hovered.IsRecentlyModifiedByAI);
+                Assert.IsTrue(selected.All(n => n.IsRecentlyModifiedByAI), "The selection is left alone.");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscOnASelectedNodeWithoutAHighlightDoesNothing()
+        {
+            var plain = AddNumberNode();
+            var touched = AddNumberNode();
+            Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(new[] { plain, touched });
+                ViewModelOf(plain).SetAIHaloHovered(true);
+
+                Assert.IsFalse(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight(),
+                    "Esc acts on what is under the mouse, so it keeps its usual meaning here.");
+                Assert.IsTrue(touched.IsRecentlyModifiedByAI);
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
         }
 
         [Test]
@@ -753,6 +984,57 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(TimeSpan.Zero, glow.Delay, "No stagger wait on a restart.");
             Assert.AreNotSame(clock, ViewOf(node).AIHaloClock, "The halo plays the restarted glow.");
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeTouchedByTheNextTurnWhileGlowingRestartsWithoutBlinking()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+            var glow = ViewModelOf(node).AIHaloGlow;
+
+            // The next message's first change, 8 s into the glow: DynamoMCP starts the new turn, which
+            // clears the node's record, then records the node again
+            now += TimeSpan.FromSeconds(8);
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "1", "2");
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(glow, ViewModelOf(node).AIHaloGlow, "The glow is kept, not replaced.");
+            Assert.IsTrue(glow.IsRestartPending);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility, "The halo never blinks off.");
+
+            ShowGlows();
+            Assert.IsFalse(glow.IsRestartPending);
+            Assert.AreEqual(TimeSpan.Zero, glow.Elapsed, "The timer restarts from the new touch.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NextTurnClearsTheHaloOfANodeItDoesNotTouch()
+        {
+            var earlier = AddNumberNode();
+            var touched = AddNumberNode();
+            AsAIEdit(() => Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA));
+            ShowGlows();
+
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnB);
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNull(ViewModelOf(earlier).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(earlier).AIHalo.Visibility);
+            Assert.IsFalse(ViewModelOf(earlier).ShowAIBadge);
         }
 
         [Test]
@@ -891,7 +1173,7 @@ namespace DynamoCoreWpfTests
             ShowGlows();
             var nodeViewModel = ViewModelOf(node);
             nodeViewModel.SetAIHaloHovered(true);
-            nodeViewModel.DismissAIHaloGlow();
+            ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight();
             nodeViewModel.SetAIHaloHovered(false);
 
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
@@ -899,6 +1181,227 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(nodeViewModel.AIHaloGlow.IsGlowing, "A new change gets a new glow.");
             Assert.AreEqual(Visibility.Visible, ViewOf(node).AIHalo.Visibility);
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility, "And its badge back.");
+        }
+
+        #endregion
+
+        #region Resting badge (DYN-11006)
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeStaysLongAfterTheGlowFades()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeView = ViewOf(node);
+
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromMinutes(10);
+            nodeView.UpdateAIHalo();
+
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility, "No glow.");
+            Assert.AreEqual(Visibility.Visible, nodeView.AIBadge.Visibility, "The badge rests on the node.");
+            Assert.IsTrue(node.IsRecentlyModifiedByAI);
+
+            // A view rebuilt later (for example after switching tabs) shows the badge but no glow
+            var rebuilt = new NodeView { DataContext = ViewModelOf(node) };
+            rebuilt.UpdateAIHalo();
+            Assert.IsNull(rebuilt.AIHalo);
+            Assert.IsTrue(ViewModelOf(node).ShowAIBadge);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeKeepsNothingAfterTheGlowFades()
+        {
+            var now = TimeSpan.FromMinutes(1);
+            AIHaloGlow.Now = () => now;
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            var nodeView = ViewOf(node);
+
+            now += AIHaloGlow.FadeOutEnd + TimeSpan.FromSeconds(1);
+            nodeView.UpdateAIHalo();
+
+            Assert.AreEqual(Visibility.Collapsed, nodeView.AIHalo.Visibility);
+            Assert.IsNull(nodeView.AIBadge, "Moved nodes never get a badge.");
+            Assert.IsTrue(node.IsRecentlyModifiedByAI, "The change record is still there.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BadgeStaysThroughPanningHoverAndTheHomePage()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var nodeViewModel = ViewModelOf(node);
+
+            // Pan away and back
+            var zoomBorder = WorkspaceViewOf().zoomBorder;
+            zoomBorder.SetTranslateTransformOrigin(new(-OffScreenX, 0));
+            DispatcherUtil.DoEvents();
+            zoomBorder.SetTranslateTransformOrigin(new(0, 0));
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after panning");
+
+            // Hover and leave
+            nodeViewModel.SetAIHaloHovered(true);
+            nodeViewModel.SetAIHaloHovered(false);
+            AssertBadgeRests(node, "after hovering");
+
+            // Visit the Home page and come back
+            ViewModel.ShowStartPage = true;
+            ViewModel.ShowStartPage = false;
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after the Home page");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectingTheNodeKeepsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(new[] { node });
+                AssertBadgeRests(node, "while selected");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            DispatcherUtil.DoEvents();
+            AssertBadgeRests(node, "after deselecting");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DraggingTheNodeClearsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            Drag(node, 200);
+
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsNull(ViewModelOf(node).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ClickingTheNodeWithoutDraggingKeepsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            Drag(node, 0);
+
+            AssertBadgeRests(node, "after a click");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AligningOrMovingNodesInCodeKeepsTheBadge()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            second.X = first.X + 300;
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(new[] { first, second });
+                ViewModel.CurrentSpaceViewModel.AlignSelected("HorizontalLeft");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            Assert.AreEqual(first.X, second.X, 1e-6, "The nodes were aligned.");
+
+            // Layout and groups expanding move nodes the same way
+            first.Y += 150;
+            DispatcherUtil.DoEvents();
+
+            AssertBadgeRests(first, "after aligning and moving in code");
+            AssertBadgeRests(second, "after aligning");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EditingTheNodeClearsTheBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+
+            // The user renames the node: they now own it
+            node.Name = "Renamed";
+            DispatcherUtil.DoEvents();
+
+            Assert.IsFalse(node.IsRecentlyModifiedByAI);
+            Assert.IsNull(ViewModelOf(node).AIHaloGlow);
+            Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+        }
+
+        private void Drag(NodeModel node, double distance)
+        {
+            var workspace = ViewModel.CurrentSpaceViewModel;
+            var x = node.X + 5;
+            var y = node.Y + 5;
+            try
+            {
+                SelectNodes(new[] { node });
+                workspace.BeginDragSelection(new(x, y));
+                workspace.UpdateDraggedSelection(new(x + distance, y));
+                workspace.EndDragSelection(new(x + distance, y));
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            DispatcherUtil.DoEvents();
+        }
+
+        private bool SendEscape(bool down, bool repeat = false)
+        {
+            var args = new System.Windows.Input.KeyEventArgs(
+                System.Windows.Input.Keyboard.PrimaryDevice,
+                PresentationSource.FromVisual(View),
+                0,
+                System.Windows.Input.Key.Escape)
+            {
+                RoutedEvent = down ? System.Windows.Input.Keyboard.KeyDownEvent : System.Windows.Input.Keyboard.KeyUpEvent
+            };
+            if (repeat)
+            {
+                // WPF sets IsRepeat itself; tests can only reach it through its internal setter
+                var setRepeat = typeof(System.Windows.Input.KeyEventArgs).GetMethod(
+                    "SetRepeat", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                Assume.That(setRepeat, Is.Not.Null, "KeyEventArgs.SetRepeat was not found.");
+                setRepeat.Invoke(args, new object[] { true });
+            }
+            View.RaiseEvent(args);
+            return args.Handled;
+        }
+
+        private void AssertBadgeRests(NodeModel node, string when)
+        {
+            Assert.IsTrue(node.IsRecentlyModifiedByAI, $"The change record is kept {when}.");
+            Assert.AreEqual(Visibility.Visible, ViewOf(node).AIBadge.Visibility, $"The badge stays {when}.");
         }
 
         #endregion
@@ -924,6 +1427,15 @@ namespace DynamoCoreWpfTests
                 Thread.Sleep(15);
             }
             return condition();
+        }
+
+        private static void SelectNodes(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                Dynamo.Selection.DynamoSelection.Instance.Selection.Add(node);
+            }
+            DispatcherUtil.DoEvents();
         }
 
         private static Rect AroundNode(NodeModel node)
@@ -1150,6 +1662,86 @@ namespace DynamoCoreWpfTests
 
             var badgeImage = ((Grid)ViewOf(node).AIBadge).Children.OfType<Image>().Single();
             Assert.AreEqual(Visibility.Collapsed, badgeImage.Visibility);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAFrozenBorderAndReturns()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            // The assistant froze it, so the change record stays. A person's freeze would clear it.
+            AsAIEdit(() => node.IsFrozen = true);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(new CornerRadius(24, 24, 0, 0), HaloGlow(node).CornerRadius);
+
+            AsAIEdit(() => node.IsFrozen = false);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void HaloMovesOutsideAPreviewOffBorder()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            Assert.AreEqual(new System.Windows.Thickness(-8), ViewOf(node).AIHalo.Margin);
+
+            AsAIEdit(() => node.UpdateValue(new UpdateValueParams("IsVisible", "false")));
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(node.AIChange);
+            Assert.IsFalse(node.IsVisible);
+            Assert.AreEqual(new System.Windows.Thickness(-16), ViewOf(node).AIHalo.Margin);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity,
+                "Preview off draws a border. It does not dim the glow.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AlertCapsTheHaloAtSixtyPercentUntilItClears()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity);
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloAlertOpacity, ViewModelOf(node).AIHaloOpacity);
+
+            node.ClearErrorsAndWarnings();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, ViewModelOf(node).AIHaloOpacity);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MovedNodeWithAnAlertStaysAtTheMovedOpacity()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+
+            node.Warning("Index was outside the bounds of the array.", true);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(NodeViewModel.AIHaloMovedOpacity, ViewModelOf(node).AIHaloOpacity,
+                "40% is already under the 60% alert cap.");
+        }
+
+        private Border HaloGlow(NodeModel node)
+        {
+            return ((Grid)ViewOf(node).AIHalo).Children.OfType<Border>().Single();
         }
 
         #region Zoomed-out treatment (DYN-11010)
@@ -1804,22 +2396,6 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void DismissClearsAPendingRestart()
-        {
-            var glow = NewGlow();
-            now += TimeSpan.FromSeconds(3);
-            glow.Retouch(1.0, true);
-
-            Assert.IsTrue(glow.Dismiss());
-
-            Assert.IsFalse(glow.IsRestartPending);
-            Assert.IsFalse(glow.Restart());
-            Assert.IsFalse(glow.WaitAgain());
-            Assert.IsTrue(glow.IsFinished);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void StartOpacityIsKeptForEachVersion()
         {
             var glow = NewGlow();
@@ -1862,42 +2438,6 @@ namespace DynamoCoreWpfTests
             glow.Release();
 
             Assert.AreEqual(version, glow.Version);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void DismissEndsAGlowingGlowOnly()
-        {
-            var waiting = AIHaloGlow.Create(1.0, true);
-            Assert.IsFalse(waiting.Dismiss(), "Nothing to end before the node is seen.");
-
-            var glowing = NewGlow();
-            now += TimeSpan.FromSeconds(3);
-            Assert.IsTrue(glowing.Dismiss());
-            Assert.IsTrue(glowing.IsDismissed);
-            Assert.IsTrue(glowing.IsFinished);
-            Assert.IsFalse(glowing.IsGlowing);
-            Assert.IsFalse(glowing.Dismiss(), "Already dismissed.");
-
-            var fadedOut = NewGlow();
-            now += AIHaloGlow.FadeOutEnd;
-            Assert.IsFalse(fadedOut.Dismiss(), "Only the badge is left.");
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void DismissedGlowIgnoresRetouchAndRelease()
-        {
-            var glow = NewGlow();
-            glow.Hold();
-            glow.Dismiss();
-
-            glow.Retouch(1.0, true);
-            glow.Release();
-            now += TimeSpan.FromSeconds(1);
-
-            Assert.IsTrue(glow.IsFinished);
-            Assert.IsFalse(glow.Begin(TimeSpan.Zero));
         }
 
         #endregion
