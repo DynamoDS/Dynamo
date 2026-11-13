@@ -82,6 +82,14 @@ namespace Dynamo.Utilities
         static string ipPattern = @"((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
         static string datePattern = @"\d{1,2}[/-]\d{1,2}[/-]\d{2,4}";
 
+        private static readonly Regex emailPatternRegex = new Regex(emailPattern, RegexOptions.Compiled);
+        private static readonly Regex websitePatternRegex = new Regex(websitePattern, RegexOptions.Compiled);
+        private static readonly Regex directoryPatternRegex = new Regex(directoryPattern, RegexOptions.Compiled);
+        private static readonly Regex creditCardPatternRegex = new Regex(creditCardPattern, RegexOptions.Compiled);
+        private static readonly Regex ssnPatternRegex = new Regex(ssnPattern, RegexOptions.Compiled);
+        private static readonly Regex ipPatternRegex = new Regex(ipPattern, RegexOptions.Compiled);
+        private static readonly Regex datePatternRegex = new Regex(datePattern, RegexOptions.Compiled);
+
         public static JToken GetNodeById(JObject jsonWorkspace,string nodeId)
         {
             return jsonWorkspace["Nodes"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
@@ -102,13 +110,13 @@ namespace Dynamo.Utilities
             return property.Value;
         }
 
-        internal static bool ContainsEmail(string value) { return new Regex(emailPattern).Match(value).Success; }
-        internal static bool ContainsWebsite(string value) { return new Regex(websitePattern).Match(value).Success; }
-        internal static bool ContainsDirectory(string value) { return new Regex(directoryPattern).Match(value).Success; }
-        internal static bool ContainsCreditCard(string value) { return new Regex(creditCardPattern).Match(value).Success; }
-        internal static bool ContainsSSN(string value) { return new Regex(ssnPattern).Match(value).Success; }
-        internal static bool ContainsIpAddress(string value) { return new Regex(ipPattern).Match(value).Success; }
-        internal static bool ContainsDate(string value) { return new Regex(datePattern).Match(value).Success; }
+        internal static bool ContainsEmail(string value) { return emailPatternRegex.Match(value).Success; }
+        internal static bool ContainsWebsite(string value) { return websitePatternRegex.Match(value).Success; }
+        internal static bool ContainsDirectory(string value) { return directoryPatternRegex.Match(value).Success; }
+        internal static bool ContainsCreditCard(string value) { return creditCardPatternRegex.Match(value).Success; }
+        internal static bool ContainsSSN(string value) { return ssnPatternRegex.Match(value).Success; }
+        internal static bool ContainsIpAddress(string value) { return ipPatternRegex.Match(value).Success; }
+        internal static bool ContainsDate(string value) { return datePatternRegex.Match(value).Success; }
 
         /// <summary>
         /// Removes the PII data based on the information patterns
@@ -119,13 +127,14 @@ namespace Dynamo.Utilities
         {
             string result;
 
-            result = Regex.Replace(data, emailPattern, "");
-            result = Regex.Replace(result, directoryPattern, "");
-            result = Regex.Replace(result, ssnPattern, "");
-            result = Regex.Replace(result, datePattern, "");
-            result = Regex.Replace(result, ipPattern, "");
-            result = Regex.Replace(result, creditCardPattern, "");
-            result = Regex.Replace(result, websitePattern, "");
+            result = emailPatternRegex.Replace(data, "");
+
+            result = directoryPatternRegex.Replace(result, "");
+            result = ssnPatternRegex.Replace(result, "");
+            result = datePatternRegex.Replace(result, "");
+            result = ipPatternRegex.Replace(result, "");
+            result = creditCardPatternRegex.Replace(result, "");
+            result = websitePatternRegex.Replace(result, "");
 
             return result;
         }
