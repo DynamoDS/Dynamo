@@ -6,7 +6,10 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              DataContextChanged="OnDataContextChanged"
              MouseDown="OnMouseButton"
-             MouseUp="OnMouseButton">
+             MouseUp="OnMouseButton"
+             Focusable="False"
+             IsTabStop="False"
+             KeyboardNavigation.TabNavigation="Continue">
     <!-- AI summary chip (DYN-11011). DataContext: AIChangeSummaryChipViewModel. -->
     <UserControl.Resources>
         <ResourceDictionary>
@@ -49,8 +52,6 @@
 
     <Border x:Name="chip"
             Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"
-            AutomationProperties.Name="{Binding Message}"
-            AutomationProperties.LiveSetting="Polite"
             Padding="16,0,28,0"
             Height="48"
             CornerRadius="24"
@@ -61,13 +62,15 @@
 
         <StackPanel Orientation="Horizontal">
             <Image Source="/DynamoCoreWpf;component/UI/Images/ai-icon-wrapper-96px.png" Width="24" Height="24" Margin="0,0,10,0" />
-            <TextBlock Text="{Binding Message}"
-                       Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                       FontSize="14"
-                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                       FontWeight="Medium"
-                       VerticalAlignment="Center"
-                       Margin="0,0,106,0" />
+            <!-- Narrator reads a button name. The border around the chip has nothing it can read. -->
+            <Button x:Name="messageButton"
+                    Content="{Binding Message}"
+                    AutomationProperties.Name="{Binding Message}"
+                    AutomationProperties.LiveSetting="Polite"
+                    Style="{StaticResource ChipButton}"
+                    Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                    Margin="0,0,106,0"
+                    GotKeyboardFocus="OnMessageGotKeyboardFocus" />
             <Button Content="{x:Static p:Resources.AIChangeSummaryChipShow}"
                     Command="{Binding ShowCommand}"
                     Style="{StaticResource ChipButton}"

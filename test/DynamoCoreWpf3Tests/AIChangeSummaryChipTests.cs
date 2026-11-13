@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -295,6 +297,29 @@ namespace DynamoCoreWpfTests
 
             Assert.Greater(chipView.ActualHeight, 0, "The chip is on screen.");
             Assert.LessOrEqual(nodeBottom, chipTop, "The lowest framed node sits above the chip.");
+        }
+
+        #endregion
+
+        #region Keyboard
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void ChipSentenceHasANameNarratorCanRead()
+        {
+            PlaceByAssistant();
+            var chipView = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
+
+            Assert.AreEqual("Autodesk Assistant added 1 node", PeerName(chipView.MessageButton));
+        }
+
+        private static string PeerName(UIElement element)
+        {
+            var peer = UIElementAutomationPeer.CreatePeerForElement(element);
+            Assert.IsNotNull(peer, "Narrator has no name to read.");
+            Assert.AreEqual(AutomationControlType.Button, peer.GetAutomationControlType());
+            return peer.GetName();
         }
 
         #endregion
