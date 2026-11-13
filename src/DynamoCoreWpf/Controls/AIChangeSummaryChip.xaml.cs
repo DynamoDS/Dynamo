@@ -20,6 +20,12 @@ namespace Dynamo.UI.Controls
         /// <summary>The sentence Narrator reads. Exposed for tests.</summary>
         internal Button MessageButton => messageButton;
 
+        /// <summary>"Show". Exposed for tests.</summary>
+        internal Button ShowButton => showButton;
+
+        /// <summary>"Dismiss". Exposed for tests.</summary>
+        internal Button DismissButton => dismissButton;
+
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             chip.DataContext = (e.NewValue as WorkspaceViewModel)?.AIChangeSummaryChip;
@@ -30,19 +36,19 @@ namespace Dynamo.UI.Controls
             e.Handled = true;
         }
 
-        private void OnMessageGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void OnChipButtonGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (!ReferenceEquals(e.OriginalSource, messageButton))
+            if (sender is not Button button || !ReferenceEquals(e.OriginalSource, button))
             {
                 return;
             }
 
-            var peer = UIElementAutomationPeer.FromElement(messageButton)
-                ?? UIElementAutomationPeer.CreatePeerForElement(messageButton);
+            var peer = UIElementAutomationPeer.FromElement(button)
+                ?? UIElementAutomationPeer.CreatePeerForElement(button);
             peer?.RaiseNotificationEvent(
                 AutomationNotificationKind.Other,
                 AutomationNotificationProcessing.ImportantMostRecent,
-                AutomationProperties.GetName(messageButton),
+                AutomationProperties.GetName(button),
                 "AIChangeSummaryChip");
         }
     }

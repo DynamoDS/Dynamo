@@ -325,9 +325,24 @@ namespace DynamoCoreWpfTests
 
             PressTab();
             Assert.IsTrue(message.IsKeyboardFocused, "Tab from the window lands on the sentence.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void TabMovesFromTheSentenceToShowThenDismiss()
+        {
+            PlaceByAssistant();
+            var chip = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
 
             PressTab();
-            Assert.IsTrue(message.IsKeyboardFocused, "The next Tab stays on the sentence.");
+            PressTab();
+            Assert.IsTrue(chip.ShowButton.IsKeyboardFocused, "The next Tab lands on Show.");
+            Assert.AreEqual("Show", PeerName(chip.ShowButton));
+
+            PressTab();
+            Assert.IsTrue(chip.DismissButton.IsKeyboardFocused, "The Tab after that lands on Dismiss.");
+            Assert.AreEqual("Dismiss", PeerName(chip.DismissButton));
         }
 
         private void PressTab()

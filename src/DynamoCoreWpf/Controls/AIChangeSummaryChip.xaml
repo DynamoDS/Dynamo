@@ -70,9 +70,12 @@
                     Style="{StaticResource ChipButton}"
                     Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                     Margin="0,0,106,0"
-                    GotKeyboardFocus="OnMessageGotKeyboardFocus" />
-            <Button Content="{x:Static p:Resources.AIChangeSummaryChipShow}"
+                    GotKeyboardFocus="OnChipButtonGotKeyboardFocus" />
+            <Button x:Name="showButton"
+                    Content="{x:Static p:Resources.AIChangeSummaryChipShow}"
+                    AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipShow}"
                     Command="{Binding ShowCommand}"
+                    GotKeyboardFocus="OnChipButtonGotKeyboardFocus"
                     Style="{StaticResource ChipButton}"
                     Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Button.Foreground>
@@ -84,8 +87,11 @@
                        Margin="8,0"
                        Fill="{StaticResource MidGreyBrush}"
                        Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-            <Button Content="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
+            <Button x:Name="dismissButton"
+                    Content="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
+                    AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
                     Command="{Binding DismissCommand}"
+                    GotKeyboardFocus="OnChipButtonGotKeyboardFocus"
                     Foreground="{StaticResource DefaultFontColorBrush}"
                     Style="{StaticResource ChipButton}" />
         </StackPanel>

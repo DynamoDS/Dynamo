@@ -1055,12 +1055,19 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// Tab on the window selects neighbouring nodes, so it never reaches the summary chip.
-        /// While the chip is showing, Tab lands on its sentence and stays there.
+        /// While the chip is showing, Tab walks its sentence, then Show, then Dismiss.
         /// </summary>
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
-            if (e.Handled || e.Key != Key.Tab || Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None)
+            if (e.Handled || e.Key != Key.Tab)
+            {
+                return;
+            }
+
+            var forward = Keyboard.Modifiers == System.Windows.Input.ModifierKeys.None;
+            var backward = Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift;
+            if (!forward && !backward)
             {
                 return;
             }
@@ -1076,12 +1083,80 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (!ReferenceEquals(Keyboard.FocusedElement, chip.MessageButton))
+            var current = ChipButtonWithFocus(chip);
+            if (current == null)
             {
+                if (!forward)
+                {
+                    return;
+                }
+
                 Keyboard.Focus(chip.MessageButton);
+                e.Handled = true;
+                return;
+            }
+
+            var next = forward ? NextChipButton(chip, current) : PreviousChipButton(chip, current);
+            if (next == null)
+            {
+                return;
+            }
+
+            if (!ReferenceEquals(next, current))
+            {
+                Keyboard.Focus(next);
             }
 
             e.Handled = true;
+        }
+
+        /// <summary>The chip button that currently has focus, or null when focus is outside the chip.</summary>
+        private static Button ChipButtonWithFocus(AIChangeSummaryChip chip)
+        {
+            for (var current = Keyboard.FocusedElement as DependencyObject;
+                current != null && !ReferenceEquals(current, chip);
+                current = VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current))
+            {
+                if (ReferenceEquals(current, chip.MessageButton)
+                    || ReferenceEquals(current, chip.ShowButton)
+                    || ReferenceEquals(current, chip.DismissButton))
+                {
+                    return (Button)current;
+                }
+            }
+
+            return null;
+        }
+
+        private static Button NextChipButton(AIChangeSummaryChip chip, Button current)
+        {
+            if (ReferenceEquals(current, chip.MessageButton))
+            {
+                return chip.ShowButton.IsVisible ? chip.ShowButton : chip.DismissButton;
+            }
+
+            if (ReferenceEquals(current, chip.ShowButton))
+            {
+                return chip.DismissButton;
+            }
+
+            return chip.DismissButton;
+        }
+
+        private static Button PreviousChipButton(AIChangeSummaryChip chip, Button current)
+        {
+            if (ReferenceEquals(current, chip.DismissButton))
+            {
+                return chip.ShowButton.IsVisible ? chip.ShowButton : chip.MessageButton;
+            }
+
+            if (ReferenceEquals(current, chip.ShowButton))
+            {
+                return chip.MessageButton;
+            }
+
+            // Shift+Tab on the sentence leaves the chip.
+            return null;
         }
 
         private static bool IsTyping(DependencyObject element)
