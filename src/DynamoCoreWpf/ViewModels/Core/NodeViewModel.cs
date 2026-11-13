@@ -890,14 +890,27 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Restarts the halo's glow, even if it faded out (DYN-11011). No-op without an AI change record.
+        /// Plays the halo's glow again from the start, even if it faded out or was dismissed (DYN-11011).
+        /// The new glow waits until the node is on screen, like any new glow, so nodes that come on screen
+        /// together are staggered. No-op without an AI change record.
         /// </summary>
-        internal void ReplayAIHaloGlow(int replayGroup)
+        internal void ReplayAIHaloGlow()
         {
             var change = NodeModel?.AIChange;
             if (change == null) return;
 
-            AIHaloGlow = AIHaloGlow.Start(replayGroup, AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+            lock (aiHaloSync)
+            {
+                var glow = AIHaloGlow.Create(AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+                if (isAIHaloHovered)
+                {
+                    glow.Hold();
+                }
+                aiHaloGlow = glow;
+            }
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            WorkspaceViewModel?.OnAIHaloGlowWaiting();
         }
 
         /// <summary>

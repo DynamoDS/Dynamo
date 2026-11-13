@@ -105,12 +105,11 @@ namespace Dynamo.ViewModels
                 .GroupBy(n => n.NodeModel.GUID)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            var replayGroup = AIHaloGlow.NewReplayGroup();
             foreach (var node in nodes.Where(n => IsMarkedBy(n, turn)))
             {
                 if (nodeViewModels.TryGetValue(node.GUID, out var nodeViewModel))
                 {
-                    nodeViewModel.ReplayAIHaloGlow(replayGroup);
+                    nodeViewModel.ReplayAIHaloGlow();
                 }
             }
 
