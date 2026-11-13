@@ -214,11 +214,13 @@ namespace DynamoCoreWpfTests
             Workspace.HasUnsavedChanges = false;
             var nodeCount = Workspace.Nodes.Count();
             var canUndo = Workspace.CanUndo;
+            Assert.IsNotNull(ViewModelOf(node).AIHaloGlow, "The placed node has a glow before Dismiss.");
 
             Chip.DismissCommand.Execute(null);
 
             Assert.IsFalse(Chip.IsVisible);
             Assert.IsNull(node.AIChange, "Every AI highlight is cleared.");
+            Assert.IsNull(ViewModelOf(node).AIHaloGlow, "The halo is cleared too, not just the change record.");
             Assert.AreEqual(nodeCount, Workspace.Nodes.Count(), "The graph is unchanged.");
             Assert.IsFalse(Workspace.HasUnsavedChanges, "Dismiss never marks the graph unsaved.");
             Assert.AreEqual(canUndo, Workspace.CanUndo, "Dismiss adds no undo step.");
@@ -239,15 +241,20 @@ namespace DynamoCoreWpfTests
             var glowBefore = ViewModelOf(untouched).AIHaloGlow;
 
             ZoomEventArgs zoom = null;
+            var glowWaitingRaised = false;
             WorkspaceViewModel.ZoomEventHandler capture = (sender, e) => zoom = e as ZoomEventArgs;
+            Action onGlowWaiting = () => glowWaitingRaised = true;
+            var chip = Chip;
             ViewModel.CurrentSpaceViewModel.RequestZoomToFitView += capture;
+            ViewModel.CurrentSpaceViewModel.AIHaloGlowWaiting += onGlowWaiting;
             try
             {
-                Chip.ShowCommand.Execute(null);
+                chip.ShowCommand.Execute(null);
             }
             finally
             {
                 ViewModel.CurrentSpaceViewModel.RequestZoomToFitView -= capture;
+                ViewModel.CurrentSpaceViewModel.AIHaloGlowWaiting -= onGlowWaiting;
             }
 
             Assert.IsNotNull(zoom, "Show zooms to fit.");
@@ -259,6 +266,12 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(ViewModelOf(untouched).AIHaloGlow);
             Assert.AreNotSame(glowBefore, ViewModelOf(untouched).AIHaloGlow, "The untouched node glows again.");
             Assert.IsNull(ViewModelOf(edited).AIHaloGlow, "The edited node belongs to the person and does not glow.");
+
+            // The new glow must actually start, even when the view would not move
+            Assert.IsTrue(glowWaitingRaised, "Show asks the view to check for glows to start.");
+            var workspaceView = View.ChildrenOfType<WorkspaceView>().First();
+            workspaceView.CheckAIHaloVisibility();
+            Assert.IsTrue(ViewModelOf(untouched).AIHaloGlow.IsStarted, "The replayed glow starts once its node is on screen.");
         }
 
         [Test]
