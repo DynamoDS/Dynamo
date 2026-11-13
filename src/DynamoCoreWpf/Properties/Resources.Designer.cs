@@ -169,6 +169,96 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant added {0} nodes.
+        /// </summary>
+        public static string AIChangeSummaryChipAddedNodes {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipAddedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant added 1 node.
+        /// </summary>
+        public static string AIChangeSummaryChipAddedOneNode {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipAddedOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to changed {0}.
+        /// </summary>
+        public static string AIChangeSummaryChipChangedCount {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipChangedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant changed {0} nodes.
+        /// </summary>
+        public static string AIChangeSummaryChipChangedNodes {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipChangedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant changed 1 node.
+        /// </summary>
+        public static string AIChangeSummaryChipChangedOneNode {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipChangedOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to deleted {0}.
+        /// </summary>
+        public static string AIChangeSummaryChipDeletedCount {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDeletedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant deleted {0} nodes.
+        /// </summary>
+        public static string AIChangeSummaryChipDeletedNodes {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDeletedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant deleted 1 node.
+        /// </summary>
+        public static string AIChangeSummaryChipDeletedOneNode {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDeletedOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string AIChangeSummaryChipDismiss {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string AIChangeSummaryChipShow {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {

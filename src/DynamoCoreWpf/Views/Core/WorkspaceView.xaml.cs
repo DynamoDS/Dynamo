@@ -863,6 +863,12 @@ namespace Dynamo.Views
             double fitWidth = outerCanvas.ActualWidth - 2 * viewportPadding;
             double fitHeight = outerCanvas.ActualHeight - 2 * viewportPadding;
 
+            // Keep the AI summary chip's area free, so it does not cover the fitted nodes
+            if (aiChangeSummaryChip.ActualHeight > 0)
+            {
+                fitHeight = Math.Max(fitHeight - aiChangeSummaryChip.ActualHeight - aiChangeSummaryChip.Margin.Bottom, viewportPadding);
+            }
+
             // Find the zoom required for fitview
             double scaleRequired = 1; // 100% zoom
             if (zoomArgs.hasZoom()) // FitView

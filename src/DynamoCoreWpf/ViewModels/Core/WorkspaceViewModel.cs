@@ -401,6 +401,10 @@ namespace Dynamo.ViewModels
 
         [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
+
+        [JsonIgnore]
+        internal AIChangeSummaryChipViewModel AIChangeSummaryChip { get; private set; }
+
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
@@ -780,6 +784,8 @@ namespace Dynamo.ViewModels
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
             geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
 
+            AIChangeSummaryChip = new AIChangeSummaryChipViewModel(this);
+
             DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
             //if we've already retrieved flags, grab the value,
             zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
@@ -827,6 +833,8 @@ namespace Dynamo.ViewModels
 
         public override void Dispose()
         {
+            AIChangeSummaryChip?.Dispose();
+
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
@@ -1947,6 +1955,24 @@ namespace Dynamo.ViewModels
             }
 
             OnRequestZoomToFitView(this, zoomArgs);
+        }
+
+        /// <summary>
+        /// Zooms to fit the given nodes like the Fit View button's first press, without changing the selection.
+        /// </summary>
+        internal void FitViewToNodes(IEnumerable<NodeModel> nodes)
+        {
+            var models = nodes?.Where(n => n != null).ToList();
+            if (models == null || models.Count == 0) return;
+
+            var minX = models.Min(n => n.X);
+            var minY = models.Min(n => n.Y);
+            var maxX = models.Max(n => n.X + n.Width);
+            var maxY = models.Max(n => n.Y + n.Height);
+
+            if (maxX <= minX || maxY <= minY) return;
+
+            OnRequestZoomToFitView(this, new ZoomEventArgs(new Point2D(minX, minY), maxX - minX, maxY - minY));
         }
 
         internal void ResetFitViewToggle(object o)

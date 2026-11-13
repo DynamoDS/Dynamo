@@ -894,6 +894,30 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Plays the halo's glow again from the start, even if it faded out or was dismissed (DYN-11011).
+        /// The new glow waits until the node is on screen, like any new glow, so nodes that come on screen
+        /// together are staggered. No-op without an AI change record.
+        /// </summary>
+        internal void ReplayAIHaloGlow()
+        {
+            var change = NodeModel?.AIChange;
+            if (change == null) return;
+
+            lock (aiHaloSync)
+            {
+                var glow = AIHaloGlow.Create(AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+                if (isAIHaloHovered)
+                {
+                    glow.Hold();
+                }
+                aiHaloGlow = glow;
+            }
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            WorkspaceViewModel?.OnAIHaloGlowWaiting();
+        }
+
+        /// <summary>
         /// True when the AI Assistant badge should be drawn on this node: the node was placed or
         /// modified by the Assistant. Nodes it only moved get no badge, so they stay the quietest
         /// (<see cref="NodeModel.AIChange"/>).
