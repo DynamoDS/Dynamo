@@ -177,9 +177,22 @@ namespace Dynamo.ViewModels
             void Add(int count, string one, string many, string followUp)
             {
                 if (count <= 0) return;
-                parts.Add(parts.Count > 0
-                    ? string.Format(culture, followUp, count)
-                    : count == 1 ? one : string.Format(culture, many, count));
+
+                string part;
+                if (parts.Count > 0)
+                {
+                    part = string.Format(culture, followUp, count);
+                }
+                else if (count == 1)
+                {
+                    part = one;
+                }
+                else
+                {
+                    part = string.Format(culture, many, count);
+                }
+
+                parts.Add(part);
             }
 
             Add(added, Resources.AIChangeSummaryChipAddedOneNode, Resources.AIChangeSummaryChipAddedNodes, null);

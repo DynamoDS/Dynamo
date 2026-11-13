@@ -1096,7 +1096,7 @@ namespace Dynamo.Graph.Workspaces
 
         #region AI change record
 
-        private readonly object aiTurnsLock = new object();
+        private readonly System.Threading.Lock aiTurnsLock = new System.Threading.Lock();
         private readonly Dictionary<string, AITurnState> aiTurns = new Dictionary<string, AITurnState>(StringComparer.Ordinal);
         private int lastAITurnNumber;
 
