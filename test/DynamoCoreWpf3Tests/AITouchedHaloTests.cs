@@ -28,10 +28,17 @@ namespace DynamoCoreWpfTests
     {
         private const string TurnA = "turn-a";
 
+        [SetUp]
+        public void AnimationsAreOn()
+        {
+            AIHaloGlow.PrefersMotion = () => true;
+        }
+
         [TearDown]
         public void RestoreTheGlowClock()
         {
             AIHaloGlow.Now = AIHaloGlow.DefaultClock;
+            AIHaloGlow.PrefersMotion = AIHaloGlow.DefaultPrefersMotion;
         }
 
         private WorkspaceModel Workspace => ViewModel.Model.CurrentWorkspace;
@@ -79,6 +86,25 @@ namespace DynamoCoreWpfTests
             var glow = ViewModelOf(node).AIHaloGlow;
             Assert.AreEqual(NodeViewModel.AIHaloFullOpacity, glow.Strength);
             Assert.IsTrue(glow.Breathes);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ReducedMotionFadesInOnceAndDoesNotBreathe()
+        {
+            AIHaloGlow.PrefersMotion = () => false;
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.IsFalse(glow.Breathes, "Reduced motion fades in, holds and fades out.");
+            Assert.IsTrue(ViewModelOf(node).ShowAIBadge, "The badge does not change.");
+
+            var trough = glow.CreateAnimation().KeyFrames
+                .OfType<DoubleKeyFrame>()
+                .Any(frame => Math.Abs(frame.Value - AIHaloGlow.BreathLow) < 1e-6);
+            Assert.IsFalse(trough, "The fade has no breath.");
         }
 
         [Test]

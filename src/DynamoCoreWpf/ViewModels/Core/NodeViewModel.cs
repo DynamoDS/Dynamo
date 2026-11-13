@@ -722,7 +722,9 @@ namespace Dynamo.ViewModels
             }
 
             var strength = AIHaloOpacity;
-            var breathes = change.Kind != AIChangeKind.Moved;
+            // Moved nodes never breathe. Neither does any node when Windows animation is off:
+            // the halo fades in once over 0.6 s, holds, and fades out. The badge is not part of this.
+            var breathes = change.Kind != AIChangeKind.Moved && AIHaloGlow.PrefersMotion();
             var current = AIHaloGlow;
 
             // Still glowing: keep the glow and its stagger slot, so a node changed several times
