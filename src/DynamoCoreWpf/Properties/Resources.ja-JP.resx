@@ -3151,19 +3151,19 @@ Dynamo を再起動してアンインストールを完了します。
     <value>はい</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>読み取り専用プレビュー。ノード、スクリプト、およびパッケージは、[はい]の選択後にのみロードされます。</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>ファイルは、開いている間に変更されたため、開きませんでした。もう一度開いて最新バージョンを確認してください。</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>いいえ、開きません</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
     <value>プレビューをロードしています...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>このファイルにはプレビューがありません。</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>グラフの実行は、警告が解決されるまで中断されます</value>

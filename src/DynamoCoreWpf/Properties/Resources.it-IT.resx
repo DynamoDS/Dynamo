@@ -3133,19 +3133,19 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Sì</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Anteprima in sola lettura. Nodi, script e pacchetti vengono caricati solo dopo che l'utente ha scelto Sì.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Il file è stato modificato durante l'apertura, pertanto non è stato aperto. Aprirlo di nuovo per rivedere la versione più recente.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>No, non aprire</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
     <value>Caricamento anteprima in corso...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Nessuna anteprima disponibile per questo file.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>L'esecuzione del grafico viene sospesa fino alla risoluzione dell'avviso</value>

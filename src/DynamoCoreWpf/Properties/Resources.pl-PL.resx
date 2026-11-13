@@ -3151,19 +3151,19 @@ Można tym zarządzać w obszarze Preferencje -&gt; Zabezpieczenia.</value>
     <value>Tak</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Podgląd tylko do odczytu. Węzły, skrypty i pakiety są wczytywane dopiero po wybraniu opcji Tak.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Plik uległ zmianie podczas otwierania, więc nie został otwarty. Otwórz go ponownie, aby przejrzeć najnowszą wersję.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Nie, nie otwieraj</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
-    <value>Wczytywanie podglądu...</value>
+    <value>Wczytywanie podglądu…</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Podgląd tego pliku jest niedostępny.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>Wykonywanie wykresu wstrzymano do momentu rozstrzygnięcia ostrzeżenia</value>

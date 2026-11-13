@@ -3151,19 +3151,19 @@
     <value>Да</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Предварительный просмотр только для чтения. Узлы, сценарии и пакеты загружаются только после выбора варианта «Да».</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Файл был изменен во время открытия, и поэтому открыть его не получилось. Откройте его еще раз, чтобы просмотреть последнюю версию.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Нет, не открывать</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
-    <value>Loading preview...</value>
+    <value>Загрузка предварительного просмотра…</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Для этого файла не поддерживается предварительный просмотр.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>Выполнение графика приостановлено до устранения предупреждения</value>

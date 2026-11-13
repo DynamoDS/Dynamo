@@ -3150,19 +3150,19 @@
     <value>是</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>這是唯讀預覽。在您選擇「是」之後，才會載入節點、腳本和套件。</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>檔案在開啟的同時發生變更，因此未開啟。請再次開啟以檢閱最新版本。</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>否，不要開啟</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
-    <value>Loading preview...</value>
+    <value>正在載入預覽...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>沒有可用於此檔案的預覽。</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>在解決警告之前，圖表會暫停執行</value>

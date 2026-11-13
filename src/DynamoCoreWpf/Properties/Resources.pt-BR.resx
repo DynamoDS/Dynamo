@@ -3151,19 +3151,19 @@ Tente colocar o nó **ByOrigin** realçado.</value>
     <value>Sim</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Visualização somente leitura. Os nós, scripts e pacotes são carregados somente depois que você escolhe Sim.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>O arquivo foi alterado durante a abertura e, por isso, não foi aberto. Abra-o novamente para conferir a versão mais recente.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Não, não abrir</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
     <value>Carregando visualização...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Nenhuma visualização disponível para este arquivo.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>A execução do gráfico é suspensa até que o aviso seja resolvido</value>

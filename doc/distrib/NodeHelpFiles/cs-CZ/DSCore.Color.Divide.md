@@ -1,5 +1,5 @@
 ## Podrobnosti
-Divide will divide the individual channels of a color by an input number, and return the resulting color. Dividing by a number greater than 1 produces a darker color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Divide node to divide the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
+Uzel Divide rozdělí jednotlivé kanály barvy podle zadaného čísla a vrátí výslednou barvu. Dělením číslem větším než 1 vznikne tmavší barva. Výsledné hodnoty musí být menší než 255. V níže uvedeném příkladu vytvoříme barvu pomocí uzlů ByARGB. Poté pomocí uzlu Divide rozdělíme barvu podle čísla řízeného číselným posuvníkem. K vizualizaci výsledné barvy se použije uzel Display.ByGeometryColor společně s výchozím kvádrem.
 ___
 ## Vzorový soubor
 

@@ -1,5 +1,5 @@
 ## 深入資訊
-Divide will divide the individual channels of a color by an input number, and return the resulting color. Dividing by a number greater than 1 produces a darker color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Divide node to divide the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
+Divide 會將顏色的個別通道除以輸入數字，並傳回產生的顏色。除以大於 1 的數字，會產生較暗的顏色。請注意，產生的值必須小於 255。在以下範例中，我們使用 ByARGB 節點建立一個顏色，然後使用 Divide 節點將該顏色除以由數字滑棒控制的數字。對預設立方體使用 Display.ByGeometryColor 節點，以便看出產生的顏色。
 ___
 ## 範例檔案
 

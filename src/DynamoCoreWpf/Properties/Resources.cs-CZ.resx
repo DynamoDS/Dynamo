@@ -3150,19 +3150,19 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Ano</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Náhled pouze ke čtení. Uzly, skripty a balíčky se načtou pouze po výběru možnosti Ano.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Soubor se během otevírání změnil, takže nebyl otevřen. Otevřete jej znovu a zkontrolujte nejnovější verzi.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Ne, neotevírat</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
-    <value>Loading preview...</value>
+    <value>Načítání náhledu…</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Pro tento soubor není k dispozici žádný náhled.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>Spuštění grafu je pozastaveno, dokud nebude vyřešeno upozornění.</value>
