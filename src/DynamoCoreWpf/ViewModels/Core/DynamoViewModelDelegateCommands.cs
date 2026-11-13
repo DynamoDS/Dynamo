@@ -95,6 +95,7 @@ namespace Dynamo.ViewModels
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
             DumpNodeHelpDataCommand = new DelegateCommand(DumpNodeHelpData, CanDumpNodeHelpData);
             DumpNodeIconsCommand = new DelegateCommand(DumpNodeIconData, CanDumpNodeIconData);
+            RecordNodeHelpDataCommand = new DelegateCommand(RecordNodeHelpData, CanRecordNodeHelpData);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
@@ -184,6 +185,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SetNumberFormatCommand { get; set; }
         public DelegateCommand OpenRecentCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
+        public DelegateCommand RecordNodeHelpDataCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
         public DelegateCommand DumpNodeHelpDataCommand { get; set; }
         public DelegateCommand DumpNodeIconsCommand { get; set; }
