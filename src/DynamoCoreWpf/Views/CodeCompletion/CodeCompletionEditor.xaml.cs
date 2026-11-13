@@ -40,6 +40,12 @@ namespace Dynamo.UI.Controls
         private DynamoViewModel dynamoViewModel;
         private CompletionWindow completionWindow;
         private CodeCompletionMethodInsightWindow insightWindow;
+        /// <summary>
+        /// True when Escape on KeyDown closed the completion window. OnEscape is
+        /// deferred to KeyUp so a held Escape cannot ReturnFocus and then start
+        /// geometry-preview navigation on DynamoView KeyDown repeats.
+        /// </summary>
+        private bool escapeClosedCompletion;
 
         /// <summary>
         /// Create CodeCOmpletionEditor with NodeViewModel
@@ -59,6 +65,10 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
+            // Handle Escape on the focused TextArea itself (not only UserControl.OnPreviewKeyDown)
+            // so DynamoView_KeyDown cannot start geometry-preview navigation on hold.
+            this.InnerTextEditor.TextArea.PreviewKeyDown += OnTextAreaPreviewKeyDown;
+            this.InnerTextEditor.TextArea.PreviewKeyUp += OnTextAreaPreviewKeyUp;
 
             CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
@@ -307,7 +317,7 @@ namespace Dynamo.UI.Controls
 
         /// <summary>
         /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
-        /// and sets them when pressed/released
+        /// and sets them when pressed/released.
         /// </summary>        
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
@@ -318,16 +328,79 @@ namespace Dynamo.UI.Controls
                     ReturnFocus();
                 }
             }
-            else if (e.Key == Key.Escape)
+        }
+
+        /// <summary>
+        /// When text is selected, Left/Right should place the cursor at the
+        /// selection start/end like in a normal text editor. AvalonEdit clears the selection
+        /// then moves one character from the old cursor, which feels stuck.
+        /// Returns the cursor offset to use, or null when the key should pass through.
+        /// </summary>
+        internal static int? GetSelectionCollapseCaretOffset(
+            int selectionStart, int selectionLength, Key key, System.Windows.Input.ModifierKeys modifiers)
+        {
+            if (modifiers != System.Windows.Input.ModifierKeys.None || selectionLength <= 0)
+                return null;
+
+            if (key == Key.Left)
+                return selectionStart;
+            if (key == Key.Right)
+                return selectionStart + selectionLength;
+
+            return null;
+        }
+
+        private void OnTextAreaPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var collapseOffset = GetSelectionCollapseCaretOffset(
+                InnerTextEditor.SelectionStart,
+                InnerTextEditor.SelectionLength,
+                e.Key,
+                e.KeyboardDevice.Modifiers);
+            if (collapseOffset.HasValue)
+            {
+                InnerTextEditor.TextArea.ClearSelection();
+                InnerTextEditor.CaretOffset = collapseOffset.Value;
+                InnerTextEditor.TextArea.Caret.BringCaretToView();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key != Key.Escape)
+                return;
+
+            // Do not call OnEscape on KeyDown: CodeBlockEditor.OnEscape may
+            // ReturnFocus immediately, after which Escape KeyDown repeats hit
+            // DynamoView and start 3D background navigation.
+            if (!e.IsRepeat)
             {
                 if (completionWindow != null)
                 {
                     completionWindow.Close();
-                    return;
+                    escapeClosedCompletion = true;
                 }
+                else
+                {
+                    escapeClosedCompletion = false;
+                }
+            }
 
+            e.Handled = true;
+        }
+
+        private void OnTextAreaPreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Escape)
+                return;
+
+            // Leave the editor on a short press (not while the key is held).
+            if (!escapeClosedCompletion)
+            {
                 OnEscape();
             }
+
+            escapeClosedCompletion = false;
+            e.Handled = true;
         }
         #endregion
 

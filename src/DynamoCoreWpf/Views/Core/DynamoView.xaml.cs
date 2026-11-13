@@ -2470,6 +2470,12 @@ namespace Dynamo.Controls
             // A new press starts fresh, even if the last release never reached the window
             if (!e.IsRepeat) escClearedAIHighlight = false;
 
+            // Escape-hold starts geometry preview (nodes fade). Never do that while typing
+            // in a code block / AvalonEdit / text box — PreviewKeyDown Handled alone is not
+            // reliable here because this handler does not go through KeyBindings.
+            if (IsKeyboardFocusInTextEditor(e.OriginalSource as DependencyObject))
+                return;
+
             // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
             // selection's, if the node is selected), but only when Esc has no other job. Controls that use
             // Esc themselves (combo boxes, menus, text boxes) handle it before it gets here.
@@ -2493,7 +2499,8 @@ namespace Dynamo.Controls
                 IsEscKeyPressed = true;
                 dynamoViewModel.UIDispatcher.DelayInvoke(navigationInterval, () =>
                 {
-                    if (IsEscKeyPressed)
+                    // Re-check focus: editor may still be focused after the delay.
+                    if (IsEscKeyPressed && !IsKeyboardFocusInTextEditor(null))
                     {
                         vm.NavigationKeyIsDown = true;
                     }
@@ -2506,6 +2513,49 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// True when keyboard focus is inside a code/text editor so Escape must not
+        /// start background geometry navigation.
+        /// </summary>
+        private bool IsKeyboardFocusInTextEditor(DependencyObject originalSource)
+        {
+            if (IsDependencyObjectInTextEditor(originalSource))
+                return true;
+
+            if (IsDependencyObjectInTextEditor(Keyboard.FocusedElement as DependencyObject))
+                return true;
+
+            // Fallback when FocusedElement is an unexpected host inside the editor chrome
+            return this.ChildrenOfType<CodeCompletionEditor>().Any(editor => editor.IsKeyboardFocusWithin);
+        }
+
+        private static bool IsDependencyObjectInTextEditor(DependencyObject current)
+        {
+            while (current != null)
+            {
+                if (current is CodeCompletionEditor ||
+                    current is ICSharpCode.AvalonEdit.Editing.TextArea ||
+                    current is TextEditor ||
+                    current is TextBoxBase)
+                {
+                    return true;
+                }
+
+                DependencyObject parent = null;
+                if (current is Visual || current is System.Windows.Media.Media3D.Visual3D)
+                {
+                    parent = VisualTreeHelper.GetParent(current);
+                }
+                if (parent == null)
+                {
+                    parent = LogicalTreeHelper.GetParent(current);
+                }
+                current = parent;
+            }
+
+            return false;
         }
 
         private bool TryClearHoveredAIHighlight()
