@@ -151,7 +151,7 @@ namespace Dynamo.ViewModels
             var changed = (turn?.Nodes.Count ?? 0) - added;
             var deleted = turn?.DeletedNodeCount ?? 0;
 
-            if (added + changed == 0 && deleted == 0)
+            if ((added + changed == 0 && deleted == 0) || turn.IsUndone)
             {
                 CanShow = false;
                 IsVisible = false;

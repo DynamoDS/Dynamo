@@ -22,7 +22,8 @@ namespace Dynamo.Graph.Workspaces
             int turnNumber,
             IReadOnlyList<AINodeChange> nodes,
             int deletedNodeCount,
-            int removedConnectorCount)
+            int removedConnectorCount,
+            bool isUndone = false)
         {
             TurnId = turnId;
             TurnNumber = turnNumber;
@@ -30,6 +31,7 @@ namespace Dynamo.Graph.Workspaces
             NodeIds = nodes.Select(n => n.NodeId).ToList().AsReadOnly();
             DeletedNodeCount = deletedNodeCount;
             RemovedConnectorCount = removedConnectorCount;
+            IsUndone = isUndone;
         }
 
         /// <summary>The turn's identifier, as given by the caller.</summary>
@@ -52,6 +54,9 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>How many pre-existing connections the turn removed.</summary>
         public int RemovedConnectorCount { get; }
+
+        /// <summary>True after Undo all (DYN-11008), also after a redo.</summary>
+        internal bool IsUndone { get; }
     }
 
     /// <summary>
@@ -72,6 +77,8 @@ namespace Dynamo.Graph.Workspaces
             TurnId = turnId;
             TurnNumber = turnNumber;
         }
+
+        internal bool IsUndone { get; set; }
 
         internal string TurnId { get; }
 

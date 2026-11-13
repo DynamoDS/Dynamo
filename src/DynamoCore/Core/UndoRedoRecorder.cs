@@ -85,6 +85,13 @@ namespace Dynamo.Core
         private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
         private const string AffectsSavedStateAttrib = "AffectsSavedState";
+        private const string AITurnAttrib = "AITurn";
+        private const string OtherEditsAttrib = "HasOtherEdits";
+
+        /// <summary>
+        /// An AI edit whose turn is unknown.
+        /// </summary>
+        internal const string UnknownAITurn = "*";
 
         private readonly IUndoRedoRecorderClient undoClient;
         private readonly XmlDocument document = new XmlDocument();
@@ -103,6 +110,16 @@ namespace Dynamo.Core
         #endregion
 
         #region Public Class Operational Methods
+
+        /// <summary>
+        /// The AI turn of the edits being recorded, or null for a person's.
+        /// </summary>
+        internal Func<string> CurrentAITurn { get; set; }
+
+        /// <summary>
+        /// Called with each fresh recording, not during undo or redo. The model is null for a connector removed by a node modification.
+        /// </summary>
+        internal Action<ModelBase, UserAction, XmlElement> ActionRecorded { get; set; }
 
         public UndoRedoRecorder(IUndoRedoRecorderClient undoClient)
         {
@@ -157,7 +174,10 @@ namespace Dynamo.Core
             // the corresponding EndActionGroup method, then the action group 
             // is discarded.
             if (currentActionGroup.HasChildNodes)
+            {
+                TagWithAITurn(currentActionGroup);
                 undoStack.Push(currentActionGroup);
+            }
 
             currentActionGroup = null;
             undoClient.UpdateUndoRedoStack();
@@ -239,6 +259,8 @@ namespace Dynamo.Core
 
             var merged = document.CreateElement(ActionGroup);
             var affectsSavedState = false;
+            var aiTurns = new HashSet<string>(StringComparer.Ordinal);
+            var hasOtherEdits = false;
 
             // ...so walk them backwards, which leaves the merged actions in the order they were
             // recorded -- the order UndoActionGroup expects, and replays in reverse.
@@ -247,6 +269,14 @@ namespace Dynamo.Core
                 var group = groups[index];
                 if (group.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                     affectsSavedState = true;
+
+                var aiTurn = group.GetAttribute(AITurnAttrib);
+                if (string.IsNullOrEmpty(aiTurn))
+                    hasOtherEdits = true;
+                else
+                    aiTurns.Add(aiTurn);
+                if (group.GetAttribute(OtherEditsAttrib) == bool.TrueString)
+                    hasOtherEdits = true;
 
                 // AppendChild detaches each action from its old group, mutating the live
                 // ChildNodes collection being walked, so take a copy of it up front.
@@ -258,6 +288,12 @@ namespace Dynamo.Core
 
             if (affectsSavedState)
                 merged.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
+
+            // A second turn counts as other edits
+            if (aiTurns.Count == 1)
+                merged.SetAttribute(AITurnAttrib, aiTurns.First());
+            if (hasOtherEdits || aiTurns.Count > 1)
+                merged.SetAttribute(OtherEditsAttrib, bool.TrueString);
 
             undoStack.Push(merged);
         }
@@ -324,11 +360,12 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordCreationForUndo(ModelBase model)
         {
-            RecordActionInternal(currentActionGroup,
+            var recorded = RecordActionInternal(currentActionGroup,
                 model, UserAction.Creation);
 
             currentActionGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
             redoStack.Clear(); // Wipe out the redo-stack.
+            NotifyActionRecorded(model, UserAction.Creation, recorded);
         }
 
         /// <summary>
@@ -340,11 +377,12 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordDeletionForUndo(ModelBase model)
         {
-            RecordActionInternal(currentActionGroup,
+            var recorded = RecordActionInternal(currentActionGroup,
                 model, UserAction.Deletion);
 
             currentActionGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
             redoStack.Clear(); // Wipe out the redo-stack.
+            NotifyActionRecorded(model, UserAction.Deletion, recorded);
         }
 
         /// <summary>
@@ -362,7 +400,7 @@ namespace Dynamo.Core
         /// </param>
         public void RecordModificationForUndo(ModelBase model, bool markAsModified = true)
         {
-            RecordActionInternal(currentActionGroup,
+            var recorded = RecordActionInternal(currentActionGroup,
                 model, UserAction.Modification);
 
             redoStack.Clear(); // Wipe out the redo-stack.
@@ -372,6 +410,8 @@ namespace Dynamo.Core
                 currentActionGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
                 undoClient.MarkAsModified();
             }
+
+            NotifyActionRecorded(model, UserAction.Modification, recorded);
         }
 
         /// <summary>
@@ -434,6 +474,38 @@ namespace Dynamo.Core
         internal int SavedStateAffectingUndoDepth
         {
             get { return undoStack.Count(group => group.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString); }
+        }
+
+        /// <summary>
+        /// Who made each undo step, newest first.
+        /// </summary>
+        internal IReadOnlyList<(string AITurn, bool HasOtherEdits)> GetUndoStackOrigins()
+        {
+            return undoStack
+                .Select(group =>
+                {
+                    var aiTurn = group.GetAttribute(AITurnAttrib);
+                    return (string.IsNullOrEmpty(aiTurn) ? null : aiTurn,
+                        group.GetAttribute(OtherEditsAttrib) == bool.TrueString);
+                })
+                .ToList();
+        }
+
+        /// <summary>
+        /// Merges the top <paramref name="count"/> undo steps into one.
+        /// </summary>
+        internal void MergeTopActionGroups(int count)
+        {
+            EnsureValidRecorderStates();
+            if (coalescingDepth > 0)
+                throw new InvalidOperationException("Undo steps cannot be merged while a coalescing scope is open");
+            if (count > undoStack.Count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (count < 2)
+                return;
+
+            MergeActionGroupsAbove(undoStack.Count - count);
+            undoClient.UpdateUndoRedoStack();
         }
 
         #endregion
@@ -537,16 +609,43 @@ namespace Dynamo.Core
             return redoStack.Pop();
         }
 
-        private void RecordActionInternal(XmlElement group, ModelBase model, UserAction action)
+        private XmlElement RecordActionInternal(XmlElement group, ModelBase model, UserAction action)
         {
             if (IsRecordedInActionGroup(group, model))
-                return;
+                return null;
 
             // Serialize the affected model into xml representation
             // and store it under the current action group.
             XmlNode childNode = model.Serialize(document, SaveContext.Undo);
             SetNodeAction(childNode, action.ToString());
             group.AppendChild(childNode);
+            return childNode as XmlElement;
+        }
+
+        private void NotifyActionRecorded(ModelBase model, UserAction action, XmlElement recorded)
+        {
+            if (recorded != null)
+            {
+                ActionRecorded?.Invoke(model, action, recorded);
+            }
+        }
+
+        private void TagWithAITurn(XmlElement group)
+        {
+            var aiTurn = CurrentAITurn?.Invoke();
+            if (string.IsNullOrEmpty(aiTurn))
+                group.SetAttribute(OtherEditsAttrib, bool.TrueString);
+            else
+                group.SetAttribute(AITurnAttrib, aiTurn);
+        }
+
+        private static void CopyAITurnTags(XmlElement from, XmlElement to)
+        {
+            foreach (var attribute in new[] { AITurnAttrib, OtherEditsAttrib })
+            {
+                if (from.HasAttribute(attribute))
+                    to.SetAttribute(attribute, from.GetAttribute(attribute));
+            }
         }
 
         private void UndoActionGroup(XmlElement actionGroup)
@@ -628,6 +727,7 @@ namespace Dynamo.Core
 
             if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                 newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
+            CopyAITurnTags(actionGroup, newGroup);
 
             redoStack.Push(newGroup); // Place the states on the redo-stack.
         }
@@ -677,6 +777,7 @@ namespace Dynamo.Core
 
             if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                 newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
+            CopyAITurnTags(actionGroup, newGroup);
 
             undoStack.Push(newGroup);
         }
@@ -829,6 +930,7 @@ namespace Dynamo.Core
                     {
                         recorder.SetNodeAction(connector, deletionString);
                         recorder.currentActionGroup.AppendChild(connector);
+                        recorder.NotifyActionRecorded(null, UserAction.Deletion, connector);
                     }
 
                     foreach (XmlNode childNode in previousGroup.ChildNodes)

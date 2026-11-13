@@ -1103,6 +1103,7 @@ namespace Dynamo.Graph.Workspaces
         private int aiEditDepth;
         private int currentAIEdit;
         private static int lastAIEdit;
+        private string currentAITurnId;
 
         /// <summary>
         /// Raised when the AI change record changes (DYN-11011 summary chip).
@@ -1115,14 +1116,14 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// True while a <see cref="BeginAIEdit"/> scope is open; node edits then keep
+        /// True while a <see cref="BeginAIEdit()"/> scope is open; node edits then keep
         /// <see cref="NodeModel.AIChange"/>. Never saved to the .dyn file.
         /// </summary>
         [JsonIgnore]
         public bool IsAIEditInProgress => Volatile.Read(ref aiEditDepth) > 0;
 
         /// <summary>
-        /// Number of the open <see cref="BeginAIEdit"/> scope, unique across workspaces; 0 when none
+        /// Number of the open <see cref="BeginAIEdit()"/> scope, unique across workspaces; 0 when none
         /// is open. Nested scopes share the number of the outermost one.
         /// </summary>
         internal int CurrentAIEdit => IsAIEditInProgress ? Volatile.Read(ref currentAIEdit) : 0;
@@ -1134,9 +1135,20 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public IDisposable BeginAIEdit()
         {
+            return BeginAIEdit(null);
+        }
+
+        /// <summary>
+        /// As <see cref="BeginAIEdit()"/>, and labels the undo steps recorded inside with the turn (DYN-11008).
+        /// Nested scopes keep the outermost turn.
+        /// </summary>
+        /// <param name="turnId">The AI Assistant turn; null or empty when unknown.</param>
+        public IDisposable BeginAIEdit(string turnId)
+        {
             if (Interlocked.Increment(ref aiEditDepth) == 1)
             {
                 Volatile.Write(ref currentAIEdit, Interlocked.Increment(ref lastAIEdit));
+                Volatile.Write(ref currentAITurnId, string.IsNullOrEmpty(turnId) ? null : turnId);
             }
             return new AIEditScope(this);
         }
@@ -1153,9 +1165,9 @@ namespace Dynamo.Graph.Workspaces
             public void Dispose()
             {
                 var owner = Interlocked.Exchange(ref workspace, null);
-                if (owner != null)
+                if (owner != null && Interlocked.Decrement(ref owner.aiEditDepth) == 0)
                 {
-                    Interlocked.Decrement(ref owner.aiEditDepth);
+                    Volatile.Write(ref owner.currentAITurnId, null);
                 }
             }
         }
@@ -1347,6 +1359,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 aiTurns.Clear();
                 lastAITurnNumber = 0;
+                aiUndoSnapshots.Clear();
             }
 
             OnAIChangesUpdated();
@@ -1356,7 +1369,7 @@ namespace Dynamo.Graph.Workspaces
         /// Starts an AI Assistant turn: clears node records left by earlier turns, keeping their history, and
         /// makes sure none of them comes back later, even through a late change from an earlier turn. Never
         /// marks the workspace unsaved. DynamoMCP calls this at the new turn's first recorded change, inside
-        /// that turn's <see cref="BeginAIEdit"/> scope, so an AI edit in progress does not skip it.
+        /// that turn's <see cref="BeginAIEdit(string)"/> scope, so an AI edit in progress does not skip it.
         /// </summary>
         /// <param name="turnId">The starting turn; its own records are kept.</param>
         public void StartAITurn(string turnId)
@@ -1377,6 +1390,9 @@ namespace Dynamo.Graph.Workspaces
                 {
                     turn.ForgetMarksBeforeTurn();
                 }
+
+                // Only this turn's nodes can still be undone one by one
+                ForgetAIUndoSnapshotsExcept(turnId);
             }
 
             OnAIChangesUpdated();
@@ -1427,7 +1443,7 @@ namespace Dynamo.Graph.Workspaces
         // Call under aiTurnsLock
         private static AITurnSummary BuildAITurnSummary(AITurnState turn)
         {
-            return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount, turn.RemovedConnectorCount);
+            return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount, turn.RemovedConnectorCount, turn.IsUndone);
         }
 
         /// <summary>
@@ -1843,7 +1859,12 @@ namespace Dynamo.Graph.Workspaces
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
-            undoRecorder = new UndoRedoRecorder(this);
+            undoRecorder = new UndoRedoRecorder(this)
+            {
+                // DYN-11008
+                CurrentAITurn = CurrentAITurnForUndo,
+                ActionRecorded = RememberAIUndoSnapshot,
+            };
 
             NodeFactory = factory;
 
@@ -1950,6 +1971,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 aiTurns.Clear();
                 lastAITurnNumber = 0;
+                aiUndoSnapshots.Clear();
             }
             OnAIChangesUpdated();
 
