@@ -82,13 +82,13 @@
             <returns name="color">Resultado de color de la adición de dos colores.</returns>
         </member>
         <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
-            <summary>Multiply an input color with a number multiplier to produce a brighter color, where the input color must have an alpha less than 255.</summary>
+            <summary>Multiplique un color de entrada por un multiplicador numérico para obtener un color más brillante; para ello, el color de entrada debe tener un valor alfa inferior a 255.</summary>
             <param name="color">Color que multiplicar.</param>
             <param name="multiplier">Valor del multiplicador.</param>
             <returns name="color">Resultado de color de la multiplicación.</returns>
         </member>
         <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
-            <summary>Divide an input color with a number divider to produce a darker color and remove color tint</summary>
+            <summary>Divida un color de entrada con un divisor numérico para obtener un color más oscuro y eliminar el matiz de color.</summary>
             <param name="color">Color que dividir.</param>
             <param name="dividend">Valor de dividendo.</param>
             <returns name="color">Resultado de color de la división.</returns>

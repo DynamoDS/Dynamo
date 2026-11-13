@@ -3149,19 +3149,19 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>Oui</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Aperçu en lecture seule. Les noeuds, les scripts et les packages ne se chargent qu'après avoir choisi Oui.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Le fichier n'a pas été ouvert, car il a été modifié alors qu'il était en cours d'ouverture. Rouvrez-le pour examiner la dernière version.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Non, ne pas ouvrir</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
-    <value>Chargement de l'aperçu...</value>
+    <value>Chargement de l'aperçu…</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Aucun aperçu n'est disponible pour ce fichier.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>L'exécution du graphique est suspendue jusqu'à la résolution de l'avertissement</value>

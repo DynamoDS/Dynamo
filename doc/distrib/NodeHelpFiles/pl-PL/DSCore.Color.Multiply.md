@@ -1,5 +1,5 @@
 ## Informacje szczegółowe
-Multiply will multiply the individual channels of a color by an input number, and return the resulting color. Multiplying by a number greater than 1 produces a brighter color. Note that the resulting values must be less than 255. In the example below, we create a color using ByARGB nodes. We then use a Multiply node to multiply the color by a number controlled with a number slider. A Display.ByGeometryColor node is used with a default cuboid in order to visualize the resulting color.
+Węzeł Multiply mnoży poszczególne kanały koloru (color) przez liczbę wejściową i zwraca kolor wynikowy. Pomnożenie przez liczbę większą niż 1 daje jaśniejszy kolor. Wartości wynikowe muszą być mniejsze niż 255. W poniższym przykładzie tworzymy kolor za pomocą węzłów ByARGB. Następnie za pomocą węzła Multiply mnożymy kolor przez liczbę sterowaną za pomocą suwaka Number Slider. Przy użyciu węzła Display.ByGeometryColor wizualizujemy kolor wynikowy na sześcianie domyślnym.
 ___
 ## Plik przykładowy
 
