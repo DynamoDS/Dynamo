@@ -170,8 +170,17 @@ namespace Dynamo.ViewModels
 
         internal void EndDragSelection(Point2D mouseCursor)
         {
-            RecordSelectionForUndo(mouseCursor);
+            var movedModels = RecordSelectionForUndo(mouseCursor);
             UpdateDraggedSelection(mouseCursor); // Final position update.
+
+            // Dragging a node the AI Assistant touched clears its AI markers
+            if (!Model.IsAIEditInProgress)
+            {
+                foreach (var node in movedModels.OfType<NodeModel>().Where(n => !n.IsTransient))
+                {
+                    node.ClearAIChange();
+                }
+            }
 
             draggedNodes.Clear(); // We are no longer dragging anything.
         }
@@ -365,7 +374,7 @@ namespace Dynamo.ViewModels
             this.RaisePropertyChanged("ActiveConnector");
         }
 
-        private void RecordSelectionForUndo(Point2D mousePoint)
+        private List<ModelBase> RecordSelectionForUndo(Point2D mousePoint)
         {
             //The models are being stored with its initial position to record only the changed ones.
             List<ModelBase> changedPositionModels = new List<ModelBase>();
@@ -386,6 +395,7 @@ namespace Dynamo.ViewModels
 
             WorkspaceModel.RecordModelsForModification(changedPositionModels, Model.UndoRecorder);
             DynamoViewModel.RaiseCanExecuteUndoRedo();
+            return changedPositionModels;
         }
 
         private void OnDragSelectionStarted(object sender, EventArgs e)

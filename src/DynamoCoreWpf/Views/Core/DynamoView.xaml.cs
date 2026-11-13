@@ -75,7 +75,7 @@ namespace Dynamo.Controls
         internal const string McpViewExtensionId = "FAB268A8-6C83-4389-8AB8-F9AE92D6091E";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
-        private bool escEndedAIHaloGlow = false;
+        private bool escClearedAIHighlight = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private double restoreWidth = 0;
@@ -2465,14 +2465,21 @@ namespace Dynamo.Controls
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
 
-            if (e.Key != Key.Escape || !IsMouseOver) return;
+            if (e.Key != Key.Escape) return;
 
-            // Esc while hovering a glowing node ends that node's glow and does nothing else
-            if (escEndedAIHaloGlow || TryEndHoveredAIHaloGlow())
+            // A new press starts fresh, even if the last release never reached the window
+            if (!e.IsRepeat) escClearedAIHighlight = false;
+
+            // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
+            // selection's, if the node is selected), but only when Esc has no other job. Controls that use
+            // Esc themselves (combo boxes, menus, text boxes) handle it before it gets here.
+            if (escClearedAIHighlight || TryClearHoveredAIHighlight())
             {
                 e.Handled = true;
                 return;
             }
+
+            if (!IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 
@@ -2501,9 +2508,13 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private bool TryEndHoveredAIHaloGlow()
+        private bool TryClearHoveredAIHighlight()
         {
-            if (IsEscKeyPressed || dynamoViewModel.BackgroundPreviewViewModel?.NavigationKeyIsDown == true)
+            var workspace = dynamoViewModel.CurrentSpaceViewModel;
+
+            // Esc first cancels a wire drag, pan or orbit, and drives 3D navigation
+            if (workspace == null || !workspace.IsInIdleState || IsEscKeyPressed
+                || dynamoViewModel.BackgroundPreviewViewModel?.CanNavigateBackground == true)
             {
                 return false;
             }
@@ -2514,12 +2525,12 @@ namespace Dynamo.Controls
                 return false;
             }
 
-            if (dynamoViewModel.CurrentSpaceViewModel?.DismissHoveredAIHaloGlow() != true)
+            if (!workspace.ClearHoveredAIHighlight())
             {
                 return false;
             }
 
-            escEndedAIHaloGlow = true;
+            escClearedAIHighlight = true;
             return true;
         }
 
@@ -2527,9 +2538,9 @@ namespace Dynamo.Controls
         {
             if (e.Key != Key.Escape) return;
 
-            if (escEndedAIHaloGlow)
+            if (escClearedAIHighlight)
             {
-                escEndedAIHaloGlow = false;
+                escClearedAIHighlight = false;
                 IsEscKeyPressed = false;
                 e.Handled = true;
                 return;
