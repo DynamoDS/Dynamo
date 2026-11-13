@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
+using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -312,6 +313,30 @@ namespace DynamoCoreWpfTests
             var chipView = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
 
             Assert.AreEqual("Autodesk Assistant added 1 node", PeerName(chipView.MessageButton));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TabLandsOnTheChipSentence()
+        {
+            PlaceByAssistant();
+            var message = View.ChildrenOfType<WorkspaceView>().First()
+                .ChildrenOfType<AIChangeSummaryChip>().First().MessageButton;
+
+            PressTab();
+            Assert.IsTrue(message.IsKeyboardFocused, "Tab from the window lands on the sentence.");
+
+            PressTab();
+            Assert.IsTrue(message.IsKeyboardFocused, "The next Tab stays on the sentence.");
+        }
+
+        private void PressTab()
+        {
+            View.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(View), 0, Key.Tab)
+            {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent
+            });
+            DispatcherUtil.DoEvents();
         }
 
         private static string PeerName(UIElement element)

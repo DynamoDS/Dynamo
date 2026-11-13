@@ -1053,6 +1053,69 @@ namespace Dynamo.Controls
             Keyboard.Focus(this);
         }
 
+        /// <summary>
+        /// Tab on the window selects neighbouring nodes, so it never reaches the summary chip.
+        /// While the chip is showing, Tab lands on its sentence and stays there.
+        /// </summary>
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+            if (e.Handled || e.Key != Key.Tab || Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None)
+            {
+                return;
+            }
+
+            if (IsTyping(Keyboard.FocusedElement as DependencyObject))
+            {
+                return;
+            }
+
+            var chip = FindVisibleSummaryChip();
+            if (chip == null)
+            {
+                return;
+            }
+
+            if (!ReferenceEquals(Keyboard.FocusedElement, chip.MessageButton))
+            {
+                Keyboard.Focus(chip.MessageButton);
+            }
+
+            e.Handled = true;
+        }
+
+        private static bool IsTyping(DependencyObject element)
+        {
+            for (var current = element; current != null; current = VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current))
+            {
+                if (current is TextBoxBase or PasswordBox)
+                {
+                    return true;
+                }
+
+                // Code block and Python editors
+                if (current.GetType().Name == "TextArea")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private AIChangeSummaryChip FindVisibleSummaryChip()
+        {
+            foreach (var chip in this.ChildrenOfType<AIChangeSummaryChip>())
+            {
+                if (chip.MessageButton != null && chip.MessageButton.IsVisible)
+                {
+                    return chip;
+                }
+            }
+
+            return null;
+        }
+
         private void OnRequestPaste()
         {
             // When focus is at webview2 component Keyboard.FocusedElement returns null so we interrupt the execution
