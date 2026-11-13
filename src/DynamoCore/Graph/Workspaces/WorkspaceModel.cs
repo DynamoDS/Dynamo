@@ -1297,6 +1297,8 @@ namespace Dynamo.Graph.Workspaces
                 GetOrCreateAITurn(turnId).ConnectorAdded(
                     AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
             }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1309,6 +1311,8 @@ namespace Dynamo.Graph.Workspaces
                 GetOrCreateAITurn(turnId).ConnectorRemoved(
                     AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
             }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1443,7 +1447,8 @@ namespace Dynamo.Graph.Workspaces
         // Call under aiTurnsLock
         private static AITurnSummary BuildAITurnSummary(AITurnState turn)
         {
-            return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount, turn.RemovedConnectorCount, turn.IsUndone);
+            return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount,
+                turn.RemovedConnectorCount, turn.IsUndone, turn.RemovedStandaloneConnectorCount);
         }
 
         /// <summary>

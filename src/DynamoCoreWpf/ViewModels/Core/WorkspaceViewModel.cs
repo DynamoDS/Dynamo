@@ -1975,6 +1975,16 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, new ZoomEventArgs(new Point2D(minX, minY), maxX - minX, maxY - minY));
         }
 
+        /// <summary>
+        /// Centres the view on a node at 100% zoom, without changing the selection (DYN-11012).
+        /// </summary>
+        internal void CenterViewOnNode(NodeModel node)
+        {
+            if (node == null) return;
+
+            OnRequestZoomToFitView(this, new ZoomEventArgs(new Point2D(node.X, node.Y), node.Width, node.Height, 1.0));
+        }
+
         internal void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
