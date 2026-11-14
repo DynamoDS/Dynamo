@@ -887,6 +887,87 @@ namespace ProtoScript.Runners
             }
         }
 
+        /// <summary>
+        /// Handles a force-executed subtree that gained new statements ahead of statements it already had.
+        /// </summary>
+        /// <remarks>
+        /// Normally the new statements are compiled at new, higher PCs, while the unchanged ones are
+        /// force-executed at their old, lower PCs. The unchanged ones then run before the new ones even
+        /// though they come after them in the subtree. Enabling profiling does exactly this: it adds a
+        /// begin marker ahead of the node's statement and an end marker after it, so the node ran before
+        /// its begin marker and its time was credited to other nodes (DYN-11168).
+        ///
+        /// In that case this method schedules the unchanged statements' graph nodes for deactivation and
+        /// returns the whole subtree to compile in statement order: modified statements as they are, and
+        /// clones of the cached unchanged ones. This is the same clone-and-deactivate approach as the
+        /// force-recompile path in <see cref="GetDeltaAstListModified"/>.
+        /// </remarks>
+        /// <returns>
+        /// The statements to compile, in subtree order, or null when the subtree needs no reordering.
+        /// </returns>
+        private List<AssociativeNode> GetForceExecutedSubtreeInStatementOrder(Subtree subtree,
+            List<AssociativeNode> modifiedASTList, List<AssociativeNode> modifiedInputAST)
+        {
+            if (!subtree.ForceExecution || !modifiedASTList.Any() || modifiedInputAST.Any())
+            {
+                return null;
+            }
+
+            Subtree cachedSubTree;
+            if (!currentSubTreeList.TryGetValue(subtree.GUID, out cachedSubTree) || cachedSubTree.AstNodes == null)
+            {
+                return null;
+            }
+
+            var orderedAstList = new List<AssociativeNode>();
+            var replacedCachedNodes = new List<AssociativeNode>();
+            bool modifiedSeen = false;
+            bool unchangedAfterModified = false;
+
+            foreach (var node in subtree.AstNodes)
+            {
+                if (modifiedASTList.Any(m => ReferenceEquals(m, node)))
+                {
+                    modifiedSeen = true;
+                    orderedAstList.Add(node);
+                    continue;
+                }
+
+                // Unchanged function definitions stay as they are; only statements execute in order.
+                if (!(node is BinaryExpressionNode))
+                {
+                    continue;
+                }
+
+                var cachedNode = cachedSubTree.AstNodes.OfType<BinaryExpressionNode>()
+                    .FirstOrDefault(c => AreAstNodesContentEqual(c, node));
+                if (cachedNode == null)
+                {
+                    continue;
+                }
+
+                unchangedAfterModified |= modifiedSeen;
+                replacedCachedNodes.Add(cachedNode);
+
+                // Clone rather than compile the cached object: the compiler writes back to the ASTs it is
+                // given, and the cached object must stay intact for later delta comparisons. The clone keeps
+                // the guid, OriginalAstID and ExpressionUID, so deactivation and dirty-marking still match.
+                var clone = (BinaryExpressionNode)NodeUtils.Clone(cachedNode);
+                clone.guid = subtree.GUID;
+                clone.IsInputExpression = subtree.IsInput;
+                SetNestedLanguageBlockASTGuids(subtree.GUID, new List<ProtoCore.AST.Node>() { clone });
+                orderedAstList.Add(clone);
+            }
+
+            if (!unchangedAfterModified)
+            {
+                return null;
+            }
+
+            csData.RemovedBinaryNodesFromModification.AddRange(replacedCachedNodes);
+            return orderedAstList;
+        }
+
         private IEnumerable<AssociativeNode> GetDeltaAstListModified(List<Subtree> modifiedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
@@ -929,6 +1010,9 @@ namespace ProtoScript.Runners
                     nonInputStructurallyChanged.Add(st.GUID);
             }
             bool anyNonInputActuallyModified = nonInputStructurallyChanged.Count > 0;
+
+            // Set when GetForceExecutedSubtreeInStatementOrder recompiles a subtree (DYN-11168).
+            bool anySubtreeRecompiledInStatementOrder = false;
 
             for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
@@ -988,10 +1072,20 @@ namespace ProtoScript.Runners
                         }
                     }
 
+                    // If this subtree is force-executed and gained statements ahead of unchanged ones,
+                    // recompile it in statement order instead (DYN-11168).
+                    var orderedAstList = GetForceExecutedSubtreeInStatementOrder(
+                        modifiedSubTree, modifiedASTList, modifiedInputAST);
+                    if (orderedAstList != null)
+                    {
+                        subtreeWasForceRecompiled = true;
+                        anySubtreeRecompiledInStatementOrder = true;
+                    }
+
                     modifiedSubTree.ModifiedAstNodes.Clear();
                     modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
                     modifiedSubTree.ModifiedAstNodes.AddRange(modifiedInputAST);
-                    deltaAstList.AddRange(modifiedASTList);
+                    deltaAstList.AddRange(orderedAstList ?? modifiedASTList);
 
                     foreach (AssociativeNode node in modifiedASTList)
                     {
@@ -1055,7 +1149,127 @@ namespace ProtoScript.Runners
                 }
             }
 
+            // A subtree recompiled in statement order gets new, higher PCs. If a subtree that reads its
+            // variables was added to the delta list before it (for example, one already pending from an
+            // earlier edit), that reader would run, then be marked dirty and run again. Put the subtrees
+            // in dependency order. Only done when such a recompile happened, so other syncs are unchanged.
+            if (anySubtreeRecompiledInStatementOrder)
+            {
+                deltaAstList = OrderSubtreesByDependency(deltaAstList);
+            }
+
             return deltaAstList;
+        }
+
+        /// <summary>
+        /// Collects the names of the identifiers an AST reads.
+        /// </summary>
+        private sealed class IdentifierNameCollector : ProtoCore.SyntaxAnalysis.AssociativeAstVisitor
+        {
+            public readonly HashSet<string> Names = new HashSet<string>();
+
+            public override bool VisitIdentifierNode(IdentifierNode node)
+            {
+                if (!string.IsNullOrEmpty(node.Value))
+                {
+                    Names.Add(node.Value);
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Reorders a delta AST list so each subtree's statements come after the statements of the
+        /// subtrees whose variables they read (DYN-11168).
+        /// </summary>
+        /// <remarks>
+        /// Each subtree's statements are contiguous in the list and carry the subtree's guid, so the list
+        /// is split into runs of consecutive statements with the same guid; anything without a guid (a
+        /// function definition) stays with the run before it. The runs are then sorted stably: a run moves
+        /// only when it reads a variable another run defines, so independent subtrees keep their order. If
+        /// the dependencies form a cycle, the remaining runs keep their original order.
+        /// </remarks>
+        private static List<AssociativeNode> OrderSubtreesByDependency(List<AssociativeNode> deltaAstList)
+        {
+            var runs = new List<List<AssociativeNode>>();
+            Guid? currentGuid = null;
+            foreach (var node in deltaAstList)
+            {
+                var bnode = node as BinaryExpressionNode;
+                if (runs.Count == 0 || (bnode != null && bnode.guid != currentGuid))
+                {
+                    runs.Add(new List<AssociativeNode>());
+                    if (bnode != null)
+                    {
+                        currentGuid = bnode.guid;
+                    }
+                }
+                runs[runs.Count - 1].Add(node);
+            }
+
+            if (runs.Count < 2)
+            {
+                return deltaAstList;
+            }
+
+            var defined = new List<HashSet<string>>();
+            var read = new List<HashSet<string>>();
+            foreach (var run in runs)
+            {
+                var definedNames = new HashSet<string>();
+                var collector = new IdentifierNameCollector();
+                foreach (var bnode in run.OfType<BinaryExpressionNode>())
+                {
+                    if (bnode.LeftNode is IdentifierNode lhs && !string.IsNullOrEmpty(lhs.Value))
+                    {
+                        definedNames.Add(lhs.Value);
+                    }
+                    bnode.RightNode?.Accept(collector);
+                }
+                defined.Add(definedNames);
+                read.Add(collector.Names);
+            }
+
+            // dependsOn[i] holds the runs that run i reads from.
+            var dependsOn = new List<HashSet<int>>();
+            for (int i = 0; i < runs.Count; i++)
+            {
+                var deps = new HashSet<int>();
+                for (int j = 0; j < runs.Count; j++)
+                {
+                    if (i != j && read[i].Overlaps(defined[j]))
+                    {
+                        deps.Add(j);
+                    }
+                }
+                dependsOn.Add(deps);
+            }
+
+            var ordered = new List<AssociativeNode>(deltaAstList.Count);
+            var placed = new bool[runs.Count];
+            for (int count = 0; count < runs.Count; count++)
+            {
+                // The first unplaced run whose dependencies are all placed; on a cycle, the first unplaced run.
+                int next = -1;
+                int firstUnplaced = -1;
+                for (int i = 0; i < runs.Count; i++)
+                {
+                    if (placed[i]) continue;
+                    if (firstUnplaced < 0) firstUnplaced = i;
+                    if (dependsOn[i].All(d => placed[d]))
+                    {
+                        next = i;
+                        break;
+                    }
+                }
+                if (next < 0)
+                {
+                    next = firstUnplaced;
+                }
+                placed[next] = true;
+                ordered.AddRange(runs[next]);
+            }
+            return ordered;
         }
 
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)

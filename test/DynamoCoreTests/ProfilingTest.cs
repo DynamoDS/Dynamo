@@ -5,7 +5,11 @@ using System.Linq;
 
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using FFITarget;
 using NUnit.Framework;
 using System.Threading;
 
@@ -19,6 +23,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("VMDataBridge.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -301,5 +306,184 @@ namespace Dynamo.Tests
                 Assert.Less(executionTime.TotalMilliseconds, pauseTime.TotalMilliseconds);
             }
         }
+
+        #region DYN-11168: a node must execute between its own NodeExecutionBegin and NodeExecutionEnd
+
+        /// <summary>
+        /// The ProfilingCounter value seen when a node's first NodeExecutionBegin and the first
+        /// NodeExecutionEnd after it fired. A node that executed between the two sees End = Begin + 1.
+        /// </summary>
+        private sealed class CounterAtEvents
+        {
+            public int? AtBegin;
+            public int? AtEnd;
+        }
+
+        private static Dictionary<Guid, CounterAtEvents> RecordCounterAtEvents(IEnumerable<NodeModel> nodes)
+        {
+            var seen = nodes.ToDictionary(n => n.GUID, _ => new CounterAtEvents());
+            foreach (var node in nodes)
+            {
+                node.NodeExecutionBegin += n =>
+                {
+                    var s = seen[n.GUID];
+                    if (s.AtBegin == null) s.AtBegin = ProfilingCounter.Count;
+                };
+                node.NodeExecutionEnd += n =>
+                {
+                    var s = seen[n.GUID];
+                    if (s.AtBegin != null && s.AtEnd == null) s.AtEnd = ProfilingCounter.Count;
+                };
+            }
+            return seen;
+        }
+
+        /// <summary>
+        /// Resets the counter and puts the workspace in Manual, so nodes run only on BeginRun. In Automatic,
+        /// creating a node or enabling profiling would run the graph straight away.
+        /// </summary>
+        private void StartManualCounterTest()
+        {
+            CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First().RunSettings.RunType = RunType.Manual;
+            ProfilingCounter.Reset();
+        }
+
+        private DSFunction AddCounterNode(string mangledName)
+        {
+            var node = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor(mangledName));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            return node;
+        }
+
+        private void EnableProfiling()
+        {
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First();
+            CurrentDynamoModel.EngineController.EnableProfiling(true, homeWorkspace, homeWorkspace.Nodes);
+        }
+
+        private static void AssertExecutedBetweenBeginAndEnd(CounterAtEvents seen, string what)
+        {
+            Assert.IsNotNull(seen.AtBegin, $"{what}: NodeExecutionBegin did not fire");
+            Assert.IsNotNull(seen.AtEnd, $"{what}: NodeExecutionEnd did not fire after NodeExecutionBegin");
+            Assert.AreEqual(seen.AtBegin + 1, seen.AtEnd,
+                $"{what}: the node must execute exactly once between its NodeExecutionBegin (counter {seen.AtBegin}) " +
+                $"and NodeExecutionEnd (counter {seen.AtEnd}); otherwise its time is credited to other nodes");
+        }
+
+        [Test]
+        public void ProfiledRun_OfNeverRunGraph_NodeExecutesBetweenItsBeginAndEnd()
+        {
+            // Control case: profiling a graph that has never run attributes the node correctly.
+            StartManualCounterTest();
+            var node = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+
+            EnableProfiling();
+            var seen = RecordCounterAtEvents(new[] { node });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[node.GUID], "no-input node, profiled first run");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_NoInputNodeExecutesBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: one run without profiling, then a profiled run. The node's statement re-executes
+            // before its begin marker, so its time lands outside its own begin/end window.
+            StartManualCounterTest();
+            var node = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+            BeginRun();
+            Assert.AreEqual(1, ProfilingCounter.Count, "the unprofiled run should execute the node once");
+
+            EnableProfiling();
+            var seen = RecordCounterAtEvents(new[] { node });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[node.GUID], "no-input node, profiled run after an unprofiled run");
+            Assert.AreEqual(2, ProfilingCounter.Count, "the profiled run should execute the node exactly once");
+        }
+
+        [Test]
+        public void ProfiledRun_RepeatedAfterUnprofiledRun_NoInputNodeStillExecutesBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: once triggered, the bad order persists for every later profiled run.
+            StartManualCounterTest();
+            var node = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+            BeginRun();
+
+            EnableProfiling();
+            BeginRun();
+
+            node.MarkNodeAsModified(true);
+            var seen = RecordCounterAtEvents(new[] { node });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[node.GUID], "no-input node, second profiled run after an unprofiled run");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_NodeWithInputExecutesBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: same sequence for a node with an input, wired downstream of the no-input node.
+            StartManualCounterTest();
+            var upstream = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+            var downstream = AddCounterNode("FFITarget.ProfilingCounter.IncrementAfter@int");
+            ConnectorModel.Make(upstream, downstream, 0, 0);
+            BeginRun();
+            Assert.AreEqual(2, ProfilingCounter.Count, "the unprofiled run should execute both nodes once");
+
+            EnableProfiling();
+            var seen = RecordCounterAtEvents(new NodeModel[] { upstream, downstream });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[downstream.GUID], "node with an input, profiled run after an unprofiled run");
+            Assert.AreEqual(4, ProfilingCounter.Count, "the profiled run should execute each node exactly once");
+        }
+
+        private DoubleInput AddNumberNode(string value)
+        {
+            var node = new DoubleInput { Value = value };
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            return node;
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_NodeFedByNumberInputExecutesOnceBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: an input node (Number) upstream must not make the downstream node run twice.
+            StartManualCounterTest();
+            var number = AddNumberNode("42");
+            var downstream = AddCounterNode("FFITarget.ProfilingCounter.IncrementAfter@int");
+            ConnectorModel.Make(number, downstream, 0, 0);
+            BeginRun();
+            Assert.AreEqual(1, ProfilingCounter.Count, "the unprofiled run should execute the node once");
+
+            EnableProfiling();
+            var seen = RecordCounterAtEvents(new NodeModel[] { downstream });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[downstream.GUID], "node fed by a Number node, profiled run after an unprofiled run");
+            Assert.AreEqual(2, ProfilingCounter.Count, "the profiled run should execute the node exactly once");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRunThenConnect_NodeFedByNumberInputExecutesOnceBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: same, but the wire is added after the unprofiled run (as the MCP profile_workspace test does).
+            StartManualCounterTest();
+            var number = AddNumberNode("42");
+            var downstream = AddCounterNode("FFITarget.ProfilingCounter.IncrementAfter@int");
+            BeginRun();
+            var countAfterUnprofiledRun = ProfilingCounter.Count;
+            ConnectorModel.Make(number, downstream, 0, 0);
+
+            EnableProfiling();
+            var seen = RecordCounterAtEvents(new NodeModel[] { downstream });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[downstream.GUID], "node fed by a Number node connected after an unprofiled run");
+            Assert.AreEqual(countAfterUnprofiledRun + 1, ProfilingCounter.Count, "the profiled run should execute the node exactly once");
+        }
+
+        #endregion
     }
 }
