@@ -885,8 +885,6 @@ namespace Dynamo.Views
         void vm_ZoomToFitView(object sender, EventArgs e)
         {
             ZoomEventArgs zoomArgs = (e as ZoomEventArgs);
-
-            double viewportPadding = FitViewportPadding;
             var (fitWidth, fitHeight) = GetFitArea();
 
             // Find the zoom required for fitview
@@ -900,15 +898,11 @@ namespace Dynamo.Views
                 scaleRequired = scaleX > scaleY ? scaleY : scaleX; // get least zoom required
             }
 
-            // Limit Zoom
-            if (scaleRequired > WorkspaceViewModel.ZOOM_MAXIMUM)
-                scaleRequired = WorkspaceViewModel.ZOOM_MAXIMUM;
-            else if (scaleRequired < WorkspaceViewModel.ZOOM_MINIMUM)
-                scaleRequired = WorkspaceViewModel.ZOOM_MINIMUM;
+            scaleRequired = WorkspaceViewModel.ClampZoom(scaleRequired);
 
             // Center position
-            double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
-            double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
+            double centerOffsetX = FitViewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
+            double centerOffsetY = FitViewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
 
             var resultOffset = new Point2D();
             resultOffset.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
