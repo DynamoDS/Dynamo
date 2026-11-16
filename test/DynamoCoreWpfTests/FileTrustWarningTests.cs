@@ -1,11 +1,14 @@
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using Dynamo.Exceptions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.FileTrust;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -228,6 +231,14 @@ namespace DynamoCoreWpfTests
             WorkspaceSaveEventHandler cancelSave = (o, e) => { };
             ViewModel.RequestUserSaveWorkflow += cancelSave;
 
+            // DynamoView also handles RequestUserSaveWorkflow and, with IsTestMode off, shows a real
+            // modal "save changes?" box that nothing dismisses in a test run. Answer it with Cancel.
+            var saveDialog = new Mock<MessageBoxService.IMessageBox>();
+            saveDialog.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.Cancel);
+            MessageBoxService.OverrideMessageBoxDuringTests(saveDialog.Object);
+
             DynamoModel.IsTestMode = false;
             try
             {
@@ -237,6 +248,7 @@ namespace DynamoCoreWpfTests
             {
                 DynamoModel.IsTestMode = true;
                 ViewModel.RequestUserSaveWorkflow -= cancelSave;
+                MessageBoxService.OverrideMessageBoxDuringTests(null);
             }
 
             Assert.AreNotEqual(path, ViewModel.HomeSpace.FileName);

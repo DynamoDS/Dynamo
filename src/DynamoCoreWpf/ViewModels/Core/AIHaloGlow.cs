@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Media.Animation;
 
 namespace Dynamo.ViewModels
@@ -21,9 +22,15 @@ namespace Dynamo.ViewModels
     /// and one rebuilt after the fade-out shows no halo.
     /// </para>
     /// <para>
-    /// Nodes touched in the same AI edit (one <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.BeginAIEdit"/>
-    /// scope, which DynamoMCP opens per action) start 100 ms apart, in the order they were touched,
-    /// up to 1 s in total.
+    /// The glow clock (DYN-11005, Figma node 7:989) makes sure changes made off-screen are not
+    /// missed. A new glow waits until the node is on screen (<see cref="Begin"/>). Nodes that come
+    /// on screen together start 100 ms apart, in the order they were touched, up to 1 s in total.
+    /// Hovering the node holds the glow at its current value (<see cref="Hold"/>,
+    /// <see cref="Release"/>); only time while not held counts. A node touched again while glowing
+    /// restarts when the next on-screen check finds it on screen, from its current strength
+    /// (<see cref="Retouch"/>, <see cref="Restart"/>). If it has left the screen, the glow waits
+    /// again until the node is back (<see cref="WaitAgain"/>), so a later change is not missed
+    /// either. Esc on a hovered node clears its AI change record, which removes the glow and the badge.
     /// </para>
     /// </remarks>
     internal sealed class AIHaloGlow
@@ -76,12 +83,13 @@ namespace Dynamo.ViewModels
         internal const double HoldLevel = 0.70;
 
         /// <summary>
-        /// Gap between the starts of nodes touched in the same AI edit.
+        /// Gap between the starts of nodes that come on screen together.
         /// </summary>
         internal static readonly TimeSpan StaggerStep = TimeSpan.FromMilliseconds(100);
 
         /// <summary>
-        /// Longest stagger delay; from the 11th node of an AI edit on, every node starts at this delay.
+        /// Longest stagger delay; from the 11th node that comes on screen together on, every node
+        /// starts at this delay.
         /// </summary>
         internal static readonly TimeSpan MaxStagger = TimeSpan.FromSeconds(1);
 
@@ -109,95 +117,353 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        private AIHaloGlow(TimeSpan startedAt, TimeSpan delay, double strength, bool breathes)
+        #region State
+
+        private static long lastTouchOrder;
+
+        // The node's view model may be updated off the UI thread (DynamoMCP edits), while hover,
+        // Esc and the on-screen check run on it. Every field below is read and written under this lock.
+        private readonly object sync = new object();
+
+        private double strength;
+        private bool breathes;
+        private TimeSpan delay;
+        private bool isStarted;
+        private bool isHeld;
+        private bool isRestartPending;
+        private int version;
+
+        private int startOpacityVersion = -1;
+        private double startOpacity;
+
+        // Time on the timeline that has already counted, and since when the clock has been running
+        private TimeSpan countedBefore;
+        private TimeSpan? runningSince;
+
+        private AIHaloGlow(double strength, bool breathes)
         {
-            StartedAt = startedAt;
-            Delay = delay;
-            Strength = strength;
-            Breathes = breathes;
+            this.strength = strength;
+            this.breathes = breathes;
+            TouchOrder = Interlocked.Increment(ref lastTouchOrder);
         }
 
         /// <summary>
-        /// When the node was touched, on <see cref="Now"/>.
+        /// Creates a glow for a node the AI Assistant has just touched. It waits until the node is on
+        /// screen; see <see cref="Begin"/>.
         /// </summary>
-        internal TimeSpan StartedAt { get; }
+        /// <param name="strength">Peak opacity of the halo, from 0 to 1.</param>
+        /// <param name="breathes">True for the breathing timeline (placed or modified nodes).</param>
+        internal static AIHaloGlow Create(double strength, bool breathes)
+        {
+            return new AIHaloGlow(strength, breathes);
+        }
 
         /// <summary>
-        /// How long the glow waits before fading in, so nodes touched in the same AI edit start one
-        /// after another. Zero for the first node of an AI edit.
+        /// The order in which glows were created. Nodes that come on screen together are staggered
+        /// in this order, which is the order the AI Assistant touched them.
         /// </summary>
-        internal TimeSpan Delay { get; }
+        internal long TouchOrder { get; }
 
         /// <summary>
         /// Peak opacity of the halo: 1 for placed or modified nodes, 0.4 for moved ones.
         /// </summary>
-        internal double Strength { get; }
+        internal double Strength
+        {
+            get { lock (sync) return strength; }
+        }
 
         /// <summary>
         /// True for the breathing timeline; false for fade in, hold, fade out.
         /// </summary>
-        internal bool Breathes { get; }
+        internal bool Breathes
+        {
+            get { lock (sync) return breathes; }
+        }
 
         /// <summary>
-        /// From the touch to the end of the fade-out, including <see cref="Delay"/>.
+        /// How long the glow waits before fading in, so nodes that come on screen together start one
+        /// after another. Zero until the glow begins, for the first node of a group, and after a restart.
         /// </summary>
-        internal TimeSpan Duration => Delay + FadeOutEnd;
+        internal TimeSpan Delay
+        {
+            get { lock (sync) return delay; }
+        }
 
         /// <summary>
-        /// Time since the node was touched.
+        /// Changes each time the glow's timeline starts again or stops to wait (<see cref="Begin"/>,
+        /// <see cref="Restart"/>, <see cref="WaitAgain"/>), so a view knows to build a new animation.
+        /// Holding, releasing and <see cref="Retouch"/> do not change it.
+        /// </summary>
+        internal int Version
+        {
+            get { lock (sync) return version; }
+        }
+
+        /// <summary>
+        /// True while the glow waits for the node to come on screen.
+        /// </summary>
+        internal bool IsWaiting
+        {
+            get { lock (sync) return !isStarted; }
+        }
+
+        /// <summary>
+        /// True when the node was touched again while glowing, until the next on-screen check
+        /// restarts the glow or sends it back to waiting. The current glow keeps playing meanwhile.
+        /// </summary>
+        internal bool IsRestartPending
+        {
+            get { lock (sync) return isRestartPending; }
+        }
+
+        /// <summary>
+        /// True once the node has been on screen and the clock has started.
+        /// </summary>
+        internal bool IsStarted
+        {
+            get { lock (sync) return isStarted; }
+        }
+
+        /// <summary>
+        /// True while the glow is held at its current value, because the node is hovered.
+        /// </summary>
+        internal bool IsHeld
+        {
+            get { lock (sync) return isHeld; }
+        }
+
+        /// <summary>
+        /// From the start of the clock to the end of the fade-out, including <see cref="Delay"/>.
+        /// </summary>
+        internal TimeSpan Duration
+        {
+            get { lock (sync) return delay + FadeOutEnd; }
+        }
+
+        /// <summary>
+        /// Time on the glow's timeline: time since the clock started (or restarted), not counting
+        /// time spent held. Zero while waiting.
         /// </summary>
         internal TimeSpan Elapsed
         {
-            get
-            {
-                var elapsed = Now() - StartedAt;
-                return elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
-            }
+            get { lock (sync) return ElapsedUnlocked(); }
         }
 
         /// <summary>
         /// True once the glow has faded out. The node then shows its badge only.
+        /// A glow with a restart pending is not finished, even if its current timeline has ended:
+        /// the newer change still has to be seen.
         /// </summary>
-        internal bool IsFinished => Elapsed >= Duration;
-
-        /// <summary>
-        /// Starts a glow for a node touched now. Nodes touched in the same AI edit are staggered;
-        /// a node touched outside one starts without delay.
-        /// </summary>
-        /// <param name="aiEdit">The workspace's <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.CurrentAIEdit"/>.</param>
-        /// <param name="strength">Peak opacity of the halo, from 0 to 1.</param>
-        /// <param name="breathes">True for the breathing timeline (placed or modified nodes).</param>
-        internal static AIHaloGlow Start(int aiEdit, double strength, bool breathes)
+        internal bool IsFinished
         {
-            return new AIHaloGlow(Now(), NextStaggerDelay(aiEdit), strength, breathes);
+            get
+            {
+                lock (sync)
+                {
+                    return isStarted && !isRestartPending && ElapsedUnlocked() >= delay + FadeOutEnd;
+                }
+            }
         }
 
         /// <summary>
-        /// This glow at a new strength, for example a moved node that is modified while glowing. Keeps
-        /// its start time and its place in the stagger.
+        /// True while the halo is on screen: the clock has started and the glow has not finished.
         /// </summary>
-        internal AIHaloGlow WithStrength(double strength, bool breathes)
+        internal bool IsGlowing
         {
-            return new AIHaloGlow(StartedAt, Delay, strength, breathes);
+            get
+            {
+                lock (sync)
+                {
+                    return isStarted && ElapsedUnlocked() < delay + FadeOutEnd;
+                }
+            }
+        }
+
+        private TimeSpan ElapsedUnlocked()
+        {
+            var elapsed = countedBefore;
+            if (runningSince.HasValue)
+            {
+                var running = Now() - runningSince.Value;
+                if (running > TimeSpan.Zero) elapsed += running;
+            }
+            return elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
         }
 
         /// <summary>
-        /// Builds the opacity animation for this glow, with time 0 at <see cref="StartedAt"/>.
+        /// The opacity this timeline version starts from: set by the first view to play it, reused by any rebuilt view.
+        /// </summary>
+        internal double StartOpacityFor(int forVersion, double currentOpacity)
+        {
+            lock (sync)
+            {
+                if (startOpacityVersion != forVersion)
+                {
+                    startOpacityVersion = forVersion;
+                    startOpacity = currentOpacity;
+                }
+                return startOpacity;
+            }
+        }
+
+        #endregion
+
+        #region Clock control
+
+        /// <summary>
+        /// Starts the clock when the node first comes on screen. Does nothing if it has already
+        /// started. A held glow starts held, and runs once released.
+        /// </summary>
+        /// <param name="staggerDelay">This node's place in the group that came on screen together; see <see cref="StaggerDelay"/>.</param>
+        /// <returns>True if the clock started.</returns>
+        internal bool Begin(TimeSpan staggerDelay)
+        {
+            lock (sync)
+            {
+                if (isStarted) return false;
+
+                isStarted = true;
+                delay = staggerDelay < TimeSpan.Zero ? TimeSpan.Zero : staggerDelay;
+                countedBefore = TimeSpan.Zero;
+                runningSince = isHeld ? (TimeSpan?)null : Now();
+                version++;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Holds the glow at its current value while the node is hovered. A waiting glow is marked
+        /// as held, so it starts held if the node comes on screen under the mouse.
+        /// </summary>
+        /// <returns>True if this changed the glow.</returns>
+        internal bool Hold()
+        {
+            lock (sync)
+            {
+                if (isHeld) return false;
+
+                isHeld = true;
+                if (runningSince.HasValue)
+                {
+                    countedBefore = ElapsedUnlocked();
+                    runningSince = null;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Lets a held glow run again from where it was held.
+        /// </summary>
+        /// <returns>True if this changed the glow.</returns>
+        internal bool Release()
+        {
+            lock (sync)
+            {
+                if (!isHeld) return false;
+
+                isHeld = false;
+                if (isStarted && !runningSince.HasValue)
+                {
+                    runningSince = Now();
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// The AI Assistant touched the node again while this glow is waiting or running. The glow
+        /// takes the new strength, for example a moved node that is then modified. A waiting glow
+        /// keeps waiting. A running glow keeps playing and is marked <see cref="IsRestartPending"/>;
+        /// the next on-screen check then calls <see cref="Restart"/> if the node is on screen, or
+        /// <see cref="WaitAgain"/> if it has left.
+        /// </summary>
+        /// <param name="newStrength">Peak opacity of the halo, from 0 to 1.</param>
+        /// <param name="newBreathes">True for the breathing timeline (placed or modified nodes).</param>
+        internal void Retouch(double newStrength, bool newBreathes)
+        {
+            lock (sync)
+            {
+                strength = newStrength;
+                breathes = newBreathes;
+                if (isStarted)
+                {
+                    isRestartPending = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Starts a glow with a restart pending again from the beginning, without a stagger delay,
+        /// because its node is on screen. The view starts it from the halo's current strength, so it
+        /// never dips to zero. A held glow restarts held.
+        /// </summary>
+        /// <returns>True if the glow restarted.</returns>
+        internal bool Restart()
+        {
+            lock (sync)
+            {
+                if (!isRestartPending) return false;
+
+                isRestartPending = false;
+                delay = TimeSpan.Zero;
+                countedBefore = TimeSpan.Zero;
+                runningSince = isHeld ? (TimeSpan?)null : Now();
+                version++;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Sends a glow with a restart pending back to waiting, because its node has left the
+        /// screen. The halo goes away, and the glow starts again, with the usual stagger, the next
+        /// time the node comes on screen (<see cref="Begin"/>).
+        /// </summary>
+        /// <returns>True if the glow is waiting again.</returns>
+        internal bool WaitAgain()
+        {
+            lock (sync)
+            {
+                if (!isRestartPending) return false;
+
+                isRestartPending = false;
+                isStarted = false;
+                delay = TimeSpan.Zero;
+                countedBefore = TimeSpan.Zero;
+                runningSince = null;
+                version++;
+                return true;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Builds the opacity animation for this glow, with time 0 at the start of its clock.
         /// Values already include <see cref="Strength"/>.
         /// </summary>
         /// <param name="startOpacity">
         /// Opacity to start from. Zero for a new halo; the halo's current opacity when a running glow
-        /// is replaced (a moved node that is then modified), so the halo never dips to zero.
+        /// restarts (<see cref="Restart"/>), so the halo never dips to zero.
         /// </param>
         internal DoubleAnimationUsingKeyFrames CreateAnimation(double startOpacity = 0)
         {
+            TimeSpan d;
+            double s;
+            bool b;
+            lock (sync)
+            {
+                d = delay;
+                s = strength;
+                b = breathes;
+            }
+
             var animation = new DoubleAnimationUsingKeyFrames
             {
-                Duration = new System.Windows.Duration(Duration),
+                Duration = new System.Windows.Duration(d + FadeOutEnd),
                 FillBehavior = FillBehavior.HoldEnd
             };
             var frames = animation.KeyFrames;
-            var d = Delay;
 
             // Hold the start value while waiting for this node's turn in the stagger
             frames.Add(new DiscreteDoubleKeyFrame(startOpacity, KeyTime.FromTimeSpan(TimeSpan.Zero)));
@@ -207,9 +473,9 @@ namespace Dynamo.ViewModels
             }
 
             // Fade in
-            frames.Add(Spline(1.0, d + FadeInEnd, EaseOut));
+            frames.Add(Spline(s, 1.0, d + FadeInEnd, EaseOut));
 
-            if (Breathes)
+            if (b)
             {
                 // Breaths: each is 1 s down to 65% and 1 s back up to 100%
                 var half = TimeSpan.FromTicks(BreathLength.Ticks / 2);
@@ -217,33 +483,33 @@ namespace Dynamo.ViewModels
                 for (var i = 0; i < BreathCount; i++)
                 {
                     time += half;
-                    frames.Add(Spline(BreathLow, time, EaseInOut));
+                    frames.Add(Spline(s, BreathLow, time, EaseInOut));
                     time += half;
-                    frames.Add(Spline(1.0, time, EaseInOut));
+                    frames.Add(Spline(s, 1.0, time, EaseInOut));
                 }
 
                 // Settle to the hold level
-                frames.Add(Spline(HoldLevel, d + SettleEnd, EaseInOut));
+                frames.Add(Spline(s, HoldLevel, d + SettleEnd, EaseInOut));
 
                 // Steady hold
-                frames.Add(new LinearDoubleKeyFrame(HoldLevel * Strength, KeyTime.FromTimeSpan(d + HoldEnd)));
+                frames.Add(new LinearDoubleKeyFrame(HoldLevel * s, KeyTime.FromTimeSpan(d + HoldEnd)));
             }
             else
             {
                 // Steady hold at full strength (no breaths, no settle)
-                frames.Add(new LinearDoubleKeyFrame(Strength, KeyTime.FromTimeSpan(d + HoldEnd)));
+                frames.Add(new LinearDoubleKeyFrame(s, KeyTime.FromTimeSpan(d + HoldEnd)));
             }
 
             // Fade out
-            frames.Add(Spline(0, d + FadeOutEnd, EaseInOut));
+            frames.Add(Spline(s, 0, d + FadeOutEnd, EaseInOut));
 
             animation.Freeze();
             return animation;
         }
 
-        private SplineDoubleKeyFrame Spline(double level, TimeSpan time, KeySpline easing)
+        private static SplineDoubleKeyFrame Spline(double strength, double level, TimeSpan time, KeySpline easing)
         {
-            return new SplineDoubleKeyFrame(level * Strength, KeyTime.FromTimeSpan(time), easing);
+            return new SplineDoubleKeyFrame(level * strength, KeyTime.FromTimeSpan(time), easing);
         }
 
         private static KeySpline Frozen(KeySpline spline)
@@ -252,34 +518,15 @@ namespace Dynamo.ViewModels
             return spline;
         }
 
-        #region Stagger
-
-        private static readonly object staggerLock = new object();
-        private static int staggerAIEdit;
-        private static int staggerCount;
-
         /// <summary>
-        /// The delay for the next node touched in this AI edit. Only the latest edit is tracked;
-        /// AI edits run one after another.
+        /// The delay for a node's place in a group that came on screen together: 100 ms per place,
+        /// up to 1 s.
         /// </summary>
-        private static TimeSpan NextStaggerDelay(int aiEdit)
+        /// <param name="place">0 for the first node of the group.</param>
+        internal static TimeSpan StaggerDelay(int place)
         {
-            if (aiEdit == 0) return TimeSpan.Zero;
-
-            lock (staggerLock)
-            {
-                if (aiEdit != staggerAIEdit)
-                {
-                    staggerAIEdit = aiEdit;
-                    staggerCount = 0;
-                }
-
-                var delay = TimeSpan.FromTicks(Math.Min(StaggerStep.Ticks * staggerCount, MaxStagger.Ticks));
-                staggerCount++;
-                return delay;
-            }
+            if (place <= 0) return TimeSpan.Zero;
+            return TimeSpan.FromTicks(Math.Min(StaggerStep.Ticks * place, MaxStagger.Ticks));
         }
-
-        #endregion
     }
 }

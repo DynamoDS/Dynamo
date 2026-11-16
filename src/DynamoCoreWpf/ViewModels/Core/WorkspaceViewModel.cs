@@ -170,6 +170,111 @@ namespace Dynamo.ViewModels
             RequestHideAllPopup?.Invoke(param);
         }
 
+        #region AI-touched glow clock (DYN-11005)
+
+        /// <summary>
+        /// Share of a node that must be on screen before its glow starts.
+        /// </summary>
+        internal const double AIHaloVisibleShare = 0.5;
+
+        /// <summary>
+        /// Raised when a node has a glow waiting to come on screen, or a glow with a restart pending,
+        /// so the view checks what is on screen. May be raised off the UI thread.
+        /// </summary>
+        internal event Action AIHaloGlowWaiting;
+
+        internal void OnAIHaloGlowWaiting()
+        {
+            AIHaloGlowWaiting?.Invoke();
+        }
+
+        /// <summary>
+        /// Starts the clock of every waiting glow whose node is on screen: at least half of it inside
+        /// <paramref name="visibleBounds"/>, and not hidden or collapsed in a group. The nodes that start
+        /// together are staggered 100 ms apart, in the order the AI Assistant touched them, up to 1 s.
+        /// A node touched again while glowing restarts straight away if it is on screen, and waits
+        /// again if it has left, so the later change is not missed either. Call on the UI thread.
+        /// </summary>
+        /// <param name="visibleBounds">The part of the canvas on screen, in canvas coordinates.</param>
+        /// <returns>The nodes whose glow started from waiting, in the order they start.</returns>
+        internal IReadOnlyList<NodeViewModel> StartAIHaloGlowsInView(Rect visibleBounds)
+        {
+            if (visibleBounds.IsEmpty || visibleBounds.Width <= 0 || visibleBounds.Height <= 0)
+            {
+                return Array.Empty<NodeViewModel>();
+            }
+
+            foreach (var node in Nodes.Where(n => n.AIHaloGlow?.IsRestartPending == true).ToList())
+            {
+                if (IsOnScreen(node, visibleBounds))
+                {
+                    node.RestartAIHaloGlow();
+                }
+                else
+                {
+                    node.WaitAIHaloGlowAgain();
+                }
+            }
+
+            var starting = Nodes
+                .Where(n => n.AIHaloGlow?.IsWaiting == true && IsOnScreen(n, visibleBounds))
+                .OrderBy(n => n.AIHaloGlow.TouchOrder)
+                .ToList();
+
+            var started = new List<NodeViewModel>();
+            foreach (var node in starting)
+            {
+                if (node.BeginAIHaloGlow(AIHaloGlow.StaggerDelay(started.Count)))
+                {
+                    started.Add(node);
+                }
+            }
+            return started;
+        }
+
+        private static bool IsOnScreen(NodeViewModel node, Rect visibleBounds)
+        {
+            if (node.IsHidden || node.IsCollapsed) return false;
+
+            var width = node.NodeModel.Width;
+            var height = node.NodeModel.Height;
+
+            // Not measured yet: use its top-left corner
+            if (width <= 0 || height <= 0)
+            {
+                return visibleBounds.Contains(new Point(node.Left, node.Top));
+            }
+
+            var bounds = new Rect(node.Left, node.Top, width, height);
+            var inView = Rect.Intersect(bounds, visibleBounds);
+            if (inView.IsEmpty) return false;
+
+            return inView.Width * inView.Height >= AIHaloVisibleShare * width * height;
+        }
+
+        /// <summary>
+        /// Clears the AI highlight (halo and badge) of the node under the mouse (Esc). If that node is
+        /// selected, clears every selected node that shows one. The selection itself is kept.
+        /// </summary>
+        /// <returns>True if the hovered node had a halo or a badge.</returns>
+        internal bool ClearHoveredAIHighlight()
+        {
+            var hovered = Nodes.FirstOrDefault(n => n.IsAIHaloHovered && n.HasVisibleAIHighlight);
+            if (hovered == null) return false;
+
+            var targets = hovered.IsSelected
+                ? Nodes.Where(n => n.IsSelected && n.HasVisibleAIHighlight).ToList()
+                : new List<NodeViewModel> { hovered };
+
+            foreach (var node in targets)
+            {
+                node.ClearAIHighlight();
+            }
+            return true;
+        }
+
+        #endregion
+
         internal event Action RequestNodeAutoCompleteSearch;
         internal event Action<PortViewModel> RequestNodeAutoCompleteBar;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
@@ -296,6 +401,10 @@ namespace Dynamo.ViewModels
 
         [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
+
+        [JsonIgnore]
+        internal AIChangeSummaryChipViewModel AIChangeSummaryChip { get; private set; }
+
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
@@ -675,6 +784,8 @@ namespace Dynamo.ViewModels
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
             geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
 
+            AIChangeSummaryChip = new AIChangeSummaryChipViewModel(this);
+
             DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
             //if we've already retrieved flags, grab the value,
             zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
@@ -722,6 +833,8 @@ namespace Dynamo.ViewModels
 
         public override void Dispose()
         {
+            AIChangeSummaryChip?.Dispose();
+
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
@@ -1842,6 +1955,24 @@ namespace Dynamo.ViewModels
             }
 
             OnRequestZoomToFitView(this, zoomArgs);
+        }
+
+        /// <summary>
+        /// Zooms to fit the given nodes like the Fit View button's first press, without changing the selection.
+        /// </summary>
+        internal void FitViewToNodes(IEnumerable<NodeModel> nodes)
+        {
+            var models = nodes?.Where(n => n != null).ToList();
+            if (models == null || models.Count == 0) return;
+
+            var minX = models.Min(n => n.X);
+            var minY = models.Min(n => n.Y);
+            var maxX = models.Max(n => n.X + n.Width);
+            var maxY = models.Max(n => n.Y + n.Height);
+
+            if (maxX <= minX || maxY <= minY) return;
+
+            OnRequestZoomToFitView(this, new ZoomEventArgs(new Point2D(minX, minY), maxX - minX, maxY - minY));
         }
 
         internal void ResetFitViewToggle(object o)

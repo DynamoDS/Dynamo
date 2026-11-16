@@ -491,8 +491,33 @@ namespace Dynamo.Wpf.Views
             }            
         }
 
+        /// <summary>
+        /// Exporting saves the current settings over the profile first, which would replace an unreadable one,
+        /// so notify the user and report that the export must stop.
+        /// </summary>
+        /// <returns>True if the profile could not be read and the export must stop.</returns>
+        internal bool StopExportIfProfileIsUnreadable()
+        {
+            if (!dynViewModel.PreferenceSettings.IsProfileUnreadable)
+            {
+                return false;
+            }
+
+            dynViewModel.Model.Logger.LogNotification(
+                "Preference Settings",
+                Res.ExportSettingsDialogTitle,
+                Res.ExportSettingsFailedMessage,
+                string.Format(Res.ExportSettingsUnreadableFileMessage, dynViewModel.Model.PathManager.PreferenceFilePath));
+            return true;
+        }
+
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (StopExportIfProfileIsUnreadable())
+            {
+                return;
+            }
+
             var dialog = new DynamoFolderBrowserDialog
             {
                 Title = Res.ExportSettingsDialogTitle,

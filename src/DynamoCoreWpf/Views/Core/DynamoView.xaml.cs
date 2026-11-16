@@ -75,6 +75,7 @@ namespace Dynamo.Controls
         internal const string McpViewExtensionId = "FAB268A8-6C83-4389-8AB8-F9AE92D6091E";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
+        private bool escClearedAIHighlight = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private double restoreWidth = 0;
@@ -2470,7 +2471,27 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (e.Key != Key.Escape || !IsMouseOver) return;
+            if (e.Key != Key.Escape) return;
+
+            // A new press starts fresh, even if the last release never reached the window
+            if (!e.IsRepeat) escClearedAIHighlight = false;
+
+            // Escape-hold starts geometry preview (nodes fade). Never do that while typing
+            // in a code block / AvalonEdit / text box — PreviewKeyDown Handled alone is not
+            // reliable here because this handler does not go through KeyBindings.
+            if (IsKeyboardFocusInTextEditor(e.OriginalSource as DependencyObject))
+                return;
+
+            // Esc while hovering a node with a halo or badge clears its AI highlight (and the rest of the
+            // selection's, if the node is selected), but only when Esc has no other job. Controls that use
+            // Esc themselves (combo boxes, menus, text boxes) handle it before it gets here.
+            if (escClearedAIHighlight || TryClearHoveredAIHighlight())
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (!IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 
@@ -2484,7 +2505,8 @@ namespace Dynamo.Controls
                 IsEscKeyPressed = true;
                 dynamoViewModel.UIDispatcher.DelayInvoke(navigationInterval, () =>
                 {
-                    if (IsEscKeyPressed)
+                    // Re-check focus: editor may still be focused after the delay.
+                    if (IsEscKeyPressed && !IsKeyboardFocusInTextEditor(null))
                     {
                         vm.NavigationKeyIsDown = true;
                     }
@@ -2531,9 +2553,86 @@ namespace Dynamo.Controls
             return nodeView?.FocusAIReview() == true;
         }
 
+        /// <summary>
+        /// True when keyboard focus is inside a code/text editor so Escape must not
+        /// start background geometry navigation.
+        /// </summary>
+        private bool IsKeyboardFocusInTextEditor(DependencyObject originalSource)
+        {
+            if (IsDependencyObjectInTextEditor(originalSource))
+                return true;
+
+            if (IsDependencyObjectInTextEditor(Keyboard.FocusedElement as DependencyObject))
+                return true;
+
+            // Fallback when FocusedElement is an unexpected host inside the editor chrome
+            return this.ChildrenOfType<CodeCompletionEditor>().Any(editor => editor.IsKeyboardFocusWithin);
+        }
+
+        private static bool IsDependencyObjectInTextEditor(DependencyObject current)
+        {
+            while (current != null)
+            {
+                if (current is CodeCompletionEditor ||
+                    current is ICSharpCode.AvalonEdit.Editing.TextArea ||
+                    current is TextEditor ||
+                    current is TextBoxBase)
+                {
+                    return true;
+                }
+
+                DependencyObject parent = null;
+                if (current is Visual || current is System.Windows.Media.Media3D.Visual3D)
+                {
+                    parent = VisualTreeHelper.GetParent(current);
+                }
+                if (parent == null)
+                {
+                    parent = LogicalTreeHelper.GetParent(current);
+                }
+                current = parent;
+            }
+
+            return false;
+        }
+
+        private bool TryClearHoveredAIHighlight()
+        {
+            var workspace = dynamoViewModel.CurrentSpaceViewModel;
+
+            // Esc first cancels a wire drag, pan or orbit, and drives 3D navigation
+            if (workspace == null || !workspace.IsInIdleState || IsEscKeyPressed
+                || dynamoViewModel.BackgroundPreviewViewModel?.CanNavigateBackground == true)
+            {
+                return false;
+            }
+
+            var focused = Keyboard.FocusedElement;
+            if (focused is TextBoxBase || focused is ICSharpCode.AvalonEdit.Editing.TextArea)
+            {
+                return false;
+            }
+
+            if (!workspace.ClearHoveredAIHighlight())
+            {
+                return false;
+            }
+
+            escClearedAIHighlight = true;
+            return true;
+        }
+
         private void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Escape) return;
+
+            if (escClearedAIHighlight)
+            {
+                escClearedAIHighlight = false;
+                IsEscKeyPressed = false;
+                e.Handled = true;
+                return;
+            }
 
             IsEscKeyPressed = false;
             if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)

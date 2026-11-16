@@ -1970,6 +1970,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The profile was migrated from a previous version of Dynamo..
+        /// </summary>
+        public static string SettingsMigratedFromPreviousVersion {
+            get {
+                return ResourceManager.GetString("SettingsMigratedFromPreviousVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The unreadable profile was saved as {0}..
+        /// </summary>
+        public static string UnreadableProfileSavedAs {
+            get {
+                return ResourceManager.GetString("UnreadableProfileSavedAs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The profile was not updated because the unreadable profile could not be backed up: {0}.
+        /// </summary>
+        public static string UnreadableProfileBackupFailed {
+            get {
+                return ResourceManager.GetString("UnreadableProfileBackupFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Initializing preferences....
         /// </summary>
         public static string SplashScreenInitPreferencesSettings {

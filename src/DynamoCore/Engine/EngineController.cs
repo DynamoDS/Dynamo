@@ -143,11 +143,29 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Returns information about time spent compiling and executing nodes.                                                 
+        /// Returns information about time spent compiling and executing nodes.
         /// </summary>
+        /// <remarks>
+        /// Profiling must be enabled (see <see cref="IsProfilingEnabled"/>) before this is read;
+        /// there is no timing data to return otherwise.
+        /// </remarks>
         public IProfilingExecutionTimeData ExecutionTimeData
         {
             get { return ProfilingSession.ProfilingData; }
+        }
+
+        /// <summary>
+        /// Returns true when execution profiling is enabled, that is, when a profiling session exists.
+        /// </summary>
+        /// <remarks>
+        /// There is a single profiling session per engine, shared by everything that profiles (for example
+        /// TuneUp). Check this before calling <see cref="EnableProfiling"/> with <c>false</c>, so a caller that
+        /// did not turn profiling on does not turn it off for others, and before reading
+        /// <see cref="ExecutionTimeData"/>. Unlike those, reading this never throws when profiling is off.
+        /// </remarks>
+        public bool IsProfilingEnabled
+        {
+            get { return ProfilingSession != null; }
         }
 
         /// <summary>

@@ -3810,6 +3810,9 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export Failed</value>
   </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+  </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs).</value>
   </data>
@@ -4346,5 +4349,40 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="AIChangePopoverUndoUnavailable" xml:space="preserve">
     <value>Only the latest change can be undone from here</value>
     <comment>Tooltip on the disabled Undo this change button.</comment>
+  </data>
+  <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
+    <value>Autodesk Assistant added {0} nodes</value>
+    <comment>{0} = node count (2+)</comment>
+  </data>
+  <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant added 1 node</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
+    <value>changed {0}</value>
+    <comment>Follows an earlier part, e.g. "Autodesk Assistant added 3 nodes · changed 9". {0} = node count</comment>
+  </data>
+  <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
+    <value>deleted {0}</value>
+    <comment>Follows an earlier part, e.g. "Autodesk Assistant added 3 nodes · deleted 2". {0} = node count</comment>
+  </data>
+  <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
+    <value>Autodesk Assistant changed {0} nodes</value>
+    <comment>{0} = node count (2+)</comment>
+  </data>
+  <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant changed 1 node</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
+    <value>Autodesk Assistant deleted {0} nodes</value>
+    <comment>{0} = node count (2+)</comment>
+  </data>
+  <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant deleted 1 node</value>
+  </data>
+  <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="AIChangeSummaryChipShow" xml:space="preserve">
+    <value>Show</value>
   </data>
 </root>

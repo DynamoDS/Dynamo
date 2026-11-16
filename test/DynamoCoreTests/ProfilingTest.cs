@@ -98,6 +98,94 @@ namespace Dynamo.Tests
             Assert.Greater(profilingData.NodeExecutionTime(node)?.Ticks, 0);
         }
 
+        [Test]
+        public void WhenProfilingHasNotBeenEnabledThenIsProfilingEnabledIsFalse()
+        {
+            // Note: This test file is saved in manual run mode
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            var engineController = CurrentDynamoModel.EngineController;
+
+            // Reading the property must not throw, unlike ExecutionTimeData, when there is no session
+            Assert.IsFalse(engineController.IsProfilingEnabled);
+            Assert.IsNull(engineController.ProfilingSession);
+        }
+
+        [Test]
+        public void WhenProfilingIsEnabledThenIsProfilingEnabledIsTrue()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+
+            Assert.IsTrue(engineController.IsProfilingEnabled);
+            // The execution time data can be read once the property is true
+            Assert.IsNotNull(engineController.ExecutionTimeData);
+        }
+
+        [Test]
+        public void WhenProfilingIsDisabledThenIsProfilingEnabledIsFalse()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+            Assert.IsTrue(engineController.IsProfilingEnabled);
+
+            engineController.EnableProfiling(false, homeWorkspace, nodes);
+
+            Assert.IsFalse(engineController.IsProfilingEnabled);
+        }
+
+        [Test]
+        public void WhenGraphRunsWithProfilingEnabledThenIsProfilingEnabledStaysTrue()
+        {
+            // Note: This test file is saved in manual run mode
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+
+            BeginRun();
+
+            // Running does not end the profiling session, so a caller can still read the data afterwards
+            Assert.IsTrue(engineController.IsProfilingEnabled);
+            Assert.IsNotNull(engineController.ExecutionTimeData.TotalExecutionTime);
+        }
+
+        [Test]
+        public void WhenProfilingIsEnabledTwiceThenTheSameSessionIsKept()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+            var firstSession = engineController.ProfilingSession;
+
+            // A second caller turning profiling on (for example TuneUp after another extension) shares the session
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+
+            Assert.IsTrue(engineController.IsProfilingEnabled);
+            Assert.AreSame(firstSession, engineController.ProfilingSession);
+        }
+
         private static List<Guid> executingNodes = new List<Guid>();
         private static int nodeExecutionBeginCount = 0;
         private static int nodeExecutionEndCount = 0;

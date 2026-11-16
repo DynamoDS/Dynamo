@@ -3149,19 +3149,19 @@ Sie können dies unter Voreinstellungen -&gt; Sicherheit verwalten.</value>
     <value>Ja</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Schreibgeschützte Vorschau. Blöcke, Skripte und Pakete werden erst geladen, wenn Sie Ja wählen.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Die Datei wurde beim Öffnen geändert und daher nicht geöffnet. Öffnen Sie sie erneut, um die neueste Version zu überprüfen.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Nein, nicht öffnen</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
     <value>Vorschau wird geladen...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Für diese Datei ist keine Vorschau verfügbar.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>Diagrammausführung wird angehalten, bis die Warnung behoben ist</value>
@@ -3459,6 +3459,9 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
   </data>
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export fehlgeschlagen</value>
+  </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>The profile {0} was not exported because Dynamo could not read it.</value>
   </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Wenn diese Option aktiviert ist, sorgt die Hardwarebeschleunigung für glattere Grafiken und eine bessere Gesamtleistung in Dynamo, da Arbeitsprozesse von CPUs (Central Processing Units) auf GPUs (Graphics Processing Units) verlagert werden.</value>
@@ -3951,6 +3954,36 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automatisch mit Blockauswahl synchronisieren.</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
+    <value>Autodesk Assistant added {0} nodes</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant added 1 node</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
+    <value>changed {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
+    <value>deleted {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
+    <value>Autodesk Assistant changed {0} nodes</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant changed 1 node</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
+    <value>Autodesk Assistant deleted {0} nodes</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant deleted 1 node</value>
+  </data>
+  <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
+    <value>Verwerfen</value>
+  </data>
+  <data name="AIChangeSummaryChipShow" xml:space="preserve">
+    <value>Anzeigen</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

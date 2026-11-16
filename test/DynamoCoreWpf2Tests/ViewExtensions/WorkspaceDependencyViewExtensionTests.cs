@@ -288,6 +288,10 @@ namespace DynamoCoreWpfTests
         {
             List<string> dependenciesList = new List<string>() { "MeshToolkit", "Clockwork for Dynamo 1.x", "Clockwork for Dynamo 2.x", "Dynamo Samples" };
             DynamoModel.IsTestMode = false;
+            // With IsTestMode off, opening a file from an untrusted folder would show the modal
+            // trust preview dialog, which nothing dismisses in a test run and hangs the process.
+            // NotShown keeps the post-load warning path and skips the dialog.
+            ViewModel.TrustedLocationPrompt = _ => (Dynamo.ViewModels.DynamoViewModel.TrustedLocationPromptResult.NotShown, false, null);
 
             var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
             Open(examplePath);
@@ -305,6 +309,8 @@ namespace DynamoCoreWpfTests
         {
             List<string> dependenciesList = new List<string>() { "RootNode.dyf"};
             DynamoModel.IsTestMode = false;
+            // Skip the modal trust preview dialog, which nothing dismisses in a test run.
+            ViewModel.TrustedLocationPrompt = _ => (Dynamo.ViewModels.DynamoViewModel.TrustedLocationPromptResult.NotShown, false, null);
 
             // Load the custom node and the zero touch assembly.
             GetLibrariesToPreload(new List<string>());

@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -527,6 +528,389 @@ namespace Dynamo.Tests.Configuration
             Assert.That(samplesPath, Is.Not.Null);
             var expectedPathSegment = Path.Combine("samples", "es-ES");
             Assert.That(samplesPath, Does.EndWith(expectedPathSegment));
+        }
+
+        #region RefreshDefaultGroupStyleNames
+
+        private static readonly Guid ActionsStyleId = new Guid("4d68be4a-a04d-4945-9dd5-cdf61079d790");
+        private static readonly Guid ReviewStyleId = new Guid("bc688959-ce34-4bf5-90f8-6ddd23f80989");
+
+        private static void RunWithUICulture(string cultureName, Action action)
+        {
+            var thread = System.Threading.Thread.CurrentThread;
+            var originalUICulture = thread.CurrentUICulture;
+            var originalCulture = thread.CurrentCulture;
+            var defaultNames = GroupStyleItem.DefaultGroupStyleItems.Select(style => style.Name).ToList();
+            try
+            {
+                thread.CurrentUICulture = new System.Globalization.CultureInfo(cultureName);
+                thread.CurrentCulture = new System.Globalization.CultureInfo(cultureName);
+                action();
+            }
+            finally
+            {
+                thread.CurrentUICulture = originalUICulture;
+                thread.CurrentCulture = originalCulture;
+                // The refresh also renames the shared static defaults, so put them back for other tests.
+                for (int i = 0; i < defaultNames.Count; i++)
+                {
+                    GroupStyleItem.DefaultGroupStyleItems[i].Name = defaultNames[i];
+                }
+            }
+        }
+
+        private static PreferenceSettings CreateSettingsWithEnglishDefaultStyles()
+        {
+            var settings = new PreferenceSettings();
+            settings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems
+                .Select(style => new GroupStyleItem
+                {
+                    Name = style.Name,
+                    HexColorString = style.HexColorString,
+                    FontSize = style.FontSize,
+                    GroupStyleId = style.GroupStyleId,
+                    IsDefault = true
+                })
+                .ToList();
+            // Names as a file saved by an English session would hold them.
+            settings.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name = "Actions";
+            settings.GroupStyleItemsList.First(style => style.GroupStyleId == ReviewStyleId).Name = "Review";
+            return settings;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUICultureIsGermanThenRefreshRenamesDefaultGroupStyles()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Aktionen", settings.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+                Assert.AreEqual("Überprüfung", settings.GroupStyleItemsList.First(style => style.GroupStyleId == ReviewStyleId).Name);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRefreshRunsThenSharedDefaultGroupStyleNamesFollowTheUICulture()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Aktionen", GroupStyleItem.DefaultGroupStyleItems.First(style => style.GroupStyleId == ActionsStyleId).Name);
+                Assert.AreEqual("Aktionen", GroupStyleItem.CloneDefaultGroupStyleItems().First(style => style.GroupStyleId == ActionsStyleId).Name);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRefreshRunsThenCustomGroupStylesKeepTheirNames()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "My style", HexColorString = "#FF0000", FontSize = 36, GroupStyleId = Guid.NewGuid(), IsDefault = false });
+            // A custom style that reuses the id of a default one must not be renamed either.
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Custom actions", HexColorString = "#00FF00", FontSize = 36, GroupStyleId = ActionsStyleId, IsDefault = false });
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.IsTrue(settings.GroupStyleItemsList.Any(style => style.Name == "My style" && !style.IsDefault));
+                Assert.IsTrue(settings.GroupStyleItemsList.Any(style => style.Name == "Custom actions" && !style.IsDefault));
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenDefaultStyleHasUnknownIdThenRefreshLeavesItUntouched()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Imported", HexColorString = "#0000FF", FontSize = 36, GroupStyleId = Guid.NewGuid(), IsDefault = true });
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.IsTrue(settings.GroupStyleItemsList.Any(style => style.Name == "Imported"));
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAnotherStyleAlreadyUsesTheLocalizedNameThenRefreshKeepsTheDefaultName()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+            settings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Aktionen", HexColorString = "#FF00FF", FontSize = 36, GroupStyleId = Guid.NewGuid(), IsDefault = false });
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Actions", settings.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+                Assert.AreEqual(settings.GroupStyleItemsList.Count, settings.GroupStyleItemsList.Select(style => style.Name).Distinct().Count());
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenRefreshRunsTwiceThenTheSecondRunChangesNothing()
+        {
+            var settings = CreateSettingsWithEnglishDefaultStyles();
+
+            RunWithUICulture("de-DE", () =>
+            {
+                settings.RefreshDefaultGroupStyleNames();
+                var afterFirst = settings.GroupStyleItemsList.Select(style => style.Name).ToList();
+
+                settings.RefreshDefaultGroupStyleNames();
+
+                CollectionAssert.AreEqual(afterFirst, settings.GroupStyleItemsList.Select(style => style.Name).ToList());
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenMigratedLocaleDiffersFromSessionCultureThenNamesFollowTheSessionAndNextStartCatchesUp()
+        {
+            // Settings migrated from an older version: Locale is German, default names are still English.
+            // The session culture was applied from the pre-migration settings, so it is English here.
+            var migrated = CreateSettingsWithEnglishDefaultStyles();
+            migrated.Locale = "de-DE";
+
+            RunWithUICulture("en-US", () =>
+            {
+                migrated.RefreshDefaultGroupStyleNames();
+
+                // The names match the language the session is running in, which is what gets saved on exit.
+                Assert.AreEqual("Actions", migrated.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+            });
+
+            // The next start applies the saved Locale before the refresh, so the names switch then.
+            RunWithUICulture(migrated.Locale, () =>
+            {
+                migrated.RefreshDefaultGroupStyleNames();
+
+                Assert.AreEqual("Aktionen", migrated.GroupStyleItemsList.First(style => style.GroupStyleId == ActionsStyleId).Name);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenGroupStyleIdIsNotADefaultThenLocalizedDefaultNameIsNull()
+        {
+            Assert.IsNull(GroupStyleItem.GetLocalizedDefaultName(Guid.NewGuid()));
+        }
+
+        #endregion
+
+        [Test]
+        [Category("UnitTests")]
+        [TestCase("")]
+        [TestCase("<PreferenceSettings><NotClosed>")]
+        public void WhenSettingsFileCannotBeReadThenSaveInternalBacksItUpAndReplacesIt(string content)
+        {
+            WithUnreadableSettingsFile(content, (settings, path, backupRoot) =>
+            {
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                var backupPath = Path.Combine(backupRoot, "profiles", Path.GetFileName(path) + ".bak");
+                Assert.IsTrue(File.Exists(backupPath), "The unreadable file should have been copied.");
+                Assert.AreEqual(content, File.ReadAllText(backupPath));
+                Assert.IsTrue(PreferenceSettings.Load(path).IsCreatedFromValidFile, "The settings file should have been replaced.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBackupAlreadyExistsThenSaveInternalUsesTheNextNumber()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                var profileDirectory = Path.Combine(backupRoot, "profiles");
+                var baseName = Path.Combine(profileDirectory, Path.GetFileName(path) + ".bak");
+                Directory.CreateDirectory(profileDirectory);
+                File.WriteAllText(baseName, "first");
+                File.WriteAllText(baseName + "1", "second");
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                Assert.AreEqual("first", File.ReadAllText(baseName), "An existing backup should not be overwritten.");
+                Assert.AreEqual("second", File.ReadAllText(baseName + "1"), "An existing backup should not be overwritten.");
+                Assert.AreEqual("<PreferenceSettings><NotClosed>", File.ReadAllText(baseName + "2"));
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileWasReplacedThenLaterSavesDoNotBackItUpAgain()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                Assert.IsTrue(settings.SaveInternal(path));
+                Assert.IsTrue(settings.SaveInternal(path));
+
+                var backups = Directory.GetFiles(Path.Combine(backupRoot, "profiles"));
+                Assert.AreEqual(1, backups.Length, "Only the unreadable file should be backed up.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUnreadableSettingsFileIsReplacedThenProfileIsNoLongerUnreadable()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                Assert.IsTrue(settings.IsProfileUnreadable);
+
+                Assert.IsTrue(settings.SaveInternal(path));
+
+                Assert.IsFalse(settings.IsProfileUnreadable, "The profile on disk is valid after the save.");
+                // IsCreatedFromValidFile keeps describing how the settings were loaded.
+                Assert.IsFalse(settings.IsCreatedFromValidFile);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUnreadableSettingsFileIsNotReplacedThenProfileStaysUnreadable()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                settings.BackupLocation = string.Empty;
+
+                Assert.IsFalse(settings.SaveInternal(path));
+
+                Assert.IsTrue(settings.IsProfileUnreadable);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBackupLocationIsNotSetThenSaveInternalDoesNotOverwriteTheUnreadableFile()
+        {
+            WithUnreadableSettingsFile("<PreferenceSettings><NotClosed>", (settings, path, backupRoot) =>
+            {
+                settings.BackupLocation = string.Empty;
+                var logged = new List<ILogMessage>();
+                settings.MessageLogged += logged.Add;
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsFalse(saved);
+                Assert.AreEqual("<PreferenceSettings><NotClosed>", File.ReadAllText(path));
+                Assert.AreEqual(1, logged.Count, "The skipped save should have been logged.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBackupCannotBeCreatedThenSaveInternalDoesNotOverwriteTheUnreadableFile()
+        {
+            const string content = "<PreferenceSettings><NotClosed>";
+            WithUnreadableSettingsFile(content, (settings, path, backupRoot) =>
+            {
+                // A file where the backup folder should be makes creating the profiles folder fail.
+                File.WriteAllText(backupRoot, string.Empty);
+                var logged = new List<ILogMessage>();
+                settings.MessageLogged += logged.Add;
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsFalse(saved);
+                Assert.AreEqual(content, File.ReadAllText(path));
+                Assert.AreEqual(1, logged.Count, "The skipped save should have been logged.");
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileIsReadableThenSaveInternalDoesNotBackItUp()
+        {
+            var originalTestPath = PreferenceSettings.DynamoTestPath;
+            PreferenceSettings.DynamoTestPath = null;
+            var backupRoot = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            try
+            {
+                var path = GetNewFileNameOnTempPath(".xml");
+                new PreferenceSettings().Save(path);
+                var settings = PreferenceSettings.Load(path);
+                Assert.IsTrue(settings.IsCreatedFromValidFile);
+                settings.BackupLocation = backupRoot;
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                Assert.IsFalse(Directory.Exists(backupRoot), "A readable profile should not be backed up.");
+            }
+            finally
+            {
+                PreferenceSettings.DynamoTestPath = originalTestPath;
+                if (Directory.Exists(backupRoot))
+                {
+                    Directory.Delete(backupRoot, true);
+                }
+            }
+        }
+
+        // Loads an unreadable settings file and points the backup location at a temporary folder.
+        private void WithUnreadableSettingsFile(string content, Action<PreferenceSettings, string, string> test)
+        {
+            var originalTestPath = PreferenceSettings.DynamoTestPath;
+            PreferenceSettings.DynamoTestPath = null;
+            var backupRoot = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            try
+            {
+                var path = GetNewFileNameOnTempPath(".xml");
+                File.WriteAllText(path, content);
+                var settings = PreferenceSettings.Load(path);
+                Assert.IsFalse(settings.IsCreatedFromValidFile, "The file should have been rejected on load.");
+                settings.BackupLocation = backupRoot;
+
+                test(settings, path, backupRoot);
+            }
+            finally
+            {
+                PreferenceSettings.DynamoTestPath = originalTestPath;
+                if (Directory.Exists(backupRoot))
+                {
+                    Directory.Delete(backupRoot, true);
+                }
+                if (File.Exists(backupRoot))
+                {
+                    File.Delete(backupRoot);
+                }
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsFileDoesNotExistThenSaveInternalCreatesIt()
+        {
+            var originalTestPath = PreferenceSettings.DynamoTestPath;
+            PreferenceSettings.DynamoTestPath = null;
+            try
+            {
+                var path = GetNewFileNameOnTempPath(".xml");
+                var settings = PreferenceSettings.Load(path);
+                Assert.IsTrue(settings.IsCreatedFromValidFile);
+
+                var saved = settings.SaveInternal(path);
+
+                Assert.IsTrue(saved);
+                Assert.IsTrue(File.Exists(path));
+            }
+            finally
+            {
+                PreferenceSettings.DynamoTestPath = originalTestPath;
+            }
         }
     }
 }
