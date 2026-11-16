@@ -484,6 +484,52 @@ namespace Dynamo.Tests
             Assert.AreEqual(countAfterUnprofiledRun + 1, ProfilingCounter.Count, "the profiled run should execute the node exactly once");
         }
 
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRunThenAddDownstreamNode_NewNodeExecutesOnceBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: a node added after the unprofiled run is compiled as an added subtree, ahead of
+            // the recompiled upstream node. It must still run once, after its upstream node.
+            StartManualCounterTest();
+            var upstream = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+            BeginRun();
+            Assert.AreEqual(1, ProfilingCounter.Count, "the unprofiled run should execute the node once");
+
+            var downstream = AddCounterNode("FFITarget.ProfilingCounter.IncrementAfter@int");
+            ConnectorModel.Make(upstream, downstream, 0, 0);
+            EnableProfiling();
+            var seen = RecordCounterAtEvents(new NodeModel[] { upstream, downstream });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[upstream.GUID], "upstream node, profiled run after adding a downstream node");
+            AssertExecutedBetweenBeginAndEnd(seen[downstream.GUID], "node added after an unprofiled run");
+            Assert.AreEqual(3, ProfilingCounter.Count, "the profiled run should execute each node exactly once");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterReconnectFollowingAProfiledRun_UnchangedNodeExecutesBetweenItsBeginAndEnd()
+        {
+            // DYN-11168: after a profiled run, reconnecting another node recompiles the unchanged nodes from
+            // their cached statements. The cache must keep each node's statement between its markers.
+            StartManualCounterTest();
+            var first = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+            var second = AddCounterNode("FFITarget.ProfilingCounter.Increment");
+            var downstream = AddCounterNode("FFITarget.ProfilingCounter.IncrementAfter@int");
+            ConnectorModel.Make(first, downstream, 0, 0);
+            BeginRun();
+
+            EnableProfiling();
+            BeginRun();
+
+            downstream.InPorts[0].Connectors.First().Delete();
+            ConnectorModel.Make(second, downstream, 0, 0);
+            first.MarkNodeAsModified(true);
+            var seen = RecordCounterAtEvents(new NodeModel[] { first, downstream });
+            BeginRun();
+
+            AssertExecutedBetweenBeginAndEnd(seen[first.GUID], "unchanged node recompiled after a reconnect");
+            AssertExecutedBetweenBeginAndEnd(seen[downstream.GUID], "reconnected node");
+        }
+
         #endregion
     }
 }
