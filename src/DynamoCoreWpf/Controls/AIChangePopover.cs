@@ -21,6 +21,12 @@ namespace Dynamo.UI.Controls
         // Long enough to move the pointer from the port onto the popover without it closing
         private static readonly TimeSpan CloseDelay = TimeSpan.FromMilliseconds(250);
 
+        // Smallest space between "Undo this change" and "Next change ›"
+        internal const double ActionsGap = 16;
+
+        // Widest the name and values get before they trim or wrap: the old 320 popover less padding
+        private const double TextMaxWidth = 296;
+
         private static readonly SolidColorBrush outlineBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAIChangedInputOutlineBrush"] as SolidColorBrush;
         private static readonly SolidColorBrush backgroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkGreyBrush"] as SolidColorBrush;
         private static readonly SolidColorBrush titleBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"] as SolidColorBrush;
@@ -81,11 +87,21 @@ namespace Dynamo.UI.Controls
             NextButton = CreateButton("aiChangeNext", Resources.AIChangePopoverNextChange, HorizontalAlignment.Right);
             NextButton.Click += (s, e) => NextRequested?.Invoke();
 
-            var actions = new DockPanel { Margin = new Thickness(0, 12, 0, 0), LastChildFill = false };
-            DockPanel.SetDock(UndoButton, Dock.Left);
-            DockPanel.SetDock(NextButton, Dock.Right);
+            // Undo on the left, Next on the right, never closer than ActionsGap. The popover widens
+            // to fit both buttons, so long (translated) labels cannot run into each other.
+            var actions = new Grid { Name = "aiChangeActions", Margin = new Thickness(0, 12, 0, 0) };
+            actions.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            actions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = ActionsGap });
+            actions.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            Grid.SetColumn(UndoButton, 0);
+            Grid.SetColumn(NextButton, 2);
             actions.Children.Add(UndoButton);
             actions.Children.Add(NextButton);
+
+            // The text is capped instead of the whole popover, so a cap never squeezes the buttons
+            InputNameText.MaxWidth = TextMaxWidth;
+            values.MaxWidth = TextMaxWidth;
+            values.HorizontalAlignment = HorizontalAlignment.Left;
 
             var stack = new StackPanel();
             stack.Children.Add(InputNameText);
@@ -96,7 +112,6 @@ namespace Dynamo.UI.Controls
             {
                 Name = "aiChangePopover",
                 MinWidth = 220,
-                MaxWidth = 320,
                 Padding = new Thickness(12),
                 Background = backgroundBrush,
                 BorderBrush = outlineBrush,

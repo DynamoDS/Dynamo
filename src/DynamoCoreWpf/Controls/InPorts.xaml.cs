@@ -46,8 +46,9 @@ namespace Dynamo.UI.Controls
 
         private bool _useLevelSpinnerInit = false;
 
-        // The changed-input outline: purple dots along the edge of the port background
-        private const double AIChangeOutlineThickness = 1.5;
+        // The changed-input outline: purple dots along the edge of the port background. 2 px dots
+        // every 4 px; 1.5 px dots every 3 px blurred into the port and could not be seen at 100% zoom.
+        private const double AIChangeOutlineThickness = 2;
         private const double PortCornerRadius = 11;
 
         // Hover delay before the change popover opens, so it does not flash up while the pointer

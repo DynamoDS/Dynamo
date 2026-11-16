@@ -184,6 +184,131 @@ namespace DynamoCoreWpfTests
 
         #endregion
 
+        #region Keyboard review
+
+        /// <summary>
+        /// Presses a key on whatever has keyboard focus, as WPF delivers it: PreviewKeyDown, then
+        /// KeyDown unless the preview was handled.
+        /// </summary>
+        /// <returns>Whether the key press was handled.</returns>
+        private static bool PressKey(Key key)
+        {
+            var target = (UIElement)Keyboard.FocusedElement;
+            var source = PresentationSource.FromVisual(target);
+
+            var preview = new KeyEventArgs(Keyboard.PrimaryDevice, source, 0, key) { RoutedEvent = Keyboard.PreviewKeyDownEvent };
+            target.RaiseEvent(preview);
+            var handled = preview.Handled;
+
+            if (!handled)
+            {
+                var down = new KeyEventArgs(Keyboard.PrimaryDevice, source, 0, key) { RoutedEvent = Keyboard.KeyDownEvent };
+                target.RaiseEvent(down);
+                handled = down.Handled;
+            }
+
+            DispatcherUtil.DoEvents();
+            return handled;
+        }
+
+        /// <summary>Selects a node and gives the canvas keyboard focus, as clicking the node does.</summary>
+        private void SelectWithCanvasFocus(NodeModel node)
+        {
+            Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            Dynamo.Selection.DynamoSelection.Instance.Selection.Add(node);
+            Keyboard.Focus(View);
+            DispatcherUtil.DoEvents();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAINodeIsSelectedThenEnterMovesFocusToItsBadge()
+        {
+            var node = AddTwoInputNode();
+            AsAITurn(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "b", null, "B.out"));
+            SelectWithCanvasFocus(node);
+
+            Assert.IsTrue(PressKey(Key.Enter));
+
+            Assert.IsTrue(ViewOf(node).AIBadge.IsKeyboardFocused);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSelectedNodeHasNoAIChangeThenEnterLeavesFocusOnTheCanvas()
+        {
+            var node = AddTwoInputNode();
+            SelectWithCanvasFocus(node);
+
+            Assert.IsFalse(PressKey(Key.Enter));
+
+            Assert.AreSame(View, Keyboard.FocusedElement);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBadgeHasFocusThenTabMovesThroughChangedInputsAndWrapsAround()
+        {
+            var node = AddTwoInputNode();
+            AsAITurn(() =>
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "A.out");
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "b", null, "B.out");
+            });
+            var badge = ViewOf(node).AIBadge;
+            var portA = PortViewOf(node, "a");
+            var portB = PortViewOf(node, "b");
+            SelectWithCanvasFocus(node);
+            PressKey(Key.Enter);
+
+            Assert.IsTrue(PressKey(Key.Tab), "Tab is taken by the review, not by select neighbours.");
+            Assert.IsTrue(portA.IsKeyboardFocused);
+            Assert.IsTrue(portA.AIChangePopover.IsOpen, "Focusing a changed input opens its popover.");
+
+            PressKey(Key.Tab);
+            Assert.IsTrue(portB.IsKeyboardFocused);
+
+            PressKey(Key.Tab);
+            Assert.IsTrue(badge.IsKeyboardFocused, "Tab wraps back to the badge.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenReviewingThenEscapeReturnsFocusToTheCanvas()
+        {
+            var node = AddTwoInputNode();
+            AsAITurn(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "A.out"));
+            var port = PortViewOf(node, "a");
+            SelectWithCanvasFocus(node);
+            PressKey(Key.Enter);
+            PressKey(Key.Tab);
+            Assert.IsTrue(port.IsKeyboardFocused);
+
+            Assert.IsTrue(PressKey(Key.Escape));
+
+            Assert.IsFalse(port.IsKeyboardFocusWithin);
+            Assert.IsFalse(ViewOf(node).AIBadge.IsKeyboardFocused);
+            Assert.IsTrue(View.IsKeyboardFocusWithin, "Focus is back on the canvas, so canvas shortcuts work again.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenNotReviewingThenTabStillSelectsNeighbours()
+        {
+            var number = AddNumberNode();
+            var node = AddTwoInputNode();
+            ViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(number.GUID, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+            ViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
+            AsAITurn(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "Number.out"));
+            SelectWithCanvasFocus(node);
+
+            PressKey(Key.Tab);
+
+            Assert.IsTrue(number.IsSelected, "Tab on the canvas keeps selecting neighbours.");
+        }
+
+        #endregion
+
         #region Changed input outline
 
         [Test]
@@ -206,6 +331,48 @@ namespace DynamoCoreWpfTests
             CollectionAssert.AreEqual(new[] { 0.0, 2.0 }, path.StrokeDashArray);
 
             Assert.IsNull(PortViewOf(node, "a").AIChangeOutline, "Inputs the turn did not change are not outlined.");
+        }
+
+        /// <summary>
+        /// Renders a port view as it appears on screen and counts the pixels tinted by the outline's
+        /// purple, so the test fails if the outline is built but never drawn.
+        /// </summary>
+        private static int CountOutlinePixels(InPorts portView)
+        {
+            var width = (int)Math.Ceiling(portView.ActualWidth);
+            var height = (int)Math.Ceiling(portView.ActualHeight);
+            var bitmap = new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(portView);
+
+            var pixels = new byte[width * height * 4];
+            bitmap.CopyPixels(pixels, width * 4, 0);
+
+            var count = 0;
+            for (var i = 0; i < pixels.Length; i += 4)
+            {
+                int b = pixels[i], g = pixels[i + 1], r = pixels[i + 2];
+                // AIPurple600 (#A76EF5) and its blends: blue and red well above green
+                if (b - g > 40 && r - g > 15) count++;
+            }
+
+            return count;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenInputIsChangedThenItsOutlineIsDrawn()
+        {
+            var node = AddTwoInputNode();
+
+            AsAITurn(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA));
+            AsAITurn(() => Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "a", "A.out", "B.out"));
+
+            var changed = CountOutlinePixels(PortViewOf(node, "a"));
+            var unchanged = CountOutlinePixels(PortViewOf(node, "b"));
+            TestContext.Progress.WriteLine($"Outline pixels: changed={changed}, unchanged={unchanged}");
+
+            Assert.AreEqual(0, unchanged, "An input the turn did not change has no purple.");
+            Assert.Greater(changed, 40, "The changed input's dotted outline is drawn.");
         }
 
         [Test]
@@ -274,6 +441,44 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual("None", popover.BeforeText.Text);
             Assert.AreEqual("A.out", popover.AfterText.Text);
+        }
+
+        /// <summary>The horizontal space between the right edge of Undo and the left edge of Next.</summary>
+        private static double GapBetweenActions(AIChangePopover popover)
+        {
+            popover.UndoButton.UpdateLayout();
+            var undoRight = popover.UndoButton.TranslatePoint(new Point(popover.UndoButton.ActualWidth, 0), popover.NextButton).X;
+            return -undoRight;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPopoverOpensThenUndoAndNextAreSpacedApart()
+        {
+            var node = AddTwoInputNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "A.out");
+            DispatcherUtil.DoEvents();
+
+            var popover = OpenPopover(PortViewOf(node, "a"));
+
+            Assert.GreaterOrEqual(GapBetweenActions(popover), AIChangePopover.ActionsGap);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenActionLabelsAreLongThenUndoAndNextStillDoNotTouch()
+        {
+            var node = AddTwoInputNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "a", null, "A.out");
+            DispatcherUtil.DoEvents();
+            var popover = OpenPopover(PortViewOf(node, "a"));
+
+            // Longer than any current translation, and wider than the popover's old 320 px cap
+            popover.UndoButton.Content = "Diese Änderung des Autodesk Assistant rückgängig machen";
+            popover.NextButton.Content = "Zur nächsten Änderung wechseln ›";
+            DispatcherUtil.DoEvents();
+
+            Assert.GreaterOrEqual(GapBetweenActions(popover), AIChangePopover.ActionsGap);
         }
 
         [Test]
