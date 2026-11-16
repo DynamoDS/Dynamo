@@ -21,6 +21,7 @@ namespace Dynamo.Graph.Workspaces
         EditedSince,
         EditedDuringTurn,
         NotSupported,
+        DependsOnOtherChanges,
     }
 
     public partial class WorkspaceModel
@@ -222,7 +223,8 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// "Undo this change" is available while the node still carries the turn's marker.
+        /// "Undo this change" is available while the node still carries the turn's marker, and every
+        /// connection the turn removed from it can come back (the node it came from still has that output).
         /// </summary>
         internal AIUndoAvailability GetAINodeUndoAvailability(Guid nodeId)
         {
@@ -237,12 +239,23 @@ namespace Dynamo.Graph.Workspaces
                 return AIUndoAvailability.NothingToUndo;
             }
 
+            List<AIUndoSnapshot> removedConnectors;
             lock (aiTurnsLock)
             {
-                return aiUndoSnapshots.TryGetValue(change.TurnId, out var snapshots) && HasAIUndoSnapshotFor(snapshots, nodeId)
-                    ? AIUndoAvailability.Available
-                    : AIUndoAvailability.NothingToUndo;
+                if (!aiUndoSnapshots.TryGetValue(change.TurnId, out var snapshots) || !HasAIUndoSnapshotFor(snapshots, nodeId))
+                {
+                    return AIUndoAvailability.NothingToUndo;
+                }
+
+                removedConnectors = snapshots.Values
+                    .Where(snapshot => snapshot.IsConnector && !snapshot.CreatedByTurn && snapshot.EndNodeId == nodeId)
+                    .ToList();
             }
+
+            // Checked before anything changes, so a refused undo leaves the graph and the marker alone
+            return removedConnectors.All(snapshot => FindAIConnectorStart(snapshot.State) != null)
+                ? AIUndoAvailability.Available
+                : AIUndoAvailability.DependsOnOtherChanges;
         }
 
         private static bool HasAIUndoSnapshotFor(Dictionary<Guid, AIUndoSnapshot> snapshots, Guid nodeId)
@@ -361,15 +374,21 @@ namespace Dynamo.Graph.Workspaces
 
         private bool CanReconnectAIConnector(XmlElement connectorState, NodeModel endNode)
         {
+            var endIndex = new XmlElementHelper(connectorState).ReadInteger("end_index", -1);
+
+            return FindAIConnectorStart(connectorState) != null
+                && endIndex >= 0 && endIndex < endNode.InPorts.Count
+                && endNode.InPorts[endIndex].Connectors.Count == 0;
+        }
+
+        // The node a connection came from, if it is still there with that output
+        private NodeModel FindAIConnectorStart(XmlElement connectorState)
+        {
             var helper = new XmlElementHelper(connectorState);
             var startNode = GetModelInternal(helper.ReadGuid("start", Guid.Empty)) as NodeModel;
             var startIndex = helper.ReadInteger("start_index", -1);
-            var endIndex = helper.ReadInteger("end_index", -1);
 
-            return startNode != null
-                && startIndex >= 0 && startIndex < startNode.OutPorts.Count
-                && endIndex >= 0 && endIndex < endNode.InPorts.Count
-                && endNode.InPorts[endIndex].Connectors.Count == 0;
+            return startNode != null && startIndex >= 0 && startIndex < startNode.OutPorts.Count ? startNode : null;
         }
 
         #endregion

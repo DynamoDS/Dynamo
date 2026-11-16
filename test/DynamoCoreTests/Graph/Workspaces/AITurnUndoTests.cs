@@ -396,6 +396,35 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void UndoThisChangeLeavesItToUndoAllWhenAConnectionCannotComeBack()
+        {
+            var source = Create(new DoubleInput());
+            var replacement = Create(new DoubleInput(), 0, 200);
+            var watch = Create(new WatchNode(), 400, 0);
+            Connect(source, watch);
+
+            // The turn deletes the source and rewires the target
+            AsTurn(TurnA, () =>
+            {
+                Workspace.RecordAINodeDeleted(source.GUID, TurnA);
+                Delete(source.GUID);
+                Connect(replacement, watch);
+                Workspace.RecordAINodeChange(watch.GUID, AIChangeKind.Modified, TurnA, "input", source.Name, replacement.Name);
+            });
+
+            Assert.AreEqual(AIUndoAvailability.DependsOnOtherChanges, Workspace.GetAINodeUndoAvailability(watch.GUID));
+            Assert.IsFalse(Workspace.UndoAINodeChange(watch.GUID));
+            Assert.IsTrue(IsConnected(replacement, watch), "Nothing changes: the new connection stays...");
+            Assert.IsNotNull(watch.AIChange, "...and so does the marker.");
+
+            Assert.IsTrue(Workspace.UndoAITurn(TurnA), "Undo all restores the whole turn...");
+            Assert.IsNotNull(Find(source.GUID));
+            Assert.IsTrue(IsConnected(source, watch), "...with the original connection.");
+            Assert.IsFalse(IsConnected(replacement, watch));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void UndoThisChangeIsUnavailableWhileTheAssistantWorks()
         {
             var placed = PlaceByAssistant(TurnA, new DoubleInput());
