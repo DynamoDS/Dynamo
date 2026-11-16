@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
@@ -608,6 +609,23 @@ namespace DynamoCoreWpfTests
                 Assert.IsTrue(button.Focusable && button.IsTabStop, "Every control takes keyboard focus.");
                 Assert.IsInstanceOf<string>(button.Content, "Every control has a text label.");
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ArrowsHaveScreenReaderNames()
+        {
+            PlaceByAssistant();
+            Assert.IsTrue(Chip.IsVisible);
+
+            var chipView = View.ChildrenOfType<AIChangeSummaryChip>().First();
+            var names = chipView.ChildrenOfType<Button>()
+                .Where(button => (string)button.Content == "\u2039" || (string)button.Content == "\u203A")
+                .Select(AutomationProperties.GetName)
+                .ToList();
+
+            CollectionAssert.AreEqual(new[] { WpfResources.AIChangeSummaryChipPrevious, WpfResources.AIChangeSummaryChipNext }, names,
+                "A screen reader says what the arrows do, not the arrow characters.");
         }
 
         #endregion

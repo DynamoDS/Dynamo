@@ -78,6 +78,7 @@
                         Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Button Content="&#x2039;"
                         Command="{Binding PreviousCommand}"
+                        AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipPrevious}"
                         Style="{StaticResource ChipButton}">
                     <Button.Foreground>
                         <SolidColorBrush Color="{StaticResource AIPurple300}" />
@@ -94,6 +95,7 @@
                            TextAlignment="Center" />
                 <Button Content="&#x203A;"
                         Command="{Binding NextCommand}"
+                        AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipNext}"
                         Style="{StaticResource ChipButton}">
                     <Button.Foreground>
                         <SolidColorBrush Color="{StaticResource AIPurple300}" />

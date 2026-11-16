@@ -101,6 +101,8 @@ static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipChangedOneNode.get -> 
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDeletedNodes.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDeletedOneNode.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDismiss.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipPrevious.get -> string
+static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipNext.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipShow.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipAddedNodes.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipAddedOneNode.get -> string

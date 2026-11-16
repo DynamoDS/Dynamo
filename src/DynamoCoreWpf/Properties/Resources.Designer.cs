@@ -250,6 +250,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Previous change.
+        /// </summary>
+        public static string AIChangeSummaryChipPrevious {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next change.
+        /// </summary>
+        public static string AIChangeSummaryChipNext {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk Assistant removed {0} connections.
         /// </summary>
         public static string AIChangeSummaryChipRemovedConnections {

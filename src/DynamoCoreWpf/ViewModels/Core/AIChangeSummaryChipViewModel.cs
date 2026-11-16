@@ -193,7 +193,7 @@ namespace Dynamo.ViewModels
         internal void Step(int direction)
         {
             var turn = LatestTurn();
-            var nodes = turn == null ? new List<NodeModel>() : StepNodes(turn);
+            var nodes = turn == null ? new List<NodeModel>() : StepNodes(MarkedNodes(turn));
             if (nodes.Count == 0)
             {
                 Refresh();
@@ -306,7 +306,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var stepNodes = StepNodes(turn);
+            var stepNodes = StepNodes(marked);
             Message = FormatMessage(added, changed, deleted, removedConnections);
             StepText = FormatStep(CurrentStep(stepNodes), stepNodes.Count);
             CanShow = stepNodes.Count > 0;
@@ -429,9 +429,9 @@ namespace Dynamo.ViewModels
         }
 
         // The stepper's order: left to right, then top to bottom
-        private List<NodeModel> StepNodes(AITurnSummary turn)
+        private static List<NodeModel> StepNodes(List<(NodeModel Node, AINodeChange Change)> marked)
         {
-            return MarkedNodes(turn).Select(entry => entry.Node).OrderBy(node => node.X).ThenBy(node => node.Y).ToList();
+            return marked.Select(entry => entry.Node).OrderBy(node => node.X).ThenBy(node => node.Y).ToList();
         }
 
         private NodeViewModel FindNodeViewModel(NodeModel node)

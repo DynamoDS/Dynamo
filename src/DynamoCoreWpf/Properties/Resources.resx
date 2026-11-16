@@ -4346,6 +4346,12 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
     <value>Dismiss</value>
   </data>
+  <data name="AIChangeSummaryChipPrevious" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
+  <data name="AIChangeSummaryChipNext" xml:space="preserve">
+    <value>Next change</value>
+  </data>
   <data name="AIChangeSummaryChipShow" xml:space="preserve">
     <value>Show all</value>
   </data>
