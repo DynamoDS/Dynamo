@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -555,6 +556,23 @@ namespace DynamoCoreWpfTests
             var glow = ViewModelOf(marked).AIHaloGlow;
             Assert.IsTrue(glow.IsPulse);
             Assert.AreEqual(AIHaloGlow.BreathLength, glow.Duration, "One 2 s breath.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TheBreathRisesAndFadesWithinTwoSeconds()
+        {
+            var glow = AIHaloGlow.CreatePulse(0.8);
+            var animation = glow.CreateAnimation();
+            var frames = animation.KeyFrames.Cast<DoubleKeyFrame>().ToList();
+            var start = glow.Delay;
+
+            var peak = frames.OrderByDescending(frame => frame.Value).First();
+            Assert.AreEqual(0.8, peak.Value, 1e-9, "Rises to full strength...");
+            Assert.AreEqual(start + TimeSpan.FromSeconds(1), peak.KeyTime.TimeSpan, "...at 1 s,");
+            Assert.AreEqual(0, frames.Last().Value, 1e-9, "...is gone...");
+            Assert.AreEqual(start + AIHaloGlow.BreathLength, frames.Last().KeyTime.TimeSpan, "...at 2 s,");
+            Assert.AreEqual(start + AIHaloGlow.BreathLength, animation.Duration.TimeSpan, "...with nothing after it.");
         }
 
         [Test]

@@ -310,6 +310,10 @@ namespace Dynamo.Tests
             Undo();
             Assert.AreEqual("5", ValueOf(node), "Ctrl+Z brings the change back...");
             Assert.IsNull(Find(node.GUID).AIChange, "...without its marker.");
+
+            Redo();
+            Assert.AreEqual("1", ValueOf(node), "Ctrl+Y undoes it again.");
+            Assert.AreEqual(10, Find(node.GUID).X);
         }
 
         [Test]
@@ -366,6 +370,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(AIUndoAvailability.NothingToUndo, Workspace.GetAINodeUndoAvailability(node.GUID));
             Assert.IsFalse(Workspace.UndoAINodeChange(node.GUID));
             Assert.AreEqual("7", ValueOf(node));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoThisChangeKeepsThePersonsEditsToOtherNodes()
+        {
+            var assistants = Create(new DoubleInput { Value = "1" });
+            var persons = Create(new DoubleInput { Value = "1" }, 0, 200);
+            using (Workspace.BeginUndoActionGroup())
+            {
+                SetValueByAssistant(TurnA, assistants, "5");
+                SetValueByAssistant(TurnA, persons, "5");
+            }
+
+            SetValue(persons, "7");
+            Assert.AreEqual(AIUndoAvailability.EditedSince, Workspace.GetAITurnUndoAvailability(TurnA));
+
+            Assert.IsTrue(Workspace.UndoAINodeChange(assistants.GUID), "Still available after an edit elsewhere.");
+
+            Assert.AreEqual("1", ValueOf(assistants), "Only the Assistant's change goes back...");
+            Assert.AreEqual("7", ValueOf(persons), "...and the person's edit stays.");
+            Assert.AreEqual(AIUndoAvailability.EditedSince, Workspace.GetAITurnUndoAvailability(TurnA), "Undo all stays off.");
         }
 
         [Test]
