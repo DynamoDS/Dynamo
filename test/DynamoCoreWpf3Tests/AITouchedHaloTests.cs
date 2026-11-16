@@ -1331,7 +1331,7 @@ namespace DynamoCoreWpfTests
             {
                 SelectNodes(nodes);
 
-                Assert.IsTrue(nodes.All(n => !n.IsRecentlyModifiedByAI), "A box selection or Select All clears every node it selects.");
+                Assert.IsTrue(nodes.All(n => !n.IsRecentlyModifiedByAI), "Selecting several nodes at once clears each of them.");
             }
             finally
             {
