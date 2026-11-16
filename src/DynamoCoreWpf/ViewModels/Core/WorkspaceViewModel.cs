@@ -1976,13 +1976,34 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Centres the view on a node at 100% zoom, without changing the selection (DYN-11012).
+        /// Raised to centre the view on a node for the AI summary chip's stepper.
+        /// </summary>
+        internal event Action<NodeModel> RequestCenterViewOnStepNode;
+
+        /// <summary>
+        /// Centres the view on a node, without changing the selection, at the zoom from <see cref="StepZoom"/>
+        /// (DYN-11012). The view does it, as only the view knows the canvas size.
         /// </summary>
         internal void CenterViewOnNode(NodeModel node)
         {
             if (node == null) return;
 
-            OnRequestZoomToFitView(this, new ZoomEventArgs(new Point2D(node.X, node.Y), node.Width, node.Height, 1.0));
+            RequestCenterViewOnStepNode?.Invoke(node);
+        }
+
+        /// <summary>
+        /// The zoom for stepping to a node: the current zoom or 100%, whichever is larger, but no closer than
+        /// lets the node fit in the given area, and within the workspace's zoom limits.
+        /// </summary>
+        internal static double StepZoom(double currentZoom, double nodeWidth, double nodeHeight, double fitWidth, double fitHeight)
+        {
+            var zoom = Math.Max(currentZoom, 1.0);
+            if (nodeWidth > 0 && nodeHeight > 0 && fitWidth > 0 && fitHeight > 0)
+            {
+                zoom = Math.Min(zoom, Math.Min(fitWidth / nodeWidth, fitHeight / nodeHeight));
+            }
+
+            return Math.Max(ZOOM_MINIMUM, Math.Min(ZOOM_MAXIMUM, zoom));
         }
 
         internal void ResetFitViewToggle(object o)

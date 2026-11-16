@@ -397,21 +397,23 @@ namespace DynamoCoreWpfTests
         [Test]
         [Category("UnitTests")]
         [SetUICulture("en-US")]
-        public void StepperFollowsTheOrderTheAssistantTouchedTheNodesAndWraps()
+        public void StepperGoesLeftToRightAndWraps()
         {
-            var first = PlaceByAssistant(x: 800, y: 0);
-            var second = PlaceByAssistant(x: 0, y: 0);
-            var third = PlaceByAssistant(x: 400, y: 300);
+            // Touched right, left, middle; two in the middle column, the upper one touched last
+            var right = PlaceByAssistant(x: 800, y: 0);
+            var left = PlaceByAssistant(x: 0, y: 0);
+            var middleLower = PlaceByAssistant(x: 400, y: 300);
+            var middleUpper = PlaceByAssistant(x: 400, y: 0);
             var chip = Chip;
-            Assert.AreEqual("– of 3", chip.StepText, "No step yet.");
+            Assert.AreEqual("– of 4", chip.StepText, "No step yet.");
 
-            var zooms = new List<ZoomEventArgs>();
+            var centred = new List<NodeModel>();
             var texts = new List<string>();
-            WorkspaceViewModel.ZoomEventHandler capture = (sender, e) => zooms.Add((ZoomEventArgs)e);
-            ViewModel.CurrentSpaceViewModel.RequestZoomToFitView += capture;
+            Action<NodeModel> capture = node => centred.Add(node);
+            ViewModel.CurrentSpaceViewModel.RequestCenterViewOnStepNode += capture;
             try
             {
-                for (var i = 0; i < 4; i++)
+                for (var i = 0; i < 5; i++)
                 {
                     chip.NextCommand.Execute(null);
                     texts.Add(chip.StepText);
@@ -419,13 +421,47 @@ namespace DynamoCoreWpfTests
             }
             finally
             {
-                ViewModel.CurrentSpaceViewModel.RequestZoomToFitView -= capture;
+                ViewModel.CurrentSpaceViewModel.RequestCenterViewOnStepNode -= capture;
             }
 
-            CollectionAssert.AreEqual(new[] { "1 of 3", "2 of 3", "3 of 3", "1 of 3" }, texts, "Wraps after the last node.");
-            CollectionAssert.AreEqual(new[] { first.X, second.X, third.X, first.X }, zooms.Select(z => z.Offset.X).ToList(),
-                "In the order the Assistant touched the nodes, not left to right.");
-            Assert.IsTrue(zooms.All(z => z.Zoom == 1.0), "Each node is centred at 100%.");
+            CollectionAssert.AreEqual(new[] { "1 of 4", "2 of 4", "3 of 4", "4 of 4", "1 of 4" }, texts, "Wraps after the last node.");
+            CollectionAssert.AreEqual(new[] { left, middleUpper, middleLower, right, left }, centred,
+                "Left to right, then top to bottom, whatever order the Assistant touched them in.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [TestCase(0.6, 200, 100, 1.0, TestName = "StepZoom_ZoomsInTo100Percent")]
+        [TestCase(1.8, 200, 100, 1.8, TestName = "StepZoom_KeepsAHigherZoom")]
+        [TestCase(3.0, 600, 400, 1.5, TestName = "StepZoom_ZoomsOutUntilTheNodeFits")]
+        [TestCase(0.6, 2000, 1000, 0.5, TestName = "StepZoom_GoesBelow100PercentForANodeTooBigToFit")]
+        [TestCase(5.0, 10, 10, WorkspaceViewModel.ZOOM_MAXIMUM, TestName = "StepZoom_StaysWithinTheZoomLimits")]
+        public void StepZoom(double currentZoom, double nodeWidth, double nodeHeight, double expected)
+        {
+            // A 1000 x 600 fit area
+            Assert.AreEqual(expected, WorkspaceViewModel.StepZoom(currentZoom, nodeWidth, nodeHeight, 1000, 600), 1e-9);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SteppingCentresTheNodeAndKeepsAHigherZoom()
+        {
+            var node = PlaceByAssistant(x: 3000, y: 2000);
+            var space = ViewModel.CurrentSpaceViewModel;
+            space.Zoom = 1.8;
+
+            Chip.NextCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+
+            var workspaceView = View.ChildrenOfType<WorkspaceView>().First();
+            var chipView = workspaceView.ChildrenOfType<AIChangeSummaryChip>().First();
+            var nodeView = NodeViewWithGuid(node.GUID.ToString());
+            var nodeCentre = nodeView.TranslatePoint(new Point(nodeView.ActualWidth / 2, nodeView.ActualHeight / 2), workspaceView);
+            var chipTop = chipView.TranslatePoint(new Point(0, 0), workspaceView).Y;
+
+            Assert.AreEqual(1.8, space.Zoom, 1e-9, "A zoom above 100% is kept.");
+            Assert.AreEqual(workspaceView.ActualWidth / 2, nodeCentre.X, 5, "Centred across the canvas.");
+            Assert.Less(nodeCentre.Y, chipTop, "Above the chip.");
         }
 
         [Test]

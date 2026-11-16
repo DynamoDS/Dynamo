@@ -171,13 +171,13 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Steps to the next (1) or previous (-1) node of the turn, in the order the Assistant touched them,
-        /// wrapping at either end. Centres the node at 100% zoom and gives its halo one slow breath.
+        /// Steps to the next or previous node of the turn, left to right, wrapping at either end.
+        /// Centres the node (see <see cref="WorkspaceViewModel.StepZoom"/>) and gives its halo one slow breath.
         /// </summary>
         internal void Step(int direction)
         {
             var turn = LatestTurn();
-            var nodes = turn == null ? new List<NodeModel>() : TurnNodes(turn);
+            var nodes = turn == null ? new List<NodeModel>() : StepNodes(turn);
             if (nodes.Count == 0)
             {
                 Refresh();
@@ -369,6 +369,12 @@ namespace Dynamo.ViewModels
                 .Select(id => nodesById.TryGetValue(id, out var node) ? node : null)
                 .Where(node => node != null)
                 .ToList();
+        }
+
+        // The stepper's order: left to right, then top to bottom
+        private List<NodeModel> StepNodes(AITurnSummary turn)
+        {
+            return TurnNodes(turn).OrderBy(node => node.X).ThenBy(node => node.Y).ToList();
         }
 
         private NodeViewModel FindNodeViewModel(NodeModel node)
