@@ -875,15 +875,16 @@ namespace DynamoCoreWpfTests
         {
             var selected = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
             var notSelected = AddNumberNode();
-            foreach (var node in selected.Append(notSelected))
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
-            ShowGlows();
 
             try
             {
+                // Select first; selecting afterwards would clear them
                 SelectNodes(selected);
+                foreach (var node in selected.Append(notSelected))
+                {
+                    Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+                }
+                ShowGlows();
                 ViewModelOf(selected[0]).SetAIHaloHovered(true);
 
                 Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
@@ -909,15 +910,16 @@ namespace DynamoCoreWpfTests
         {
             var selected = Enumerable.Range(0, 2).Select(_ => AddNumberNode()).ToList();
             var hovered = AddNumberNode();
-            foreach (var node in selected.Append(hovered))
-            {
-                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
-            }
-            ShowGlows();
 
             try
             {
+                // Select first; selecting afterwards would clear them
                 SelectNodes(selected);
+                foreach (var node in selected.Append(hovered))
+                {
+                    Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+                }
+                ShowGlows();
                 ViewModelOf(hovered).SetAIHaloHovered(true);
 
                 Assert.IsTrue(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight());
@@ -937,12 +939,13 @@ namespace DynamoCoreWpfTests
         {
             var plain = AddNumberNode();
             var touched = AddNumberNode();
-            Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnA);
-            ShowGlows();
 
             try
             {
+                // Select first; selecting afterwards would clear it
                 SelectNodes(new[] { plain, touched });
+                Workspace.RecordAINodeChange(touched.GUID, AIChangeKind.Placed, TurnA);
+                ShowGlows();
                 ViewModelOf(plain).SetAIHaloHovered(true);
 
                 Assert.IsFalse(ViewModel.CurrentSpaceViewModel.ClearHoveredAIHighlight(),
@@ -1263,7 +1266,148 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void SelectingTheNodeKeepsTheBadge()
+        public void SelectingTheNodeClearsTheHaloAndBadge()
+        {
+            var node = AddNumberNode();
+            var other = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var unsavedBefore = Workspace.HasUnsavedChanges;
+
+            try
+            {
+                SelectNodes(new[] { node });
+
+                Assert.IsFalse(node.IsRecentlyModifiedByAI, "Selecting the node acknowledges the change.");
+                Assert.IsNull(ViewModelOf(node).AIHaloGlow, "The halo is gone.");
+                Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility, "The badge is gone.");
+                AssertBadgeRests(other, "on a node that was not selected");
+                Assert.AreEqual(2, Workspace.GetAITurnSummaries().Single().Nodes.Count, "The turn history is kept.");
+                Assert.AreEqual(unsavedBefore, Workspace.HasUnsavedChanges, "Clearing the highlight is not an edit.");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(node.IsRecentlyModifiedByAI, "Deselecting does not bring the highlight back.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectingAMovedNodeClearsItsHalo()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Moved, TurnA, null, "0, 0", "100, 50");
+            ShowGlows();
+            Assert.IsNotNull(ViewModelOf(node).AIHaloGlow);
+
+            try
+            {
+                SelectNodes(new[] { node });
+
+                Assert.IsFalse(node.IsRecentlyModifiedByAI);
+                Assert.IsNull(ViewModelOf(node).AIHaloGlow);
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectingSeveralNodesClearsEachOfThem()
+        {
+            var nodes = Enumerable.Range(0, 3).Select(_ => AddNumberNode()).ToList();
+            foreach (var node in nodes)
+            {
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+            ShowGlows();
+
+            try
+            {
+                SelectNodes(nodes);
+
+                Assert.IsTrue(nodes.All(n => !n.IsRecentlyModifiedByAI), "A box selection or Select All clears every node it selects.");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeLeftOutOfTheSelectionBoxKeepsItsBadge()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            try
+            {
+                workspace.OnBoxSelectionStarted();
+                SelectNodes(new[] { node });
+                AssertBadgeRests(node, "while the box covers it");
+
+                // The box shrinks off the node before it is released
+                Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(node);
+                DispatcherUtil.DoEvents();
+                workspace.OnBoxSelectionEnded();
+
+                Assert.IsFalse(node.IsSelected);
+                AssertBadgeRests(node, "after the box moved off it");
+            }
+            finally
+            {
+                EndBoxSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ReleasingTheSelectionBoxClearsTheBadgesItSelected()
+        {
+            var inBox = AddNumberNode();
+            var outside = AddNumberNode();
+            Workspace.RecordAINodeChange(inBox.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(outside.GUID, AIChangeKind.Placed, TurnA);
+            ShowGlows();
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            try
+            {
+                workspace.OnBoxSelectionStarted();
+                SelectNodes(new[] { inBox });
+                AssertBadgeRests(inBox, "until the box is released");
+
+                workspace.OnBoxSelectionEnded();
+                DispatcherUtil.DoEvents();
+
+                Assert.IsFalse(inBox.IsRecentlyModifiedByAI);
+                Assert.AreEqual(Visibility.Collapsed, ViewOf(inBox).AIBadge.Visibility);
+                AssertBadgeRests(outside, "on a node the box did not select");
+            }
+            finally
+            {
+                EndBoxSelection();
+            }
+        }
+
+        private void EndBoxSelection()
+        {
+            var workspace = ViewModel.CurrentSpaceViewModel;
+            if (workspace.IsBoxSelecting) workspace.OnBoxSelectionEnded();
+            Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectionMadeByTheAssistantKeepsTheBadge()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
@@ -1271,15 +1415,13 @@ namespace DynamoCoreWpfTests
 
             try
             {
-                SelectNodes(new[] { node });
-                AssertBadgeRests(node, "while selected");
+                AsAIEdit(() => SelectNodes(new[] { node }));
+                AssertBadgeRests(node, "after the Assistant selected it");
             }
             finally
             {
                 Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
             }
-            DispatcherUtil.DoEvents();
-            AssertBadgeRests(node, "after deselecting");
         }
 
         [Test]
@@ -1299,15 +1441,50 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void ClickingTheNodeWithoutDraggingKeepsTheBadge()
+        public void ClickingTheNodeClearsTheBadge()
         {
             var node = AddNumberNode();
             Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             ShowGlows();
 
-            Drag(node, 0);
+            try
+            {
+                ClickNode(node);
 
-            AssertBadgeRests(node, "after a click");
+                Assert.IsTrue(node.IsSelected, "The click selects the node.");
+                Assert.IsFalse(node.IsRecentlyModifiedByAI);
+                Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ClickingANodeThatWasAlreadySelectedClearsTheBadge()
+        {
+            var node = AddNumberNode();
+
+            try
+            {
+                // Selected, then changed by the Assistant
+                SelectNodes(new[] { node });
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+                ShowGlows();
+                AssertBadgeRests(node, "while the node stays selected");
+
+                ClickNode(node);
+
+                Assert.IsTrue(node.IsSelected, "The node stays selected.");
+                Assert.IsFalse(node.IsRecentlyModifiedByAI, "The click acknowledges the change.");
+                Assert.AreEqual(Visibility.Collapsed, ViewOf(node).AIBadge.Visibility);
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
         }
 
         [Test]
@@ -1317,13 +1494,14 @@ namespace DynamoCoreWpfTests
             var first = AddNumberNode();
             var second = AddNumberNode();
             second.X = first.X + 300;
-            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
-            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
-            ShowGlows();
 
             try
             {
+                // Select first; selecting afterwards would clear them
                 SelectNodes(new[] { first, second });
+                Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+                Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+                ShowGlows();
                 ViewModel.CurrentSpaceViewModel.AlignSelected("HorizontalLeft");
             }
             finally
@@ -1338,6 +1516,37 @@ namespace DynamoCoreWpfTests
 
             AssertBadgeRests(first, "after aligning and moving in code");
             AssertBadgeRests(second, "after aligning");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ArrangingKeepsTheBadgeOfASelectedNode()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            second.X = first.X + 300;
+            second.Y = first.Y + 200;
+
+            try
+            {
+                // Select first; selecting afterwards would clear them
+                SelectNodes(new[] { first, second });
+                Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+                Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnA);
+                ShowGlows();
+
+                // Arrange ends by calling Select() again on the selection
+                ViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
+                DispatcherUtil.DoEvents();
+
+                Assert.IsTrue(first.IsSelected && second.IsSelected, "Arrange keeps the selection.");
+                AssertBadgeRests(first, "after Arrange");
+                AssertBadgeRests(second, "after Arrange");
+            }
+            finally
+            {
+                Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
+            }
         }
 
         [Test]
@@ -1373,6 +1582,18 @@ namespace DynamoCoreWpfTests
             {
                 Dynamo.Selection.DynamoSelection.Instance.ClearSelection();
             }
+            DispatcherUtil.DoEvents();
+        }
+
+        private void ClickNode(NodeModel node)
+        {
+            var nodeView = ViewOf(node);
+            nodeView.RaiseEvent(new System.Windows.Input.MouseButtonEventArgs(
+                System.Windows.Input.Mouse.PrimaryDevice, 0, System.Windows.Input.MouseButton.Left)
+            {
+                RoutedEvent = UIElement.MouseLeftButtonDownEvent,
+                Source = nodeView
+            });
             DispatcherUtil.DoEvents();
         }
 
