@@ -6427,6 +6427,154 @@ s = 1;
 
         #endregion
 
+        #region DYN-11168: statement-order recompile and dependency ordering
+
+        /// <summary>
+        /// Parses code into a subtree's statements and stamps them with the subtree's guid, as
+        /// GetDeltaAstListAdded does, so OrderSubtreesByDependency can tell the subtrees apart.
+        /// </summary>
+        private static List<AssociativeNode> SubtreeStatements(Guid guid, string code)
+        {
+            var nodes = TestFrameWork.CreateSubTreeFromCode(guid, code).AstNodes;
+            foreach (var bnode in nodes.OfType<BinaryExpressionNode>())
+            {
+                bnode.guid = guid;
+            }
+            return nodes;
+        }
+
+        /// <summary>
+        /// The guids of the subtrees in an ordered delta list, one per run of consecutive statements.
+        /// </summary>
+        private static List<Guid> SubtreeOrder(IEnumerable<AssociativeNode> ordered)
+        {
+            var order = new List<Guid>();
+            foreach (var bnode in ordered.OfType<BinaryExpressionNode>())
+            {
+                if (order.Count == 0 || order[order.Count - 1] != bnode.guid)
+                {
+                    order.Add(bnode.guid);
+                }
+            }
+            return order;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_SubtreesDefiningTheSameVariableKeepTheirOrder()
+        {
+            // P and Q both define x, and P must move after S because it reads s. Without a write-after-
+            // write dependency, Q would stay ahead of P and the last definition of x would change.
+            var guidP = Guid.NewGuid();
+            var guidQ = Guid.NewGuid();
+            var guidS = Guid.NewGuid();
+            var delta = SubtreeStatements(guidP, "x = s;")
+                .Concat(SubtreeStatements(guidQ, "x = 2;"))
+                .Concat(SubtreeStatements(guidS, "s = 1;"))
+                .ToList();
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            Assert.AreEqual(new List<Guid> { guidS, guidP, guidQ }, SubtreeOrder(ordered));
+            Assert.AreEqual(delta.Count, ordered.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_ReadInsideAFunctionBodyCountsAsARead()
+        {
+            // A's function reads src, which B defines, so A must come after B.
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var delta = SubtreeStatements(guidA, "fa = 0; def readsSrc() { return = src; }")
+                .Concat(SubtreeStatements(guidB, "src = 1;"))
+                .ToList();
+            Assert.IsTrue(delta.OfType<FunctionDefinitionNode>().Any(), "the test needs a function definition");
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            Assert.AreEqual(new List<Guid> { guidB, guidA }, SubtreeOrder(ordered));
+            Assert.AreEqual(delta.Count, ordered.Count);
+            // The function definition stays with its subtree.
+            Assert.IsInstanceOf<FunctionDefinitionNode>(ordered[ordered.Count - 1]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_CycleKeepsTheOriginalOrderOfTheSubtreesInIt()
+        {
+            // A and B read each other. C depends on nothing, so it goes first; A and B keep their order.
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var guidC = Guid.NewGuid();
+            var delta = SubtreeStatements(guidA, "ca = cb;")
+                .Concat(SubtreeStatements(guidB, "cb = ca;"))
+                .Concat(SubtreeStatements(guidC, "cc = 1;"))
+                .ToList();
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            Assert.AreEqual(new List<Guid> { guidC, guidA, guidB }, SubtreeOrder(ordered));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_LongReversedChainIsFullyReordered()
+        {
+            // Subtree i reads what subtree i + 1 defines, so the whole list must be reversed. Also a
+            // smoke test for the size of the first profiled run of a large graph.
+            const int count = 3000;
+            var guids = Enumerable.Range(0, count).Select(_ => Guid.NewGuid()).ToList();
+            var delta = new List<AssociativeNode>();
+            for (int i = 0; i < count; i++)
+            {
+                var code = i < count - 1 ? $"chain{i} = chain{i + 1};" : $"chain{i} = 0;";
+                delta.AddRange(SubtreeStatements(guids[i], code));
+            }
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            guids.Reverse();
+            Assert.AreEqual(guids, SubtreeOrder(ordered));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ForceExecutedSubtreeWithIdenticalStatements_EachStatementExecutesOnce()
+        {
+            // A force-executed subtree gains a statement ahead of two identical statements, so it is
+            // recompiled in statement order. Each identical statement must map to its own cached graph
+            // node; otherwise one stays active next to its recompiled clone.
+            var guid = Guid.NewGuid();
+            const string counterCall = "dupa = FFITarget.ProfilingCounter.Increment();";
+            var statements = TestFrameWork.CreateSubTreeFromCode(guid, counterCall + counterCall).AstNodes;
+            Assert.AreEqual(2, statements.Count);
+
+            int before = FFITarget.ProfilingCounter.Count;
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { new Subtree(new List<AssociativeNode>(statements), guid) }, null));
+            int executionsPerRun = FFITarget.ProfilingCounter.Count - before;
+            Assert.Greater(executionsPerRun, 0, "the first sync should execute the subtree");
+
+            var withNewFirstStatement = TestFrameWork.CreateSubTreeFromCode(guid, "dupfirst = 0;").AstNodes
+                .Concat(statements).ToList();
+            before = FFITarget.ProfilingCounter.Count;
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(withNewFirstStatement, guid) { ForceExecution = true } }));
+            Assert.AreEqual(executionsPerRun, FFITarget.ProfilingCounter.Count - before,
+                "the statement-order recompile should execute each statement once");
+            AssertValue("dupfirst", 0);
+
+            // A later force execution of the unchanged subtree still executes each statement once.
+            before = FFITarget.ProfilingCounter.Count;
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(withNewFirstStatement, guid) { ForceExecution = true } }));
+            Assert.AreEqual(executionsPerRun, FFITarget.ProfilingCounter.Count - before,
+                "a later force execution should execute each statement once");
+        }
+
+        #endregion
+
     }
 
 }
