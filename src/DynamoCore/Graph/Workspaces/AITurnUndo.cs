@@ -20,6 +20,7 @@ namespace Dynamo.Graph.Workspaces
         AssistantWorking,
         EditedSince,
         EditedDuringTurn,
+        NotSupported,
     }
 
     public partial class WorkspaceModel
@@ -175,7 +176,14 @@ namespace Dynamo.Graph.Workspaces
                 return AIUndoAvailability.EditedSince;
             }
 
-            return steps > 0 ? AIUndoAvailability.Available : AIUndoAvailability.NothingToUndo;
+            if (steps > 0)
+            {
+                return AIUndoAvailability.Available;
+            }
+
+            return origins.Any(origin => origin.AITurn == UndoRedoRecorder.UnknownAITurn)
+                ? AIUndoAvailability.NotSupported
+                : AIUndoAvailability.NothingToUndo;
         }
 
         /// <summary>

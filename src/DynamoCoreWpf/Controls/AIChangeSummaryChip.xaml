@@ -118,6 +118,7 @@
                     Foreground="{StaticResource DefaultFontColorBrush}"
                     Style="{StaticResource ChipButton}"
                     Margin="8,0,0,0"
+                    Visibility="{Binding ShowUndoAll, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                     ToolTipService.ShowOnDisabled="True"
                     AutomationProperties.HelpText="{Binding UndoAllToolTip}">
                 <Button.ToolTip>

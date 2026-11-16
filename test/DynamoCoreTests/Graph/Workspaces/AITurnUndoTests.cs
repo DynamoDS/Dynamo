@@ -254,14 +254,19 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void EditsWithoutATurnIdAreNotPartOfAnyTurn()
+        public void UndoAllIsNotSupportedWhenTheAssistantDoesNotLabelItsEdits()
         {
+            // As an older DynamoMCP runs an edit
+            var node = new DoubleInput();
             using (Workspace.BeginAIEdit())
             {
-                Create(new DoubleInput());
+                Create(node);
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
             }
 
-            Assert.AreEqual(AIUndoAvailability.NothingToUndo, Workspace.GetAITurnUndoAvailability(TurnA));
+            Assert.AreEqual(AIUndoAvailability.NotSupported, Workspace.GetAITurnUndoAvailability(TurnA));
+            Assert.IsFalse(Workspace.UndoAITurn(TurnA));
+            Assert.IsTrue(Workspace.Nodes.Contains(node), "Nothing is undone.");
         }
 
         #endregion

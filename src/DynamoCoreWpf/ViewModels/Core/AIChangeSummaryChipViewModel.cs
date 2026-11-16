@@ -14,8 +14,9 @@ namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Canvas chip summarising the latest Assistant turn (DYN-11011), with a stepper through the turn's
-    /// nodes, Show all, Undo all and Dismiss (DYN-11012). The counts are the turn's history: later edits
-    /// do not change them. The chip stays until Dismiss, Undo all or the next Assistant turn.
+    /// nodes, Show all, Undo all and Dismiss (DYN-11012). Added and changed count only the nodes that still
+    /// carry the turn's marker: a node a person edits or clears with Esc is theirs and drops out. Deleted
+    /// nodes and removed connections are the turn's history.
     /// </summary>
     internal sealed class AIChangeSummaryChipViewModel : ViewModelBase
     {
@@ -31,8 +32,10 @@ namespace Dynamo.ViewModels
         private string message = string.Empty;
         private string stepText = string.Empty;
         private bool canUndoAll;
+        private bool showUndoAll = true;
         private string undoAllToolTip = string.Empty;
         private string stepTurnId;
+        private Guid? stepNodeId;
         private int stepIndex = -1;
 
         internal AIChangeSummaryChipViewModel(WorkspaceViewModel workspaceViewModel)
@@ -69,7 +72,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// True when at least one of the turn's nodes is still on the canvas: Show all and the stepper apply.
+        /// True when at least one of the turn's nodes still carries its marker: Show all and the stepper apply.
         /// </summary>
         public bool CanShow
         {
@@ -123,6 +126,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// False when the AI client cannot undo a whole turn (an older DynamoMCP): Undo all is hidden.
+        /// </summary>
+        public bool ShowUndoAll
+        {
+            get => showUndoAll;
+            private set
+            {
+                if (showUndoAll == value) return;
+                showUndoAll = value;
+                RaisePropertyChanged(nameof(ShowUndoAll));
+            }
+        }
+
+        /// <summary>
         /// What Undo all does, or why it is unavailable.
         /// </summary>
         public string UndoAllToolTip
@@ -147,31 +164,30 @@ namespace Dynamo.ViewModels
         public DelegateCommand DismissCommand { get; }
 
         /// <summary>
-        /// Show all: zooms to fit the turn's nodes still on the canvas, and replays the halo on those that
-        /// still carry the turn's marker. Nodes a person has edited since are framed but do not glow.
+        /// Show all: zooms to fit the turn's marked nodes and replays their halo.
         /// </summary>
         internal void Show()
         {
             var turn = LatestTurn();
-            var nodes = turn == null ? new List<NodeModel>() : TurnNodes(turn);
+            var nodes = turn == null ? new List<NodeModel>() : MarkedNodes(turn).Select(entry => entry.Node).ToList();
             if (nodes.Count == 0)
             {
                 Refresh();
                 return;
             }
 
-            foreach (var node in nodes.Where(n => IsMarkedBy(n, turn)))
+            foreach (var node in nodes)
             {
                 FindNodeViewModel(node)?.ReplayAIHaloGlow();
             }
 
-            stepIndex = -1;
-            StepText = FormatStep(stepIndex, nodes.Count);
+            ResetStep();
+            StepText = FormatStep(-1, nodes.Count);
             workspaceViewModel.FitViewToNodes(nodes);
         }
 
         /// <summary>
-        /// Steps to the next or previous node of the turn, left to right, wrapping at either end.
+        /// Steps to the next or previous marked node of the turn, left to right, wrapping at either end.
         /// Centres the node (see <see cref="WorkspaceViewModel.StepZoom"/>) and gives its halo one slow breath.
         /// </summary>
         internal void Step(int direction)
@@ -184,17 +200,28 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            stepIndex = stepIndex < 0
-                ? (direction > 0 ? 0 : nodes.Count - 1)
-                : ((stepIndex + direction) % nodes.Count + nodes.Count) % nodes.Count;
-            StepText = FormatStep(stepIndex, nodes.Count);
-
-            var node = nodes[stepIndex];
-            if (IsMarkedBy(node, turn))
+            var current = CurrentStep(nodes);
+            int next;
+            if (current >= 0)
             {
-                FindNodeViewModel(node)?.PulseAIHaloGlow();
+                next = current + direction;
+            }
+            else if (stepNodeId != null && stepIndex >= 0)
+            {
+                // The node the stepper was on dropped out (edited or deleted): carry on from where it was
+                next = direction > 0 ? stepIndex : stepIndex - 1;
+            }
+            else
+            {
+                next = direction > 0 ? 0 : nodes.Count - 1;
             }
 
+            stepIndex = (next % nodes.Count + nodes.Count) % nodes.Count;
+            var node = nodes[stepIndex];
+            stepNodeId = node.GUID;
+            StepText = FormatStep(stepIndex, nodes.Count);
+
+            FindNodeViewModel(node)?.PulseAIHaloGlow();
             workspaceViewModel.CenterViewOnNode(node);
         }
 
@@ -251,42 +278,71 @@ namespace Dynamo.ViewModels
         internal void Refresh()
         {
             var turn = LatestTurn();
-            var added = turn?.Nodes.Count(n => n.Kind == AIChangeKind.Placed) ?? 0;
-            var changed = (turn?.Nodes.Count ?? 0) - added;
-            var deleted = turn?.DeletedNodeCount ?? 0;
-            var removedConnections = turn?.RemovedStandaloneConnectorCount ?? 0;
-
-            if (added + changed + deleted + removedConnections == 0 || turn.IsUndone)
+            if (turn == null || turn.IsUndone)
             {
-                CanShow = false;
-                CanUndoAll = false;
-                IsVisible = false;
+                Hide();
                 return;
             }
 
             if (!string.Equals(stepTurnId, turn.TurnId, StringComparison.Ordinal))
             {
                 stepTurnId = turn.TurnId;
-                stepIndex = -1;
+                ResetStep();
             }
 
-            var stepCount = TurnNodes(turn).Count;
-            stepIndex = Math.Min(stepIndex, stepCount - 1);
-
-            Message = FormatMessage(added, changed, deleted, removedConnections);
-            StepText = FormatStep(stepIndex, stepCount);
-            CanShow = stepCount > 0;
+            var marked = MarkedNodes(turn);
+            var added = marked.Count(entry => entry.Change.Kind == AIChangeKind.Placed);
+            var changed = marked.Count - added;
+            var deleted = turn.DeletedNodeCount;
+            var removedConnections = turn.RemovedStandaloneConnectorCount;
             var undoAvailability = RefreshUndoAll(turn.TurnId);
 
-            // Nothing left to act on: the turn's nodes are all gone and it cannot be undone. Worked out on
-            // every refresh, so the chip comes back if the nodes do (Ctrl+Z).
-            IsVisible = !(turn.Nodes.Count > 0 && stepCount == 0 && undoAvailability != AIUndoAvailability.Available);
+            // Close when there is nothing left to describe, or when the person has taken over (or deleted)
+            // all of the turn's nodes and the turn can no longer be undone
+            var takenOver = turn.Nodes.Count > 0 && marked.Count == 0 && undoAvailability != AIUndoAvailability.Available;
+            if (added + changed + deleted + removedConnections == 0 || takenOver)
+            {
+                Hide();
+                return;
+            }
+
+            var stepNodes = StepNodes(turn);
+            Message = FormatMessage(added, changed, deleted, removedConnections);
+            StepText = FormatStep(CurrentStep(stepNodes), stepNodes.Count);
+            CanShow = stepNodes.Count > 0;
+            IsVisible = true;
+        }
+
+        private void Hide()
+        {
+            CanShow = false;
+            CanUndoAll = false;
+            IsVisible = false;
+        }
+
+        private void ResetStep()
+        {
+            stepNodeId = null;
+            stepIndex = -1;
+        }
+
+        // Where the stepper is in the list, or -1 if it has not stepped yet or its node dropped out
+        private int CurrentStep(List<NodeModel> nodes)
+        {
+            var index = stepNodeId == null ? -1 : nodes.FindIndex(node => node.GUID == stepNodeId.Value);
+            if (index >= 0)
+            {
+                stepIndex = index;
+            }
+
+            return index;
         }
 
         private AIUndoAvailability RefreshUndoAll(string turnId)
         {
             var availability = workspaceViewModel.Model.GetAITurnUndoAvailability(turnId);
             CanUndoAll = availability == AIUndoAvailability.Available;
+            ShowUndoAll = availability != AIUndoAvailability.NotSupported;
             UndoAllToolTip = availability switch
             {
                 AIUndoAvailability.Available => Resources.AIChangeSummaryChipUndoAllToolTip,
@@ -357,24 +413,25 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The turn's nodes that are still on the canvas, in the order the Assistant touched them.
+        /// The turn's nodes that are on the canvas and still carry its marker, in the order the Assistant
+        /// touched them, each with what the turn did to it.
         /// </summary>
-        private List<NodeModel> TurnNodes(AITurnSummary turn)
+        private List<(NodeModel Node, AINodeChange Change)> MarkedNodes(AITurnSummary turn)
         {
             var nodesById = workspaceViewModel.Model.Nodes
                 .GroupBy(n => n.GUID)
                 .ToDictionary(g => g.Key, g => g.First());
 
             return turn.NodeIds
-                .Select(id => nodesById.TryGetValue(id, out var node) ? node : null)
-                .Where(node => node != null)
+                .Zip(turn.Nodes, (id, change) => (Node: nodesById.TryGetValue(id, out var node) ? node : null, Change: change))
+                .Where(entry => entry.Node != null && IsMarkedBy(entry.Node, turn))
                 .ToList();
         }
 
         // The stepper's order: left to right, then top to bottom
         private List<NodeModel> StepNodes(AITurnSummary turn)
         {
-            return TurnNodes(turn).OrderBy(node => node.X).ThenBy(node => node.Y).ToList();
+            return MarkedNodes(turn).Select(entry => entry.Node).OrderBy(node => node.X).ThenBy(node => node.Y).ToList();
         }
 
         private NodeViewModel FindNodeViewModel(NodeModel node)

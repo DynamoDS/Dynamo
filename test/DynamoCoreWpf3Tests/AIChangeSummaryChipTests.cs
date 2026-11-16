@@ -74,6 +74,17 @@ namespace DynamoCoreWpfTests
             Workspace.RemoveAndDisposeNode(node);
         }
 
+        private void DeleteByAssistantUndoably(NodeModel node, string turn = TurnA)
+        {
+            using (Workspace.BeginAIEdit(turn))
+            {
+                Workspace.RecordAINodeDeleted(node.GUID, turn);
+                ViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(node.GUID));
+            }
+
+            DispatcherUtil.DoEvents();
+        }
+
         private NodeViewModel ViewModelOf(NodeModel node)
         {
             return ViewModel.CurrentSpaceViewModel.Nodes.Single(n => n.NodeModel == node);
@@ -188,19 +199,76 @@ namespace DynamoCoreWpfTests
         [Test]
         [Category("UnitTests")]
         [SetUICulture("en-US")]
-        public void ChipStaysWhenAPersonEditsTheTurnsNodes()
+        public void NodesThePersonEditsDropOutOfTheChip()
+        {
+            var edited = PlaceByAssistant(x: 0);
+            PlaceByAssistant(x: 400);
+            DeleteByAssistant(AddNumberNode());
+            Assert.AreEqual("Autodesk Assistant added 2 nodes · deleted 1", Chip.Message);
+
+            edited.OnNodeModified();
+
+            Assert.IsNull(edited.AIChange, "The person's edit clears the marker.");
+            Assert.AreEqual("Autodesk Assistant added 1 node · deleted 1", Chip.Message, "Deletions stay as history.");
+            Assert.AreEqual("– of 1", Chip.StepText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void ClearingAMarkerWithEscDropsTheNode()
+        {
+            var cleared = PlaceByAssistant(x: 0);
+            PlaceByAssistant(x: 400);
+
+            // What Esc does to the hovered or selected node
+            cleared.ClearAIChange();
+
+            Assert.AreEqual("Autodesk Assistant added 1 node", Chip.Message);
+            Assert.AreEqual("– of 1", Chip.StepText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChipClosesOnceThePersonHasTakenOverAllTheTurnsNodes()
         {
             var first = PlaceByAssistant();
             var second = PlaceByAssistant();
-            var before = Chip.Message;
+            DeleteByAssistant(AddNumberNode());
 
             first.OnNodeModified();
             second.OnNodeModified();
 
-            Assert.IsNull(first.AIChange, "The person's edits clear the markers.");
-            Assert.IsTrue(Chip.IsVisible, "The chip is the turn's history and stays until Dismiss or the next turn.");
-            Assert.AreEqual(before, Chip.Message, "The sentence does not change.");
-            Assert.IsTrue(Chip.CanShow, "Show still frames the turn's nodes.");
+            Assert.IsFalse(Chip.IsVisible, "The person has acknowledged the turn and it cannot be undone.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChipClosesWhenNothingIsLeftToDescribeEvenIfUndoAllIsAvailable()
+        {
+            var placed = PlaceByAssistantUndoably();
+            Assert.IsTrue(Chip.CanUndoAll);
+
+            placed.ClearAIChange();
+
+            Assert.IsFalse(Chip.IsVisible);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void DeletionsKeepTheChipWhileUndoAllIsAvailable()
+        {
+            var placed = PlaceByAssistantUndoably();
+            DeleteByAssistantUndoably(AddNumberNode(0, 300));
+            Assert.IsTrue(Chip.CanUndoAll);
+
+            placed.ClearAIChange();
+
+            var chip = Chip;
+            Assert.IsTrue(chip.IsVisible, "Undo all can still bring the deleted node back.");
+            Assert.AreEqual("Autodesk Assistant deleted 1 node", chip.Message);
+            Assert.IsFalse(chip.CanShow, "No marked node to show or step to.");
         }
 
         [Test]
@@ -244,20 +312,18 @@ namespace DynamoCoreWpfTests
         [Test]
         [Category("UnitTests")]
         [SetUICulture("en-US")]
-        public void ChipComesBackWhenThePersonUndoesDeletingTheTurnsNodes()
+        public void ChipStaysClosedWhenThePersonUndoesDeletingTheTurnsNodes()
         {
             var placed = PlaceByAssistantUndoably();
-            var before = Chip.Message;
 
             ViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(placed.GUID));
             Assert.IsFalse(Chip.IsVisible);
 
             ViewModel.Model.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo));
 
-            Assert.IsTrue(Chip.IsVisible, "The node is back.");
-            Assert.AreEqual(before, Chip.Message, "With the same sentence.");
-            Assert.IsTrue(Chip.CanShow);
-            Assert.IsTrue(Chip.CanUndoAll, "The turn is the newest step again.");
+            var restored = Workspace.Nodes.Single(n => n.GUID == placed.GUID);
+            Assert.IsNull(restored.AIChange, "Undo does not bring the marker back.");
+            Assert.IsFalse(Chip.IsVisible, "So there is nothing left to describe.");
         }
 
         [Test]
@@ -325,7 +391,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void ShowFramesAllTheTurnsNodesButGlowsOnlyTheUneditedOnes()
+        public void ShowFramesAndGlowsOnlyTheMarkedNodes()
         {
             var untouched = PlaceByAssistant(x: 0, y: 0);
             var edited = PlaceByAssistant(x: 600, y: 400);
@@ -351,10 +417,10 @@ namespace DynamoCoreWpfTests
             }
 
             Assert.IsNotNull(zoom, "Show zooms to fit.");
-            Assert.AreEqual(0, zoom.Offset.X, "Framed from the leftmost node...");
-            Assert.AreEqual(0, zoom.Offset.Y, "...and the topmost node,");
-            Assert.AreEqual(600 + edited.Width, zoom.FocusWidth, "...to the edited node, which is framed too.");
-            Assert.AreEqual(400 + edited.Height, zoom.FocusHeight);
+            Assert.AreEqual(0, zoom.Offset.X);
+            Assert.AreEqual(0, zoom.Offset.Y);
+            Assert.AreEqual(untouched.Width, zoom.FocusWidth, "Only the marked node is framed, not the edited one.");
+            Assert.AreEqual(untouched.Height, zoom.FocusHeight);
 
             Assert.IsNotNull(ViewModelOf(untouched).AIHaloGlow);
             Assert.AreNotSame(glowBefore, ViewModelOf(untouched).AIHaloGlow, "The untouched node glows again.");
@@ -481,18 +547,49 @@ namespace DynamoCoreWpfTests
         [Category("UnitTests")]
         public void SteppingGivesTheHaloOneSlowBreath()
         {
-            var marked = PlaceByAssistant(x: 0);
-            var edited = PlaceByAssistant(x: 400);
-            edited.OnNodeModified();
-            var chip = Chip;
+            var marked = PlaceByAssistant();
 
-            chip.NextCommand.Execute(null);
+            Chip.NextCommand.Execute(null);
+
             var glow = ViewModelOf(marked).AIHaloGlow;
             Assert.IsTrue(glow.IsPulse);
             Assert.AreEqual(AIHaloGlow.BreathLength, glow.Duration, "One 2 s breath.");
+        }
 
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        [TestCase(1, 800, "2 of 2", TestName = "StepperCarriesOnWhenItsNodeIsEdited_Next")]
+        [TestCase(-1, 0, "1 of 2", TestName = "StepperCarriesOnWhenItsNodeIsEdited_Previous")]
+        public void StepperCarriesOnWhenItsNodeIsEdited(int direction, double expectedX, string expectedText)
+        {
+            PlaceByAssistant(x: 0);
+            var edited = PlaceByAssistant(x: 400);
+            PlaceByAssistant(x: 800);
+            var chip = Chip;
             chip.NextCommand.Execute(null);
-            Assert.IsNull(ViewModelOf(edited).AIHaloGlow, "A node the person edited is centred but does not glow.");
+            chip.NextCommand.Execute(null);
+            Assert.AreEqual("2 of 3", chip.StepText);
+
+            edited.OnNodeModified();
+            chip = Chip;
+            Assert.AreEqual("– of 2", chip.StepText, "The node it was on is the person's now.");
+
+            NodeModel centred = null;
+            Action<NodeModel> capture = node => centred = node;
+            ViewModel.CurrentSpaceViewModel.RequestCenterViewOnStepNode += capture;
+            try
+            {
+                if (direction > 0) chip.NextCommand.Execute(null);
+                else chip.PreviousCommand.Execute(null);
+            }
+            finally
+            {
+                ViewModel.CurrentSpaceViewModel.RequestCenterViewOnStepNode -= capture;
+            }
+
+            Assert.AreEqual(expectedX, centred.X, "The neighbour of the node it was on, with none skipped.");
+            Assert.AreEqual(expectedText, chip.StepText);
         }
 
         [Test]
@@ -542,6 +639,24 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(chip.CanUndoAll);
             Assert.IsFalse(chip.UndoAllCommand.CanExecute(null));
             Assert.AreEqual(WpfResources.AIChangeSummaryChipUndoAllEditedSince, chip.UndoAllToolTip);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoAllIsHiddenWhenTheAssistantDoesNotLabelItsEdits()
+        {
+            // As an older DynamoMCP runs an edit
+            var node = new DoubleInput();
+            using (Workspace.BeginAIEdit())
+            {
+                ViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, false, false));
+                Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            }
+
+            var chip = Chip;
+            Assert.IsTrue(chip.IsVisible, "The rest of the chip still works.");
+            Assert.IsFalse(chip.ShowUndoAll);
+            Assert.IsFalse(chip.CanUndoAll);
         }
 
         [Test]
