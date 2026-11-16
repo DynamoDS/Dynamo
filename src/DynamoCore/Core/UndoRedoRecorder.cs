@@ -641,10 +641,9 @@ namespace Dynamo.Core
 
         private static void CopyAITurnTags(XmlElement from, XmlElement to)
         {
-            foreach (var attribute in new[] { AITurnAttrib, OtherEditsAttrib })
+            foreach (var attribute in new[] { AITurnAttrib, OtherEditsAttrib }.Where(from.HasAttribute))
             {
-                if (from.HasAttribute(attribute))
-                    to.SetAttribute(attribute, from.GetAttribute(attribute));
+                to.SetAttribute(attribute, from.GetAttribute(attribute));
             }
         }
 
