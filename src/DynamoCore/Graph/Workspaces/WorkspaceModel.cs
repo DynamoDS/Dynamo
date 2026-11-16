@@ -1131,7 +1131,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Starts an AI-driven edit (DynamoMCP). Dispose to end it; disposing twice is safe and scopes
         /// nest. An undisposed scope stays open for the session, so a person's edits stop clearing AI
-        /// change records.
+        /// change records. Open it only around the Assistant's own work, in a single step on Dynamo's
+        /// thread: everything recorded inside counts as the Assistant's.
         /// </summary>
         public IDisposable BeginAIEdit()
         {
