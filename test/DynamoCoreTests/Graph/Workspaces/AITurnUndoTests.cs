@@ -330,7 +330,7 @@ namespace Dynamo.Tests
             {
                 Delete(originalWire.GUID);
                 Connect(replacement, watch);
-                Workspace.RecordAINodeChange(watch.GUID, AIChangeKind.Modified, TurnA, "input", original.Name, replacement.Name);
+                Workspace.RecordAINodeChange(watch.GUID, AIChangeKind.Modified, TurnA, "input", "original", "replacement");
             });
             Assert.IsTrue(IsConnected(replacement, watch));
 
@@ -409,7 +409,7 @@ namespace Dynamo.Tests
                 Workspace.RecordAINodeDeleted(source.GUID, TurnA);
                 Delete(source.GUID);
                 Connect(replacement, watch);
-                Workspace.RecordAINodeChange(watch.GUID, AIChangeKind.Modified, TurnA, "input", source.Name, replacement.Name);
+                Workspace.RecordAINodeChange(watch.GUID, AIChangeKind.Modified, TurnA, "input", "source", "replacement");
             });
 
             Assert.AreEqual(AIUndoAvailability.DependsOnOtherChanges, Workspace.GetAINodeUndoAvailability(watch.GUID));
