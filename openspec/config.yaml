@@ -24,6 +24,6 @@ rules:
     - Prefix each task with the file it touches
     - Include NUnit test tasks following the repo's test naming and category conventions
     - Include PublicAPI.Unshipped.txt, .resx string, and NodeHelpFiles (.dyn, .md, .jpg) tasks when the change touches them
-    - Include a task that the CI-parity build passes (msbuild src/Dynamo.All.sln with /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true)
+    - Include a task that the CI-parity build passes (msbuild src/Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true)
     - Include AGENTS.md and skill update tasks when the change alters agent-relevant context
     - NEVER include manual or human tasks. ONLY include tasks that agents can complete automatically
