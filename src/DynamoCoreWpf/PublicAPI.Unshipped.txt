@@ -106,3 +106,8 @@ static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipAddedNodes.get -> stri
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipAddedOneNode.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipChangedCount.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipDeletedCount.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewAutodeskAssistant.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowAIChangeSummaryChip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowAIChangeSummaryChipTooltip.get -> string
+Dynamo.ViewModels.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked.set -> void

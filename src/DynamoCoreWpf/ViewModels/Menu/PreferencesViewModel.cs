@@ -1117,6 +1117,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Show summary of Assistant changes" toggle button
+        /// </summary>
+        public bool ShowAIChangeSummaryChipIsChecked
+        {
+            get
+            {
+                return preferenceSettings.ShowAIChangeSummaryChip;
+            }
+            set
+            {
+                preferenceSettings.ShowAIChangeSummaryChip = value;
+                RaisePropertyChanged(nameof(ShowAIChangeSummaryChipIsChecked));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Extensions" toggle button, to enable persisted extensions, that will remember
         /// extensions setting as per the last session.
         /// </summary>
@@ -1946,6 +1962,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(ShowAIChangeSummaryChipIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowAIChangeSummaryChip), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableTrustWarnings):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);

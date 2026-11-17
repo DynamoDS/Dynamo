@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.UI.Commands;
@@ -15,11 +17,13 @@ namespace Dynamo.ViewModels
     /// Canvas chip summarising the latest Assistant turn, e.g. "Autodesk Assistant added 3 nodes · changed 9 ·
     /// deleted 2" (DYN-11011). The chip is the turn's history: it stays until Dismiss or the next Assistant turn,
     /// and later edits or undo do not change it (to revisit with per-turn undo, DYN-11008).
+    /// Users can turn the chip off in Preferences - that hides only the chip; not the halo.
     /// </summary>
     internal sealed class AIChangeSummaryChipViewModel : ViewModelBase
     {
         private readonly WorkspaceViewModel workspaceViewModel;
         private readonly Dispatcher dispatcher;
+        private readonly PreferenceSettings preferenceSettings;
         private int refreshPending;
         private bool disposed;
 
@@ -40,6 +44,12 @@ namespace Dynamo.ViewModels
             model.NodeAdded += OnNodeAddedOrRemoved;
             model.NodeRemoved += OnNodeAddedOrRemoved;
             model.NodesCleared += OnAIChangesUpdated;
+
+            preferenceSettings = workspaceViewModel.DynamoViewModel?.Model?.PreferenceSettings;
+            if (preferenceSettings != null)
+            {
+                preferenceSettings.PropertyChanged += OnPreferenceSettingsChanged;
+            }
 
             Refresh();
         }
@@ -125,6 +135,16 @@ namespace Dynamo.ViewModels
             workspaceViewModel.Model.ClearAIChanges();
         }
 
+        private bool IsEnabledInPreferences => preferenceSettings?.ShowAIChangeSummaryChip ?? true;
+
+        private void OnPreferenceSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PreferenceSettings.ShowAIChangeSummaryChip))
+            {
+                OnAIChangesUpdated();
+            }
+        }
+
         private void OnNodeAddedOrRemoved(NodeModel node)
         {
             OnAIChangesUpdated();
@@ -160,7 +180,7 @@ namespace Dynamo.ViewModels
 
             Message = FormatMessage(added, changed, deleted);
             CanShow = TurnNodes(turn).Count > 0;
-            IsVisible = true;
+            IsVisible = IsEnabledInPreferences;
         }
 
         private const string MessageSeparator = " · ";
@@ -238,6 +258,11 @@ namespace Dynamo.ViewModels
             model.NodeAdded -= OnNodeAddedOrRemoved;
             model.NodeRemoved -= OnNodeAddedOrRemoved;
             model.NodesCleared -= OnAIChangesUpdated;
+
+            if (preferenceSettings != null)
+            {
+                preferenceSettings.PropertyChanged -= OnPreferenceSettingsChanged;
+            }
 
             base.Dispose();
         }
