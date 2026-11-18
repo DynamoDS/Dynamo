@@ -829,6 +829,16 @@ namespace ProtoScript.Runners
                     // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
                     csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
                 }
+                else
+                {
+                    // A force-executed subtree keeps its removed statements active. Profiling markers are
+                    // the exception: turning profiling off removes them, and if they stayed active they
+                    // would keep running, pile up each time profiling is turned back on, and could be the
+                    // last statement a run executes. That last statement prefixes the next run's callsite
+                    // IDs, so the node would lose its trace data (DYN-11176).
+                    csData.RemovedBinaryNodesFromModification.AddRange(
+                        removedNodes.OfType<BinaryExpressionNode>().Where(b => b.IsProfilingMarker));
+                }
 
                 foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
                 {

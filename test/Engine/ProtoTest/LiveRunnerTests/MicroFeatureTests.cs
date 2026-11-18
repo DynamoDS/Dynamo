@@ -6575,6 +6575,132 @@ s = 1;
 
         #endregion
 
+        #region DYN-11176: profiling markers must not renumber a node's callsites
+
+        // The "_Instance" callsite IDs the VM has cached for a subtree. Trace data (element binding)
+        // is keyed by these, so a node whose IDs change loses its trace data.
+        private List<string> InstanceCallsiteIds(Guid guid)
+        {
+            return runtimeCore.RuntimeData.CallsiteCache.Keys
+                .Where(k => k.Contains("_" + Constants.kInstance) && k.EndsWith(guid.ToString()))
+                .OrderBy(k => k)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Syncs a subtree with one call, then force-executes it with a statement added ahead of the
+        /// call, which recompiles the whole subtree in statement order (DYN-11168). Returns the
+        /// subtree's "_Instance" callsite IDs before and after.
+        /// </summary>
+        private (List<string> before, List<string> after) CallsiteIdsAroundAStatementAddedAhead(bool flagAsProfilingMarker)
+        {
+            var guid = Guid.NewGuid();
+            var body = TestFrameWork.CreateSubTreeFromCode(guid, "mkbody = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { new Subtree(new List<AssociativeNode>(body), guid) }, null));
+            var before = InstanceCallsiteIds(guid);
+
+            var ahead = TestFrameWork.CreateSubTreeFromCode(guid, "mkbegin = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            foreach (var bnode in ahead.OfType<BinaryExpressionNode>())
+            {
+                bnode.IsProfilingMarker = flagAsProfilingMarker;
+            }
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(ahead.Concat(body).ToList(), guid) { ForceExecution = true } }));
+            return (before, InstanceCallsiteIds(guid));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerFlag_SurvivesClone()
+        {
+            // LiveRunner's force-recompile paths compile clones of cached statements.
+            var marker = (BinaryExpressionNode)TestFrameWork.CreateSubTreeFromCode(Guid.NewGuid(), "m = 1;").AstNodes.Single();
+            marker.IsProfilingMarker = true;
+            var plain = (BinaryExpressionNode)TestFrameWork.CreateSubTreeFromCode(Guid.NewGuid(), "p = 1;").AstNodes.Single();
+
+            Assert.IsTrue(((BinaryExpressionNode)ProtoCore.Utils.NodeUtils.Clone(marker)).IsProfilingMarker);
+            Assert.IsFalse(((BinaryExpressionNode)ProtoCore.Utils.NodeUtils.Clone(plain)).IsProfilingMarker);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerAddedAhead_NodeCallKeepsItsCallsiteId()
+        {
+            var (before, after) = CallsiteIdsAroundAStatementAddedAhead(flagAsProfilingMarker: true);
+
+            Assert.AreEqual(1, before.Count, "the first sync should create one callsite for the call");
+            CollectionAssert.AreEqual(before, after,
+                "a profiling marker added ahead must not renumber the node's own callsite");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrdinaryStatementAddedAhead_NodeCallIsRenumbered()
+        {
+            // Control: a statement that is not a marker still shares the counter, so the existing
+            // numbering of ordinary code is unchanged by DYN-11176. It also shows the test above can fail.
+            var (before, after) = CallsiteIdsAroundAStatementAddedAhead(flagAsProfilingMarker: false);
+
+            Assert.AreEqual(1, before.Count);
+            CollectionAssert.IsSubsetOf(before, after);
+            Assert.AreEqual(2, after.Count, "the added call takes Instance0 and the existing call becomes Instance1");
+        }
+
+        /// <summary>
+        /// Syncs a subtree with a statement ahead of a call, then force-executes it without that statement,
+        /// as turning profiling off does. Returns how many active graph nodes assign the removed statement's
+        /// variable before and after.
+        /// </summary>
+        private (int before, int after) ActiveGraphNodesForAStatementRemovedOnForceExecution(bool flagAsProfilingMarker)
+        {
+            var guid = Guid.NewGuid();
+            var ahead = TestFrameWork.CreateSubTreeFromCode(guid, "mkbegin = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            foreach (var bnode in ahead.OfType<BinaryExpressionNode>())
+            {
+                bnode.IsProfilingMarker = flagAsProfilingMarker;
+            }
+            var body = TestFrameWork.CreateSubTreeFromCode(guid, "mkbody = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { new Subtree(ahead.Concat(body).ToList(), guid) }, null));
+
+            int CountActive() => runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList.Count(g =>
+                g.guid == guid && g.isActive && g.updateNodeRefList.Any() &&
+                g.updateNodeRefList[0].nodeList.Any() && g.updateNodeRefList[0].nodeList[0].symbol?.name == "mkbegin");
+            var before = CountActive();
+
+            var bodyOnly = TestFrameWork.CreateSubTreeFromCode(guid, "mkbody = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(bodyOnly, guid) { ForceExecution = true } }));
+            return (before, CountActive());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerRemovedOnForceExecution_IsDeactivated()
+        {
+            // Turning profiling off force-executes each node without its markers. A marker left active keeps
+            // running and can be the run's last statement, which prefixes the next run's callsite IDs.
+            var (before, after) = ActiveGraphNodesForAStatementRemovedOnForceExecution(flagAsProfilingMarker: true);
+
+            Assert.AreEqual(1, before, "the first sync should compile the marker");
+            Assert.AreEqual(0, after, "removing the marker should deactivate its graph nodes");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrdinaryStatementRemovedOnForceExecution_StaysActive()
+        {
+            // Control: DYN-11176 only changes markers. Other statements removed from a force-executed
+            // subtree keep their existing behaviour. It also shows the test above can fail.
+            var (before, after) = ActiveGraphNodesForAStatementRemovedOnForceExecution(flagAsProfilingMarker: false);
+
+            Assert.AreEqual(1, before);
+            Assert.AreEqual(1, after);
+        }
+
+        #endregion
+
     }
 
 }

@@ -531,5 +531,387 @@ namespace Dynamo.Tests
         }
 
         #endregion
+
+        #region DYN-11176: profiling must not change a node's callsite IDs or lose its trace data
+
+        // Koey Lai's two tests below (ForceReexecuteWithoutProfiling_... and
+        // ProfiledRun_AfterUnprofiledRun_TracedNodeKeepsItsTraceData) found the regression from the
+        // DYN-11168 fix. The rest cover the other ways profiling and a node's compile can be combined.
+        //
+        // IncrementerTracedClass mimics host element binding: with trace data it reuses its ID,
+        // without trace data it takes a new ID (as Revit would create a new element).
+        private DSFunction AddTracedNode()
+        {
+            const string mangledName = "FFITarget.IncrementerTracedClass.IncrementerTracedClass@int";
+            var descriptor = CurrentDynamoModel.LibraryServices.GetFunctionDescriptor(mangledName);
+            Assert.IsNotNull(descriptor, $"function descriptor not found: {mangledName}");
+            var node = new DSFunction(descriptor);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            return node;
+        }
+
+        private IncrementerTracedClass GetTracedObject(NodeModel node)
+        {
+            var value = GetPreviewValue(node.GUID);
+            Assert.IsInstanceOf<IncrementerTracedClass>(value, "node output should be an IncrementerTracedClass");
+            return (IncrementerTracedClass)value;
+        }
+
+        // Callsite IDs of the traced constructor for this node, as cached by the VM.
+        private List<string> TracedCallsiteIds(NodeModel node)
+        {
+            var guid = node.GUID.ToString();
+            return CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys
+                .Where(k => k.StartsWith("IncrementerTracedClass") && k.Contains(guid))
+                .OrderBy(k => k)
+                .ToList();
+        }
+
+        [Test]
+        public void ForceReexecuteWithoutProfiling_TracedNodeKeepsItsTraceData()
+        {
+            // Control: proves the check below can see trace reuse at all.
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var number = AddNumberNode("1");
+            var traced = AddTracedNode();
+            ConnectorModel.Make(number, traced, 0, 0);
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+
+            traced.MarkNodeAsModified(true);
+            BeginRun();
+
+            var second = GetTracedObject(traced);
+            Assert.IsTrue(second.WasCreatedWithTrace(), "force re-execution should reuse the callsite's trace data");
+            Assert.AreEqual(firstId, second.ID, "force re-execution should rebind to the same element");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_TracedNodeKeepsItsTraceData()
+        {
+            // Enabling profiling after a plain run must not lose trace data: a host would otherwise
+            // create a new element instead of updating the one from the plain run.
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var number = AddNumberNode("1");
+            var traced = AddTracedNode();
+            ConnectorModel.Make(number, traced, 0, 0);
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+            var callsitesBefore = TracedCallsiteIds(traced);
+
+            EnableProfiling();
+            BeginRun();
+
+            var second = GetTracedObject(traced);
+            var callsitesAfter = TracedCallsiteIds(traced);
+            TestContext.WriteLine("Callsites after plain run:    " + string.Join(", ", callsitesBefore));
+            TestContext.WriteLine("Callsites after profiled run: " + string.Join(", ", callsitesAfter));
+            Assert.IsTrue(second.WasCreatedWithTrace(), "the profiled run should reuse the callsite's trace data");
+            Assert.AreEqual(firstId, second.ID, "the profiled run should rebind to the same element");
+        }
+
+        private void DisableProfiling()
+        {
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First();
+            CurrentDynamoModel.EngineController.EnableProfiling(false, homeWorkspace, homeWorkspace.Nodes);
+        }
+
+        // Callsite IDs the VM has cached for this node's profiling markers.
+        private List<string> MarkerCallsiteIds(NodeModel node)
+        {
+            var guid = node.GUID.ToString();
+            return CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys
+                .Where(k => k.Contains("_ProfilingMarker") && k.Contains(guid))
+                .OrderBy(k => k)
+                .ToList();
+        }
+
+        private DSFunction BuildNumberFedTracedNode()
+        {
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var number = AddNumberNode("1");
+            var traced = AddTracedNode();
+            ConnectorModel.Make(number, traced, 0, 0);
+            return traced;
+        }
+
+        // Active graph nodes compiled from this node's profiling markers.
+        private int ActiveMarkerGraphNodeCount(NodeModel node)
+        {
+            var runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            return runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList
+                .Count(g => g.guid == node.GUID && g.isActive && g.IsProfilingMarker);
+        }
+
+        // Callsite keys that combine more than one callsite. A run that left a profiling marker as
+        // its last executed statement made the next run's keys combine with it.
+        private List<string> CompositeCallsiteKeys()
+        {
+            return CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys
+                .Where(k => k.Contains(";"))
+                .ToList();
+        }
+
+        private void AssertRebound(NodeModel traced, int expectedId, string when)
+        {
+            var obj = GetTracedObject(traced);
+            Assert.IsTrue(obj.WasCreatedWithTrace(), $"{when}: the node should reuse its callsite's trace data");
+            Assert.AreEqual(expectedId, obj.ID, $"{when}: the node should rebind to the same element");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_TracedNodeKeepsItsCallsiteIds()
+        {
+            // The node's own callsite IDs must be identical with and without the markers; the
+            // markers' calls get IDs of their own that never use the "_Instance" form.
+            var traced = BuildNumberFedTracedNode();
+            BeginRun();
+            var callsitesBefore = TracedCallsiteIds(traced);
+            Assert.AreEqual(1, callsitesBefore.Count, "the plain run should create one callsite for the node");
+            StringAssert.Contains("_Instance0_", callsitesBefore[0]);
+
+            EnableProfiling();
+            BeginRun();
+
+            CollectionAssert.AreEqual(callsitesBefore, TracedCallsiteIds(traced),
+                "enabling profiling must not create new callsites for the node's own call");
+            var markerCallsites = MarkerCallsiteIds(traced);
+            Assert.AreEqual(2, markerCallsites.Count, "the begin and end markers should each have a callsite");
+            foreach (var id in markerCallsites)
+            {
+                StringAssert.DoesNotContain("_Instance", id, "marker callsites must not use the node's numbering");
+            }
+        }
+
+        [Test]
+        public void ProfilingDisabledAfterProfiledRun_TracedNodeKeepsItsTraceData()
+        {
+            var traced = BuildNumberFedTracedNode();
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+
+            EnableProfiling();
+            BeginRun();
+            AssertRebound(traced, firstId, "profiled run");
+
+            DisableProfiling();
+            BeginRun();
+            AssertRebound(traced, firstId, "run after profiling was turned off");
+        }
+
+        [Test]
+        public void ProfilingToggledRepeatedly_TracedNodeKeepsItsTraceDataAndCallsites()
+        {
+            var traced = BuildNumberFedTracedNode();
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+            var callsites = TracedCallsiteIds(traced);
+            int markerGraphNodes = -1;
+
+            for (int i = 1; i <= 3; i++)
+            {
+                EnableProfiling();
+                BeginRun();
+                AssertRebound(traced, firstId, $"profiled run {i}");
+                // Each marker compiles to several graph nodes; the count must not grow between cycles.
+                if (i == 1)
+                {
+                    markerGraphNodes = ActiveMarkerGraphNodeCount(traced);
+                    Assert.Greater(markerGraphNodes, 0, "the profiled run should compile the markers");
+                }
+                Assert.AreEqual(markerGraphNodes, ActiveMarkerGraphNodeCount(traced),
+                    $"profiled run {i}: only the current markers should be active");
+
+                DisableProfiling();
+                BeginRun();
+                AssertRebound(traced, firstId, $"unprofiled run {i}");
+                Assert.AreEqual(0, ActiveMarkerGraphNodeCount(traced),
+                    $"unprofiled run {i}: turning profiling off should deactivate the markers");
+                CollectionAssert.IsEmpty(CompositeCallsiteKeys(),
+                    $"unprofiled run {i}: no callsite should be keyed under a leftover marker");
+            }
+
+            CollectionAssert.AreEqual(callsites, TracedCallsiteIds(traced),
+                "toggling profiling must never add callsites for the node's own call");
+        }
+
+        [Test]
+        public void ProfiledFirstRun_ThenProfilingDisabledAndNodeRecompiled_TracedNodeKeepsItsTraceData()
+        {
+            // The reverse order: the node's first compile includes the markers. Before DYN-11176 the
+            // node's call was then numbered Instance1, and any later compile without markers (here a
+            // reconnected input) renumbered it Instance0 and lost the trace data.
+            var traced = BuildNumberFedTracedNode();
+            EnableProfiling();
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+
+            DisableProfiling();
+            var newNumber = AddNumberNode("1");
+            ConnectorModel.Make(newNumber, traced, 0, 0);
+            BeginRun();
+
+            AssertRebound(traced, firstId, "run without profiling after a reconnect");
+        }
+
+        [Test]
+        public void ReconnectInputWithoutProfiling_TracedNodeKeepsItsTraceData()
+        {
+            // Control for the next test: reconnecting an input recompiles the node and keeps its trace.
+            var traced = BuildNumberFedTracedNode();
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+
+            var newNumber = AddNumberNode("1");
+            ConnectorModel.Make(newNumber, traced, 0, 0);
+            BeginRun();
+
+            AssertRebound(traced, firstId, "run after a reconnect");
+        }
+
+        [Test]
+        public void ReconnectInputWithProfilingOn_TracedNodeKeepsItsTraceData()
+        {
+            // Koey's pre-existing case: a node first compiled without markers, then recompiled with
+            // them because an input was reconnected while profiling was on.
+            var traced = BuildNumberFedTracedNode();
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+
+            EnableProfiling();
+            BeginRun();
+
+            var newNumber = AddNumberNode("1");
+            ConnectorModel.Make(newNumber, traced, 0, 0);
+            BeginRun();
+
+            AssertRebound(traced, firstId, "profiled run after a reconnect");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_ReplicatedTracedNodeKeepsEveryElement()
+        {
+            // One callsite holding several elements (replication over a list), as a node that
+            // creates a list of Revit elements does.
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var list = new CodeBlockNodeModel("[1, 2, 3];", 0, 0,
+                CurrentDynamoModel.LibraryServices, CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(list, 0, 0, true, false));
+            var traced = AddTracedNode();
+            ConnectorModel.Make(list, traced, 0, 0);
+            BeginRun();
+            var firstIds = GetTracedObjects(traced).Select(o => o.ID).ToList();
+            Assert.AreEqual(3, firstIds.Count);
+
+            EnableProfiling();
+            BeginRun();
+
+            var second = GetTracedObjects(traced);
+            Assert.IsTrue(second.All(o => o.WasCreatedWithTrace()), "every element should reuse its trace data");
+            CollectionAssert.AreEqual(firstIds, second.Select(o => o.ID).ToList(),
+                "every element should rebind to the same element");
+        }
+
+        [Test]
+        public void ProfiledRun_AfterUnprofiledRun_CodeBlockWithTwoTracedCallsKeepsBoth()
+        {
+            // Two traced calls in one node are numbered Instance0 and Instance1 within its guid; the
+            // markers must not shift either of them.
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var cbn = new CodeBlockNodeModel(
+                "a = FFITarget.IncrementerTracedClass(1);\nb = FFITarget.IncrementerTracedClass(2);", 0, 0,
+                CurrentDynamoModel.LibraryServices, CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false));
+            BeginRun();
+            var firstIds = new[] { GetTracedOutput(cbn, 0).ID, GetTracedOutput(cbn, 1).ID };
+            Assert.AreNotEqual(firstIds[0], firstIds[1]);
+
+            EnableProfiling();
+            BeginRun();
+
+            for (int i = 0; i < 2; i++)
+            {
+                var obj = GetTracedOutput(cbn, i);
+                Assert.IsTrue(obj.WasCreatedWithTrace(), $"output {i} should reuse its trace data");
+                Assert.AreEqual(firstIds[i], obj.ID, $"output {i} should rebind to the same element");
+            }
+        }
+
+        [Test]
+        public void SavedAndReopenedWithoutProfiling_TracedNodeRebinds()
+        {
+            // Control for the next two tests: trace data saved in the .dyn rebinds on reopen.
+            AssertRebindsAfterReopen(profileBeforeSave: false, profileAfterReopen: false);
+        }
+
+        [Test]
+        public void SavedWithoutProfiling_ReopenedWithProfiling_TracedNodeRebinds()
+        {
+            // For example: a graph run and saved, then reopened in Revit while TuneUp is open.
+            AssertRebindsAfterReopen(profileBeforeSave: false, profileAfterReopen: true);
+        }
+
+        [Test]
+        public void SavedWithProfiling_ReopenedWithoutProfiling_TracedNodeRebinds()
+        {
+            AssertRebindsAfterReopen(profileBeforeSave: true, profileAfterReopen: false);
+        }
+
+        private void AssertRebindsAfterReopen(bool profileBeforeSave, bool profileAfterReopen)
+        {
+            var traced = BuildNumberFedTracedNode();
+            var tracedGuid = traced.GUID;
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+            if (profileBeforeSave)
+            {
+                EnableProfiling();
+                BeginRun();
+                AssertRebound(traced, firstId, "profiled run before saving");
+            }
+
+            var path = GetNewFileNameOnTempPath("dyn");
+            CurrentDynamoModel.CurrentWorkspace.Save(path, false, CurrentDynamoModel.EngineController);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(path, true));
+
+            var reopened = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(tracedGuid);
+            Assert.IsNotNull(reopened, "the traced node should be in the reopened graph");
+            if (profileAfterReopen)
+            {
+                EnableProfiling();
+            }
+            BeginRun();
+
+            AssertRebound(reopened, firstId, "first run after reopening");
+        }
+
+        private List<IncrementerTracedClass> GetTracedObjects(NodeModel node)
+        {
+            var mirror = GetRuntimeMirror(GetVarName(node.GUID));
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            Assert.IsTrue(data.IsCollection, "node output should be a list");
+            return data.GetElements().Select(e =>
+            {
+                Assert.IsInstanceOf<IncrementerTracedClass>(e.Data, "list items should be IncrementerTracedClass");
+                return (IncrementerTracedClass)e.Data;
+            }).ToList();
+        }
+
+        private IncrementerTracedClass GetTracedOutput(NodeModel node, int outputIndex)
+        {
+            var mirror = GetRuntimeMirror(node.GetAstIdentifierForOutputIndex(outputIndex).Value);
+            Assert.IsNotNull(mirror);
+            var value = mirror.GetData().Data;
+            Assert.IsInstanceOf<IncrementerTracedClass>(value, $"output {outputIndex} should be an IncrementerTracedClass");
+            return (IncrementerTracedClass)value;
+        }
+
+        #endregion
     }
 }
