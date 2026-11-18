@@ -74,6 +74,7 @@ namespace Dynamo.Configuration
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
+        private bool showAIChangeSummaryChip;
         private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
@@ -785,6 +786,23 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines if the chip that summarises the latest Autodesk Assistant changes is shown on the canvas.
+        /// </summary>
+        public bool ShowAIChangeSummaryChip
+        {
+            get
+            {
+                return showAIChangeSummaryChip;
+            }
+            set
+            {
+                if (showAIChangeSummaryChip == value) return;
+                showAIChangeSummaryChip = value;
+                RaisePropertyChanged(nameof(ShowAIChangeSummaryChip));
+            }
+        }
+
+        /// <summary>
         /// This defines if user wants the Extensions settings to persist across sessions.
         /// </summary>
         public bool EnablePersistExtensions
@@ -1105,6 +1123,7 @@ namespace Dynamo.Configuration
             MLRecommendationNumberOfResults = 10;
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
+            ShowAIChangeSummaryChip = true;
             isStaticSplashScreenEnabled = true;
             isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
