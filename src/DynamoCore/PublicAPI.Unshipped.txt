@@ -53,3 +53,5 @@ Dynamo.Graph.Workspaces.WorkspaceModel.RecordAINodeChange(System.Guid nodeId, Dy
 Dynamo.Graph.Workspaces.WorkspaceModel.RecordAINodeDeleted(System.Guid nodeId, string turnId) -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.StartAITurn(string turnId) -> void
 Dynamo.Engine.EngineController.IsProfilingEnabled.get -> bool
+Dynamo.Configuration.PreferenceSettings.ShowAIChangeSummaryChip.get -> bool
+Dynamo.Configuration.PreferenceSettings.ShowAIChangeSummaryChip.set -> void

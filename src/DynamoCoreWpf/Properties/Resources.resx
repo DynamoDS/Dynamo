@@ -4388,4 +4388,13 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="AIChangeSummaryChipUndoAllUnavailable" xml:space="preserve">
     <value>These changes can no longer be undone here</value>
   </data>
+  <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
+    <value>Autodesk Assistant</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
+    <value>Show summary of Assistant changes</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
+    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
+  </data>
 </root>

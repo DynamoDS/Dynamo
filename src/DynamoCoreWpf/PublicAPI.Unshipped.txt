@@ -119,3 +119,8 @@ static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipUndoAllWorking.get -> 
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipUndoAllEditedSince.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipUndoAllEditedDuringTurn.get -> string
 static Dynamo.Wpf.Properties.Resources.AIChangeSummaryChipUndoAllUnavailable.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewAutodeskAssistant.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowAIChangeSummaryChip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowAIChangeSummaryChipTooltip.get -> string
+Dynamo.ViewModels.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked.set -> void

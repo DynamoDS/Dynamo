@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.UI.Commands;
@@ -13,10 +14,10 @@ using Dynamo.Wpf.Properties;
 namespace Dynamo.ViewModels
 {
     /// <summary>
-    /// Canvas chip summarising the latest Assistant turn (DYN-11011), with a stepper through the turn's
-    /// nodes, Show all, Undo all and Dismiss (DYN-11012). Added and changed count only the nodes that still
-    /// carry the turn's marker: a node a person edits or clears with Esc is theirs and drops out. Deleted
-    /// nodes and removed connections are the turn's history.
+    /// Canvas chip summarising the latest Assistant turn, with a stepper through the turn's nodes,
+    /// Show all, Undo all and Dismiss. Added and changed count only the nodes that still carry the turn's
+    /// marker: a node a person edits or clears with Esc is theirs and drops out. Deleted nodes and removed
+    /// connections are the turn's history. The chip can be turned off in Preferences; that does not hide the halo.
     /// </summary>
     internal sealed class AIChangeSummaryChipViewModel : ViewModelBase
     {
@@ -24,6 +25,7 @@ namespace Dynamo.ViewModels
 
         private readonly WorkspaceViewModel workspaceViewModel;
         private readonly Dispatcher dispatcher;
+        private readonly PreferenceSettings preferenceSettings;
         private int refreshPending;
         private bool disposed;
 
@@ -55,6 +57,12 @@ namespace Dynamo.ViewModels
             model.NodeRemoved += OnNodeAddedOrRemoved;
             model.NodesCleared += OnAIChangesUpdated;
             model.PropertyChanged += OnWorkspacePropertyChanged;
+
+            preferenceSettings = workspaceViewModel.DynamoViewModel?.Model?.PreferenceSettings;
+            if (preferenceSettings != null)
+            {
+                preferenceSettings.PropertyChanged += OnPreferenceSettingsChanged;
+            }
 
             Refresh();
         }
@@ -248,6 +256,16 @@ namespace Dynamo.ViewModels
             workspaceViewModel.Model.ClearAIChanges();
         }
 
+        private bool IsEnabledInPreferences => preferenceSettings?.ShowAIChangeSummaryChip ?? true;
+
+        private void OnPreferenceSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PreferenceSettings.ShowAIChangeSummaryChip))
+            {
+                OnAIChangesUpdated();
+            }
+        }
+
         private void OnNodeAddedOrRemoved(NodeModel node)
         {
             OnAIChangesUpdated();
@@ -310,7 +328,7 @@ namespace Dynamo.ViewModels
             Message = FormatMessage(added, changed, deleted, removedConnections);
             StepText = FormatStep(CurrentStep(stepNodes), stepNodes.Count);
             CanShow = stepNodes.Count > 0;
-            IsVisible = true;
+            IsVisible = IsEnabledInPreferences;
         }
 
         private void Hide()
@@ -456,6 +474,11 @@ namespace Dynamo.ViewModels
             model.NodeRemoved -= OnNodeAddedOrRemoved;
             model.NodesCleared -= OnAIChangesUpdated;
             model.PropertyChanged -= OnWorkspacePropertyChanged;
+
+            if (preferenceSettings != null)
+            {
+                preferenceSettings.PropertyChanged -= OnPreferenceSettingsChanged;
+            }
 
             base.Dispose();
         }
