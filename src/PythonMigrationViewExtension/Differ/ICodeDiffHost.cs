@@ -16,6 +16,11 @@ namespace Dynamo.PythonMigration.Differ
         /// </summary>
         bool TrackAsMigration { get; }
 
+        /// <summary>
+        /// True to show Accept All.
+        /// </summary>
+        bool CanAcceptAll { get; }
+
         void ChangeViewModel(ViewMode viewMode);
 
         /// <summary>
@@ -27,5 +32,10 @@ namespace Dynamo.PythonMigration.Differ
         /// Reject button. Returns false to keep the window open; the host has told the user why.
         /// </summary>
         bool RejectCode();
+
+        /// <summary>
+        /// Accept All button. Returns false to keep the window open.
+        /// </summary>
+        bool AcceptAllCode();
     }
 }

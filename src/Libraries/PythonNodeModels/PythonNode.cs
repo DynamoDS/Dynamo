@@ -6,6 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -43,7 +45,8 @@ namespace PythonNodeModels
     {        
         AssistantConflict,
         AssistantReview,
-        EditorChangedUnderneath
+        EditorChangedUnderneath,
+        AssistantProposal
     }
 
     /// <summary>
@@ -69,18 +72,39 @@ namespace PythonNodeModels
         /// <summary>See <see cref="OnAccept"/>.</summary>
         public Func<bool> OnReject { get; }
 
+        /// <summary>
+        /// The user's answer to an <see cref="PythonScriptReviewKind.AssistantProposal"/>. Null for other kinds.
+        /// </summary>
+        public TaskCompletionSource<bool> Approval { get; }
+
+        /// <summary>
+        /// Closes the proposal window when the assistant stops waiting.
+        /// </summary>
+        public CancellationToken CancellationToken { get; }
+
+        /// <summary>
+        /// The assistant request a proposal belongs to, or null when unknown.
+        /// </summary>
+        public string TurnId { get; }
+
         public PythonScriptConflictEventArgs(
             PythonScriptReviewKind kind,
             string leftCode,
             string rightCode,
             Func<bool> onAccept = null,
-            Func<bool> onReject = null)
+            Func<bool> onReject = null,
+            TaskCompletionSource<bool> approval = null,
+            CancellationToken cancellationToken = default,
+            string turnId = null)
         {
             Kind = kind;
             LeftCode = leftCode ?? string.Empty;
             RightCode = rightCode ?? string.Empty;
             OnAccept = onAccept;
             OnReject = onReject;
+            Approval = approval;
+            CancellationToken = cancellationToken;
+            TurnId = turnId;
         }
     }
 
@@ -520,6 +544,31 @@ namespace PythonNodeModels
         public void NotifyScriptChangeReview(string previousScript, string newScript)
         {
             RequestScriptConflictReview(PythonScriptReviewKind.AssistantReview, previousScript, newScript);
+        }
+
+        /// <summary>
+        /// Asks the user to approve an assistant script. Nothing is written here; the caller writes on true.
+        /// True at once when the user is not asked (Accept All, the preference is off) or no window can be shown.
+        /// </summary>
+        /// <param name="turnId">The assistant request this change belongs to, or null when unknown.</param>
+        public Task<bool> RequestScriptApproval(string proposedScript, string turnId, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromResult(false);
+            }
+
+            var handler = ScriptConflictReviewRequested;
+            if (handler == null)
+            {
+                return Task.FromResult(true);
+            }
+
+            var approval = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            handler.Invoke(this, new PythonScriptConflictEventArgs(
+                PythonScriptReviewKind.AssistantProposal, Script, proposedScript,
+                approval: approval, cancellationToken: cancellationToken, turnId: turnId));
+            return approval.Task;
         }
 
         /// <summary>

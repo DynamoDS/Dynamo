@@ -28,6 +28,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <viewModels:DiffStateToVisibilityConverter x:Key="DiffStateToVis" />
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <DataTemplate DataType="{x:Type viewModels:InLineViewModel}">
                 <local:InLineControl DataContext="{Binding}" />
             </DataTemplate>
@@ -239,6 +240,19 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Grid.Column="1">
+                <Button  x:Name="AcceptAllForNodeButton"
+                         Margin="0,7,15,7"
+                         Visibility="{Binding Path=CanAcceptAllForNode, Converter={StaticResource BoolToVis}}"
+                         Click="OnAcceptAllForNodeButtonClicked"
+                         HorizontalAlignment="Right"
+                         Content="{x:Static p:Resources.AcceptAllForNodeButton}"
+                         MinWidth="160"
+                         Height="35">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.AcceptAllForNodeButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Button.ToolTip>
+                </Button>
+
                 <Button  x:Name="AcceptButton"
                          Margin="0,7,15,7"
                          Style="{StaticResource RunButtonStyle}"
