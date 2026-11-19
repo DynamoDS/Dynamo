@@ -1,5 +1,8 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Dynamo.Models;
+using Dynamo.PythonMigration;
 using Dynamo.PythonMigration.Differ;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.Tests;
@@ -20,6 +23,7 @@ namespace DynamoPythonTests
         private const string OriginalScript = "OUT = 1";
         private const string AssistantScript = "OUT = 2";
         private const string LaterScript = "OUT = 3";
+        private const string Turn = "prompt:1";
 
         #region Helpers
 
@@ -59,6 +63,25 @@ namespace DynamoPythonTests
                 node,
                 new PythonScriptConflictEventArgs(kind, left, right, onAccept, onReject),
                 ViewModel);
+        }
+
+        /// <summary>
+        /// Asks for approval the way DynamoMCP does and builds the window's view model.
+        /// </summary>
+        private PythonScriptConflictViewModel OpenProposal(
+            PythonNode node,
+            string proposed,
+            out Task<bool> answer,
+            Action acceptAllForNode = null)
+        {
+            PythonScriptConflictEventArgs received = null;
+            EventHandler<PythonScriptConflictEventArgs> handler = (_, e) => received = e;
+            node.ScriptConflictReviewRequested += handler;
+            answer = node.RequestScriptApproval(proposed, Turn, CancellationToken.None);
+            node.ScriptConflictReviewRequested -= handler;
+
+            Assert.IsNotNull(received);
+            return PythonScriptConflictViewModel.Create(node, received, ViewModel, acceptAllForNode);
         }
 
         #endregion
@@ -382,6 +405,153 @@ namespace DynamoPythonTests
             Assert.IsFalse(review.RejectCode());
             Assert.AreEqual(0, calls);
             Assert.AreEqual(LaterScript, node.Script);
+        }
+
+        #endregion
+
+        #region Approval before writing (DYN-11043)
+
+        [Test]
+        public void WhenNoReviewWindowIsListeningThenApprovalIsGrantedAtOnce()
+        {
+            var node = new PythonNode();
+
+            var answer = node.RequestScriptApproval(AssistantScript, Turn, CancellationToken.None);
+
+            Assert.IsTrue(answer.IsCompleted);
+            Assert.IsTrue(answer.Result);
+        }
+
+        [Test]
+        public void WhenApprovalIsRequestedThenProposalShowsBothSidesAndNothingIsWritten()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            PythonScriptConflictEventArgs received = null;
+            node.ScriptConflictReviewRequested += (_, e) => received = e;
+
+            var answer = node.RequestScriptApproval(AssistantScript, Turn, CancellationToken.None);
+
+            Assert.IsFalse(answer.IsCompleted);
+            Assert.AreEqual(PythonScriptReviewKind.AssistantProposal, received.Kind);
+            Assert.AreEqual(Turn, received.TurnId);
+            Assert.AreEqual(OriginalScript, received.LeftCode);
+            Assert.AreEqual(AssistantScript, received.RightCode);
+            Assert.AreEqual(OriginalScript, node.Script);
+        }
+
+        [Test]
+        public void WhenApprovalIsAlreadyCancelledThenItIsRefusedWithoutAWindow()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            var raised = false;
+            node.ScriptConflictReviewRequested += (_, _) => raised = true;
+
+            var answer = node.RequestScriptApproval(AssistantScript, Turn, new CancellationToken(true));
+
+            Assert.IsFalse(raised);
+            Assert.IsFalse(answer.Result);
+        }
+
+        [Test]
+        public void WhenProposalAcceptThenAnswerIsYesAndNothingIsWrittenByTheWindow()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            var review = OpenProposal(node, AssistantScript, out var answer);
+
+            Assert.IsTrue(review.ChangeCode());
+
+            Assert.IsTrue(answer.Result);
+            Assert.AreEqual(OriginalScript, node.Script);
+        }
+
+        [Test]
+        public void WhenProposalRejectThenAnswerIsNo()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            var review = OpenProposal(node, AssistantScript, out var answer);
+
+            Assert.IsTrue(review.RejectCode());
+
+            Assert.IsFalse(answer.Result);
+            Assert.AreEqual(OriginalScript, node.Script);
+        }
+
+        [Test]
+        public void WhenProposalWindowClosesWithoutAnAnswerThenAnswerIsNo()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            var review = OpenProposal(node, AssistantScript, out var answer);
+
+            review.OnWindowClosed();
+
+            Assert.IsFalse(answer.Result);
+        }
+
+        [Test]
+        public void WhenNodeChangesAfterProposalOpensThenAcceptStaysOpenAndRejectStillCloses()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            var review = OpenProposal(node, AssistantScript, out var answer);
+            WriteScriptContent(node, LaterScript);
+
+            Assert.IsFalse(review.ChangeCode());
+            Assert.IsFalse(answer.IsCompleted);
+
+            Assert.IsTrue(review.RejectCode());
+            Assert.IsFalse(answer.Result);
+        }
+
+        [Test]
+        public void AcceptAllForNodeIsOfferedOnlyForAssistantChanges()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            Action acceptAllForNode = () => { };
+
+            PythonScriptConflictViewModel Review(PythonScriptReviewKind kind, Action onAcceptAllForNode)
+                => PythonScriptConflictViewModel.Create(
+                    node, new PythonScriptConflictEventArgs(kind, OriginalScript, AssistantScript), ViewModel, onAcceptAllForNode);
+
+            Assert.IsTrue(Review(PythonScriptReviewKind.AssistantProposal, acceptAllForNode).CanAcceptAll);
+            Assert.IsTrue(Review(PythonScriptReviewKind.AssistantReview, acceptAllForNode).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantConflict, acceptAllForNode).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.EditorChangedUnderneath, acceptAllForNode).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantProposal, null).CanAcceptAll);
+        }
+
+        [Test]
+        public void WhenProposalAcceptAllForNodeThenAnswerIsYesAndTheNodeIsRemembered()
+        {
+            var node = CreatePythonNodeWithScript(OriginalScript);
+            var remembered = false;
+            var review = OpenProposal(node, AssistantScript, out var answer, () => remembered = true);
+
+            Assert.IsTrue(review.AcceptAllCode());
+
+            Assert.IsTrue(answer.Result);
+            Assert.IsTrue(remembered);
+        }
+
+        [Test]
+        public void AcceptAllForNodeSkipsTheWindowOnlyForTheSameRequest()
+        {
+            Assert.IsTrue(PythonMigrationViewExtension.ShouldAsk(true, null, Turn));
+            Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(true, Turn, Turn));
+            Assert.IsTrue(PythonMigrationViewExtension.ShouldAsk(true, Turn, "prompt:2"));
+            Assert.IsTrue(PythonMigrationViewExtension.ShouldAsk(true, Turn, null));
+        }
+
+        [Test]
+        public void AcceptAllForNodeWithoutARequestCoversTheNodeForAnyRequest()
+        {
+            Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(true, PythonMigrationViewExtension.AnyRequest, Turn));
+            Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(true, PythonMigrationViewExtension.AnyRequest, null));
+        }
+
+        [Test]
+        public void WhenAskPreferenceIsOffThenNoAssistantChangeIsAsked()
+        {
+            Assert.IsTrue(new Dynamo.Configuration.PreferenceSettings().AskBeforeAIPythonChanges);
+            Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(false, null, Turn));
         }
 
         #endregion

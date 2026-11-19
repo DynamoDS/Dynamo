@@ -87,6 +87,7 @@
   <IsAutoSyncDocumentBrowser>false</IsAutoSyncDocumentBrowser>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <ShowAIChangeSummaryChip>false</ShowAIChangeSummaryChip>
+  <AskBeforeAIPythonChanges>false</AskBeforeAIPythonChanges>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>
   <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>
