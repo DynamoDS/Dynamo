@@ -1133,6 +1133,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Ask before the Assistant changes Python scripts" toggle button
+        /// </summary>
+        public bool AskBeforeAIPythonChangesIsChecked
+        {
+            get
+            {
+                return preferenceSettings.AskBeforeAIPythonChanges;
+            }
+            set
+            {
+                preferenceSettings.AskBeforeAIPythonChanges = value;
+                RaisePropertyChanged(nameof(AskBeforeAIPythonChangesIsChecked));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Extensions" toggle button, to enable persisted extensions, that will remember
         /// extensions setting as per the last session.
         /// </summary>
@@ -1965,6 +1981,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowAIChangeSummaryChipIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowAIChangeSummaryChip), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(AskBeforeAIPythonChangesIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewAskBeforeAIPythonChanges), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableTrustWarnings):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);

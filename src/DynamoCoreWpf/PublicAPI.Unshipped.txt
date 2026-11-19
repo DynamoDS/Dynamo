@@ -111,3 +111,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewShowAIChangeSummaryChip.ge
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowAIChangeSummaryChipTooltip.get -> string
 Dynamo.ViewModels.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked.set -> void
+static Dynamo.Wpf.Properties.Resources.PreferencesViewAskBeforeAIPythonChanges.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewAskBeforeAIPythonChangesTooltip.get -> string
+Dynamo.ViewModels.PreferencesViewModel.AskBeforeAIPythonChangesIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.AskBeforeAIPythonChangesIsChecked.set -> void
