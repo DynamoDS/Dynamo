@@ -30,6 +30,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         private readonly Func<bool> reject;
         private readonly TaskCompletionSource<bool> approval;
         private readonly Action acceptAllForNode;
+        private readonly bool hasTurn;
         private readonly SideBySideDiffModel diffModel;
         private IDiffViewViewModel currentViewModel;
 
@@ -37,7 +38,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         public bool TrackAsMigration => false;
 
-        public bool CanAcceptAll => acceptAllForNode != null && IsAssistantChange(kind);
+        public bool CanAcceptAll => acceptAllForNode != null && kind == PythonScriptReviewKind.AssistantProposal && hasTurn;
 
         public IDiffViewViewModel CurrentViewModel
         {
@@ -63,6 +64,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.reject = reject;
             approval = e.Approval;
             this.acceptAllForNode = acceptAllForNode;
+            hasTurn = !string.IsNullOrEmpty(e.TurnId);
             nodeScriptAtOpen = e.Kind == PythonScriptReviewKind.AssistantReview
                 ? e.RightCode
                 : node.Script ?? string.Empty;
@@ -73,7 +75,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         }
 
         /// <summary>
-        /// Changes that Accept All for Node and the preference let through. Not the unsaved-typing conflict.
+        /// Changes that Accept All and the preference let through. Not the unsaved-typing conflict.
         /// </summary>
         internal static bool IsAssistantChange(PythonScriptReviewKind kind)
             => kind == PythonScriptReviewKind.AssistantProposal || kind == PythonScriptReviewKind.AssistantReview;

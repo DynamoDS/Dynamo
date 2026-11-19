@@ -502,24 +502,25 @@ namespace DynamoPythonTests
         }
 
         [Test]
-        public void AcceptAllForNodeIsOfferedOnlyForAssistantChanges()
+        public void AcceptAllIsOfferedOnlyOnAProposalWithARequest()
         {
             var node = CreatePythonNodeWithScript(OriginalScript);
-            Action acceptAllForNode = () => { };
+            Action acceptAll = () => { };
 
-            PythonScriptConflictViewModel Review(PythonScriptReviewKind kind, Action onAcceptAllForNode)
+            PythonScriptConflictViewModel Review(PythonScriptReviewKind kind, string turnId, Action onAcceptAll)
                 => PythonScriptConflictViewModel.Create(
-                    node, new PythonScriptConflictEventArgs(kind, OriginalScript, AssistantScript), ViewModel, onAcceptAllForNode);
+                    node, new PythonScriptConflictEventArgs(kind, OriginalScript, AssistantScript, turnId: turnId), ViewModel, onAcceptAll);
 
-            Assert.IsTrue(Review(PythonScriptReviewKind.AssistantProposal, acceptAllForNode).CanAcceptAll);
-            Assert.IsTrue(Review(PythonScriptReviewKind.AssistantReview, acceptAllForNode).CanAcceptAll);
-            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantConflict, acceptAllForNode).CanAcceptAll);
-            Assert.IsFalse(Review(PythonScriptReviewKind.EditorChangedUnderneath, acceptAllForNode).CanAcceptAll);
-            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantProposal, null).CanAcceptAll);
+            Assert.IsTrue(Review(PythonScriptReviewKind.AssistantProposal, Turn, acceptAll).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantProposal, null, acceptAll).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantProposal, Turn, null).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantReview, Turn, acceptAll).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.AssistantConflict, Turn, acceptAll).CanAcceptAll);
+            Assert.IsFalse(Review(PythonScriptReviewKind.EditorChangedUnderneath, Turn, acceptAll).CanAcceptAll);
         }
 
         [Test]
-        public void WhenProposalAcceptAllForNodeThenAnswerIsYesAndTheNodeIsRemembered()
+        public void WhenProposalAcceptAllThenAnswerIsYesAndTheNodeIsRemembered()
         {
             var node = CreatePythonNodeWithScript(OriginalScript);
             var remembered = false;
@@ -532,19 +533,12 @@ namespace DynamoPythonTests
         }
 
         [Test]
-        public void AcceptAllForNodeSkipsTheWindowOnlyForTheSameRequest()
+        public void AcceptAllSkipsTheWindowOnlyForTheSameNodeAndRequest()
         {
             Assert.IsTrue(PythonMigrationViewExtension.ShouldAsk(true, null, Turn));
             Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(true, Turn, Turn));
             Assert.IsTrue(PythonMigrationViewExtension.ShouldAsk(true, Turn, "prompt:2"));
             Assert.IsTrue(PythonMigrationViewExtension.ShouldAsk(true, Turn, null));
-        }
-
-        [Test]
-        public void AcceptAllForNodeWithoutARequestCoversTheNodeForAnyRequest()
-        {
-            Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(true, PythonMigrationViewExtension.AnyRequest, Turn));
-            Assert.IsFalse(PythonMigrationViewExtension.ShouldAsk(true, PythonMigrationViewExtension.AnyRequest, null));
         }
 
         [Test]

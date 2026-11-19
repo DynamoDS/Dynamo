@@ -43,7 +43,6 @@ namespace Dynamo.PythonMigration
         private readonly Dictionary<Guid, BaseDiffViewer> pythonReviewWindows = new Dictionary<Guid, BaseDiffViewer>();
 
         private readonly Dictionary<Guid, string> acceptedNodes = new Dictionary<Guid, string>();
-        internal const string AnyRequest = "*";
 
         /// <summary>
         /// Extension GUID
@@ -422,8 +421,12 @@ namespace Dynamo.PythonMigration
 
             ClosePythonReviewWindow(node.GUID);
 
-            var viewModel = PythonScriptConflictViewModel.Create(
-                node, e, DynamoViewModel, () => acceptedNodes[node.GUID] = e.TurnId ?? AnyRequest);
+            Action acceptAll = null;
+            if (e.Kind == PythonScriptReviewKind.AssistantProposal && !string.IsNullOrEmpty(e.TurnId))
+            {
+                acceptAll = () => acceptedNodes[node.GUID] = e.TurnId;
+            }
+            var viewModel = PythonScriptConflictViewModel.Create(node, e, DynamoViewModel, acceptAll);
 
             var window = new BaseDiffViewer(viewModel)
             {
@@ -465,12 +468,11 @@ namespace Dynamo.PythonMigration
         /// Whether an assistant change needs a window.
         /// </summary>
         /// <param name="askPreference">The "Ask before the Assistant changes Python scripts" preference.</param>
-        /// <param name="acceptedFor">The request Accept All covers on this node, <see cref="AnyRequest"/>, or null.</param>
+        /// <param name="acceptedFor">The request Accept All covers on this node, or null.</param>
         /// <param name="turnId">The request this change belongs to, or null when unknown.</param>
         internal static bool ShouldAsk(bool askPreference, string acceptedFor, string turnId)
             => askPreference &&
-               (acceptedFor == null ||
-                (acceptedFor != AnyRequest && !string.Equals(acceptedFor, turnId, StringComparison.Ordinal)));
+               (acceptedFor == null || !string.Equals(acceptedFor, turnId, StringComparison.Ordinal));
 
         private void ClosePythonReviewWindow(Guid nodeId)
         {

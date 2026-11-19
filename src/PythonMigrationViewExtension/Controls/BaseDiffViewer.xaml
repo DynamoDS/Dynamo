@@ -242,11 +242,11 @@
                         Grid.Column="1">
                 <Button  x:Name="AcceptAllForNodeButton"
                          Margin="0,7,15,7"
-                         Visibility="{Binding Path=CanAcceptAllForNode, Converter={StaticResource BoolToVis}}"
+                         Visibility="{Binding Path=CanAcceptAll, Converter={StaticResource BoolToVis}}"
                          Click="OnAcceptAllForNodeButtonClicked"
                          HorizontalAlignment="Right"
                          Content="{x:Static p:Resources.AcceptAllForNodeButton}"
-                         MinWidth="160"
+                         MinWidth="100"
                          Height="35">
                     <Button.ToolTip>
                         <ToolTip Content="{x:Static p:Resources.AcceptAllForNodeButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
