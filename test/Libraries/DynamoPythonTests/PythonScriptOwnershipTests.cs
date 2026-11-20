@@ -509,7 +509,11 @@ namespace DynamoPythonTests
 
             PythonScriptConflictViewModel Review(PythonScriptReviewKind kind, string turnId, Action onAcceptAll)
                 => PythonScriptConflictViewModel.Create(
-                    node, new PythonScriptConflictEventArgs(kind, OriginalScript, AssistantScript, turnId: turnId), ViewModel, onAcceptAll);
+                    node,
+                    kind == PythonScriptReviewKind.AssistantProposal
+                        ? new PythonScriptConflictEventArgs(OriginalScript, AssistantScript, null, CancellationToken.None, turnId)
+                        : new PythonScriptConflictEventArgs(kind, OriginalScript, AssistantScript),
+                    ViewModel, onAcceptAll);
 
             Assert.IsTrue(Review(PythonScriptReviewKind.AssistantProposal, Turn, acceptAll).CanAcceptAll);
             Assert.IsFalse(Review(PythonScriptReviewKind.AssistantProposal, null, acceptAll).CanAcceptAll);

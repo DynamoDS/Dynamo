@@ -92,16 +92,26 @@ namespace PythonNodeModels
             string leftCode,
             string rightCode,
             Func<bool> onAccept = null,
-            Func<bool> onReject = null,
-            TaskCompletionSource<bool> approval = null,
-            CancellationToken cancellationToken = default,
-            string turnId = null)
+            Func<bool> onReject = null)
         {
             Kind = kind;
             LeftCode = leftCode ?? string.Empty;
             RightCode = rightCode ?? string.Empty;
             OnAccept = onAccept;
             OnReject = onReject;
+        }
+
+        /// <summary>
+        /// An <see cref="PythonScriptReviewKind.AssistantProposal"/>. Nothing is written until <paramref name="approval"/> is answered.
+        /// </summary>
+        public PythonScriptConflictEventArgs(
+            string leftCode,
+            string rightCode,
+            TaskCompletionSource<bool> approval,
+            CancellationToken cancellationToken,
+            string turnId)
+            : this(PythonScriptReviewKind.AssistantProposal, leftCode, rightCode)
+        {
             Approval = approval;
             CancellationToken = cancellationToken;
             TurnId = turnId;
@@ -565,9 +575,7 @@ namespace PythonNodeModels
             }
 
             var approval = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            handler.Invoke(this, new PythonScriptConflictEventArgs(
-                PythonScriptReviewKind.AssistantProposal, Script, proposedScript,
-                approval: approval, cancellationToken: cancellationToken, turnId: turnId));
+            handler.Invoke(this, new PythonScriptConflictEventArgs(Script, proposedScript, approval, cancellationToken, turnId));
             return approval.Task;
         }
 
