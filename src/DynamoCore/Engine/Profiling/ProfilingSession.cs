@@ -76,7 +76,20 @@ namespace Dynamo.Engine.Profiling
             ExprListNode exprListNode = AstFactory.BuildExprList(inputAstNodes);
             AssociativeNode bridgeData = DataBridge.GenerateBridgeDataAst(id+ profilingID, exprListNode);
 
-            return AstFactory.BuildAssignment(identifier, bridgeData);
+            return CreateMarker(identifier, bridgeData);
+        }
+
+        /// <summary>
+        /// Builds a profiling marker statement. The marker is flagged so the compiler gives its
+        /// bridge call a callsite ID from a separate counter: adding markers must not renumber the
+        /// node's own callsites, or the node loses its trace data and a host such as Revit replaces
+        /// the elements it created (DYN-11176).
+        /// </summary>
+        private static BinaryExpressionNode CreateMarker(IdentifierNode identifier, AssociativeNode bridgeData)
+        {
+            var marker = AstFactory.BuildAssignment(identifier, bridgeData);
+            marker.IsProfilingMarker = true;
+            return marker;
         }
 
         internal BinaryExpressionNode CreatePostCompilationAstNode(NodeModel node, List<AssociativeNode> inputAstNodes)
@@ -90,7 +103,7 @@ namespace Dynamo.Engine.Profiling
             ExprListNode exprListNode = AstFactory.BuildExprList(outPortNodeList);
             AssociativeNode bridgeData = DataBridge.GenerateBridgeDataAst(id+ profilingID, exprListNode);
 
-            return AstFactory.BuildAssignment(identifier, bridgeData);
+            return CreateMarker(identifier, bridgeData);
         }
 
         private void RegisterEventHandlers()
