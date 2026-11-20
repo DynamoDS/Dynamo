@@ -576,13 +576,13 @@
     <value>搜索</value>
   </data>
   <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
-    <value>The profile was migrated from a previous version of Dynamo.</value>
+    <value>该配置文件已从早期版本的 Dynamo 中移植。</value>
   </data>
   <data name="UnreadableProfileSavedAs" xml:space="preserve">
-    <value>The unreadable profile was saved as {0}.</value>
+    <value>无法读取的配置文件已另存为 {0}。</value>
   </data>
   <data name="UnreadableProfileBackupFailed" xml:space="preserve">
-    <value>The profile was not updated because the unreadable profile could not be backed up: {0}</value>
+    <value>配置文件未更新，因为无法备份不可读的配置文件: {0}</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>搜索自动完成结果</value>

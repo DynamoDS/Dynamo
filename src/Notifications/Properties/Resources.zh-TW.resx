@@ -151,10 +151,10 @@
     <value>通知</value>
   </data>
   <data name="InvalidSettingsFileDetail" xml:space="preserve">
-    <value>Dynamo could not read your profile and will use default settings for this session. The original profile will be saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile will be updated with this session's settings.</value>
+    <value>Dynamo 無法讀取您的紀要，將使用此工作階段的預設設定。原始紀要將另存為圖表備份位置「profiles」資料夾中的 .bak 複本，紀要將使用此工作階段的設定進行更新。</value>
   </data>
   <data name="InvalidSettingsFileTitle" xml:space="preserve">
-    <value>The profile could not be read</value>
+    <value>無法讀取紀要</value>
   </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>在可信任的位置偵測到不安全的路徑:</value>

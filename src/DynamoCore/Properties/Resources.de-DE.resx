@@ -576,13 +576,13 @@ value : bool = false</value>
     <value>Suchen</value>
   </data>
   <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
-    <value>The profile was migrated from a previous version of Dynamo.</value>
+    <value>Das Profil wurde aus einer früheren Version von Dynamo migriert.</value>
   </data>
   <data name="UnreadableProfileSavedAs" xml:space="preserve">
-    <value>The unreadable profile was saved as {0}.</value>
+    <value>Das nicht lesbare Profil wurde als {0} gespeichert.</value>
   </data>
   <data name="UnreadableProfileBackupFailed" xml:space="preserve">
-    <value>The profile was not updated because the unreadable profile could not be backed up: {0}</value>
+    <value>Das Profil wurde nicht aktualisiert, da das nicht lesbare Profil nicht gesichert werden konnte: {0}</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>Nach Ergebnissen der automatischen Vervollständigung suchen</value>

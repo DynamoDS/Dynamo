@@ -576,13 +576,13 @@ value: bool = false</value>
     <value>검색</value>
   </data>
   <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
-    <value>The profile was migrated from a previous version of Dynamo.</value>
+    <value>프로파일이 이전 버전의 Dynamo에서 마이그레이션되었습니다.</value>
   </data>
   <data name="UnreadableProfileSavedAs" xml:space="preserve">
-    <value>The unreadable profile was saved as {0}.</value>
+    <value>읽을 수 없는 프로파일이 {0}(으)로 저장되었습니다.</value>
   </data>
   <data name="UnreadableProfileBackupFailed" xml:space="preserve">
-    <value>The profile was not updated because the unreadable profile could not be backed up: {0}</value>
+    <value>읽을 수 없는 프로파일을 백업하지 못해 프로파일이 업데이트되지 않았습니다. {0}</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>자동 완성 결과 검색</value>
