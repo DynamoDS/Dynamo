@@ -100,6 +100,7 @@
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
     <SolidColorBrush x:Key="NodeAITouchedHaloBrush" Color="{StaticResource AIPurple600}" />
+    <SolidColorBrush x:Key="NodeAIChangedInputOutlineBrush" Color="{StaticResource AIPurple600}" />
 
     <!--  AI summary chip  -->
     <SolidColorBrush x:Key="AISummaryChipBackgroundBrush" Color="#222933" />

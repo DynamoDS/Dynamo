@@ -142,6 +142,7 @@ namespace Dynamo.Controls
         private AIHaloGlow aiHaloClockGlow;
         private int aiHaloClockVersion;
         private Grid aiBadge;
+        private TextBlock aiBadgeToolTipText;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -296,6 +297,9 @@ namespace Dynamo.Controls
         public NodeView()
         {
             InitializeComponent();
+
+            // Tab between the AI badge and changed inputs instead of selecting neighbours
+            PreviewKeyDown += OnPreviewKeyDownAIReview;
 
             this.grid = new Grid()
             {
@@ -1583,7 +1587,8 @@ namespace Dynamo.Controls
             {
                 UpdateAIHalo();
             }
-            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge))
+            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge)
+                || e.PropertyName == nameof(NodeViewModel.AIBadgeToolTip))
             {
                 UpdateAIBadge();
             }
@@ -1788,14 +1793,83 @@ namespace Dynamo.Controls
 
             if (aiBadge == null)
             {
-                aiBadge = CreateAIBadge();
+                aiBadge = CreateAIBadge(out aiBadgeToolTipText);
                 grid.Children.Add(aiBadge);
             }
 
+            aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
             aiBadge.Visibility = Visibility.Visible;
         }
 
-        private static Grid CreateAIBadge()
+        /// <summary>
+        /// The text of the AI Assistant badge's tooltip, or null if this node has never needed a
+        /// badge. Exposed for tests.
+        /// </summary>
+        internal string AIBadgeToolTipText => aiBadgeToolTipText?.Text;
+
+        /// <summary>
+        /// Moves keyboard focus to the AI Assistant badge, which shows its tooltip. From there, Tab
+        /// and Shift+Tab move between the badge and the inputs the Assistant changed, opening each
+        /// input's popover, and Escape returns focus to the canvas.
+        /// </summary>
+        /// <returns>False if the node has no badge.</returns>
+        internal bool FocusAIReview()
+        {
+            if (aiBadge?.Visibility != Visibility.Visible) return false;
+
+            return ReferenceEquals(Keyboard.Focus(aiBadge), aiBadge);
+        }
+
+        /// <summary>
+        /// What Tab moves between while reviewing this node's AI change: the badge, then each changed
+        /// input in port order. Changed inputs are the only focusable port views.
+        /// </summary>
+        private List<UIElement> GetAIReviewTargets()
+        {
+            var targets = new List<UIElement>();
+            if (aiBadge?.Visibility == Visibility.Visible)
+            {
+                targets.Add(aiBadge);
+            }
+
+            foreach (var port in this.ChildrenOfType<InPorts>())
+            {
+                if (port.Focusable && port.IsVisible)
+                {
+                    targets.Add(port);
+                }
+            }
+
+            return targets;
+        }
+
+        private void OnPreviewKeyDownAIReview(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Tab && e.Key != Key.Escape) return;
+
+            // Ctrl+Tab and Alt+Tab keep their usual meaning
+            if ((Keyboard.Modifiers & (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Alt)) != 0) return;
+
+            // Only while reviewing: focus anywhere else in the node, such as a text box, is left alone
+            var targets = GetAIReviewTargets();
+            var current = targets.IndexOf(Keyboard.FocusedElement as UIElement);
+            if (current < 0) return;
+
+            if (e.Key == Key.Escape)
+            {
+                ViewModel?.DynamoViewModel.OnRequestReturnFocusToView();
+            }
+            else
+            {
+                var step = (Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Shift) != 0 ? -1 : 1;
+                Keyboard.Focus(targets[(current + step + targets.Count) % targets.Count]);
+            }
+
+            // Handled here, the window's Tab binding (select neighbours) does not run
+            e.Handled = true;
+        }
+
+        private static Grid CreateAIBadge(out TextBlock toolTipText)
         {
             var image = new Image
             {
@@ -1822,9 +1896,35 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
-                IsHitTestVisible = false
+                // Takes the pointer and keyboard focus for its tooltip
+                Focusable = true
             };
             badge.Children.Add(image);
+
+            // Clicks bubble to the node, which selects it. Most of the badge sits outside the
+            // node's bounds, so mark it as a drag handle: pressing it then drags the node instead
+            // of starting a selection box.
+            WorkspaceViewModel.SetIsNodeDragHandle(badge, true);
+
+            toolTipText = new TextBlock
+            {
+                Padding = new Thickness(10),
+                FontFamily = artifactElementReg,
+                FontSize = 14,
+                FontWeight = FontWeights.Medium,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap,
+            };
+
+            badge.ToolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                OverridesDefaultStyle = true,
+                HasDropShadow = false,
+                Style = DynamoToolTipTopStyle,
+                Content = toolTipText
+            };
+            ToolTipService.SetShowsToolTipOnKeyboardFocus(badge, true);
 
             Grid.SetRow(badge, 1);
             Grid.SetColumnSpan(badge, 3);
