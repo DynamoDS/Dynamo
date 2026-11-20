@@ -1891,30 +1891,12 @@ namespace Dynamo.ViewModels
                 maxY = GetSelectionMaxY();
             }
             else
-            {   
+            {
                 // no selection, fitview all nodes and notes
-                var nodes = Nodes.Select(x => x.NodeModel);
-                var notes = Notes.Select(x => x.Model);
-                var models = nodes.Concat<ModelBase>(notes);
+                var bounds = GetBounds(Nodes.Select(x => x.NodeModel).Concat<ModelBase>(Notes.Select(x => x.Model)));
+                if (bounds == null) return;
 
-                if (!models.Any()) return;
-
-                // initialize to the first model (either note or node) on the list 
-
-                var firstModel = models.First();
-                minX = firstModel.X;
-                maxX = firstModel.X;
-                minY = firstModel.Y;
-                maxY = firstModel.Y;
-
-                foreach (var model in models)
-                {
-                    //calculates the min and max positions of both x and y coords of all nodes and notes
-                    minX = Math.Min(model.X, minX);
-                    maxX = Math.Max(model.X + model.Width, maxX);
-                    minY = Math.Min(model.Y, minY);
-                    maxY = Math.Max(model.Y + model.Height, maxY);
-                }   
+                (minX, minY, maxX, maxY) = bounds.Value;
             }
 
             double focusWidth;
@@ -1962,17 +1944,61 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void FitViewToNodes(IEnumerable<NodeModel> nodes)
         {
-            var models = nodes?.Where(n => n != null).ToList();
-            if (models == null || models.Count == 0) return;
+            var bounds = GetBounds(nodes);
+            if (bounds == null) return;
 
-            var minX = models.Min(n => n.X);
-            var minY = models.Min(n => n.Y);
-            var maxX = models.Max(n => n.X + n.Width);
-            var maxY = models.Max(n => n.Y + n.Height);
-
+            var (minX, minY, maxX, maxY) = bounds.Value;
             if (maxX <= minX || maxY <= minY) return;
 
             OnRequestZoomToFitView(this, new ZoomEventArgs(new Point2D(minX, minY), maxX - minX, maxY - minY));
+        }
+
+        // The box around the given nodes or notes, or null when there are none
+        private static (double MinX, double MinY, double MaxX, double MaxY)? GetBounds(IEnumerable<ILocatable> models)
+        {
+            var list = models?.Where(m => m != null).ToList();
+            if (list == null || list.Count == 0) return null;
+
+            return (list.Min(m => m.X), list.Min(m => m.Y), list.Max(m => m.X + m.Width), list.Max(m => m.Y + m.Height));
+        }
+
+        /// <summary>
+        /// Raised to centre the view on a node for the AI summary chip's stepper.
+        /// </summary>
+        internal event Action<NodeModel> RequestCenterViewOnStepNode;
+
+        /// <summary>
+        /// Centres the view on a node, without changing the selection, at the zoom from <see cref="StepZoom"/>
+        /// (DYN-11012). The view does it, as only the view knows the canvas size.
+        /// </summary>
+        internal void CenterViewOnNode(NodeModel node)
+        {
+            if (node == null) return;
+
+            RequestCenterViewOnStepNode?.Invoke(node);
+        }
+
+        /// <summary>
+        /// The zoom for stepping to a node: the current zoom or 100%, whichever is larger, but no closer than
+        /// lets the node fit in the given area, and within the workspace's zoom limits.
+        /// </summary>
+        internal static double StepZoom(double currentZoom, double nodeWidth, double nodeHeight, double fitWidth, double fitHeight)
+        {
+            var zoom = Math.Max(currentZoom, 1.0);
+            if (nodeWidth > 0 && nodeHeight > 0 && fitWidth > 0 && fitHeight > 0)
+            {
+                zoom = Math.Min(zoom, Math.Min(fitWidth / nodeWidth, fitHeight / nodeHeight));
+            }
+
+            return ClampZoom(zoom);
+        }
+
+        /// <summary>
+        /// Keeps a zoom within <see cref="ZOOM_MINIMUM"/> and <see cref="ZOOM_MAXIMUM"/>.
+        /// </summary>
+        internal static double ClampZoom(double zoom)
+        {
+            return Math.Max(ZOOM_MINIMUM, Math.Min(ZOOM_MAXIMUM, zoom));
         }
 
         internal void ResetFitViewToggle(object o)

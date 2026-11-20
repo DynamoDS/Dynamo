@@ -127,6 +127,7 @@ namespace Dynamo.ViewModels
 
         private double strength;
         private bool breathes;
+        private readonly bool isPulse;
         private TimeSpan delay;
         private bool isStarted;
         private bool isHeld;
@@ -140,10 +141,11 @@ namespace Dynamo.ViewModels
         private TimeSpan countedBefore;
         private TimeSpan? runningSince;
 
-        private AIHaloGlow(double strength, bool breathes)
+        private AIHaloGlow(double strength, bool breathes, bool isPulse = false)
         {
             this.strength = strength;
             this.breathes = breathes;
+            this.isPulse = isPulse;
             TouchOrder = Interlocked.Increment(ref lastTouchOrder);
         }
 
@@ -157,6 +159,19 @@ namespace Dynamo.ViewModels
         {
             return new AIHaloGlow(strength, breathes);
         }
+
+        /// <summary>
+        /// One slow breath (2 s): up to full strength and back to nothing, for stepping through a turn's
+        /// changes (DYN-11012). Waits for the node to be on screen like any glow.
+        /// </summary>
+        internal static AIHaloGlow CreatePulse(double strength)
+        {
+            return new AIHaloGlow(strength, breathes: false, isPulse: true);
+        }
+
+        internal bool IsPulse => isPulse;
+
+        private TimeSpan End => isPulse ? BreathLength : FadeOutEnd;
 
         /// <summary>
         /// The order in which glows were created. Nodes that come on screen together are staggered
@@ -237,7 +252,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal TimeSpan Duration
         {
-            get { lock (sync) return delay + FadeOutEnd; }
+            get { lock (sync) return delay + End; }
         }
 
         /// <summary>
@@ -260,7 +275,7 @@ namespace Dynamo.ViewModels
             {
                 lock (sync)
                 {
-                    return isStarted && !isRestartPending && ElapsedUnlocked() >= delay + FadeOutEnd;
+                    return isStarted && !isRestartPending && ElapsedUnlocked() >= delay + End;
                 }
             }
         }
@@ -274,7 +289,7 @@ namespace Dynamo.ViewModels
             {
                 lock (sync)
                 {
-                    return isStarted && ElapsedUnlocked() < delay + FadeOutEnd;
+                    return isStarted && ElapsedUnlocked() < delay + End;
                 }
             }
         }
@@ -460,7 +475,7 @@ namespace Dynamo.ViewModels
 
             var animation = new DoubleAnimationUsingKeyFrames
             {
-                Duration = new System.Windows.Duration(d + FadeOutEnd),
+                Duration = new System.Windows.Duration(d + End),
                 FillBehavior = FillBehavior.HoldEnd
             };
             var frames = animation.KeyFrames;
@@ -470,6 +485,15 @@ namespace Dynamo.ViewModels
             if (d > TimeSpan.Zero)
             {
                 frames.Add(new DiscreteDoubleKeyFrame(startOpacity, KeyTime.FromTimeSpan(d)));
+            }
+
+            if (isPulse)
+            {
+                var half = TimeSpan.FromTicks(BreathLength.Ticks / 2);
+                frames.Add(Spline(s, 1.0, d + half, EaseInOut));
+                frames.Add(Spline(s, 0, d + BreathLength, EaseInOut));
+                animation.Freeze();
+                return animation;
             }
 
             // Fade in
