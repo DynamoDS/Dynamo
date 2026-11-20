@@ -6650,9 +6650,10 @@ s = 1;
         /// <summary>
         /// Syncs a subtree with a statement ahead of a call, then force-executes it without that statement,
         /// as turning profiling off does. Returns how many active graph nodes assign the removed statement's
-        /// variable before and after.
+        /// variable before and after. With <paramref name="isInput"/> the subtree is synced the way
+        /// EngineController syncs an input node such as a slider: IsInput set and a primitive body.
         /// </summary>
-        private (int before, int after) ActiveGraphNodesForAStatementRemovedOnForceExecution(bool flagAsProfilingMarker)
+        private (int before, int after) ActiveGraphNodesForAStatementRemovedOnForceExecution(bool flagAsProfilingMarker, bool isInput = false)
         {
             var guid = Guid.NewGuid();
             var ahead = TestFrameWork.CreateSubTreeFromCode(guid, "mkbegin = FFITarget.ProfilingCounter.Increment();").AstNodes;
@@ -6660,18 +6661,19 @@ s = 1;
             {
                 bnode.IsProfilingMarker = flagAsProfilingMarker;
             }
-            var body = TestFrameWork.CreateSubTreeFromCode(guid, "mkbody = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            var bodyCode = isInput ? "mkbody = 5;" : "mkbody = FFITarget.ProfilingCounter.Increment();";
+            var body = TestFrameWork.CreateSubTreeFromCode(guid, bodyCode).AstNodes;
             liveRunner.UpdateGraph(new GraphSyncData(null,
-                new List<Subtree> { new Subtree(ahead.Concat(body).ToList(), guid) }, null));
+                new List<Subtree> { new Subtree(ahead.Concat(body).ToList(), guid) { IsInput = isInput } }, null));
 
             int CountActive() => runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList.Count(g =>
                 g.guid == guid && g.isActive && g.updateNodeRefList.Any() &&
                 g.updateNodeRefList[0].nodeList.Any() && g.updateNodeRefList[0].nodeList[0].symbol?.name == "mkbegin");
             var before = CountActive();
 
-            var bodyOnly = TestFrameWork.CreateSubTreeFromCode(guid, "mkbody = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            var bodyOnly = TestFrameWork.CreateSubTreeFromCode(guid, bodyCode).AstNodes;
             liveRunner.UpdateGraph(new GraphSyncData(null, null,
-                new List<Subtree> { new Subtree(bodyOnly, guid) { ForceExecution = true } }));
+                new List<Subtree> { new Subtree(bodyOnly, guid) { ForceExecution = true, IsInput = isInput } }));
             return (before, CountActive());
         }
 
@@ -6697,6 +6699,18 @@ s = 1;
 
             Assert.AreEqual(1, before);
             Assert.AreEqual(1, after);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerRemovedOnForceExecutionOfInputNode_IsDeactivated()
+        {
+            // Input nodes such as sliders are synced with IsInput set, which takes a separate branch in
+            // UpdateCachedASTList. Turning profiling off must deactivate their markers too.
+            var (before, after) = ActiveGraphNodesForAStatementRemovedOnForceExecution(flagAsProfilingMarker: true, isInput: true);
+
+            Assert.AreEqual(1, before, "the first sync should compile the marker");
+            Assert.AreEqual(0, after, "removing the marker from an input node should deactivate its graph nodes");
         }
 
         #endregion

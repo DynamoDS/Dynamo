@@ -809,6 +809,20 @@ namespace ProtoScript.Runners
             if (cachedTreeExists && oldSubTree.AstNodes != null)
             {
                 List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+
+                // Removed profiling markers are always deactivated, whichever branch below runs. Input
+                // subtrees and force-executed subtrees otherwise keep their removed statements active, but
+                // turning profiling off force-executes every node, input nodes included. A marker left
+                // active would keep running, pile up each time profiling is turned back on, and could be
+                // the last statement a run executes. That last statement prefixes the next run's callsite
+                // IDs, so the node would lose its trace data (DYN-11176).
+                var removedMarkers = removedNodes.OfType<BinaryExpressionNode>().Where(b => b.IsProfilingMarker).ToList();
+                if (removedMarkers.Any())
+                {
+                    removedNodes = removedNodes.Where(n => !(n is BinaryExpressionNode b && b.IsProfilingMarker)).ToList();
+                    csData.RemovedBinaryNodesFromModification.AddRange(removedMarkers);
+                }
+
                 // TODO: test this if-logic if necessary for optimized execution
                 if (st.IsInput && removedNodes.Any())
                 {
@@ -828,16 +842,6 @@ namespace ProtoScript.Runners
                     // We only need the removed binary ASTs
                     // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
                     csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
-                }
-                else
-                {
-                    // A force-executed subtree keeps its removed statements active. Profiling markers are
-                    // the exception: turning profiling off removes them, and if they stayed active they
-                    // would keep running, pile up each time profiling is turned back on, and could be the
-                    // last statement a run executes. That last statement prefixes the next run's callsite
-                    // IDs, so the node would lose its trace data (DYN-11176).
-                    csData.RemovedBinaryNodesFromModification.AddRange(
-                        removedNodes.OfType<BinaryExpressionNode>().Where(b => b.IsProfilingMarker));
                 }
 
                 foreach (var removedAST in csData.RemovedBinaryNodesFromModification)

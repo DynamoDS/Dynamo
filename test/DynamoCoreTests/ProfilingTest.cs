@@ -843,6 +843,87 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ProfilingToggledRepeatedly_InputNodeMarkersAreDeactivated()
+        {
+            // Input nodes (Number, sliders) are synced with IsInput set, which takes its own branch
+            // when the cache is updated. Their markers must be deactivated too, or they pile up and
+            // can be a run's last statement.
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var number = AddNumberNode("1");
+            var traced = AddTracedNode();
+            ConnectorModel.Make(number, traced, 0, 0);
+            BeginRun();
+            var firstId = GetTracedObject(traced).ID;
+            int markerGraphNodes = -1;
+
+            for (int i = 1; i <= 3; i++)
+            {
+                EnableProfiling();
+                BeginRun();
+                if (i == 1)
+                {
+                    markerGraphNodes = ActiveMarkerGraphNodeCount(number);
+                    Assert.Greater(markerGraphNodes, 0, "the profiled run should compile the input node's markers");
+                }
+                Assert.AreEqual(markerGraphNodes, ActiveMarkerGraphNodeCount(number),
+                    $"profiled run {i}: only the input node's current markers should be active");
+
+                DisableProfiling();
+                BeginRun();
+                Assert.AreEqual(0, ActiveMarkerGraphNodeCount(number),
+                    $"unprofiled run {i}: turning profiling off should deactivate the input node's markers");
+                AssertRebound(traced, firstId, $"unprofiled run {i}");
+            }
+        }
+
+        private CodeBlockNodeModel AddTracedCodeBlock(string code)
+        {
+            var cbn = new CodeBlockNodeModel(code, 0, 0,
+                CurrentDynamoModel.LibraryServices, CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false));
+            return cbn;
+        }
+
+        private void AssertCodeBlockEditRebinds(bool profiling)
+        {
+            StartManualCounterTest();
+            IncrementerTracedClass.ResetForNextTest();
+            var cbn = AddTracedCodeBlock("a = FFITarget.IncrementerTracedClass(1);");
+            BeginRun();
+            var firstId = GetTracedOutput(cbn, 0).ID;
+            if (profiling)
+            {
+                EnableProfiling();
+                BeginRun();
+                Assert.AreEqual(firstId, GetTracedOutput(cbn, 0).ID, "profiled run before the edit");
+            }
+
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, cbn.GUID, "Code", "a = FFITarget.IncrementerTracedClass(2);"));
+            BeginRun();
+
+            var obj = GetTracedOutput(cbn, 0);
+            Assert.IsTrue(obj.WasCreatedWithTrace(), "run after editing the code block: the call should reuse its trace data");
+            Assert.AreEqual(firstId, obj.ID, "run after editing the code block: the call should rebind to the same element");
+        }
+
+        [Test]
+        public void CodeBlockEditedWithoutProfiling_TracedCallKeepsItsTraceData()
+        {
+            // Control for the next test: editing a code block's body recompiles it and keeps its trace.
+            AssertCodeBlockEditRebinds(profiling: false);
+        }
+
+        [Test]
+        public void CodeBlockEditedWithProfilingOn_TracedCallKeepsItsTraceData()
+        {
+            // A code block edit goes through the code block recompile path, not the force-execute
+            // path that toggling profiling uses (Koey's review of #17476).
+            AssertCodeBlockEditRebinds(profiling: true);
+        }
+
+        [Test]
         public void SavedAndReopenedWithoutProfiling_TracedNodeRebinds()
         {
             // Control for the next two tests: trace data saved in the .dyn rebinds on reopen.
