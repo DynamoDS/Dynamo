@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -348,6 +351,68 @@ namespace DynamoCoreWpfTests
 
             Assert.Greater(chipView.ActualHeight, 0, "The chip is on screen.");
             Assert.LessOrEqual(nodeBottom, chipTop, "The lowest framed node sits above the chip.");
+        }
+
+        #endregion
+
+        #region Keyboard
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void ChipSentenceHasANameNarratorCanRead()
+        {
+            PlaceByAssistant();
+            var chipView = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
+
+            Assert.AreEqual("Autodesk Assistant added 1 node", PeerName(chipView.MessageButton));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TabLandsOnTheChipSentence()
+        {
+            PlaceByAssistant();
+            var message = View.ChildrenOfType<WorkspaceView>().First()
+                .ChildrenOfType<AIChangeSummaryChip>().First().MessageButton;
+
+            PressTab();
+            Assert.IsTrue(message.IsKeyboardFocused, "Tab from the window lands on the sentence.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void TabMovesFromTheSentenceToShowThenDismiss()
+        {
+            PlaceByAssistant();
+            var chip = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
+
+            PressTab();
+            PressTab();
+            Assert.IsTrue(chip.ShowButton.IsKeyboardFocused, "The next Tab lands on Show.");
+            Assert.AreEqual("Show", PeerName(chip.ShowButton));
+
+            PressTab();
+            Assert.IsTrue(chip.DismissButton.IsKeyboardFocused, "The Tab after that lands on Dismiss.");
+            Assert.AreEqual("Dismiss", PeerName(chip.DismissButton));
+        }
+
+        private void PressTab()
+        {
+            View.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(View), 0, Key.Tab)
+            {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent
+            });
+            DispatcherUtil.DoEvents();
+        }
+
+        private static string PeerName(UIElement element)
+        {
+            var peer = UIElementAutomationPeer.CreatePeerForElement(element);
+            Assert.IsNotNull(peer, "Narrator has no name to read.");
+            Assert.AreEqual(AutomationControlType.Button, peer.GetAutomationControlType());
+            return peer.GetName();
         }
 
         #endregion
