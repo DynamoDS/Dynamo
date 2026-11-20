@@ -30,9 +30,14 @@
       <DependentUpon>AssemblySharedInfo.tt</DependentUpon>
     </Compile>
   </ItemGroup>
+  <PropertyGroup>
+    <!-- By default, do not regenerate AssemblySharedInfo.cs to enable incremental builds.
+         Set RegenerateAssemblyInfo=true (e.g., in CI builds) to regenerate with current timestamp. -->
+    <RegenerateAssemblyInfo Condition="'$(RegenerateAssemblyInfo)' == ''">false</RegenerateAssemblyInfo>
+  </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets')" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets" />
-  <Target Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets')" Name="T4TemplateGen" BeforeTargets="Build">
+  <Target Condition="'$(RegenerateAssemblyInfo)' == 'true' AND Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets')" Name="T4TemplateGen" BeforeTargets="Build">
     <CallTarget Targets="TransformAll" />
     <Message Importance="high" Text="Running Template Generator for AssemblyInfoProperties" />
   </Target>
