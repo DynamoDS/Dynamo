@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
@@ -23,15 +24,21 @@ namespace Dynamo.PythonMigration.MigrationAssistant
     internal sealed class PythonScriptConflictViewModel : NotificationObject, ICodeDiffHost
     {
         private readonly PythonNode node;
+        private readonly PythonScriptReviewKind kind;
         private readonly string nodeScriptAtOpen;
         private readonly Func<bool> accept;
         private readonly Func<bool> reject;
+        private readonly TaskCompletionSource<bool> approval;
+        private readonly Action acceptAllForNode;
+        private readonly bool hasTurn;
         private readonly SideBySideDiffModel diffModel;
         private IDiffViewViewModel currentViewModel;
 
         public string WindowTitle { get; }
 
         public bool TrackAsMigration => false;
+
+        public bool CanAcceptAll => acceptAllForNode != null && kind == PythonScriptReviewKind.AssistantProposal && hasTurn;
 
         public IDiffViewViewModel CurrentViewModel
         {
@@ -48,11 +55,16 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             string titleFormat,
             PythonScriptConflictEventArgs e,
             Func<bool> accept,
-            Func<bool> reject)
+            Func<bool> reject,
+            Action acceptAllForNode)
         {
             this.node = node;
+            kind = e.Kind;
             this.accept = accept;
             this.reject = reject;
+            approval = e.Approval;
+            this.acceptAllForNode = acceptAllForNode;
+            hasTurn = !string.IsNullOrEmpty(e.TurnId);
             nodeScriptAtOpen = e.Kind == PythonScriptReviewKind.AssistantReview
                 ? e.RightCode
                 : node.Script ?? string.Empty;
@@ -63,12 +75,19 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         }
 
         /// <summary>
+        /// Changes that Accept All and the preference let through. Not the unsaved-typing conflict.
+        /// </summary>
+        internal static bool IsAssistantChange(PythonScriptReviewKind kind)
+            => kind == PythonScriptReviewKind.AssistantProposal || kind == PythonScriptReviewKind.AssistantReview;
+
+        /// <summary>
         /// Builds the review for one request: its title and what Accept / Reject do.
         /// </summary>
         internal static PythonScriptConflictViewModel Create(
             PythonNode node,
             PythonScriptConflictEventArgs e,
-            DynamoViewModel dynamoViewModel)
+            DynamoViewModel dynamoViewModel,
+            Action acceptAllForNode = null)
         {
             switch (e.Kind)
             {
@@ -78,7 +97,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                     return new PythonScriptConflictViewModel(
                         node, Resources.PythonScriptConflictWindowTitle, e,
                         accept: () => WriteScript(dynamoViewModel, node, e.RightCode, overrideUnsavedEditor: true),
-                        reject: null);
+                        reject: null,
+                        acceptAllForNode);
 
                 case PythonScriptReviewKind.AssistantReview:
                     // Already written. Accept keeps it. Reject restores the previous script,
@@ -86,14 +106,23 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                     return new PythonScriptConflictViewModel(
                         node, Resources.PythonScriptReviewWindowTitle, e,
                         accept: null,
-                        reject: () => WriteScript(dynamoViewModel, node, e.LeftCode, overrideUnsavedEditor: false));
+                        reject: () => WriteScript(dynamoViewModel, node, e.LeftCode, overrideUnsavedEditor: false),
+                        acceptAllForNode);
+
+                case PythonScriptReviewKind.AssistantProposal:
+                    return new PythonScriptConflictViewModel(
+                        node, Resources.PythonScriptApprovalWindowTitle, e,
+                        accept: () => Answer(e, true),
+                        reject: () => Answer(e, false),
+                        acceptAllForNode);
 
                 case PythonScriptReviewKind.EditorChangedUnderneath:
                     // The editor owns both actions.
                     return new PythonScriptConflictViewModel(
                         node, Resources.PythonScriptChangedOutsideEditorWindowTitle, e,
                         accept: e.OnAccept,
-                        reject: e.OnReject);
+                        reject: e.OnReject,
+                        acceptAllForNode);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(e), e.Kind, null);
@@ -109,7 +138,37 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         public bool ChangeCode() => Run(accept);
 
-        public bool RejectCode() => Run(reject);
+        public bool RejectCode() => kind == PythonScriptReviewKind.AssistantProposal ? reject() : Run(reject);
+
+        /// <summary>
+        /// Accepts this change and stops asking about this node for the rest of the assistant request.
+        /// </summary>
+        public bool AcceptAllCode()
+        {
+            if (!CanAcceptAll)
+            {
+                return false;
+            }
+
+            if (kind == PythonScriptReviewKind.AssistantProposal && !ChangeCode())
+            {
+                return false;
+            }
+
+            acceptAllForNode();
+            return true;
+        }
+
+        /// <summary>
+        /// A proposal closed without an answer is refused.
+        /// </summary>
+        internal void OnWindowClosed() => approval?.TrySetResult(false);
+
+        private static bool Answer(PythonScriptConflictEventArgs e, bool approved)
+        {
+            e.Approval?.TrySetResult(approved);
+            return true;
+        }
 
         /// <summary>
         /// Runs an action only if the node still holds the script it had when the window opened,

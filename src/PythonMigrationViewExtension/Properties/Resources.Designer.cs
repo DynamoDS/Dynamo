@@ -61,6 +61,24 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept All.
+        /// </summary>
+        public static string AcceptAllForNodeButton {
+            get {
+                return ResourceManager.GetString("AcceptAllForNodeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept this change and the Assistant&apos;s other changes to this node in the current request without asking. To stop being asked about every Python script, turn off &apos;Ask before the Assistant changes Python scripts&apos; in Preferences &gt; Features &gt; Autodesk Assistant. You are still asked when a Python editor has unsaved edits..
+        /// </summary>
+        public static string AcceptAllForNodeButtonTooltip {
+            get {
+                return ResourceManager.GetString("AcceptAllForNodeButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         public static string AcceptButton {
@@ -365,6 +383,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PythonMigrationBackupFileCreatedMessage {
             get {
                 return ResourceManager.GetString("PythonMigrationBackupFileCreatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Approve Assistant Changes.
+        /// </summary>
+        public static string PythonScriptApprovalWindowTitle {
+            get {
+                return ResourceManager.GetString("PythonScriptApprovalWindowTitle", resourceCulture);
             }
         }
         

@@ -75,6 +75,7 @@ namespace Dynamo.Configuration
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
         private bool showAIChangeSummaryChip;
+        private bool askBeforeAIPythonChanges;
         private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
@@ -803,6 +804,23 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines if Dynamo asks the user to approve Autodesk Assistant changes to an existing Python script before writing them.
+        /// </summary>
+        public bool AskBeforeAIPythonChanges
+        {
+            get
+            {
+                return askBeforeAIPythonChanges;
+            }
+            set
+            {
+                if (askBeforeAIPythonChanges == value) return;
+                askBeforeAIPythonChanges = value;
+                RaisePropertyChanged(nameof(AskBeforeAIPythonChanges));
+            }
+        }
+
+        /// <summary>
         /// This defines if user wants the Extensions settings to persist across sessions.
         /// </summary>
         public bool EnablePersistExtensions
@@ -1124,6 +1142,7 @@ namespace Dynamo.Configuration
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             ShowAIChangeSummaryChip = true;
+            AskBeforeAIPythonChanges = true;
             isStaticSplashScreenEnabled = true;
             isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;

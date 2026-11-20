@@ -4371,4 +4371,10 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
     <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
   </data>
+  <data name="PreferencesViewAskBeforeAIPythonChanges" xml:space="preserve">
+    <value>Ask before the Assistant changes Python scripts</value>
+  </data>
+  <data name="PreferencesViewAskBeforeAIPythonChangesTooltip" xml:space="preserve">
+    <value>Shows the Autodesk Assistant's changes to an existing Python script and writes them only after you click Accept. Turn this off to let the Assistant change Python scripts without asking. You are still asked when a Python editor has unsaved edits.</value>
+  </data>
 </root>
