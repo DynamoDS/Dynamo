@@ -3461,7 +3461,7 @@
     <value>내보내기 실패</value>
   </data>
   <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
-    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+    <value>Dynamo에서 프로파일 {0}을(를) 읽을 수 없어 해당 프로파일을 내보내지 못했습니다.</value>
   </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>이 옵션을 켜면 작업이 CPU(중앙 처리 장치)에서 GPU(그래픽 처리 장치)로 오프로드되므로 Dynamo는 하드웨어 가속을 통해 그래픽의 부드러움과 전체 성능을 향상시킬 수 있습니다.</value>
@@ -3955,28 +3955,28 @@ Dynamo 3.3–3.6.x에서 이 그래프를 열려면 패키지 관리자에서 Py
     <value>노드 선택과 자동 동기화됩니다.</value>
   </data>
   <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
-    <value>Autodesk Assistant added {0} nodes</value>
+    <value>Autodesk Assistant에서 {0}개의 노드를 추가했습니다.</value>
   </data>
   <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
-    <value>Autodesk Assistant added 1 node</value>
+    <value>Autodesk Assistant에서 1개의 노드를 추가했습니다.</value>
   </data>
   <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
-    <value>changed {0}</value>
+    <value>{0}개 변경됨</value>
   </data>
   <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
-    <value>deleted {0}</value>
+    <value>{0}개 삭제됨</value>
   </data>
   <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
-    <value>Autodesk Assistant changed {0} nodes</value>
+    <value>Autodesk Assistant에서 {0}개의 노드를 변경했습니다.</value>
   </data>
   <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
-    <value>Autodesk Assistant changed 1 node</value>
+    <value>Autodesk Assistant에서 1개의 노드를 변경했습니다.</value>
   </data>
   <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
-    <value>Autodesk Assistant deleted {0} nodes</value>
+    <value>Autodesk Assistant에서 {0}개의 노드를 삭제했습니다.</value>
   </data>
   <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
-    <value>Autodesk Assistant deleted 1 node</value>
+    <value>Autodesk Assistant에서 1개의 노드를 삭제했습니다.</value>
   </data>
   <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
     <value>닫기</value>
