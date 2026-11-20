@@ -632,5 +632,57 @@ import(""FFITarget.dll"");
             ProtoCore.Mirror.MirrorData.PrecisionFormat = oldpref;
 
         }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void WhenToStringCalledOnIntThenReturnsString()
+        {
+            String code =
+    @"
+                a = ToString(42);
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", "42");
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void WhenToStringCalledOnDoubleThenReturnsString()
+        {
+            String code =
+    @"
+                a = ToString(1.5);
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", "1.500000");
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void WhenToStringCalledOnBoolThenReturnsString()
+        {
+            String code =
+    @"
+                a = ToString(true);
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", "true");
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void WhenToStringUsedInFunctionBodyThenNoWarning()
+        {
+            String code =
+    @"
+                def formatValues(x : double, y : double)
+                {
+                    return = ToString(x) + "","" + ToString(y);
+                }
+                result = formatValues(1.0, 2.0);
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("result", "1.000000,2.000000");
+        }
     }
 }
