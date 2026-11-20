@@ -129,6 +129,9 @@ namespace Dynamo.Wpf.Utilities
         ///   --disable-translate             : disables the translate language-detection service call.
         ///   --disable-default-apps          : prevents default web-app installation traffic.
         ///   --no-pings                      : disables hyperlink auditing pings.
+        ///   --host-resolver-rules           : resolves every host name except localhost to NOTFOUND, so
+        ///                                     the runtime cannot reach any remote host, including requests
+        ///                                     made by page content (DYN-11173: the Home page).
         ///   --disable-features=OptimizationGuideModelDownloading,MediaRouter :
         ///                                     suppresses Edge ML model downloads and media-router discovery.
         ///
@@ -145,6 +148,7 @@ namespace Dynamo.Wpf.Utilities
             "--disable-translate " +
             "--disable-default-apps " +
             "--no-pings " +
+            "--host-resolver-rules=\"MAP * ~NOTFOUND, EXCLUDE localhost\" " +
             "--disable-features=OptimizationGuideModelDownloading,MediaRouter";
 
         /// <summary>

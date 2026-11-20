@@ -437,14 +437,35 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Send the training videos stored in the config 
+        /// Whether the training video list may be sent to the Home page. The videos are embedded
+        /// YouTube players, so they must not be sent when Dynamo runs with --NoNetworkMode.
+        /// </summary>
+        /// <param name="noNetworkMode">True when Dynamo was started in no-network mode.</param>
+        /// <returns>True if the video list may be sent.</returns>
+        internal static bool ShouldSendVideoData(bool noNetworkMode)
+        {
+            return !noNetworkMode;
+        }
+
+        /// <summary>
+        /// Send the training videos stored in the config
         /// </summary>
         private async void SendVideoData()
         {
+            var model = this.startPage.DynamoViewModel.Model;
+
+            // The Learning page renders each video as a YouTube iframe. In no-network mode the list is
+            // not sent at all, so the page never creates an iframe and makes no outbound request.
+            if (ShouldSendVideoData(model.NoNetworkMode) == false)
+            {
+                model.Logger.Log("NoNetworkMode is enabled: training videos are not sent to the Home page.");
+                return;
+            }
+
             var videoSettingsJson = GetStringResourceFromConfig(this, videoSettingsConfigString);
             if (string.IsNullOrEmpty(videoSettingsJson))
             {
-                this.startPage.DynamoViewModel.Model.Logger.Log("No video settings found in the configuration.");
+                model.Logger.Log("No video settings found in the configuration.");
                 return;
             }
 
