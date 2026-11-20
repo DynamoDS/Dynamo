@@ -1,0 +1,29 @@
+schema: spec-driven
+
+context: |
+  Dynamo is a C#/.NET 10 visual programming tool (WPF UI, Windows-only; DynamoCore
+  is cross-platform). Tests use NUnit. Root AGENTS.md is the agent navigation guide
+  (where code lives, build/test commands, conventions). OpenSpec specs are the
+  behavioral complement: what a capability must do, functional and non-functional.
+  Public contracts that specs must respect: PublicAPI.{Shipped,Unshipped}.txt
+  surfaces, the .dyn graph file format (doc/dyn-file-spec.md), and published
+  NuGet packages consumed by DynamoRevit and package authors.
+
+rules:
+  specs:
+    - Prefer short sentences and bullets over dense paragraphs in requirement and scenario descriptions
+    - Define any acronym on first use, except standard Dynamo vocabulary (DS, ZT, NodeModel, WPF)
+    - State obligations, not mechanisms. A spec delta merges into the baseline permanently, so if the wording admits only one implementation, relax it
+    - Never cite a Jira ticket number (DYN-NNNN) in Requirement or Purpose text. Ticket status changes independently of behavior. Put that rationale in design.md or a code comment instead
+  design:
+    - List public API additions or changes (PublicAPI.Unshipped.txt entries) as part of Decisions
+    - List .dyn serialization or graph file format impacts as part of Decisions
+    - List technologies, frameworks and libraries being added or changed as part of Decisions
+    - Record what forced each decision and which alternatives it beat. design.md is the only provenance the archive retains
+  tasks:
+    - Prefix each task with the file it touches
+    - Include NUnit test tasks following the repo's test naming and category conventions
+    - Include PublicAPI.Unshipped.txt, .resx string, and NodeHelpFiles (.dyn, .md, .jpg) tasks when the change touches them
+    - Include a task that the CI-parity build passes (msbuild src/Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true)
+    - Include AGENTS.md and skill update tasks when the change alters agent-relevant context
+    - NEVER include manual or human tasks. ONLY include tasks that agents can complete automatically
