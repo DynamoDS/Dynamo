@@ -16,7 +16,8 @@ namespace Dynamo.PythonMigration.Differ
         private const string UNCHANGED_SIGN = " ";
         private const double ContentPaddingLeft = 5;
         private const double LineNumberSlack = 10;
-        private const double NoWrapSlack = 40;
+        private const double NoWrapSlack = 20;
+        private const double DefaultPagePadding = 10;
         private const string TabAsSpaces = "        ";
 
         public static DiffPaneModel GetUpdate(DependencyObject obj)
@@ -191,37 +192,31 @@ namespace Dynamo.PythonMigration.Differ
         }
 
         /// <summary>
-        /// Stops long lines from wrapping: every box gets a page as wide as the longest line in any of them.
-        /// Each line is then exactly one row high, so side-by-side panes stay level with each other and
-        /// scroll the same distance. The panes scroll sideways to show long lines.
+        /// Stops long lines from wrapping: each box gets a page as wide as its own longest line.
+        /// Each line is then exactly one row high, so side-by-side panes stay level with each other.
+        /// The panes scroll sideways to show long lines.
         /// Call after the boxes are loaded, so their fonts are known.
         /// </summary>
         internal static void TurnOffWrapping(params RichTextBox[] boxes)
         {
             FitLineNumberColumn(boxes);
 
-            var textWidth = 0.0;
-            var numberWidth = 0.0;
             foreach (var box in boxes)
             {
+                // Each pane is only as wide as its own longest line, so it cannot scroll past the end of it.
+                // The panes still scroll together; the shorter one simply stops at its end.
                 var table = GetTable(box);
-                if (table != null && table.Columns.Count > 0)
-                {
-                    numberWidth = Math.Max(numberWidth, table.Columns[0].Width.Value);
-                }
-
+                var numberWidth = table != null && table.Columns.Count > 0 ? table.Columns[0].Width.Value : 0;
+                var textWidth = 0.0;
                 foreach (var row in GetRows(box))
                 {
                     textWidth = Math.Max(textWidth, MeasureCell(box, row, 1));
                 }
-            }
 
-            foreach (var box in boxes)
-            {
                 var document = box.Document;
                 var padding = document.PagePadding;
                 var horizontalPadding = double.IsNaN(padding.Left) || double.IsNaN(padding.Right)
-                    ? 0
+                    ? DefaultPagePadding
                     : padding.Left + padding.Right;
                 document.PageWidth = Math.Ceiling(numberWidth + ContentPaddingLeft + textWidth + horizontalPadding + NoWrapSlack);
 

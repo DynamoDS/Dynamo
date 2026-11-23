@@ -11,6 +11,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
+        <!--  The square where the two scroll bars meet uses this system colour; make it match the pane  -->
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
         <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment"
                     Value="Center" />
