@@ -248,4 +248,19 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
   </data>
+  <data name="AcceptAllForNodeButton" xml:space="preserve">
+    <value>Accept All</value>
+  </data>
+  <data name="AcceptAllForNodeButtonTooltip" xml:space="preserve">
+    <value>Accept this change and the Assistant's other changes to this node in the current request without asking. To stop being asked about every Python script, turn off 'Ask before the Assistant changes Python scripts' in Preferences &gt; Features &gt; Autodesk Assistant. You are still asked when a Python editor has unsaved edits.</value>
+  </data>
+  <data name="PythonScriptApprovalWindowTitle" xml:space="preserve">
+    <value>{0} - Approve Assistant Changes</value>
+  </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

@@ -12,6 +12,7 @@ namespace Dynamo.PythonMigration.Controls
     public partial class BaseDiffViewer : Window
     {
         private ICodeDiffHost ViewModel { get; set; }
+        private DiffNavigator navigator;
 
         // we would like to match initial text wrapping of code inside diff view
         // to that of the code inside the script editor window as much as possible
@@ -49,6 +50,64 @@ namespace Dynamo.PythonMigration.Controls
         private void SetInlineWindowWidth()
         {
             Width = scriptEditorWindowDefaultWidth + differAdditionalWidthPerPanel;
+        }
+
+        /// <summary>
+        /// Called by the diff pane when it is shown, so the arrow buttons drive it.
+        /// </summary>
+        internal static void AttachNavigator(DependencyObject pane, DiffNavigator paneNavigator)
+        {
+            (GetWindow(pane) as BaseDiffViewer)?.SetNavigator(paneNavigator);
+        }
+
+        /// <summary>
+        /// Called by the diff pane when it goes away, for example when the view is switched.
+        /// </summary>
+        internal static void DetachNavigator(DependencyObject pane, DiffNavigator paneNavigator)
+        {
+            var viewer = GetWindow(pane) as BaseDiffViewer;
+            if (viewer != null && paneNavigator != null && ReferenceEquals(viewer.navigator, paneNavigator))
+            {
+                viewer.SetNavigator(null);
+            }
+        }
+
+        private void SetNavigator(DiffNavigator newNavigator)
+        {
+            if (!ReferenceEquals(navigator, newNavigator))
+            {
+                if (navigator != null)
+                {
+                    navigator.StateChanged -= OnNavigatorStateChanged;
+                }
+
+                navigator = newNavigator;
+
+                if (navigator != null)
+                {
+                    navigator.StateChanged += OnNavigatorStateChanged;
+                }
+            }
+
+            UpdateNavigationButtons();
+        }
+
+        private void OnNavigatorStateChanged(object sender, EventArgs e) => UpdateNavigationButtons();
+
+        private void UpdateNavigationButtons()
+        {
+            PreviousChangeButton.IsEnabled = navigator?.CanGoToPrevious == true;
+            NextChangeButton.IsEnabled = navigator?.CanGoToNext == true;
+        }
+
+        private void OnPreviousChangeButtonClicked(object sender, RoutedEventArgs e)
+        {
+            navigator?.GoToPrevious();
+        }
+
+        private void OnNextChangeButtonClicked(object sender, RoutedEventArgs e)
+        {
+            navigator?.GoToNext();
         }
 
         private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)

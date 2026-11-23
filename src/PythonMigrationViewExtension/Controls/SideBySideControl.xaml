@@ -78,9 +78,13 @@
                    VerticalAlignment="Center"
                    Foreground="#808080"/>
 
+        <!-- Lines do not wrap, so both panes have the same rows. Scrolling one pane scrolls the other (see code-behind). -->
         <Grid Grid.Row="1"
               Grid.Column="0">
-            <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <ScrollViewer x:Name="BeforeScroll"
+                          VerticalScrollBarVisibility="Visible"
+                          HorizontalScrollBarVisibility="Auto"
+                          ScrollChanged="OnPaneScrollChanged">
                 <RichTextBox IsReadOnly="True"
                              x:Name="BeforePanel"
                              viewModels:RichTextBoxHandler.Update="{Binding BeforePane}" />
@@ -89,8 +93,11 @@
         </Grid>
 
         <Grid Grid.Row="1"
-              Grid.Column="3">
-            <ScrollViewer VerticalScrollBarVisibility="Visible">
+              Grid.Column="2">
+            <ScrollViewer x:Name="AfterScroll"
+                          VerticalScrollBarVisibility="Visible"
+                          HorizontalScrollBarVisibility="Auto"
+                          ScrollChanged="OnPaneScrollChanged">
                 <RichTextBox IsReadOnly="True"
                              x:Name="AfterPanel"
                              viewModels:RichTextBoxHandler.Update="{Binding AfterPane}"/>

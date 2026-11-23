@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -13,6 +14,10 @@ namespace Dynamo.PythonMigration.Differ
         private const string REMOVED_SIGN = "-";
         private const string ADDED_SIGN = "+";
         private const string UNCHANGED_SIGN = " ";
+        private const double ContentPaddingLeft = 5;
+        private const double LineNumberSlack = 10;
+        private const double NoWrapSlack = 40;
+        private const string TabAsSpaces = "        ";
 
         public static DiffPaneModel GetUpdate(DependencyObject obj)
         {
@@ -140,6 +145,128 @@ namespace Dynamo.PythonMigration.Differ
             textBox.Document.Blocks.Add(table);
         }
 
+        /// <summary>
+        /// The rows of the diff table in <paramref name="box"/>, one per line of the diff, in order.
+        /// Empty when the table has not been built.
+        /// </summary>
+        internal static IList<TableRow> GetRows(RichTextBox box)
+        {
+            var table = GetTable(box);
+            if (table == null || table.RowGroups.Count == 0)
+            {
+                return Array.Empty<TableRow>();
+            }
+
+            return table.RowGroups[0].Rows;
+        }
+
+        /// <summary>
+        /// Widens the line-number column so the largest number and its +/- sign fit on one row.
+        /// Every box gets the same width. Call after the boxes are loaded, so their fonts are known.
+        /// </summary>
+        internal static void FitLineNumberColumn(params RichTextBox[] boxes)
+        {
+            var width = 0.0;
+            foreach (var box in boxes)
+            {
+                foreach (var row in GetRows(box))
+                {
+                    width = Math.Max(width, MeasureCell(box, row, 0));
+                }
+            }
+
+            if (width <= 0)
+            {
+                return;
+            }
+
+            foreach (var box in boxes)
+            {
+                var table = GetTable(box);
+                if (table != null && table.Columns.Count > 0)
+                {
+                    table.Columns[0].Width = new GridLength(Math.Ceiling(width + LineNumberSlack));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Stops long lines from wrapping: every box gets a page as wide as the longest line in any of them.
+        /// Each line is then exactly one row high, so side-by-side panes stay level with each other and
+        /// scroll the same distance. The panes scroll sideways to show long lines.
+        /// Call after the boxes are loaded, so their fonts are known.
+        /// </summary>
+        internal static void TurnOffWrapping(params RichTextBox[] boxes)
+        {
+            FitLineNumberColumn(boxes);
+
+            var textWidth = 0.0;
+            var numberWidth = 0.0;
+            foreach (var box in boxes)
+            {
+                var table = GetTable(box);
+                if (table != null && table.Columns.Count > 0)
+                {
+                    numberWidth = Math.Max(numberWidth, table.Columns[0].Width.Value);
+                }
+
+                foreach (var row in GetRows(box))
+                {
+                    textWidth = Math.Max(textWidth, MeasureCell(box, row, 1));
+                }
+            }
+
+            foreach (var box in boxes)
+            {
+                var document = box.Document;
+                var padding = document.PagePadding;
+                var horizontalPadding = double.IsNaN(padding.Left) || double.IsNaN(padding.Right)
+                    ? 0
+                    : padding.Left + padding.Right;
+                document.PageWidth = Math.Ceiling(numberWidth + ContentPaddingLeft + textWidth + horizontalPadding + NoWrapSlack);
+
+                // A wide page alone is not enough: the RichTextBox stays as wide as the pane and hides the
+                // rest of the page. Make the box itself at least as wide as the page, so the pane around it
+                // shows a sideways scroll bar.
+                box.MinWidth = document.PageWidth
+                               + box.Padding.Left + box.Padding.Right
+                               + box.BorderThickness.Left + box.BorderThickness.Right;
+            }
+        }
+
+        private static Table GetTable(RichTextBox box) => box?.Document?.Blocks.FirstBlock as Table;
+
+        private static double MeasureCell(RichTextBox box, TableRow row, int column)
+        {
+            if (row.Cells.Count <= column)
+            {
+                return 0;
+            }
+
+            var block = row.Cells[column].Blocks.FirstBlock;
+            if (block == null)
+            {
+                return 0;
+            }
+
+            var text = new TextRange(block.ContentStart, block.ContentEnd).Text.TrimEnd('\r', '\n');
+            if (string.IsNullOrEmpty(text))
+            {
+                return 0;
+            }
+
+            var document = box.Document;
+            var formatted = new FormattedText(
+                text.Replace("\t", TabAsSpaces),
+                CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                new Typeface(document.FontFamily, document.FontStyle, document.FontWeight, document.FontStretch),
+                document.FontSize,
+                Brushes.Black,
+                VisualTreeHelper.GetDpi(box).PixelsPerDip);
+            return formatted.WidthIncludingTrailingWhitespace;
+        }
+
         private static DiffParagraph CreateParagraph(string text, string lineNum, string operationSign, Brush background = null)
         {
             var operationParagraph = new Paragraph(new Run(string.Format("{0} {1}", lineNum, operationSign)))
@@ -150,7 +277,7 @@ namespace Dynamo.PythonMigration.Differ
             var contentParagraph = new Paragraph(new Run(text))
             {
                 LineHeight = 0.5,
-                Padding = new Thickness(5, 0, 0, 0)
+                Padding = new Thickness(ContentPaddingLeft, 0, 0, 0)
             };
 
             return new DiffParagraph() { Operation = operationParagraph, Content = contentParagraph, ParagraphBackground = background ?? Brushes.Transparent };

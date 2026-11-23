@@ -60,7 +60,8 @@
                    Grid.Row="0"
                    VerticalAlignment="Center"
                    Foreground="#808080" />
-        <ScrollViewer VerticalScrollBarVisibility="Visible"
+        <ScrollViewer x:Name="InlineScroll"
+                      VerticalScrollBarVisibility="Visible"
                       Grid.Row="1">
             <RichTextBox IsReadOnly="True"
                          x:Name="InlinePanel"
