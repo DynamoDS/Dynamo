@@ -151,10 +151,10 @@
     <value>Oznámení</value>
   </data>
   <data name="InvalidSettingsFileDetail" xml:space="preserve">
-    <value>Dynamo could not read your profile and will use default settings for this session. The original profile will be saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile will be updated with this session's settings.</value>
+    <value>Aplikace Dynamo nemůže přečíst váš profil, a proto pro tuto relaci použije výchozí nastavení. Původní profil bude uložen jako kopie .bak ve složce „profiles“ v umístění zálohy grafu a profil bude aktualizován podle nastavení této relace.</value>
   </data>
   <data name="InvalidSettingsFileTitle" xml:space="preserve">
-    <value>The profile could not be read</value>
+    <value>Profil nebylo možné přečíst</value>
   </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>V důvěryhodných umístěních byla zjištěna nebezpečná cesta:</value>

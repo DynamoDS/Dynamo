@@ -8502,6 +8502,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant.
+        /// </summary>
+        public static string PreferencesViewAutodeskAssistant {
+            get {
+                return ResourceManager.GetString("PreferencesViewAutodeskAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collapsed Group.
         /// </summary>
         public static string PreferencesViewCollapsedGroupHeader {
@@ -8880,6 +8889,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSettingIncludeTimestampExportPath {
             get {
                 return ResourceManager.GetString("PreferencesViewSettingIncludeTimestampExportPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show summary of Assistant changes.
+        /// </summary>
+        public static string PreferencesViewShowAIChangeSummaryChip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowAIChangeSummaryChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes..
+        /// </summary>
+        public static string PreferencesViewShowAIChangeSummaryChipTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowAIChangeSummaryChipTooltip", resourceCulture);
             }
         }
         

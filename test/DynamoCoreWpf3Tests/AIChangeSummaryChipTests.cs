@@ -124,7 +124,6 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        [SetUICulture("en-US")]
         public void ChipStaysWhenAPersonEditsTheTurnsNodes()
         {
             var first = PlaceByAssistant();
@@ -166,7 +165,6 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        [SetUICulture("en-US")]
         public void ShowIsHiddenOnceNoneOfTheTurnsNodesAreLeft()
         {
             var placed = PlaceByAssistant();
@@ -198,6 +196,61 @@ namespace DynamoCoreWpfTests
             finally
             {
                 File.Delete(path);
+            }
+        }
+
+        #endregion
+
+        #region Preferences setting
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChipSettingIsOnByDefault()
+        {
+            Assert.IsTrue(ViewModel.Model.PreferenceSettings.ShowAIChangeSummaryChip);
+            Assert.IsTrue(ViewModel.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TurningTheSettingOffHidesTheChipButKeepsTheHalo()
+        {
+            try
+            {
+                ViewModel.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked = false;
+
+                var node = PlaceByAssistant();
+
+                Assert.IsFalse(Chip.IsVisible, "The chip stays hidden while the setting is off.");
+                Assert.IsNotNull(node.AIChange, "The change record is kept.");
+                Assert.IsNotNull(ViewModelOf(node).AIHaloGlow, "The halo does not depend on the chip setting.");
+            }
+            finally
+            {
+                ViewModel.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked = true;
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TogglingTheSettingHidesAndRestoresTheChipRightAway()
+        {
+            try
+            {
+                PlaceByAssistant();
+                var before = Chip.Message;
+                Assert.IsTrue(Chip.IsVisible);
+
+                ViewModel.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked = false;
+                Assert.IsFalse(Chip.IsVisible, "Turning the setting off hides the chip at once.");
+
+                ViewModel.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked = true;
+                Assert.IsTrue(Chip.IsVisible, "Turning it back on shows the chip for the same turn.");
+                Assert.AreEqual(before, Chip.Message);
+            }
+            finally
+            {
+                ViewModel.PreferencesViewModel.ShowAIChangeSummaryChipIsChecked = true;
             }
         }
 
