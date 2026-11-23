@@ -142,6 +142,14 @@ namespace ProtoCore
     public class Core
     {
         public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
+
+        /// <summary>
+        /// Per-guid callsite counter for profiling marker statements, kept apart from
+        /// CallsiteGuidMap so that adding or removing markers does not renumber a node's own
+        /// callsites (DYN-11176).
+        /// </summary>
+        internal Dictionary<Guid, int> ProfilingMarkerCallsiteGuidMap { get; set; }
+
         public IDictionary<string, object> Configurations { get; set; }
         public List<System.Type> DllTypesToLoad { get; private set; }
 
@@ -583,6 +591,7 @@ namespace ProtoCore
             CodeBlockList = new List<CodeBlock>();
             CompleteCodeBlockDict = new SortedDictionary<int, CodeBlock>();
             CallsiteGuidMap = new Dictionary<Guid, int>();
+            ProfilingMarkerCallsiteGuidMap = new Dictionary<Guid, int>();
 
             AssocNode = null;
 
