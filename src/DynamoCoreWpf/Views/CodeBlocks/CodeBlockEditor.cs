@@ -88,9 +88,9 @@ namespace Dynamo.UI.Controls
 
         protected override void OnEscape()
         {
-            var text = InnerTextEditor.Text;
-            if (codeBlockNode.Code != null && text.Equals(codeBlockNode.Code))
-                ReturnFocus();
+            // Leaving the editor commits typed text, the same as clicking the canvas.
+            // An empty code block is not deleted.
+            ReturnFocus();
         }
 
         protected override void OnCommitChange()
