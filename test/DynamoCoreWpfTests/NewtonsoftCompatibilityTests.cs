@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -35,28 +36,49 @@ namespace DynamoCoreWpfTests
         // Copied next to the test assembly by the Content item in DynamoCoreWpfTests.csproj.
         private static string BaselinePath => Path.Combine(OutputFolder, "newtonsoft-baseline", "Newtonsoft.Json.dll");
 
+        // LibG findings Dynamo cannot fix, so they do not block unrelated Dynamo builds. Each entry is a line from the
+        // failure message of the scan test, with a comment naming the LibG ticket. Remove it once LibG is fixed.
+        private static readonly HashSet<string> knownLibGFindings = new(StringComparer.Ordinal);
+
+        private const string incompatibleMessage =
+            "These Newtonsoft.Json members are not in the 13.0.1 baseline. Dynamo compiles against a newer Newtonsoft.Json (13.0.4), " +
+            "but hosts such as Revit load an older one (Revit 2028 Preview has 13.0.3, some Revit components 13.0.1), " +
+            "so these calls throw MissingMethodException there. Use an overload that exists in both, for example " +
+            "ToString(Formatting, Array.Empty<JsonConverter>()) instead of ToString(Formatting). ";
+
         [Test]
         public void WhenDynamoAssembliesAreScannedThenTheyOnlyReferenceMembersInBaselineNewtonsoft()
         {
-            var baselineIndex = LoadBaselineIndex();
+            var missing = FindMissingFromBaseline(libG: false);
 
-            var missing = new List<string>();
-            foreach (var (assembly, use) in CollectNewtonsoftReferences())
-            {
-                if (!baselineIndex.Contains(use.Type, use.Member))
-                {
-                    missing.Add($"{assembly}: {use.Type}::{use.Member}");
-                }
-            }
-
-            Assert.That(missing, Is.Empty,
-                "These Newtonsoft.Json members are not in the 13.0.1 baseline. Dynamo compiles against a newer Newtonsoft.Json (13.0.4), " +
-                "but hosts such as Revit load an older one (Revit 2028 Preview has 13.0.3, some Revit components 13.0.1), " +
-                "so these calls throw MissingMethodException there. Use an overload that exists in both, for example " +
-                "ToString(Formatting, Array.Empty<JsonConverter>()) instead of ToString(Formatting). " +
-                "Findings under libg_* come from the LibG package: fix them in the LibG repository and bump the package:\n  " +
-                string.Join("\n  ", missing.Distinct().OrderBy(m => m, StringComparer.Ordinal)));
+            Assert.That(missing, Is.Empty, incompatibleMessage + "Fix the Dynamo code:\n  " + FormatFindings(missing));
         }
+
+        [Test]
+        public void WhenLibGAssembliesAreScannedThenTheyOnlyReferenceMembersInBaselineNewtonsoft()
+        {
+            var missing = FindMissingFromBaseline(libG: true)
+                .Where(f => !IsKnownLibGFinding(f, knownLibGFindings)).ToList();
+
+            Assert.That(missing, Is.Empty, incompatibleMessage +
+                "These come from the LibG package, not Dynamo code: fix them in the LibG repository and bump the package. " +
+                "To unblock Dynamo meanwhile, add the finding to knownLibGFindings with the LibG ticket:\n  " + FormatFindings(missing));
+        }
+
+        private static List<string> FindMissingFromBaseline(bool libG)
+        {
+            var baselineIndex = LoadBaselineIndex();
+            return CollectNewtonsoftReferences()
+                .Where(r => IsLibGAssembly(r.Assembly) == libG && !baselineIndex.Contains(r.Use.Type, r.Use.Member))
+                .Select(r => $"{r.Assembly}: {r.Use.Type}::{r.Use.Member}")
+                .ToList();
+        }
+
+        private static bool IsLibGAssembly(string assembly) =>
+            assembly.StartsWith("libg_", StringComparison.OrdinalIgnoreCase);
+
+        private static string FormatFindings(IEnumerable<string> findings) =>
+            string.Join("\n  ", findings.Distinct().OrderBy(m => m, StringComparer.Ordinal));
 
         [Test]
         public void WhenDynamoAssembliesAreScannedThenCoreAssembliesAreIncludedWithReferences()
@@ -98,6 +120,31 @@ namespace DynamoCoreWpfTests
             Assert.That(index.Contains("Newtonsoft.Json.JsonReaderException", "System.String get_Message()"), Is.True);
             Assert.That(index.Contains("Newtonsoft.Json.TypeAddedAfterBaseline", "System.String get_Message()"), Is.False);
         }
+
+        [Test]
+        public void WhenLibGFindingIsListedThenItIsIgnoredOnlyUnderLibGFolders()
+        {
+            const string member = "Newtonsoft.Json.Linq.JToken::System.String ToString(Newtonsoft.Json.Formatting)";
+            var known = new HashSet<string>(StringComparer.Ordinal) { $"libg_100_0_0\\LibG.Foo: {member}" };
+
+            Assert.That(IsKnownLibGFinding($"libg_100_0_0\\LibG.Foo: {member}", known), Is.True);
+            // An ASM bump renames the folder; the entry must still match.
+            Assert.That(IsKnownLibGFinding($"libg_101_0_0\\LibG.Foo: {member}", known), Is.True);
+            // Same member in a Dynamo-owned assembly, in another LibG assembly, or in a non-libg folder that
+            // happens to be listed, is still reported.
+            Assert.That(IsKnownLibGFinding($"DynamoCore: {member}", known), Is.False);
+            Assert.That(IsKnownLibGFinding($"libg_100_0_0\\LibG.Bar: {member}", known), Is.False);
+            known.Add($"DynamoCore: {member}");
+            Assert.That(IsKnownLibGFinding($"DynamoCore: {member}", known), Is.False);
+        }
+
+        // The libg_<ASM version> folder changes on every ASM bump, so compare without the version.
+        private static string StripLibGVersion(string finding) =>
+            Regex.Replace(finding, @"^libg_\d+(_\d+)*[\\/]", "libg\\", RegexOptions.IgnoreCase);
+
+        private static bool IsKnownLibGFinding(string finding, HashSet<string> known) =>
+            finding.StartsWith("libg_", StringComparison.OrdinalIgnoreCase) &&
+            known.Any(k => StripLibGVersion(k) == StripLibGVersion(finding));
 
         private static BaselineIndex LoadBaselineIndex()
         {
@@ -151,7 +198,7 @@ namespace DynamoCoreWpfTests
                     continue;
                 }
 
-                // Relative path without extension, so a finding under libg_233_0_0\ shows which package it came from.
+                // Relative path without extension, so a finding under libg_<ASM version>\ shows which package it came from.
                 var name = Path.ChangeExtension(Path.GetRelativePath(OutputFolder, file), null);
                 foreach (var use in FindNewtonsoftMemberReferences(pe.GetMetadataReader()))
                 {
