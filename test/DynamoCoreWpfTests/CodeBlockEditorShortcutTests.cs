@@ -123,6 +123,29 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(codeBlock.GUID, Model.CurrentWorkspace.Nodes.Single().GUID);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WhenEscapeAfterTypingThenCodeIsCommittedAndFocusLeaves()
+        {
+            var codeBlock = new CodeBlockNodeModel(Model.LibraryServices);
+            Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(codeBlock, 0, 0, true, false));
+            DispatcherUtil.DoEvents();
+
+            var editor = View.ChildOfType<CodeBlockEditor>();
+            var textArea = editor.ChildOfType<TextArea>();
+            Assert.IsNotNull(textArea);
+
+            editor.SetFocus();
+            textArea.Document.Text = "a=1";
+            RaiseKey(textArea, Keyboard.PreviewKeyDownEvent);
+            RaiseKey(textArea, Keyboard.PreviewKeyUpEvent);
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual("a=1;", codeBlock.Code);
+            Assert.IsFalse(editor.IsKeyboardFocusWithin);
+            Assert.AreEqual(codeBlock.GUID, Model.CurrentWorkspace.Nodes.Single().GUID);
+        }
+
         private static void RaiseKey(TextArea textArea, RoutedEvent routedEvent)
         {
             textArea.RaiseEvent(new KeyEventArgs(
