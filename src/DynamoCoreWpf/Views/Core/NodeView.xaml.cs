@@ -249,6 +249,12 @@ namespace Dynamo.Controls
         private static readonly BitmapImage nodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
         private static readonly BitmapImage nodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
         private static readonly BitmapImage aiBadgeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png"));
+        private static readonly SolidColorBrush aiBadgeToolTipBackgroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["AIBadgeToolTipBackgroundBrush"] as SolidColorBrush;
+        private static readonly SolidColorBrush aiBadgeToolTipForegroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["AIBadgeToolTipForegroundBrush"] as SolidColorBrush;
+        private static readonly ControlTemplate aiBadgeToolTipTemplate = CreateAIBadgeToolTipTemplate();
+
+        // Below the node and clear of its halo, which extends up to 16px past the edge
+        private const double AIBadgeToolTipGap = 20;
         private static ImageBrush defaultNodeIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
             Stretch = Stretch.UniformToFill
@@ -1795,6 +1801,9 @@ namespace Dynamo.Controls
             {
                 aiBadge = CreateAIBadge(out aiBadgeToolTipText);
                 grid.Children.Add(aiBadge);
+
+                // Figma 8:304 puts the tooltip under the node, lined up with its left edge
+                ((ToolTip)aiBadge.ToolTip).PlacementTarget = nodeBorder;
             }
 
             aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
@@ -1908,20 +1917,22 @@ namespace Dynamo.Controls
 
             toolTipText = new TextBlock
             {
-                Padding = new Thickness(10),
                 FontFamily = artifactElementReg,
                 FontSize = 14,
-                FontWeight = FontWeights.Medium,
-                TextAlignment = TextAlignment.Center,
+                Foreground = aiBadgeToolTipForegroundBrush,
                 TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 280
             };
 
-            badge.ToolTip = new DynamoToolTip
+            // Figma 8:304: white text on dark grey, below the node
+            badge.ToolTip = new ToolTip
             {
-                AttachmentSide = DynamoToolTip.Side.Top,
+                Name = "aiBadgeToolTip",
                 OverridesDefaultStyle = true,
                 HasDropShadow = false,
-                Style = DynamoToolTipTopStyle,
+                Template = aiBadgeToolTipTemplate,
+                Placement = PlacementMode.Bottom,
+                VerticalOffset = AIBadgeToolTipGap,
                 Content = toolTipText
             };
             ToolTipService.SetShowsToolTipOnKeyboardFocus(badge, true);
@@ -1931,6 +1942,22 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(badge, 60);
 
             return badge;
+        }
+
+        /// <summary>
+        /// The AI badge's tooltip: a dark grey rounded box with the text inside (Figma 8:304).
+        /// </summary>
+        private static ControlTemplate CreateAIBadgeToolTipTemplate()
+        {
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.SetValue(Border.BackgroundProperty, aiBadgeToolTipBackgroundBrush);
+            border.SetValue(Border.CornerRadiusProperty, new CornerRadius(4));
+            border.SetValue(Border.PaddingProperty, new Thickness(12, 8, 12, 8));
+            border.AppendChild(new FrameworkElementFactory(typeof(ContentPresenter)));
+
+            var template = new ControlTemplate(typeof(ToolTip)) { VisualTree = border };
+            template.Seal();
+            return template;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

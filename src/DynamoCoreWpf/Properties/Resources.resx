@@ -4330,6 +4330,10 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
     <value>Before</value>
     <comment>Label for an input's value before Autodesk Assistant changed it.</comment>
   </data>
+  <data name="AIChangePopoverInputName" xml:space="preserve">
+    <value>Input {0}</value>
+    <comment>Names the changed input in the Autodesk Assistant change popover. {0} = the input's name, e.g. "Input p2"</comment>
+  </data>
   <data name="AIChangePopoverNextChange" xml:space="preserve">
     <value>Next change ›</value>
     <comment>Button that moves to the next change Autodesk Assistant made.</comment>

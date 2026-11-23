@@ -46,9 +46,11 @@ namespace Dynamo.UI.Controls
 
         private bool _useLevelSpinnerInit = false;
 
-        // The changed-input outline: purple dots along the edge of the port background. 2 px dots
-        // every 4 px; 1.5 px dots every 3 px blurred into the port and could not be seen at 100% zoom.
+        // The changed-input marker (Figma 8:304): a solid 2px purple outline along the edge of the
+        // port background, and a purple dot with a white ring on its top-right corner.
         private const double AIChangeOutlineThickness = 2;
+        private const double AIChangeDotSize = 14;
+        private const double AIChangeDotRingThickness = 1.5;
         private const double PortCornerRadius = 11;
 
         // Hover delay before the change popover opens, so it does not flash up while the pointer
@@ -62,6 +64,7 @@ namespace Dynamo.UI.Controls
         private static SolidColorBrush _nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
         private static SolidColorBrush _darkGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkGreyBrush"] as SolidColorBrush;
         private static SolidColorBrush _aiChangedInputOutlineBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAIChangedInputOutlineBrush"] as SolidColorBrush;
+        private static SolidColorBrush _aiChangedInputDotRingBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAIChangedInputDotRingBrush"] as SolidColorBrush;
 
         private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
@@ -751,6 +754,7 @@ namespace Dynamo.UI.Controls
 
             var node = viewModel.NodeViewModel;
             aiChangePopover.Show(
+                node.AIBadgeToolTip ?? Dynamo.Wpf.Properties.Resources.AIBadgeToolTipEdited,
                 viewModel.PortName,
                 change,
                 node.CanUndoAIChange,
@@ -901,10 +905,21 @@ namespace Dynamo.UI.Controls
             var path = new Path
             {
                 Stroke = _aiChangedInputOutlineBrush,
-                StrokeThickness = AIChangeOutlineThickness,
-                // Zero-length dashes with round caps draw dots, one every two stroke widths
-                StrokeDashArray = new DoubleCollection { 0, 2 },
-                StrokeDashCap = PenLineCap.Round
+                StrokeThickness = AIChangeOutlineThickness
+            };
+
+            // Centred 3px in from the right end of the top edge, so it sits on the outline's corner
+            var dot = new Ellipse
+            {
+                Name = "aiChangeDot",
+                Width = AIChangeDotSize,
+                Height = AIChangeDotSize,
+                Fill = _aiChangedInputOutlineBrush,
+                Stroke = _aiChangedInputDotRingBrush,
+                StrokeThickness = AIChangeDotRingThickness,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 1 - AIChangeDotSize / 2, 3 - AIChangeDotSize / 2, 0)
             };
 
             // Same place and shape as the port background, and never takes mouse clicks
@@ -916,6 +931,7 @@ namespace Dynamo.UI.Controls
                 IsHitTestVisible = false
             };
             outline.Children.Add(path);
+            outline.Children.Add(dot);
             outline.SizeChanged += (s, e) => path.Data = CreateAIChangeOutlineGeometry(e.NewSize);
 
             Grid.SetColumn(outline, 1);
@@ -927,7 +943,7 @@ namespace Dynamo.UI.Controls
 
         /// <summary>
         /// The port background's shape: square on the node side, rounded on the right. Inset by half
-        /// the stroke, so the dots stay inside the port.
+        /// the stroke, so the outline stays inside the port.
         /// </summary>
         private static Geometry CreateAIChangeOutlineGeometry(Size size)
         {

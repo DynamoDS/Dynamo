@@ -205,6 +205,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input {0}.
+        /// </summary>
+        public static string AIChangePopoverInputName {
+            get {
+                return ResourceManager.GetString("AIChangePopoverInputName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next change ›.
         /// </summary>
         public static string AIChangePopoverNextChange {

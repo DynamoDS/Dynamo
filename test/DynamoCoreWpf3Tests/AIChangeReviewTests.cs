@@ -149,7 +149,24 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(badge.IsHitTestVisible, "Takes the pointer, so hovering shows the tooltip.");
             Assert.IsTrue(badge.Focusable, "Takes keyboard focus, so focusing shows the tooltip.");
             Assert.IsTrue(ToolTipService.GetShowsToolTipOnKeyboardFocus(badge));
-            Assert.IsInstanceOf<DynamoToolTip>(badge.ToolTip);
+            Assert.IsInstanceOf<ToolTip>(badge.ToolTip);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenBadgeToolTipShowsThenItIsWhiteTextOnDarkGreyBelowTheNode()
+        {
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var toolTip = (ToolTip)ViewOf(node).AIBadge.ToolTip;
+
+            // Figma 8:304
+            var box = (Border)toolTip.Template.LoadContent();
+            Assert.AreEqual(Color.FromRgb(0x33, 0x33, 0x33), ((SolidColorBrush)box.Background).Color);
+            Assert.AreEqual(Colors.White, ((SolidColorBrush)((TextBlock)toolTip.Content).Foreground).Color);
+            Assert.AreEqual(PlacementMode.Bottom, toolTip.Placement);
+            Assert.AreSame(ViewOf(node).nodeBorder, toolTip.PlacementTarget, "Lined up under the node, not the badge.");
         }
 
         [Test]
@@ -313,7 +330,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void ChangedInputIsOutlinedInPurpleDots()
+        public void WhenInputIsChangedThenItIsOutlinedInPurpleWithACornerDot()
         {
             var node = AddTwoInputNode();
 
@@ -325,10 +342,18 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Visibility.Visible, outline.Visibility);
             Assert.IsFalse(outline.IsHitTestVisible, "The outline never takes the port's clicks.");
 
+            // Figma 8:304: a solid 2px outline, and a purple dot with a white ring on its corner
+            var purple = Color.FromRgb(0xA7, 0x6E, 0xF5);
             var path = outline.ChildrenOfType<Path>().Single();
-            Assert.AreEqual(Color.FromRgb(0xA7, 0x6E, 0xF5), ((SolidColorBrush)path.Stroke).Color);
-            Assert.AreEqual(PenLineCap.Round, path.StrokeDashCap, "Round caps on zero-length dashes draw dots.");
-            CollectionAssert.AreEqual(new[] { 0.0, 2.0 }, path.StrokeDashArray);
+            Assert.AreEqual(purple, ((SolidColorBrush)path.Stroke).Color);
+            Assert.AreEqual(2, path.StrokeThickness);
+            Assert.That(path.StrokeDashArray == null || path.StrokeDashArray.Count == 0, "The outline is solid.");
+
+            var dot = outline.ChildrenOfType<Ellipse>().Single();
+            Assert.AreEqual(purple, ((SolidColorBrush)dot.Fill).Color);
+            Assert.AreEqual(Colors.White, ((SolidColorBrush)dot.Stroke).Color);
+            Assert.AreEqual(HorizontalAlignment.Right, dot.HorizontalAlignment);
+            Assert.AreEqual(VerticalAlignment.Top, dot.VerticalAlignment);
 
             Assert.IsNull(PortViewOf(node, "a").AIChangeOutline, "Inputs the turn did not change are not outlined.");
         }
@@ -372,7 +397,7 @@ namespace DynamoCoreWpfTests
             TestContext.Progress.WriteLine($"Outline pixels: changed={changed}, unchanged={unchanged}");
 
             Assert.AreEqual(0, unchanged, "An input the turn did not change has no purple.");
-            Assert.Greater(changed, 40, "The changed input's dotted outline is drawn.");
+            Assert.Greater(changed, 40, "The changed input's outline is drawn.");
         }
 
         [Test]
@@ -422,8 +447,10 @@ namespace DynamoCoreWpfTests
             var popover = OpenPopover(PortViewOf(node, "b"));
 
             Assert.IsTrue(popover.IsOpen);
-            Assert.AreEqual("b", popover.InputNameText.Text);
+            Assert.AreEqual("Edited by Autodesk Assistant", popover.TitleText.Text);
+            Assert.AreEqual("Input b", popover.InputNameText.Text);
             Assert.AreEqual("A.out", popover.BeforeText.Text);
+            Assert.AreEqual(TextDecorations.Strikethrough, popover.BeforeText.TextDecorations, "The old value is struck through.");
             Assert.AreEqual("B.out", popover.AfterText.Text);
             Assert.AreEqual("Undo this change", popover.UndoButton.Content);
             Assert.AreEqual("Next change ›", popover.NextButton.Content);
@@ -440,7 +467,34 @@ namespace DynamoCoreWpfTests
             var popover = OpenPopover(PortViewOf(node, "a"));
 
             Assert.AreEqual("None", popover.BeforeText.Text);
+            Assert.IsNull(popover.BeforeText.TextDecorations, "\"None\" replaced nothing, so it is not struck through.");
             Assert.AreEqual("A.out", popover.AfterText.Text);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPopoverOpensThenItUsesTheLightFigmaStyle()
+        {
+            var node = AddTwoInputNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "b", "A.out", "B.out");
+            DispatcherUtil.DoEvents();
+
+            var popover = OpenPopover(PortViewOf(node, "b"));
+
+            // Colours sampled from Figma 8:304
+            Color ColorOf(Brush brush) => ((SolidColorBrush)brush).Color;
+            Assert.AreEqual(Colors.White, ColorOf(popover.Content.Background));
+            Assert.AreEqual(Color.FromRgb(0xCC, 0xCC, 0xCC), ColorOf(popover.Content.BorderBrush));
+            Assert.AreEqual(Color.FromRgb(0x1A, 0x1A, 0x1A), ColorOf(popover.TitleText.Foreground));
+            Assert.AreEqual(Color.FromRgb(0x66, 0x66, 0x66), ColorOf(popover.InputNameText.Foreground));
+            Assert.AreEqual(Color.FromRgb(0x66, 0x66, 0x66), ColorOf(popover.BeforeText.Foreground));
+            Assert.AreEqual(Color.FromRgb(0x1A, 0x1A, 0x1A), ColorOf(popover.AfterText.Foreground));
+            Assert.AreEqual(Color.FromRgb(0x74, 0x47, 0xB8), ColorOf(popover.UndoButton.Foreground));
+            Assert.AreEqual(Color.FromRgb(0x4D, 0x4D, 0x4D), ColorOf(popover.NextButton.Foreground));
+            Assert.AreEqual(14, popover.TitleText.FontSize);
+            StringAssert.Contains("Bold", popover.AfterText.FontFamily.Source, "The new value is bold.");
+            StringAssert.Contains("Bold", popover.UndoButton.FontFamily.Source);
+            StringAssert.Contains("Regular", popover.NextButton.FontFamily.Source);
         }
 
         /// <summary>The horizontal space between the right edge of Undo and the left edge of Next.</summary>
@@ -473,7 +527,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
             var popover = OpenPopover(PortViewOf(node, "a"));
 
-            // Longer than any current translation, and wider than the popover's old 320 px cap
+            // Longer than any current translation, and wider than the popover's 340 px minimum
             popover.UndoButton.Content = "Diese Änderung des Autodesk Assistant rückgängig machen";
             popover.NextButton.Content = "Zur nächsten Änderung wechseln ›";
             DispatcherUtil.DoEvents();
