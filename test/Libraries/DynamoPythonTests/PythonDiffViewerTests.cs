@@ -387,6 +387,29 @@ namespace DynamoPythonTests
             Assert.AreEqual(control.AfterScroll.ScrollableWidth, control.AfterScroll.HorizontalOffset, Tolerance);
         }
 
+        [Test]
+        public void WhenLinesAreDeletedAndAddedThenTheSameRowLinesUpOnBothSides()
+        {
+            // Line 30 is deleted and a new line is added further down, so each side gets a blank spacer row.
+            var afterLines = Script(200).Split('\n').ToList();
+            afterLines.RemoveAt(29);
+            afterLines.Insert(119, "new_value = 0");
+            var diff = Diff(Script(200), string.Join("\n", afterLines));
+            Assert.IsTrue(diff.OldText.Lines.Any(line => line.Type == ChangeType.Imaginary));
+            Assert.IsTrue(diff.NewText.Lines.Any(line => line.Type == ChangeType.Imaginary));
+            var control = ShowSideBySide(diff);
+
+            // A line below both spacers sits on the same row on both sides.
+            var row = diff.OldText.Lines.FindIndex(line => line.Text == "value_150 = 150");
+            Assert.AreEqual(row, diff.NewText.Lines.FindIndex(line => line.Text == "value_150 = 150"));
+
+            ScrollTo(control.AfterScroll, RowTop(control.AfterPanel, row));
+
+            Assert.AreEqual(control.AfterScroll.VerticalOffset, control.BeforeScroll.VerticalOffset, Tolerance);
+            Assert.AreEqual(RowTop(control.AfterPanel, row), RowTop(control.BeforePanel, row), Tolerance);
+            Assert.AreEqual(row * RowHeight(control.BeforePanel), RowTop(control.BeforePanel, row), 2.0);
+        }
+
         #endregion
 
         #region Single-pane view
