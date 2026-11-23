@@ -144,28 +144,38 @@ namespace ProtoCore
             // This must be stored and incremented
             int functionCallInstance = 0;
 
+            // Profiling marker calls are counted separately from the node's own calls. Sharing one
+            // counter meant that compiling the begin marker ahead of the node's statement
+            // renumbered the node's calls, so they lost their trace data and a host such as Revit
+            // created new elements instead of updating the existing ones (DYN-11176).
+            var callsiteGuidMap = graphNode.IsProfilingMarker
+                ? core.ProfilingMarkerCallsiteGuidMap
+                : core.CallsiteGuidMap;
+            string instanceTag = graphNode.IsProfilingMarker
+                ? Constants.kProfilingMarkerInstance
+                : Constants.kInstance;
 
-            // Cache this function call instance count 
+            // Cache this function call instance count
             // This is the count of the number of times in which this callsite appears in the program
             int callInstance = 0;
-            if (!core.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
+            if (!callsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
             {
                 // The guid doesnt exist yet
-                core.CallsiteGuidMap.Add(graphNode.guid, 0);
+                callsiteGuidMap.Add(graphNode.guid, 0);
             }
             else
             {
                 // Increment the current count
-                core.CallsiteGuidMap[graphNode.guid]++;
-                functionCallInstance = core.CallsiteGuidMap[graphNode.guid];
+                callsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = callsiteGuidMap[graphNode.guid];
             }
 
-            // Build the unique ID for a callsite 
+            // Build the unique ID for a callsite
             string callsiteIdentifier =
-                procName + 
-                Constants.kSingleUnderscore + Constants.kInClassDecl + globalClassIndex + 
+                procName +
+                Constants.kSingleUnderscore + Constants.kInClassDecl + globalClassIndex +
                 Constants.kSingleUnderscore + Constants.kInFunctionScope + globalProcIndex +
-                Constants.kSingleUnderscore + Constants.kInstance + functionCallInstance +
+                Constants.kSingleUnderscore + instanceTag + functionCallInstance +
                 Constants.kSingleUnderscore + graphNode.guid;
 
             // TODO Jun: Address this in MAGN-3774

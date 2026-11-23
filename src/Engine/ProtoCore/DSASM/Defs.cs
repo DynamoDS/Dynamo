@@ -400,6 +400,9 @@ namespace ProtoCore.DSASM
         internal const string kInClassDecl = "InClassDecl";
         internal const string kInFunctionScope = "InFunctionScope";
         internal const string kInstance = "Instance";
+        // Used in place of kInstance in the callsite IDs of profiling marker calls (DYN-11176).
+        // Deliberately not "_Instance", so these IDs never match a node's own callsite IDs.
+        internal const string kProfilingMarkerInstance = "ProfilingMarker";
     }
 
     public enum MemoryRegion
