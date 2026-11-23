@@ -324,7 +324,8 @@ namespace Dynamo.Models.Migration.Python
                     }
                 }
 
-                File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
+                // DYN-11186: the explicit converters array binds to the overload that older Newtonsoft hosts (Revit) have; 13.0.4 added the shorter one.
+                File.WriteAllText(dyfPath, root.ToString(Formatting.Indented, Array.Empty<JsonConverter>()));
                 return true;
             }
             catch (Exception ex)

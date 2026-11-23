@@ -225,4 +225,13 @@
         <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" DestinationFolder="$(TestDependenciesPath)" />
 
     </Target>
+  <!-- Baseline for NewtonsoftCompatibilityTests: the oldest Newtonsoft.Json a supported host may load (Revit components still use 13.0.1).
+       Change it only when that lowest host version changes. 13.0.1 has no net6.0 asset, so netstandard2.0 is what such a host loads. -->
+  <PropertyGroup>
+    <NewtonsoftBaselineVersion>13.0.1</NewtonsoftBaselineVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageDownload Include="Newtonsoft.Json" Version="[$(NewtonsoftBaselineVersion)]" />
+    <Content Include="$(NuGetPackageRoot)newtonsoft.json/$(NewtonsoftBaselineVersion)/lib/netstandard2.0/Newtonsoft.Json.dll" Link="newtonsoft-baseline\Newtonsoft.Json.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
