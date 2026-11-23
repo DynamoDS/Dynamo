@@ -576,13 +576,13 @@ value : bool = false</value>
     <value>検索</value>
   </data>
   <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
-    <value>The profile was migrated from a previous version of Dynamo.</value>
+    <value>このプロファイルは、旧バージョンの Dynamo から移行されました。</value>
   </data>
   <data name="UnreadableProfileSavedAs" xml:space="preserve">
-    <value>The unreadable profile was saved as {0}.</value>
+    <value>読み取り不能なプロファイルは {0} として保存されました。</value>
   </data>
   <data name="UnreadableProfileBackupFailed" xml:space="preserve">
-    <value>The profile was not updated because the unreadable profile could not be backed up: {0}</value>
+    <value>読み取り不能なプロファイルをバックアップできなかったため、プロファイルは更新されませんでした: {0}</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>オートコンプリートの結果を検索</value>

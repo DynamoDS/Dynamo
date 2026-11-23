@@ -3463,7 +3463,7 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
     <value>Niepowodzenie eksportu</value>
   </data>
   <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
-    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+    <value>Nie wyeksportowano profilu {0}, ponieważ dodatek Dynamo nie może go odczytać.</value>
   </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Po włączeniu dodatek Dynamo korzysta z przyspieszenia sprzętowego, aby poprawić gładkość grafiki i ogólną wydajność, przez przeniesienie pracy z procesorów głównych (CPU) do procesorów graficznych (GPU).</value>
@@ -3958,34 +3958,43 @@ Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj p
     <value>Synchronizuje automatycznie z wyborem węzła.</value>
   </data>
   <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
-    <value>Autodesk Assistant added {0} nodes</value>
+    <value>Narzędzie Autodesk Assistant dodaje węzły ({0})</value>
   </data>
   <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
-    <value>Autodesk Assistant added 1 node</value>
+    <value>Narzędzie Autodesk Assistant dodaje 1 węzeł</value>
   </data>
   <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
-    <value>changed {0}</value>
+    <value>zmienia {0}</value>
   </data>
   <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
-    <value>deleted {0}</value>
+    <value>usuwa {0}</value>
   </data>
   <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
-    <value>Autodesk Assistant changed {0} nodes</value>
+    <value>Narzędzie Autodesk Assistant zmienia węzły ({0})</value>
   </data>
   <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
-    <value>Autodesk Assistant changed 1 node</value>
+    <value>Narzędzie Autodesk Assistant zmienia 1 węzeł</value>
   </data>
   <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
-    <value>Autodesk Assistant deleted {0} nodes</value>
+    <value>Narzędzie Autodesk Assistant usuwa węzły ({0})</value>
   </data>
   <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
-    <value>Autodesk Assistant deleted 1 node</value>
+    <value>Narzędzie Autodesk Assistant usuwa 1 węzeł</value>
   </data>
   <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
     <value>Odrzuć</value>
   </data>
   <data name="AIChangeSummaryChipShow" xml:space="preserve">
     <value>Pokaż</value>
+  </data>
+  <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
+    <value>Asystent Autodesk</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
+    <value>Show summary of Assistant changes</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
+    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

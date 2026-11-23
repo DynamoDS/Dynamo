@@ -311,6 +311,7 @@ namespace ProtoAssociative
                                 ssaNode.guid = bnode.guid;
                                 ssaNode.OriginalAstID = bnode.OriginalAstID;
                                 ssaNode.IsModifier = node.IsModifier;
+                                ssaNode.IsProfilingMarker = bnode.IsProfilingMarker;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
