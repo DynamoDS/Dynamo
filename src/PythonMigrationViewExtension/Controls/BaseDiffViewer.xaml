@@ -260,8 +260,10 @@
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        FontSize="20px"
                        Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                       Text="{Binding WindowTitle}" 
-                       TextWrapping="Wrap" />
+                       Text="{Binding WindowTitle}"
+                       ToolTip="{Binding WindowTitle}"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis" />
         </DockPanel>
 
         <Rectangle Style="{StaticResource DividerRectangleStyle}"
@@ -287,7 +289,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal"
+            <StackPanel x:Name="LeftButtonsPanel"
+                        Orientation="Horizontal"
                         HorizontalAlignment="Left"
                         Grid.Column="0">
                 <Button  Name="DiffButton"
@@ -329,7 +332,8 @@
                     </Button.ToolTip>
                 </Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal"
+            <StackPanel x:Name="RightButtonsPanel"
+                        Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Grid.Column="1">
                 <Button  x:Name="AcceptButton"

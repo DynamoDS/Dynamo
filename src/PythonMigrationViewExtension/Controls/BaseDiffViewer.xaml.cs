@@ -13,6 +13,7 @@ namespace Dynamo.PythonMigration.Controls
     {
         private ICodeDiffHost ViewModel { get; set; }
         private DiffNavigator navigator;
+        private const double ButtonGroupGap = 10;
 
         // we would like to match initial text wrapping of code inside diff view
         // to that of the code inside the script editor window as much as possible
@@ -26,6 +27,30 @@ namespace Dynamo.PythonMigration.Controls
             // The diff viewer is initialized with the SideBySide view
             SetSideBySideWindowWidth();
             InitializeComponent();
+            Loaded += OnWindowLoaded;
+        }
+
+        private void OnWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            FitMinWidthToButtons();
+        }
+
+        private void FitMinWidthToButtons()
+        {
+            var unlimited = new Size(double.PositiveInfinity, double.PositiveInfinity);
+            LeftButtonsPanel.Measure(unlimited);
+            RightButtonsPanel.Measure(unlimited);
+
+            var needed = LeftButtonsPanel.DesiredSize.Width + RightButtonsPanel.DesiredSize.Width + ButtonGroupGap;
+
+            // Let the window lay the panels out normally again.
+            LeftButtonsPanel.InvalidateMeasure();
+            RightButtonsPanel.InvalidateMeasure();
+
+            if (needed > MinWidth)
+            {
+                MinWidth = Math.Ceiling(needed);
+            }
         }
 
         private void OnDiffButtonClick(object sender, RoutedEventArgs e)
