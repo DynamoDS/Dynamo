@@ -110,9 +110,9 @@ namespace Dynamo.PythonMigration.Differ
 
         private List<double> Targets(bool ensureLayout)
         {
-            if (changeOffsets == null)
+            if (changeOffsets == null && TryMeasureChangeOffsets(ensureLayout, out var measured))
             {
-                changeOffsets = MeasureChangeOffsets(ensureLayout);
+                changeOffsets = measured;
             }
 
             var offsets = changeOffsets ?? new List<double>();
@@ -126,12 +126,14 @@ namespace Dynamo.PythonMigration.Differ
             return targets;
         }
 
-        private List<double> MeasureChangeOffsets(bool ensureLayout)
+        // False when the pane is not laid out yet; it is measured again on the next call.
+        private bool TryMeasureChangeOffsets(bool ensureLayout, out List<double> offsets)
         {
+            offsets = new List<double>();
             var rows = RichTextBoxHandler.GetRows(textBox);
             if (rows.Count == 0 || changeStarts.Count == 0)
             {
-                return new List<double>();
+                return true;
             }
 
             if (ensureLayout)
@@ -144,10 +146,9 @@ namespace Dynamo.PythonMigration.Differ
             var origin = RowTop(rows[0]);
             if (origin == null)
             {
-                return null;
+                return false;
             }
 
-            var offsets = new List<double>(changeStarts.Count);
             foreach (var start in changeStarts)
             {
                 if (start < 0 || start >= rows.Count)
@@ -158,13 +159,14 @@ namespace Dynamo.PythonMigration.Differ
                 var top = RowTop(rows[Math.Max(0, start - ContextLines)]);
                 if (top == null)
                 {
-                    return null;
+                    offsets.Clear();
+                    return false;
                 }
 
                 offsets.Add(top.Value - origin.Value);
             }
 
-            return offsets;
+            return true;
         }
 
         private static double? RowTop(TableRow row)
