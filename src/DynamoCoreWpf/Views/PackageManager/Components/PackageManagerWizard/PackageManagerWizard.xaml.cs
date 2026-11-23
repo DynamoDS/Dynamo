@@ -577,7 +577,8 @@ namespace Dynamo.UI.Views
                 }
             }
 
-            var jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);
+            // DYN-11186: the explicit converters array binds to the overload that older Newtonsoft hosts (Revit) have; 13.0.4 added the shorter one.
+            var jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None, Array.Empty<Newtonsoft.Json.JsonConverter>());
 
             if (dynWebView?.CoreWebView2 != null)   
             {
