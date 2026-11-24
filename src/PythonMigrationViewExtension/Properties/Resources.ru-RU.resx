@@ -248,4 +248,10 @@
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Ничего не изменилось. Сценарий на этом узле был изменен после открытия этого окна, либо редактор его кода на Python содержал несохраненные изменения или был закрыт.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

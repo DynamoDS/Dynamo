@@ -248,4 +248,10 @@ IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 사
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>변경된 내용이 없습니다. 이 창이 열린 후 이 노드의 스크립트가 변경되었거나, Python 편집기에 저장되지 않은 편집 내용이 있거나, Python 편집기가 닫혔습니다.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

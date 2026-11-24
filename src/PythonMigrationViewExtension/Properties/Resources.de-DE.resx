@@ -248,4 +248,10 @@ Durch Klicken auf Weiter erklären Sie sich damit einverstanden, die Syntaxände
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Keine Änderungen. Das Skript in diesem Block wurde geändert, nachdem dieses Fenster geöffnet wurde, oder sein Python-Editor weist nicht gespeicherte Änderungen auf oder wurde geschlossen.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

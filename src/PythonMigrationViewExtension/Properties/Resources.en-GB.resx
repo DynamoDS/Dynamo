@@ -248,4 +248,10 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Nothing was changed. The script on this node changed after this window opened, or its Python editor has unsaved edits or was closed.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>
