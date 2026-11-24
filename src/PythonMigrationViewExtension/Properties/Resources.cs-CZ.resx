@@ -248,4 +248,10 @@ Kliknutím na tlačítko „Pokračovat“ souhlasíte s implementací změn syn
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Nic se nezměnilo. Skript na tomto uzlu se po otevření tohoto okna změnil nebo jeho editor jazyka Python obsahuje neuložené úpravy nebo byl zavřen.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

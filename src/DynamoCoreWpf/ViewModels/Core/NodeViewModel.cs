@@ -705,6 +705,8 @@ namespace Dynamo.ViewModels
 
         private AIHaloGlow aiHaloGlow;
         private volatile bool isAIHaloHovered;
+        private bool wasSelected;
+        private bool aiClearPending;
 
         // Guards glow replacement and hover state: an AI edit can replace the glow off the UI thread.
         private readonly object aiHaloSync = new object();
@@ -854,6 +856,28 @@ namespace Dynamo.ViewModels
 
             NodeModel.ClearAIChange();
             return true;
+        }
+
+        /// <summary>
+        /// Clears the AI change record when a person selects the node. Selections inside an AI edit keep it.
+        /// </summary>
+        internal void ClearAIChangeOnSelect()
+        {
+            var node = NodeModel;
+            if (node?.AIChange == null) return;
+            if (WorkspaceViewModel?.Model?.IsAIEditInProgress == true) return;
+
+            node.ClearAIChange();
+        }
+
+        /// <summary>
+        /// Clears the AI change record if a box selection selected the node and it is still selected.
+        /// </summary>
+        internal void ApplyPendingAIClear()
+        {
+            if (!aiClearPending) return;
+            aiClearPending = false;
+            if (IsSelected) ClearAIChangeOnSelect();
         }
 
         private void RequestAIHaloCheckIfWaiting()
@@ -1205,6 +1229,7 @@ namespace Dynamo.ViewModels
 
             nodeLogic = logic;
             previewPinned = logic.PreviewPinned;
+            wasSelected = logic.IsSelected;
 
             //respond to collection changed events to add
             //and remove port model views
@@ -1554,9 +1579,22 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsSelected");
                     RaisePropertyChanged("PreviewState");
                     if (IsSelected)
+                    {
                         delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserRefreshTime, HandleDocumentationBrowserRefresh);
+                        // IsSelected notifies even when unchanged, e.g. Arrange reselecting the selection
+                        if (!wasSelected)
+                        {
+                            // The box can still move off the node, so wait until it is released
+                            if (WorkspaceViewModel?.IsBoxSelecting == true) aiClearPending = true;
+                            else ClearAIChangeOnSelect();
+                        }
+                    }
                     else
+                    {
                         delayDocumentBrowserRefresh?.Cancel();
+                        aiClearPending = false;
+                    }
+                    wasSelected = IsSelected;
                     break;
                 case "State":
                     RaisePropertyChanged("State");

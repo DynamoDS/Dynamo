@@ -248,4 +248,10 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>No se ha modificado nada. La secuencia de comandos de este nodo se ha modificado después de que se abriera esta ventana, o bien el editor de Python tiene cambios sin guardar o se ha cerrado.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>
