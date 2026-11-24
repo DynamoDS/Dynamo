@@ -200,7 +200,14 @@ namespace Dynamo.Graph.Workspaces
 
             TurnUndoAvailability(undoRecorder.GetUndoStackOrigins(), turnId, out var steps);
             undoRecorder.MergeTopActionGroups(steps);
+            var stepsBeforeUndo = undoRecorder.GetUndoStackOrigins().Count;
             Undo();
+
+            // Undo did nothing, so the turn is not undone and keeps its markers
+            if (undoRecorder.GetUndoStackOrigins().Count >= stepsBeforeUndo)
+            {
+                return false;
+            }
 
             // Undo clears the markers of the nodes it reloads; clear the rest
             foreach (var node in Nodes.Where(n => string.Equals(n.AIChange?.TurnId, turnId, StringComparison.Ordinal)).ToList())
