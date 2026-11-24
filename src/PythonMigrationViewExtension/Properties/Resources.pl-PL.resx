@@ -248,4 +248,10 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Nic się nie zmieniło. Skrypt w tym węźle uległ zmianie po otwarciu tego okna albo edytor Python powiązany z tym skryptem zawiera niezapisane zmiany lub został zamknięty.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

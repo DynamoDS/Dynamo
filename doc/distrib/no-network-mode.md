@@ -26,6 +26,7 @@ When `--NoNetworkMode` is set, every Dynamo-authored outbound source is already 
 | Usage reporting | `UsageReportingManager` |
 | CER crash-report upload | `CrashReportTool.ShowCrashErrorReportWindow` (returns early; the local backup crash dialog still shows) |
 | ML data pipeline | `DynamoMLDataPipelineExtension.Startup` (auth providers not wired) |
+| Home page training videos | `HomePage.SendVideoData` (the video list is not sent, so the Learning page creates no YouTube iframes) |
 
 ## WebView2 / Microsoft Edge runtime traffic (hardened here)
 
@@ -45,9 +46,15 @@ The switches applied when `--NoNetworkMode` is on:
 ```
 --disable-background-networking --disable-component-update --disable-domain-reliability
 --disable-sync --disable-translate --disable-default-apps --no-pings
+--host-resolver-rules="MAP * ~NOTFOUND, EXCLUDE localhost"
 --disable-features=OptimizationGuideModelDownloading,MediaRouter
 ```
 
+> **Why `--host-resolver-rules`?** The other switches stop the runtime's own background traffic, but not
+> requests made by page content (the Home page, for example). Resolving every host except `localhost` to
+> `NOTFOUND` stops those too, for every surface that goes through `ApplyNoNetworkPolicy`, without disabling
+> the network service (see below). See DYN-11173.
+>
 > **Why not `--disable-features=NetworkService`?** Disabling `NetworkService` prevents the Edge
 > runtime from rendering even local (`NavigateToString` / virtual-host-mapped) content, which every
 > startup surface depends on. The switches above stop the runtime's *own* outbound traffic while

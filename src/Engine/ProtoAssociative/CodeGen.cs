@@ -1999,6 +1999,7 @@ namespace ProtoAssociative
                     AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
                     var newBNode = AstFactory.BuildBinaryExpression(bnode.LeftNode, lastNode, Operator.assign);
                     newBNode.OriginalAstID = bnode.OriginalAstID;
+                    newBNode.IsProfilingMarker = bnode.IsProfilingMarker;
 
                     astList.Add(newBNode);
                     return bnode.LeftNode;
@@ -2181,6 +2182,7 @@ namespace ProtoAssociative
 
             // Reset the callsite guids in preparation for the next compilation
             core.CallsiteGuidMap = new Dictionary<Guid, int>();
+            core.ProfilingMarkerCallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
@@ -4978,6 +4980,7 @@ namespace ProtoAssociative
                     graphNode.classIndex = globalClassIndex;
                     graphNode.languageBlockId = codeBlock.codeBlockId;
                     graphNode.ProcedureOwned = bnode.IsProcedureOwned;
+                    graphNode.IsProfilingMarker = bnode.IsProfilingMarker;
 
 
                     //

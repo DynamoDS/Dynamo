@@ -3150,19 +3150,19 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Ano</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Náhled pouze ke čtení. Uzly, skripty a balíčky se načtou pouze po výběru možnosti Ano.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Soubor se během otevírání změnil, takže nebyl otevřen. Otevřete jej znovu a zkontrolujte nejnovější verzi.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>Ne, neotevírat</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
-    <value>Loading preview...</value>
+    <value>Načítání náhledu…</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Pro tento soubor není k dispozici žádný náhled.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>Spuštění grafu je pozastaveno, dokud nebude vyřešeno upozornění.</value>
@@ -3460,6 +3460,9 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
   </data>
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export se nezdařil</value>
+  </data>
+  <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
+    <value>Profil {0} nebyl exportován, protože aplikace Dynamo jej nemohla přečíst.</value>
   </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Pokud je tato možnost zapnuta, aplikace Dynamo využívá hardwarovou akceleraci ke zlepšení hladkosti grafiky a celkového výkonu, protože výpočetní zatížení je přesměrováno z hlavních procesorů (CPU) na grafické procesory (GPU).</value>
@@ -3952,6 +3955,45 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automaticky synchronizovat s výběrem uzlů.</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
+    <value>Autodesk Assistant přidal uzly ({0})</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant přidal 1 uzel</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
+    <value>změněno {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
+    <value>odstraněno {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
+    <value>Autodesk Assistant změnil uzly ({0})</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant změnil 1 uzel</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
+    <value>Autodesk Assistant odstranil uzly ({0})</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant odstranil 1 uzel</value>
+  </data>
+  <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="AIChangeSummaryChipShow" xml:space="preserve">
+    <value>Zobrazit</value>
+  </data>
+  <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
+    <value>Autodesk Asistent</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
+    <value>Show summary of Assistant changes</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
+    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -248,4 +248,10 @@ En cliquant sur "Continuer", vous acceptez d'appliquer les modifications de synt
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Rien n'a changé. Le script de ce noeud a été modifié après l'ouverture de cette fenêtre, ou son éditeur Python contient des modifications non enregistrées ou a été fermé.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

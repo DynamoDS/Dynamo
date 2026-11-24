@@ -575,6 +575,15 @@ valeur: bool = false</value>
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Rechercher</value>
   </data>
+  <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
+    <value>Le profil a été migré à partir d'une version précédente de Dynamo.</value>
+  </data>
+  <data name="UnreadableProfileSavedAs" xml:space="preserve">
+    <value>Le profil illisible a été enregistré sous {0}.</value>
+  </data>
+  <data name="UnreadableProfileBackupFailed" xml:space="preserve">
+    <value>Le profil n'a pas été mis à jour, car le profil illisible n'a pas pu être sauvegardé: {0}</value>
+  </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>Rechercher les résultats de la saisie automatique</value>
   </data>

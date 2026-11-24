@@ -1,4 +1,5 @@
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -259,10 +260,13 @@ namespace Dynamo.UI.Controls
             // If not extension specified and code reach here, this means this is still a valid file
             // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
             var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
-            var caption = Path.GetFileNameWithoutExtension(filePath);
 
             // deserializes the file only once
             var properties = GetFileProperties(filePath);
+            // The file name stays English in every locale. The localized title is the graph Name.
+            var caption = string.IsNullOrWhiteSpace(properties.name)
+                ? Path.GetFileNameWithoutExtension(filePath)
+                : properties.name;
 
             var templateItem = new StartPageListItem(caption)
             {
@@ -539,7 +543,7 @@ namespace Dynamo.UI.Controls
 
         private void RefreshRecentFileList(IEnumerable<string> filePaths, bool fullRefresh = false)
         {
-            RefreshFileList(recentFiles, filePaths, fullRefresh);
+            RefreshFileList(recentFiles, filePaths, fullRefresh, localizeTemplates: true);
         }
 
         private void RefreshBackupFileList(IEnumerable<string> filePaths)
@@ -554,59 +558,112 @@ namespace Dynamo.UI.Controls
         /// <param name="files">Files currently in the recent files list</param>
         /// <param name="filePaths">New files path which will be used to update the current list</param>
         /// <param name="fullRefresh">If true, will discard the current list and regenerate all file items based on the provided file paths</param>
+        /// <param name="localizeTemplates">When true, shipped template paths from another locale are shown from the active templates folder.</param>
         private void RefreshFileList(ObservableCollection<StartPageListItem> files,
-            IEnumerable<string> filePaths, bool fullRefresh = false)
+            IEnumerable<string> filePaths, bool fullRefresh = false, bool localizeTemplates = false)
         {
             if (fullRefresh)
             {
                 files.Clear();
             }
-            foreach (var filePath in filePaths.Where(x => x != null))
+
+            var pathManager = DynamoViewModel?.Model?.PathManager as PathManager;
+            var logger = DynamoViewModel?.Model?.Logger;
+            var seenPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var storedPath in filePaths)
             {
-                try
+                if (storedPath == null)
                 {
-                    // Skip files which were moved or deleted (consistent with Revit behavior)
-                    if (!DynamoUtilities.PathHelper.IsValidPath(filePath)) continue;
-
-                    var extension = Path.GetExtension(filePath).ToUpper();
-                    // If not extension specified and code reach here, this means this is still a valid file
-                    // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                    var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
-                    var caption = Path.GetFileNameWithoutExtension(filePath);
-
-                    // deserializes the file only once
-                    var properties = GetFileProperties(filePath);
-
-                    var startItem = new StartPageListItem(caption)
-                    {
-                        ContextData = filePath,
-                        ToolTip = filePath,
-                        SubScript = subScript,
-                        Description = properties.description,
-                        Thumbnail = properties.thumbnail,
-                        Author = properties.author,
-                        DateModified = properties.date,
-                        ClickAction = StartPageListItem.Action.FilePath,
-                    };
-
-                    if (fullRefresh)
-                    {
-                        files.Add(startItem);
-                    }
-                    else
-                    {
-                        files.Insert(0, startItem);
-                    }
+                    continue;
                 }
-                catch (ArgumentException ex)
+
+                var startItem = TryCreateFileListItem(storedPath, localizeTemplates, pathManager, seenPaths, logger);
+                if (startItem == null)
                 {
-                    DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
+                    continue;
                 }
-                catch (Exception ex)
+
+                if (fullRefresh)
                 {
-                    DynamoViewModel.Model.Logger.Log("Error loading the file: " + ex.StackTrace);
+                    files.Add(startItem);
+                }
+                else
+                {
+                    files.Insert(0, startItem);
                 }
             }
+        }
+
+        private StartPageListItem TryCreateFileListItem(
+            string storedPath,
+            bool localizeTemplates,
+            PathManager pathManager,
+            HashSet<string> seenPaths,
+            DynamoLogger logger)
+        {
+            try
+            {
+                var filePath = localizeTemplates && pathManager != null
+                    ? pathManager.LocalizeTemplateFilePath(storedPath)
+                    : storedPath;
+
+                // Skip files which were moved or deleted (consistent with Revit behavior).
+                // Several stored paths can map to one localized template; show that file once.
+                if (!DynamoUtilities.PathHelper.IsValidPath(filePath) || !seenPaths.Add(filePath))
+                {
+                    return null;
+                }
+
+                var extension = Path.GetExtension(filePath).ToUpper();
+                var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
+                var properties = GetFileProperties(filePath);
+                var caption = CaptionForListedFile(filePath, localizeTemplates, pathManager, properties.name);
+
+                return new StartPageListItem(caption)
+                {
+                    ContextData = filePath,
+                    ToolTip = filePath,
+                    SubScript = subScript,
+                    Description = properties.description,
+                    Thumbnail = properties.thumbnail,
+                    Author = properties.author,
+                    DateModified = properties.date,
+                    ClickAction = StartPageListItem.Action.FilePath,
+                };
+            }
+            catch (ArgumentException ex)
+            {
+                logger?.Log("File path is not valid: " + ex.StackTrace);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger?.Log("Error loading the file: " + ex.StackTrace);
+                return null;
+            }
+        }
+
+        private static string CaptionForListedFile(string filePath, bool localizeTemplates, PathManager pathManager, string graphName)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            if (!localizeTemplates || pathManager == null || string.IsNullOrWhiteSpace(graphName))
+            {
+                return fileName;
+            }
+
+            var templatesDirectory = pathManager.TemplatesDirectory;
+            if (string.IsNullOrEmpty(templatesDirectory))
+            {
+                return fileName;
+            }
+
+            if (!string.Equals(Path.GetDirectoryName(filePath), templatesDirectory, StringComparison.OrdinalIgnoreCase))
+            {
+                return fileName;
+            }
+
+            return graphName;
         }
 
         private Dictionary<string, object> DeserializeJsonFile(string filePath)
@@ -647,6 +704,13 @@ namespace Dynamo.UI.Controls
             jsonObject.TryGetValue("Description", out object description);
 
             return description as string;
+        }
+
+        private static string GetGraphName(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Name", out object name);
+
+            return name as string;
         }
 
         private string GetGraphAuthor(Dictionary<string, object> jsonObject)
@@ -768,9 +832,9 @@ namespace Dynamo.UI.Controls
         /// </summary>
         /// <param name="filePath">The file path to the dynamo file</param>
         /// <returns></returns>
-        internal (string description, string thumbnail, string author, string date) GetFileProperties(string filePath)
+        internal (string description, string thumbnail, string author, string date, string name) GetFileProperties(string filePath)
         {
-            if (!filePath.ToLower().EndsWith(".dyn") && !filePath.ToLower().EndsWith(".dyf")) return (null, null, null, null);
+            if (!filePath.ToLower().EndsWith(".dyn") && !filePath.ToLower().EndsWith(".dyf")) return (null, null, null, null, null);
 
             try
             {
@@ -778,14 +842,15 @@ namespace Dynamo.UI.Controls
                 var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
                 var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
                 var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
+                var name = jsonObject != null ? GetGraphName(jsonObject) : string.Empty;
                 var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
 
-                return (description, thumbnail, author, date);
+                return (description, thumbnail, author, date, name);
             }
             catch (Exception ex)
             {
-                DynamoViewModel.Model.Logger.Log("Error deserializing dynamo graph file: " + ex.StackTrace);
-                return (null, null, null, null);
+                DynamoViewModel?.Model?.Logger?.Log("Error deserializing dynamo graph file: " + ex.StackTrace);
+                return (null, null, null, null, null);
             }
         }
 

@@ -6427,6 +6427,294 @@ s = 1;
 
         #endregion
 
+        #region DYN-11168: statement-order recompile and dependency ordering
+
+        /// <summary>
+        /// Parses code into a subtree's statements and stamps them with the subtree's guid, as
+        /// GetDeltaAstListAdded does, so OrderSubtreesByDependency can tell the subtrees apart.
+        /// </summary>
+        private static List<AssociativeNode> SubtreeStatements(Guid guid, string code)
+        {
+            var nodes = TestFrameWork.CreateSubTreeFromCode(guid, code).AstNodes;
+            foreach (var bnode in nodes.OfType<BinaryExpressionNode>())
+            {
+                bnode.guid = guid;
+            }
+            return nodes;
+        }
+
+        /// <summary>
+        /// The guids of the subtrees in an ordered delta list, one per run of consecutive statements.
+        /// </summary>
+        private static List<Guid> SubtreeOrder(IEnumerable<AssociativeNode> ordered)
+        {
+            var order = new List<Guid>();
+            foreach (var bnode in ordered.OfType<BinaryExpressionNode>())
+            {
+                if (order.Count == 0 || order[order.Count - 1] != bnode.guid)
+                {
+                    order.Add(bnode.guid);
+                }
+            }
+            return order;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_SubtreesDefiningTheSameVariableKeepTheirOrder()
+        {
+            // P and Q both define x, and P must move after S because it reads s. Without a write-after-
+            // write dependency, Q would stay ahead of P and the last definition of x would change.
+            var guidP = Guid.NewGuid();
+            var guidQ = Guid.NewGuid();
+            var guidS = Guid.NewGuid();
+            var delta = SubtreeStatements(guidP, "x = s;")
+                .Concat(SubtreeStatements(guidQ, "x = 2;"))
+                .Concat(SubtreeStatements(guidS, "s = 1;"))
+                .ToList();
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            Assert.AreEqual(new List<Guid> { guidS, guidP, guidQ }, SubtreeOrder(ordered));
+            Assert.AreEqual(delta.Count, ordered.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_ReadInsideAFunctionBodyCountsAsARead()
+        {
+            // A's function reads src, which B defines, so A must come after B.
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var delta = SubtreeStatements(guidA, "fa = 0; def readsSrc() { return = src; }")
+                .Concat(SubtreeStatements(guidB, "src = 1;"))
+                .ToList();
+            Assert.IsTrue(delta.OfType<FunctionDefinitionNode>().Any(), "the test needs a function definition");
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            Assert.AreEqual(new List<Guid> { guidB, guidA }, SubtreeOrder(ordered));
+            Assert.AreEqual(delta.Count, ordered.Count);
+            // The function definition stays with its subtree.
+            Assert.IsInstanceOf<FunctionDefinitionNode>(ordered[ordered.Count - 1]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_CycleKeepsTheOriginalOrderOfTheSubtreesInIt()
+        {
+            // A and B read each other. C depends on nothing, so it goes first; A and B keep their order.
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var guidC = Guid.NewGuid();
+            var delta = SubtreeStatements(guidA, "ca = cb;")
+                .Concat(SubtreeStatements(guidB, "cb = ca;"))
+                .Concat(SubtreeStatements(guidC, "cc = 1;"))
+                .ToList();
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            Assert.AreEqual(new List<Guid> { guidC, guidA, guidB }, SubtreeOrder(ordered));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrderSubtreesByDependency_LongReversedChainIsFullyReordered()
+        {
+            // Subtree i reads what subtree i + 1 defines, so the whole list must be reversed. Also a
+            // smoke test for the size of the first profiled run of a large graph.
+            const int count = 3000;
+            var guids = Enumerable.Range(0, count).Select(_ => Guid.NewGuid()).ToList();
+            var delta = new List<AssociativeNode>();
+            for (int i = 0; i < count; i++)
+            {
+                var code = i < count - 1 ? $"chain{i} = chain{i + 1};" : $"chain{i} = 0;";
+                delta.AddRange(SubtreeStatements(guids[i], code));
+            }
+
+            var ordered = ChangeSetComputer.OrderSubtreesByDependency(delta);
+
+            guids.Reverse();
+            Assert.AreEqual(guids, SubtreeOrder(ordered));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ForceExecutedSubtreeWithIdenticalStatements_EachStatementExecutesOnce()
+        {
+            // A force-executed subtree gains a statement ahead of two identical statements, so it is
+            // recompiled in statement order. Each identical statement must map to its own cached graph
+            // node; otherwise one stays active next to its recompiled clone.
+            var guid = Guid.NewGuid();
+            const string counterCall = "dupa = FFITarget.ProfilingCounter.Increment();";
+            var statements = TestFrameWork.CreateSubTreeFromCode(guid, counterCall + counterCall).AstNodes;
+            Assert.AreEqual(2, statements.Count);
+
+            int before = FFITarget.ProfilingCounter.Count;
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { new Subtree(new List<AssociativeNode>(statements), guid) }, null));
+            int executionsPerRun = FFITarget.ProfilingCounter.Count - before;
+            Assert.Greater(executionsPerRun, 0, "the first sync should execute the subtree");
+
+            var withNewFirstStatement = TestFrameWork.CreateSubTreeFromCode(guid, "dupfirst = 0;").AstNodes
+                .Concat(statements).ToList();
+            before = FFITarget.ProfilingCounter.Count;
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(withNewFirstStatement, guid) { ForceExecution = true } }));
+            Assert.AreEqual(executionsPerRun, FFITarget.ProfilingCounter.Count - before,
+                "the statement-order recompile should execute each statement once");
+            AssertValue("dupfirst", 0);
+
+            // A later force execution of the unchanged subtree still executes each statement once.
+            before = FFITarget.ProfilingCounter.Count;
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(withNewFirstStatement, guid) { ForceExecution = true } }));
+            Assert.AreEqual(executionsPerRun, FFITarget.ProfilingCounter.Count - before,
+                "a later force execution should execute each statement once");
+        }
+
+        #endregion
+
+        #region DYN-11176: profiling markers must not renumber a node's callsites
+
+        // The "_Instance" callsite IDs the VM has cached for a subtree. Trace data (element binding)
+        // is keyed by these, so a node whose IDs change loses its trace data.
+        private List<string> InstanceCallsiteIds(Guid guid)
+        {
+            return runtimeCore.RuntimeData.CallsiteCache.Keys
+                .Where(k => k.Contains("_" + Constants.kInstance) && k.EndsWith(guid.ToString()))
+                .OrderBy(k => k)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Syncs a subtree with one call, then force-executes it with a statement added ahead of the
+        /// call, which recompiles the whole subtree in statement order (DYN-11168). Returns the
+        /// subtree's "_Instance" callsite IDs before and after.
+        /// </summary>
+        private (List<string> before, List<string> after) CallsiteIdsAroundAStatementAddedAhead(bool flagAsProfilingMarker)
+        {
+            var guid = Guid.NewGuid();
+            var body = TestFrameWork.CreateSubTreeFromCode(guid, "mkbody = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { new Subtree(new List<AssociativeNode>(body), guid) }, null));
+            var before = InstanceCallsiteIds(guid);
+
+            var ahead = TestFrameWork.CreateSubTreeFromCode(guid, "mkbegin = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            foreach (var bnode in ahead.OfType<BinaryExpressionNode>())
+            {
+                bnode.IsProfilingMarker = flagAsProfilingMarker;
+            }
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(ahead.Concat(body).ToList(), guid) { ForceExecution = true } }));
+            return (before, InstanceCallsiteIds(guid));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerFlag_SurvivesClone()
+        {
+            // LiveRunner's force-recompile paths compile clones of cached statements.
+            var marker = (BinaryExpressionNode)TestFrameWork.CreateSubTreeFromCode(Guid.NewGuid(), "m = 1;").AstNodes.Single();
+            marker.IsProfilingMarker = true;
+            var plain = (BinaryExpressionNode)TestFrameWork.CreateSubTreeFromCode(Guid.NewGuid(), "p = 1;").AstNodes.Single();
+
+            Assert.IsTrue(((BinaryExpressionNode)ProtoCore.Utils.NodeUtils.Clone(marker)).IsProfilingMarker);
+            Assert.IsFalse(((BinaryExpressionNode)ProtoCore.Utils.NodeUtils.Clone(plain)).IsProfilingMarker);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerAddedAhead_NodeCallKeepsItsCallsiteId()
+        {
+            var (before, after) = CallsiteIdsAroundAStatementAddedAhead(flagAsProfilingMarker: true);
+
+            Assert.AreEqual(1, before.Count, "the first sync should create one callsite for the call");
+            CollectionAssert.AreEqual(before, after,
+                "a profiling marker added ahead must not renumber the node's own callsite");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrdinaryStatementAddedAhead_NodeCallIsRenumbered()
+        {
+            // Control: a statement that is not a marker still shares the counter, so the existing
+            // numbering of ordinary code is unchanged by DYN-11176. It also shows the test above can fail.
+            var (before, after) = CallsiteIdsAroundAStatementAddedAhead(flagAsProfilingMarker: false);
+
+            Assert.AreEqual(1, before.Count);
+            CollectionAssert.IsSubsetOf(before, after);
+            Assert.AreEqual(2, after.Count, "the added call takes Instance0 and the existing call becomes Instance1");
+        }
+
+        /// <summary>
+        /// Syncs a subtree with a statement ahead of a call, then force-executes it without that statement,
+        /// as turning profiling off does. Returns how many active graph nodes assign the removed statement's
+        /// variable before and after. With <paramref name="isInput"/> the subtree is synced the way
+        /// EngineController syncs an input node such as a slider: IsInput set and a primitive body.
+        /// </summary>
+        private (int before, int after) ActiveGraphNodesForAStatementRemovedOnForceExecution(bool flagAsProfilingMarker, bool isInput = false)
+        {
+            var guid = Guid.NewGuid();
+            var ahead = TestFrameWork.CreateSubTreeFromCode(guid, "mkbegin = FFITarget.ProfilingCounter.Increment();").AstNodes;
+            foreach (var bnode in ahead.OfType<BinaryExpressionNode>())
+            {
+                bnode.IsProfilingMarker = flagAsProfilingMarker;
+            }
+            var bodyCode = isInput ? "mkbody = 5;" : "mkbody = FFITarget.ProfilingCounter.Increment();";
+            var body = TestFrameWork.CreateSubTreeFromCode(guid, bodyCode).AstNodes;
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { new Subtree(ahead.Concat(body).ToList(), guid) { IsInput = isInput } }, null));
+
+            int CountActive() => runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList.Count(g =>
+                g.guid == guid && g.isActive && g.updateNodeRefList.Any() &&
+                g.updateNodeRefList[0].nodeList.Any() && g.updateNodeRefList[0].nodeList[0].symbol?.name == "mkbegin");
+            var before = CountActive();
+
+            var bodyOnly = TestFrameWork.CreateSubTreeFromCode(guid, bodyCode).AstNodes;
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { new Subtree(bodyOnly, guid) { ForceExecution = true, IsInput = isInput } }));
+            return (before, CountActive());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerRemovedOnForceExecution_IsDeactivated()
+        {
+            // Turning profiling off force-executes each node without its markers. A marker left active keeps
+            // running and can be the run's last statement, which prefixes the next run's callsite IDs.
+            var (before, after) = ActiveGraphNodesForAStatementRemovedOnForceExecution(flagAsProfilingMarker: true);
+
+            Assert.AreEqual(1, before, "the first sync should compile the marker");
+            Assert.AreEqual(0, after, "removing the marker should deactivate its graph nodes");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OrdinaryStatementRemovedOnForceExecution_StaysActive()
+        {
+            // Control: DYN-11176 only changes markers. Other statements removed from a force-executed
+            // subtree keep their existing behaviour. It also shows the test above can fail.
+            var (before, after) = ActiveGraphNodesForAStatementRemovedOnForceExecution(flagAsProfilingMarker: false);
+
+            Assert.AreEqual(1, before);
+            Assert.AreEqual(1, after);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProfilingMarkerRemovedOnForceExecutionOfInputNode_IsDeactivated()
+        {
+            // Input nodes such as sliders are synced with IsInput set, which takes a separate branch in
+            // UpdateCachedASTList. Turning profiling off must deactivate their markers too.
+            var (before, after) = ActiveGraphNodesForAStatementRemovedOnForceExecution(flagAsProfilingMarker: true, isInput: true);
+
+            Assert.AreEqual(1, before, "the first sync should compile the marker");
+            Assert.AreEqual(0, after, "removing the marker from an input node should deactivate its graph nodes");
+        }
+
+        #endregion
+
     }
 
 }

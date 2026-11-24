@@ -150,6 +150,12 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Notificações</value>
   </data>
+  <data name="InvalidSettingsFileDetail" xml:space="preserve">
+    <value>O Dynamo não conseguiu ler o perfil e usará as configurações padrão nesta sessão. O perfil original será salvo como uma cópia .bak na pasta “perfis” da localização do backup do gráfico. Em seguida, o perfil será atualizado com as configurações desta sessão.</value>
+  </data>
+  <data name="InvalidSettingsFileTitle" xml:space="preserve">
+    <value>Não foi possível ler o perfil</value>
+  </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>Foi detectado um caminho não seguro em Localizações confiáveis:</value>
   </data>

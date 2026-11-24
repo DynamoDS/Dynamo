@@ -248,4 +248,10 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>什么都没有改变。此节点上的脚本在打开此窗口后发生更改，或者其 Python 编辑器有未保存的编辑或已关闭。</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

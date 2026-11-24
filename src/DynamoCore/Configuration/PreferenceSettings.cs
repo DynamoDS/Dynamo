@@ -74,6 +74,7 @@ namespace Dynamo.Configuration
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
+        private bool showAIChangeSummaryChip;
         private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
@@ -785,6 +786,23 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines if the chip that summarises the latest Autodesk Assistant changes is shown on the canvas.
+        /// </summary>
+        public bool ShowAIChangeSummaryChip
+        {
+            get
+            {
+                return showAIChangeSummaryChip;
+            }
+            set
+            {
+                if (showAIChangeSummaryChip == value) return;
+                showAIChangeSummaryChip = value;
+                RaisePropertyChanged(nameof(ShowAIChangeSummaryChip));
+            }
+        }
+
+        /// <summary>
         /// This defines if user wants the Extensions settings to persist across sessions.
         /// </summary>
         public bool EnablePersistExtensions
@@ -1105,6 +1123,7 @@ namespace Dynamo.Configuration
             MLRecommendationNumberOfResults = 10;
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
+            ShowAIChangeSummaryChip = true;
             isStaticSplashScreenEnabled = true;
             isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
@@ -1344,6 +1363,34 @@ namespace Dynamo.Configuration
                 72,
                 96
             };
+            }
+        }
+
+        /// <summary>
+        /// Renames the default group styles to the current UI culture. The names of the default styles are
+        /// saved in the settings file, so without this they keep the language Dynamo had when the file was
+        /// written. Custom styles are never changed, and a default style keeps its name if the new name
+        /// is already used by another style. Call it after the UI culture has been applied.
+        /// </summary>
+        internal void RefreshDefaultGroupStyleNames()
+        {
+            foreach (var defaultStyle in GroupStyleItem.DefaultGroupStyleItems)
+            {
+                var localizedName = GroupStyleItem.GetLocalizedDefaultName(defaultStyle.GroupStyleId);
+                if (localizedName != null) defaultStyle.Name = localizedName;
+            }
+
+            if (GroupStyleItemsList == null) return;
+
+            foreach (var style in GroupStyleItemsList)
+            {
+                if (!style.IsDefault) continue;
+
+                var localizedName = GroupStyleItem.GetLocalizedDefaultName(style.GroupStyleId);
+                if (localizedName == null || style.Name == localizedName) continue;
+                if (GroupStyleItemsList.Any(other => !ReferenceEquals(other, style) && other.Name == localizedName)) continue;
+
+                style.Name = localizedName;
             }
         }
 

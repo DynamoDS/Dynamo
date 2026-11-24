@@ -675,8 +675,14 @@ namespace Dynamo.ViewModels
         internal const double AIHaloMovedOpacity = 0.4;
 
         /// <summary>
+        /// Halo opacity for an error, warning, or info message on a placed or modified node.
+        /// </summary>
+        internal const double AIHaloAlertOpacity = 0.6;
+
+        /// <summary>
         /// Peak strength of the AI-touched halo behind this node, from 0 (no halo) to 1: full
-        /// strength when the AI Assistant placed or modified the node, 40% when it only moved it, and
+        /// strength when the AI Assistant placed or modified the node, 40% when it only moved it,
+        /// 60% when a placed or modified node shows an error, warning, or info message, and
         /// 0 when the node has no AI change record (<see cref="NodeModel.AIChange"/>). The halo
         /// glows up to this strength and then fades out (<see cref="Dynamo.ViewModels.AIHaloGlow"/>).
         /// </summary>
@@ -687,12 +693,20 @@ namespace Dynamo.ViewModels
                 var change = NodeModel?.AIChange;
                 if (change == null) return 0;
 
-                return change.Kind == AIChangeKind.Moved ? AIHaloMovedOpacity : AIHaloFullOpacity;
+                var opacity = change.Kind == AIChangeKind.Moved ? AIHaloMovedOpacity : AIHaloFullOpacity;
+                if (opacity > AIHaloAlertOpacity && ShowsAlert)
+                {
+                    return AIHaloAlertOpacity;
+                }
+
+                return opacity;
             }
         }
 
         private AIHaloGlow aiHaloGlow;
         private volatile bool isAIHaloHovered;
+        private bool wasSelected;
+        private bool aiClearPending;
 
         // Guards glow replacement and hover state: an AI edit can replace the glow off the UI thread.
         private readonly object aiHaloSync = new object();
@@ -700,15 +714,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
         /// is created when the AI Assistant touches a node that is not glowing, and its clock starts
-        /// when the node comes on screen (DYN-11005). Once it has faded out or been dismissed
+        /// when the node comes on screen (DYN-11005). Once it has faded out
         /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the
-        /// record is cleared or the node is touched again. The glow changes in place (hover, Esc,
+        /// record is cleared or the node is touched again. The glow changes in place (hover,
         /// restart); each change is announced under this property's name.
         /// </summary>
         internal AIHaloGlow AIHaloGlow => aiHaloGlow;
 
         /// <summary>
-        /// True while the mouse is over the node. Esc then ends this node's glow (DYN-11005).
+        /// True while the mouse is over the node. Esc then clears this node's AI highlight (DYN-11005).
         /// </summary>
         internal bool IsAIHaloHovered => isAIHaloHovered;
 
@@ -721,15 +735,29 @@ namespace Dynamo.ViewModels
             var change = NodeModel?.AIChange;
             var strength = AIHaloOpacity;
             var breathes = change != null && change.Kind != AIChangeKind.Moved;
+            var dispatcher = DynamoViewModel?.UIDispatcher;
             bool changed;
+            AIHaloGlow dropLater = null;
 
             lock (aiHaloSync)
             {
                 var current = aiHaloGlow;
                 if (change == null)
                 {
-                    changed = current != null;
-                    aiHaloGlow = null;
+                    // A new turn clears the record inside an AI edit, then records the node again if
+                    // the turn touches it. Keep a running glow until that edit is done, so it restarts
+                    // instead of blinking off.
+                    if (current != null && !current.IsFinished && dispatcher != null
+                        && WorkspaceViewModel?.Model?.IsAIEditInProgress == true)
+                    {
+                        dropLater = current;
+                        changed = false;
+                    }
+                    else
+                    {
+                        changed = current != null;
+                        aiHaloGlow = null;
+                    }
                 }
                 else if (current != null && !current.IsFinished)
                 {
@@ -739,7 +767,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    // A new glow, including for a node touched again after its glow faded out or was dismissed
+                    // A new glow, including for a node touched again after its glow faded out
                     var glow = AIHaloGlow.Create(strength, breathes);
                     if (isAIHaloHovered)
                     {
@@ -750,6 +778,12 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            if (dropLater != null)
+            {
+                dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                    new Action(() => DropAIHaloGlowIfStillCleared(dropLater)));
+            }
+
             if (!changed) return;
 
             RaisePropertyChanged(nameof(AIHaloGlow));
@@ -757,6 +791,17 @@ namespace Dynamo.ViewModels
             {
                 WorkspaceViewModel?.OnAIHaloGlowWaiting();
             }
+        }
+
+        private void DropAIHaloGlowIfStillCleared(AIHaloGlow glow)
+        {
+            lock (aiHaloSync)
+            {
+                if (NodeModel?.AIChange != null || !ReferenceEquals(aiHaloGlow, glow)) return;
+                aiHaloGlow = null;
+            }
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
         }
 
         /// <summary>
@@ -796,17 +841,43 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Ends this node's glow (Esc while hovering it). The badge and the change record stay, and
-        /// the workspace is not marked as changed.
+        /// True while the node shows an AI highlight: its halo is on screen, or it has the badge.
         /// </summary>
-        /// <returns>True if the node was glowing.</returns>
-        internal bool DismissAIHaloGlow()
-        {
-            var glow = AIHaloGlow;
-            if (glow == null || !glow.Dismiss()) return false;
+        internal bool HasVisibleAIHighlight => ShowAIBadge || AIHaloGlow?.IsGlowing == true;
 
-            RaisePropertyChanged(nameof(AIHaloGlow));
+        /// <summary>
+        /// Clears the node's AI change record (Esc while hovering it), which removes its halo and
+        /// badge. Never marks the workspace as unsaved, and the turn history is kept.
+        /// </summary>
+        /// <returns>True if the node showed an AI highlight.</returns>
+        internal bool ClearAIHighlight()
+        {
+            if (!HasVisibleAIHighlight) return false;
+
+            NodeModel.ClearAIChange();
             return true;
+        }
+
+        /// <summary>
+        /// Clears the AI change record when a person selects the node. Selections inside an AI edit keep it.
+        /// </summary>
+        internal void ClearAIChangeOnSelect()
+        {
+            var node = NodeModel;
+            if (node?.AIChange == null) return;
+            if (WorkspaceViewModel?.Model?.IsAIEditInProgress == true) return;
+
+            node.ClearAIChange();
+        }
+
+        /// <summary>
+        /// Clears the AI change record if a box selection selected the node and it is still selected.
+        /// </summary>
+        internal void ApplyPendingAIClear()
+        {
+            if (!aiClearPending) return;
+            aiClearPending = false;
+            if (IsSelected) ClearAIChangeOnSelect();
         }
 
         private void RequestAIHaloCheckIfWaiting()
@@ -847,6 +918,30 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Plays the halo's glow again from the start, even if it faded out or was dismissed (DYN-11011).
+        /// The new glow waits until the node is on screen, like any new glow, so nodes that come on screen
+        /// together are staggered. No-op without an AI change record.
+        /// </summary>
+        internal void ReplayAIHaloGlow()
+        {
+            var change = NodeModel?.AIChange;
+            if (change == null) return;
+
+            lock (aiHaloSync)
+            {
+                var glow = AIHaloGlow.Create(AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+                if (isAIHaloHovered)
+                {
+                    glow.Hold();
+                }
+                aiHaloGlow = glow;
+            }
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            WorkspaceViewModel?.OnAIHaloGlowWaiting();
+        }
+
+        /// <summary>
         /// True when the AI Assistant badge should be drawn on this node: the node was placed or
         /// modified by the Assistant. Nodes it only moved get no badge, so they stay the quietest
         /// (<see cref="NodeModel.AIChange"/>).
@@ -859,6 +954,12 @@ namespace Dynamo.ViewModels
                 return change != null && change.Kind != AIChangeKind.Moved;
             }
         }
+
+        /// <summary>
+        /// True when the node shows an error, warning, or info message.
+        /// Preview off does not count, and it does not dim the halo.
+        /// </summary>
+        private bool ShowsAlert => ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages;
 
         /// <summary>
         /// A flag indicating whether the node is set to freeze by the user.
@@ -1112,6 +1213,7 @@ namespace Dynamo.ViewModels
 
             nodeLogic = logic;
             previewPinned = logic.PreviewPinned;
+            wasSelected = logic.IsSelected;
 
             //respond to collection changed events to add
             //and remove port model views
@@ -1461,14 +1563,29 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsSelected");
                     RaisePropertyChanged("PreviewState");
                     if (IsSelected)
+                    {
                         delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserRefreshTime, HandleDocumentationBrowserRefresh);
+                        // IsSelected notifies even when unchanged, e.g. Arrange reselecting the selection
+                        if (!wasSelected)
+                        {
+                            // The box can still move off the node, so wait until it is released
+                            if (WorkspaceViewModel?.IsBoxSelecting == true) aiClearPending = true;
+                            else ClearAIChangeOnSelect();
+                        }
+                    }
                     else
+                    {
                         delayDocumentBrowserRefresh?.Cancel();
+                        aiClearPending = false;
+                    }
+                    wasSelected = IsSelected;
                     break;
                 case "State":
                     RaisePropertyChanged("State");
                     HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
+                    UpdateAIHaloGlow();
+                    RaisePropertyChanged(nameof(AIHaloOpacity));
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
@@ -1519,7 +1636,6 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(NodeModel.AIChange):
                     UpdateAIHaloGlow();
-                    RaisePropertyChanged(nameof(AIHaloOpacity));
                     RaisePropertyChanged(nameof(ShowAIBadge));
                     HandleColorOverlayChange();
                     break;
@@ -1538,6 +1654,8 @@ namespace Dynamo.ViewModels
                 case nameof(ErrorBubble.DoesNodeDisplayMessages):
                     HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
+                    UpdateAIHaloGlow();
+                    RaisePropertyChanged(nameof(AIHaloOpacity));
                     break;
             }
         }

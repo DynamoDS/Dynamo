@@ -150,6 +150,12 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>알림</value>
   </data>
+  <data name="InvalidSettingsFileDetail" xml:space="preserve">
+    <value>ynamo에서 프로파일을 읽을 수 없어 이 세션에서는 기본 설정을 사용합니다. 원본 프로파일은 그래프 백업 위치의 "profiles" 폴더에 .bak 파일로 저장되며, 프로파일은 이 세션의 설정으로 업데이트됩니다.</value>
+  </data>
+  <data name="InvalidSettingsFileTitle" xml:space="preserve">
+    <value>프로파일을 읽을 수 없습니다.</value>
+  </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>신뢰할 수 있는 위치에서 안전하지 않은 경로가 발견되었습니다.</value>
   </data>

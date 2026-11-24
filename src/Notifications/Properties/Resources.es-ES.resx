@@ -150,6 +150,12 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Notificaciones</value>
   </data>
+  <data name="InvalidSettingsFileDetail" xml:space="preserve">
+    <value>Dynamo no ha podido leer el perfil y utilizará la configuración por defecto para esta sesión. El perfil original se guardará como una copia .bak en la carpeta "profiles" de la ubicación de copia de seguridad del gráfico y el perfil se actualizará con la configuración de esta sesión.</value>
+  </data>
+  <data name="InvalidSettingsFileTitle" xml:space="preserve">
+    <value>No se ha podido leer el perfil</value>
+  </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>Se ha detectado una ruta no segura en las ubicaciones de confianza:</value>
   </data>

@@ -150,6 +150,12 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>通知</value>
   </data>
+  <data name="InvalidSettingsFileDetail" xml:space="preserve">
+    <value>Dynamo でプロファイルを読み込めなかったため、このセッションでは既定の設定が使用されます。元のプロファイルは、グラフのバックアップ場所にある「profiles」フォルダに .bak コピーとして保存され、プロファイルはこのセッションの設定で更新されます。</value>
+  </data>
+  <data name="InvalidSettingsFileTitle" xml:space="preserve">
+    <value>プロファイルを読み込めませんでした</value>
+  </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>[信頼できる場所]に、安全でないパスが検出されました:</value>
   </data>

@@ -573,6 +573,15 @@ hodnota: bool = False</value>
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Hledat</value>
   </data>
+  <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
+    <value>Profil byl migrován z předchozí verze aplikace Dynamo.</value>
+  </data>
+  <data name="UnreadableProfileSavedAs" xml:space="preserve">
+    <value>Nečitelný profil byl uložen jako {0}.</value>
+  </data>
+  <data name="UnreadableProfileBackupFailed" xml:space="preserve">
+    <value>Profil nebyl aktualizován, protože nebylo možné zálohovat nečitelný profil: {0}</value>
+  </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>Hledat výsledky automatického dokončování</value>
   </data>

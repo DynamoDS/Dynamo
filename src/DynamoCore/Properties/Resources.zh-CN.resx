@@ -575,6 +575,15 @@
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>搜索</value>
   </data>
+  <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
+    <value>该配置文件已从早期版本的 Dynamo 中移植。</value>
+  </data>
+  <data name="UnreadableProfileSavedAs" xml:space="preserve">
+    <value>无法读取的配置文件已另存为 {0}。</value>
+  </data>
+  <data name="UnreadableProfileBackupFailed" xml:space="preserve">
+    <value>配置文件未更新，因为无法备份不可读的配置文件: {0}</value>
+  </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>搜索自动完成结果</value>
   </data>

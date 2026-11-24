@@ -248,4 +248,10 @@ Facendo clic su Continua, si accettano di implementare le modifiche della sintas
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>Non è stata apportata alcuna modifica. Lo script su questo nodo è stato modificato dopo l'apertura di questa finestra oppure l'editor Python presenta modifiche non salvate o è stato chiuso.</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

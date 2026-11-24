@@ -30,7 +30,7 @@ namespace Dynamo.ViewModels
     /// restarts when the next on-screen check finds it on screen, from its current strength
     /// (<see cref="Retouch"/>, <see cref="Restart"/>). If it has left the screen, the glow waits
     /// again until the node is back (<see cref="WaitAgain"/>), so a later change is not missed
-    /// either. Esc on a hovered node ends the glow and keeps the badge (<see cref="Dismiss"/>).
+    /// either. Esc on a hovered node clears its AI change record, which removes the glow and the badge.
     /// </para>
     /// </remarks>
     internal sealed class AIHaloGlow
@@ -130,7 +130,6 @@ namespace Dynamo.ViewModels
         private TimeSpan delay;
         private bool isStarted;
         private bool isHeld;
-        private bool isDismissed;
         private bool isRestartPending;
         private int version;
 
@@ -205,7 +204,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal bool IsWaiting
         {
-            get { lock (sync) return !isStarted && !isDismissed; }
+            get { lock (sync) return !isStarted; }
         }
 
         /// <summary>
@@ -234,14 +233,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// True once Esc has ended the glow. The badge stays.
-        /// </summary>
-        internal bool IsDismissed
-        {
-            get { lock (sync) return isDismissed; }
-        }
-
-        /// <summary>
         /// From the start of the clock to the end of the fade-out, including <see cref="Delay"/>.
         /// </summary>
         internal TimeSpan Duration
@@ -259,7 +250,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// True once the glow has faded out or been dismissed. The node then shows its badge only.
+        /// True once the glow has faded out. The node then shows its badge only.
         /// A glow with a restart pending is not finished, even if its current timeline has ended:
         /// the newer change still has to be seen.
         /// </summary>
@@ -269,8 +260,7 @@ namespace Dynamo.ViewModels
             {
                 lock (sync)
                 {
-                    return isDismissed
-                        || (isStarted && !isRestartPending && ElapsedUnlocked() >= delay + FadeOutEnd);
+                    return isStarted && !isRestartPending && ElapsedUnlocked() >= delay + FadeOutEnd;
                 }
             }
         }
@@ -284,7 +274,7 @@ namespace Dynamo.ViewModels
             {
                 lock (sync)
                 {
-                    return isStarted && !isDismissed && ElapsedUnlocked() < delay + FadeOutEnd;
+                    return isStarted && ElapsedUnlocked() < delay + FadeOutEnd;
                 }
             }
         }
@@ -322,7 +312,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Starts the clock when the node first comes on screen. Does nothing if it has already
-        /// started or was dismissed. A held glow starts held, and runs once released.
+        /// started. A held glow starts held, and runs once released.
         /// </summary>
         /// <param name="staggerDelay">This node's place in the group that came on screen together; see <see cref="StaggerDelay"/>.</param>
         /// <returns>True if the clock started.</returns>
@@ -330,7 +320,7 @@ namespace Dynamo.ViewModels
         {
             lock (sync)
             {
-                if (isStarted || isDismissed) return false;
+                if (isStarted) return false;
 
                 isStarted = true;
                 delay = staggerDelay < TimeSpan.Zero ? TimeSpan.Zero : staggerDelay;
@@ -373,7 +363,7 @@ namespace Dynamo.ViewModels
                 if (!isHeld) return false;
 
                 isHeld = false;
-                if (isStarted && !isDismissed && !runningSince.HasValue)
+                if (isStarted && !runningSince.HasValue)
                 {
                     runningSince = Now();
                 }
@@ -394,8 +384,6 @@ namespace Dynamo.ViewModels
         {
             lock (sync)
             {
-                if (isDismissed) return;
-
                 strength = newStrength;
                 breathes = newBreathes;
                 if (isStarted)
@@ -415,7 +403,7 @@ namespace Dynamo.ViewModels
         {
             lock (sync)
             {
-                if (!isRestartPending || isDismissed) return false;
+                if (!isRestartPending) return false;
 
                 isRestartPending = false;
                 delay = TimeSpan.Zero;
@@ -436,7 +424,7 @@ namespace Dynamo.ViewModels
         {
             lock (sync)
             {
-                if (!isRestartPending || isDismissed) return false;
+                if (!isRestartPending) return false;
 
                 isRestartPending = false;
                 isStarted = false;
@@ -444,24 +432,6 @@ namespace Dynamo.ViewModels
                 countedBefore = TimeSpan.Zero;
                 runningSince = null;
                 version++;
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Ends the glow (Esc on the hovered node). The badge stays; a view rebuilt later shows no halo.
-        /// </summary>
-        /// <returns>True if the glow was on screen and is now dismissed.</returns>
-        internal bool Dismiss()
-        {
-            lock (sync)
-            {
-                if (!isStarted || isDismissed || ElapsedUnlocked() >= delay + FadeOutEnd) return false;
-
-                countedBefore = ElapsedUnlocked();
-                runningSince = null;
-                isDismissed = true;
-                isRestartPending = false;
                 return true;
             }
         }
