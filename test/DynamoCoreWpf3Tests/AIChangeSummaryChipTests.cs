@@ -721,6 +721,28 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void AChangeAfterUndoAllBringsTheChipBackWithOnlyTheNewChange()
+        {
+            PlaceByAssistantUndoably(x: 0);
+            PlaceByAssistantUndoably(x: 400);
+            var chip = Chip;
+            Assert.IsTrue(chip.CanUndoAll);
+            chip.UndoAllCommand.Execute(null);
+            Assert.IsFalse(Chip.IsVisible);
+
+            // The Assistant carries on in the same turn
+            PlaceByAssistantUndoably(x: 800);
+
+            chip = Chip;
+            Assert.IsTrue(chip.IsVisible);
+            Assert.AreEqual("Autodesk Assistant added 1 node", chip.Message);
+            Assert.AreEqual("– of 1", chip.StepText);
+            Assert.IsTrue(chip.CanUndoAll);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void UndoAllExplainsWhyItIsUnavailableAfterAPersonEdit()
         {
             PlaceByAssistantUndoably();

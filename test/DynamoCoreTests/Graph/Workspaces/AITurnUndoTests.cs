@@ -226,6 +226,30 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void AChangeAfterUndoAllStartsTheTurnAgain()
+        {
+            var doomed = Create(new DoubleInput());
+            var first = PlaceByAssistant(TurnA, new DoubleInput(), 200, 0);
+            DeleteByAssistant(TurnA, doomed);
+            Assert.IsTrue(Workspace.UndoAITurn(TurnA));
+
+            // The Assistant carries on in the same turn
+            var late = PlaceByAssistant(TurnA, new DoubleInput(), 400, 0);
+
+            var summary = Workspace.GetAITurnSummary(TurnA);
+            Assert.IsFalse(summary.IsUndone);
+            CollectionAssert.AreEqual(new[] { late.GUID }, summary.NodeIds, "Only the new change counts...");
+            Assert.AreEqual(0, summary.DeletedNodeCount, "...not the deletion Undo all already put back.");
+
+            Assert.AreEqual(AIUndoAvailability.Available, Workspace.GetAITurnUndoAvailability(TurnA));
+            Assert.IsTrue(Workspace.UndoAITurn(TurnA));
+            Assert.IsNull(Find(late.GUID), "Undo all reverts the new change...");
+            Assert.IsNotNull(Find(doomed.GUID), "...and leaves the earlier Undo all as it was.");
+            Assert.IsNull(Find(first.GUID));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void UndoAllOnlyUndoesTheLatestTurn()
         {
             var fromA = PlaceByAssistant(TurnA, new DoubleInput());

@@ -1436,10 +1436,10 @@ namespace Dynamo.Graph.Workspaces
         {
             ValidateAITurnId(turnId);
 
-            if (!aiTurns.TryGetValue(turnId, out var turn))
+            if (!aiTurns.TryGetValue(turnId, out var turn) || turn.IsUndone)
             {
                 turn = new AITurnState(turnId, ++lastAITurnNumber);
-                aiTurns.Add(turnId, turn);
+                aiTurns[turnId] = turn;
             }
 
             // Called by the Record methods: an AI edit without a turn id leaves its undo steps unlabelled

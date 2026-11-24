@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         private bool showUndoAll = true;
         private string undoAllToolTip = string.Empty;
         private string stepTurnId;
+        private int stepTurnNumber;
         private Guid? stepNodeId;
         private int stepIndex = -1;
 
@@ -302,9 +303,10 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            if (!string.Equals(stepTurnId, turn.TurnId, StringComparison.Ordinal))
+            if (!string.Equals(stepTurnId, turn.TurnId, StringComparison.Ordinal) || stepTurnNumber != turn.TurnNumber)
             {
                 stepTurnId = turn.TurnId;
+                stepTurnNumber = turn.TurnNumber;
                 ResetStep();
             }
 
