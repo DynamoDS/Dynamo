@@ -87,6 +87,12 @@ namespace Dynamo.Graph.Workspaces
 
         internal bool IsUndone { get; set; }
 
+        /// <summary>
+        /// True when a change was reported inside an AI edit that had no turn id (an older DynamoMCP), so the
+        /// turn's undo steps are not labelled and Undo all is not supported.
+        /// </summary>
+        internal bool EditedWithoutUndoLabel { get; set; }
+
         internal string TurnId { get; }
 
         internal int TurnNumber { get; }

@@ -148,12 +148,19 @@ namespace Dynamo.Graph.Workspaces
                 return AIUndoAvailability.AssistantWorking;
             }
 
-            return TurnUndoAvailability(undoRecorder.GetUndoStackOrigins(), turnId, out _);
+            bool unlabelled;
+            lock (aiTurnsLock)
+            {
+                unlabelled = aiTurns.TryGetValue(turnId, out var turn) && turn.EditedWithoutUndoLabel;
+            }
+
+            return TurnUndoAvailability(undoRecorder.GetUndoStackOrigins(), turnId, unlabelled, out _);
         }
 
         private static AIUndoAvailability TurnUndoAvailability(
             IReadOnlyList<(string AITurn, bool HasOtherEdits)> origins,
             string turnId,
+            bool editedWithoutUndoLabel,
             out int steps)
         {
             bool IsTurnStep((string AITurn, bool HasOtherEdits) origin) =>
@@ -182,9 +189,7 @@ namespace Dynamo.Graph.Workspaces
                 return AIUndoAvailability.Available;
             }
 
-            return origins.Any(origin => origin.AITurn == UndoRedoRecorder.UnknownAITurn)
-                ? AIUndoAvailability.NotSupported
-                : AIUndoAvailability.NothingToUndo;
+            return editedWithoutUndoLabel ? AIUndoAvailability.NotSupported : AIUndoAvailability.NothingToUndo;
         }
 
         /// <summary>
@@ -198,7 +203,7 @@ namespace Dynamo.Graph.Workspaces
                 return false;
             }
 
-            TurnUndoAvailability(undoRecorder.GetUndoStackOrigins(), turnId, out var steps);
+            TurnUndoAvailability(undoRecorder.GetUndoStackOrigins(), turnId, false, out var steps);
             undoRecorder.MergeTopActionGroups(steps);
             var stepsBeforeUndo = undoRecorder.GetUndoStackOrigins().Count;
             Undo();

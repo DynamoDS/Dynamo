@@ -269,6 +269,24 @@ namespace Dynamo.Tests
             Assert.IsTrue(Workspace.Nodes.Contains(node), "Nothing is undone.");
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void AnOldUnlabelledStepDoesNotHideUndoAllForALabelledTurn()
+        {
+            // A step left by an older DynamoMCP, further back in the history
+            using (Workspace.BeginAIEdit())
+            {
+                Create(new DoubleInput());
+            }
+
+            var placed = PlaceByAssistant(TurnA, new DoubleInput(), 200, 0);
+            Undo(); // Ctrl+Z takes the turn's own step off the history
+
+            Assert.IsNull(Find(placed.GUID));
+            Assert.AreEqual(AIUndoAvailability.NothingToUndo, Workspace.GetAITurnUndoAvailability(TurnA),
+                "The turn's steps were labelled, so Undo all is shown as unavailable, not hidden.");
+        }
+
         #endregion
 
         #region Undo this change

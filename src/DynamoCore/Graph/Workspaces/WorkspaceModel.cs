@@ -1442,6 +1442,12 @@ namespace Dynamo.Graph.Workspaces
                 aiTurns.Add(turnId, turn);
             }
 
+            // Called by the Record methods: an AI edit without a turn id leaves its undo steps unlabelled
+            if (IsAIEditInProgress && Volatile.Read(ref currentAITurnId) == null)
+            {
+                turn.EditedWithoutUndoLabel = true;
+            }
+
             return turn;
         }
 
