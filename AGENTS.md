@@ -179,6 +179,15 @@ Run what matches your change. Builds work on Windows (and `DynamoCore.sln` on Li
 - [ ] New node → `.dyn` + `.md` + `.jpg` under `doc/distrib/NodeHelpFiles/`
 - [ ] User-facing string → moved to a `.resx` file
 
+## Spec-Driven Development (OpenSpec)
+
+Behavior-level changes (new or changed functional or non-functional requirements, architecture decisions) get an OpenSpec proposal in addition to the code. Specs live in `openspec/specs/`, active proposals in `openspec/changes/`, archived ones in `openspec/changes/archive/`. Config and per-artifact rules: `openspec/config.yaml`.
+
+- Use the `openspec-propose` skill to generate `proposal.md`, spec deltas, `design.md` and `tasks.md` in one pass. Planning only; implement with `openspec-apply-change`.
+- Use `openspec-explore` to think through a change first, and `openspec-archive-change` to land it.
+- **CLI:** not a repo dependency. Install globally (`npm i -g @fission-ai/openspec`) or prefix with `npx @fission-ai/openspec`. Validate with `openspec validate --all --no-interactive`.
+- Bug fixes, refactors, dependency bumps and other changes that leave observable behavior alone do not need a proposal.
+
 ## Detailed Guidance
 
 Read `.claude/` for comprehensive skills and templates:
