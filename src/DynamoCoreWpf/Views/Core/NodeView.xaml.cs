@@ -142,6 +142,7 @@ namespace Dynamo.Controls
         private AIHaloGlow aiHaloClockGlow;
         private int aiHaloClockVersion;
         private Grid aiBadge;
+        private TextBlock aiBadgeToolTipText;
         private ItemsControl outputPortControl;
         private Button optionsButton;
 
@@ -248,6 +249,12 @@ namespace Dynamo.Controls
         private static readonly BitmapImage nodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
         private static readonly BitmapImage nodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
         private static readonly BitmapImage aiBadgeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png"));
+        private static readonly SolidColorBrush aiBadgeToolTipBackgroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["AIBadgeToolTipBackgroundBrush"] as SolidColorBrush;
+        private static readonly SolidColorBrush aiBadgeToolTipForegroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["AIBadgeToolTipForegroundBrush"] as SolidColorBrush;
+        private static readonly ControlTemplate aiBadgeToolTipTemplate = CreateAIBadgeToolTipTemplate();
+
+        // Below the node and clear of its halo, which extends up to 16px past the edge
+        private const double AIBadgeToolTipGap = 20;
         private static ImageBrush defaultNodeIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
             Stretch = Stretch.UniformToFill
@@ -296,6 +303,9 @@ namespace Dynamo.Controls
         public NodeView()
         {
             InitializeComponent();
+
+            // Tab between the AI badge and changed inputs instead of selecting neighbours
+            PreviewKeyDown += OnPreviewKeyDownAIReview;
 
             this.grid = new Grid()
             {
@@ -1583,7 +1593,8 @@ namespace Dynamo.Controls
             {
                 UpdateAIHalo();
             }
-            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge))
+            else if (e.PropertyName == nameof(NodeViewModel.ShowAIBadge)
+                || e.PropertyName == nameof(NodeViewModel.AIBadgeToolTip))
             {
                 UpdateAIBadge();
             }
@@ -1788,14 +1799,86 @@ namespace Dynamo.Controls
 
             if (aiBadge == null)
             {
-                aiBadge = CreateAIBadge();
+                aiBadge = CreateAIBadge(out aiBadgeToolTipText);
                 grid.Children.Add(aiBadge);
+
+                // Figma 8:304 puts the tooltip under the node, lined up with its left edge
+                ((ToolTip)aiBadge.ToolTip).PlacementTarget = nodeBorder;
             }
 
+            aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
             aiBadge.Visibility = Visibility.Visible;
         }
 
-        private static Grid CreateAIBadge()
+        /// <summary>
+        /// The text of the AI Assistant badge's tooltip, or null if this node has never needed a
+        /// badge. Exposed for tests.
+        /// </summary>
+        internal string AIBadgeToolTipText => aiBadgeToolTipText?.Text;
+
+        /// <summary>
+        /// Moves keyboard focus to the AI Assistant badge, which shows its tooltip. From there, Tab
+        /// and Shift+Tab move between the badge and the inputs the Assistant changed, opening each
+        /// input's popover, and Escape returns focus to the canvas.
+        /// </summary>
+        /// <returns>False if the node has no badge.</returns>
+        internal bool FocusAIReview()
+        {
+            if (aiBadge?.Visibility != Visibility.Visible) return false;
+
+            return ReferenceEquals(Keyboard.Focus(aiBadge), aiBadge);
+        }
+
+        /// <summary>
+        /// What Tab moves between while reviewing this node's AI change: the badge, then each changed
+        /// input in port order. Changed inputs are the only focusable port views.
+        /// </summary>
+        private List<UIElement> GetAIReviewTargets()
+        {
+            var targets = new List<UIElement>();
+            if (aiBadge?.Visibility == Visibility.Visible)
+            {
+                targets.Add(aiBadge);
+            }
+
+            foreach (var port in this.ChildrenOfType<InPorts>())
+            {
+                if (port.Focusable && port.IsVisible)
+                {
+                    targets.Add(port);
+                }
+            }
+
+            return targets;
+        }
+
+        private void OnPreviewKeyDownAIReview(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Tab && e.Key != Key.Escape) return;
+
+            // Ctrl+Tab and Alt+Tab keep their usual meaning
+            if ((Keyboard.Modifiers & (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Alt)) != 0) return;
+
+            // Only while reviewing: focus anywhere else in the node, such as a text box, is left alone
+            var targets = GetAIReviewTargets();
+            var current = targets.IndexOf(Keyboard.FocusedElement as UIElement);
+            if (current < 0) return;
+
+            if (e.Key == Key.Escape)
+            {
+                ViewModel?.DynamoViewModel.OnRequestReturnFocusToView();
+            }
+            else
+            {
+                var step = (Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Shift) != 0 ? -1 : 1;
+                Keyboard.Focus(targets[(current + step + targets.Count) % targets.Count]);
+            }
+
+            // Handled here, the window's Tab binding (select neighbours) does not run
+            e.Handled = true;
+        }
+
+        private static Grid CreateAIBadge(out TextBlock toolTipText)
         {
             var image = new Image
             {
@@ -1822,15 +1905,59 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, -AIBadgeOffset, -AIBadgeOffset, 0),
-                IsHitTestVisible = false
+                // Takes the pointer and keyboard focus for its tooltip
+                Focusable = true
             };
             badge.Children.Add(image);
+
+            // Clicks bubble to the node, which selects it. Most of the badge sits outside the
+            // node's bounds, so mark it as a drag handle: pressing it then drags the node instead
+            // of starting a selection box.
+            WorkspaceViewModel.SetIsNodeDragHandle(badge, true);
+
+            toolTipText = new TextBlock
+            {
+                FontFamily = artifactElementReg,
+                FontSize = 14,
+                Foreground = aiBadgeToolTipForegroundBrush,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 280
+            };
+
+            // Figma 8:304: white text on dark grey, below the node
+            badge.ToolTip = new ToolTip
+            {
+                Name = "aiBadgeToolTip",
+                OverridesDefaultStyle = true,
+                HasDropShadow = false,
+                Template = aiBadgeToolTipTemplate,
+                Placement = PlacementMode.Bottom,
+                VerticalOffset = AIBadgeToolTipGap,
+                Content = toolTipText
+            };
+            ToolTipService.SetShowsToolTipOnKeyboardFocus(badge, true);
 
             Grid.SetRow(badge, 1);
             Grid.SetColumnSpan(badge, 3);
             Canvas.SetZIndex(badge, 60);
 
             return badge;
+        }
+
+        /// <summary>
+        /// The AI badge's tooltip: a dark grey rounded box with the text inside (Figma 8:304).
+        /// </summary>
+        private static ControlTemplate CreateAIBadgeToolTipTemplate()
+        {
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.SetValue(Border.BackgroundProperty, aiBadgeToolTipBackgroundBrush);
+            border.SetValue(Border.CornerRadiusProperty, new CornerRadius(4));
+            border.SetValue(Border.PaddingProperty, new Thickness(12, 8, 12, 8));
+            border.AppendChild(new FrameworkElementFactory(typeof(ContentPresenter)));
+
+            var template = new ControlTemplate(typeof(ToolTip)) { VisualTree = border };
+            template.Seal();
+            return template;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

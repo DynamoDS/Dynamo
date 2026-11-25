@@ -85,6 +85,7 @@ namespace Dynamo.Core
         private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
         private const string AffectsSavedStateAttrib = "AffectsSavedState";
+        private const string AITurnIdAttrib = "AITurnId";
 
         private readonly IUndoRedoRecorderClient undoClient;
         private readonly XmlDocument document = new XmlDocument();
@@ -99,6 +100,11 @@ namespace Dynamo.Core
         // merged into a single group when the scope closes.
         private int coalescingDepth;
         private int coalescingStackMark;
+
+        // The AI Assistant turn that recorded into the open coalescing scope (see
+        // TagCoalescingScopeWithAITurn), or null. Empty when more than one turn did: the group the
+        // scope leaves then holds several turns' edits and belongs to none of them.
+        private string coalescingAITurnId;
 
         #endregion
 
@@ -193,6 +199,7 @@ namespace Dynamo.Core
             if (coalescingDepth == 0)
             {
                 coalescingStackMark = undoStack.Count;
+                coalescingAITurnId = null;
             }
 
             coalescingDepth++;
@@ -221,7 +228,36 @@ namespace Dynamo.Core
                 MergeActionGroupsAbove(coalescingStackMark);
             }
 
+            // The scope's single group now sits on top, if it recorded anything
+            if (!string.IsNullOrEmpty(coalescingAITurnId) && undoStack.Count > coalescingStackMark)
+            {
+                undoStack.Peek().SetAttribute(AITurnIdAttrib, coalescingAITurnId);
+            }
+
+            coalescingAITurnId = null;
+
             undoClient.UpdateUndoRedoStack();
+        }
+
+        /// <summary>
+        /// Marks the open coalescing scope as holding an AI Assistant turn's edits, so the action
+        /// group it leaves on the undo stack names the turn (see <see cref="TopActionGroupAITurnId"/>).
+        /// Does nothing outside a scope. A scope more than one turn recorded into names none.
+        /// </summary>
+        /// <param name="turnId">Identifies the turn.</param>
+        internal void TagCoalescingScopeWithAITurn(string turnId)
+        {
+            if (coalescingDepth == 0 || string.IsNullOrEmpty(turnId))
+                return;
+
+            if (coalescingAITurnId == null)
+            {
+                coalescingAITurnId = turnId;
+            }
+            else if (!string.Equals(coalescingAITurnId, turnId, StringComparison.Ordinal))
+            {
+                coalescingAITurnId = string.Empty;
+            }
         }
 
         /// <summary>
@@ -419,6 +455,22 @@ namespace Dynamo.Core
         /// <see cref="Dynamo.Graph.Workspaces.WorkspaceModel.BeginUndoActionGroup"/>.
         /// </summary>
         internal bool IsCoalescingScopeOpen { get { return coalescingDepth > 0; } }
+
+        /// <summary>
+        /// The AI Assistant turn whose edits the next undo would revert, or null if that undo step
+        /// is not one turn's (see <see cref="TagCoalescingScopeWithAITurn"/>).
+        /// </summary>
+        internal string TopActionGroupAITurnId
+        {
+            get
+            {
+                if (undoStack.Count == 0)
+                    return null;
+
+                var turnId = undoStack.Peek().GetAttribute(AITurnIdAttrib);
+                return string.IsNullOrEmpty(turnId) ? null : turnId;
+            }
+        }
 
         /// <summary>
         /// The number of action groups currently on the undo stack that actually affect
@@ -629,6 +681,7 @@ namespace Dynamo.Core
             if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                 newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
 
+            CopyAITurnId(actionGroup, newGroup);
             redoStack.Push(newGroup); // Place the states on the redo-stack.
         }
 
@@ -678,7 +731,19 @@ namespace Dynamo.Core
             if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                 newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
 
+            CopyAITurnId(actionGroup, newGroup);
             undoStack.Push(newGroup);
+        }
+
+        /// <summary>
+        /// Keeps a group's AI Assistant turn (see <see cref="TagCoalescingScopeWithAITurn"/>) as it
+        /// moves between the undo and redo stacks.
+        /// </summary>
+        private static void CopyAITurnId(XmlElement from, XmlElement to)
+        {
+            var turnId = from.GetAttribute(AITurnIdAttrib);
+            if (!string.IsNullOrEmpty(turnId))
+                to.SetAttribute(AITurnIdAttrib, turnId);
         }
 
         #endregion

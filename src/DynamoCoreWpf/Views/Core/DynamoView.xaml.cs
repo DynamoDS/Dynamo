@@ -2465,6 +2465,12 @@ namespace Dynamo.Controls
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
 
+            if (e.Key == Key.Enter && TryFocusSelectedNodeAIReview())
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (e.Key != Key.Escape) return;
 
             // A new press starts fresh, even if the last release never reached the window
@@ -2513,6 +2519,38 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// Enter on the canvas with a node the AI Assistant placed or modified selected: moves
+        /// keyboard focus to that node's AI badge, the way into its review by keyboard (see
+        /// <see cref="NodeView.FocusAIReview"/>). Does nothing while a text box or other control has
+        /// focus, so Enter keeps its meaning there.
+        /// </summary>
+        /// <returns>True if focus moved to a badge.</returns>
+        internal bool TryFocusSelectedNodeAIReview()
+        {
+            if (Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None) return false;
+
+            // The canvas has focus when the window or one of its focus-holding grids has it
+            var focused = Keyboard.FocusedElement;
+            if (!ReferenceEquals(focused, this) && !ReferenceEquals(focused, FocusableGrid)
+                && !ReferenceEquals(focused, mainGrid))
+            {
+                return false;
+            }
+
+            // Skip walking the canvas unless a selected node has an AI change to review
+            if (!Dynamo.Selection.DynamoSelection.Instance.Selection
+                .OfType<Dynamo.Graph.Nodes.NodeModel>().Any(node => node.AIChange != null))
+            {
+                return false;
+            }
+
+            var nodeView = this.ChildrenOfType<NodeView>()
+                .FirstOrDefault(view => view.ViewModel?.IsSelected == true && view.ViewModel.ShowAIBadge);
+
+            return nodeView?.FocusAIReview() == true;
         }
 
         /// <summary>
