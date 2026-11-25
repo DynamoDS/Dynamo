@@ -3988,13 +3988,13 @@ Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet des
     <value>Mostrar</value>
   </data>
   <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
-    <value>Asistente de Autodesk</value>
+    <value>Autodesk Assistant</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
-    <value>Show summary of Assistant changes</value>
+    <value>Mostrar resumen de los cambios en Autodesk Assistant</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
-    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
+    <value>Muestra un recuadro en la parte inferior del lienzo que resume los últimos cambios de Autodesk Assistant. Al desactivar esta opción, no desaparece el resaltado de los nodos modificados.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
