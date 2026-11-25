@@ -279,9 +279,7 @@ namespace Dynamo.Scheduler
 
             gathered.Add(node);
 
-            var sets = node.OutputNodes.Values;
-            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
-            foreach (var outputNode in outputNodes)
+            foreach (var outputNode in node.GetAllDownstreamNodes())
             {
                 // Recursively get all downstream nodes.
                 GetDownstreamNodes(outputNode, gathered);

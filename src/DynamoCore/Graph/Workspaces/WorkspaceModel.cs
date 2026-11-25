@@ -340,6 +340,7 @@ namespace Dynamo.Graph.Workspaces
         /// This is set to false, if the workspace is cleared or disposed.
         /// </summary>
         private bool workspaceLoaded;
+        private bool isReconcilingDataChannels;
 
         /// <summary>
         /// This event is raised after the workspace tries to resolve existing dummyNodes - for example after a new package or library is loaded.
@@ -577,6 +578,11 @@ namespace Dynamo.Graph.Workspaces
             {
                 obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
             }
+
+            if (HasDataChannelNodes())
+            {
+                ReconcileDataChannels(notifyChanges: true);
+            }
         }
 
         private void RegisterConnector(ConnectorModel connector)
@@ -599,6 +605,11 @@ namespace Dynamo.Graph.Workspaces
             if (workspaceLoaded)
             {
                 obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
+            }
+
+            if (HasDataChannelNodes())
+            {
+                ReconcileDataChannels(notifyChanges: true);
             }
         }
 
@@ -1791,6 +1802,8 @@ namespace Dynamo.Graph.Workspaces
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
 
+            ReconcileDataChannels(notifyChanges: false, requestRun: false);
+
             SetModelEventOnAnnotation();
             WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
         }
@@ -2001,6 +2014,11 @@ namespace Dynamo.Graph.Workspaces
 
             AddNode(node);
 
+            if (!node.IsTransient && node is IDataChannelNode)
+            {
+                ReconcileDataChannels(notifyChanges: true, requestRun: false);
+            }
+
             if (!node.IsTransient)
             {
                 HasUnsavedChanges = true;
@@ -2016,6 +2034,11 @@ namespace Dynamo.Graph.Workspaces
             node.PropertyChanged += ClearAIChangeOnSettingChange;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
+
+            if (node is IDataChannelNode channelNode)
+            {
+                channelNode.ChannelNameChanged += OnDataChannelNameChanged;
+            }
 
             var functionNode = node as Function;
             if (functionNode != null)
@@ -2092,10 +2115,22 @@ namespace Dynamo.Graph.Workspaces
             {
                 DisposeNode(model);
             }
+
+            if (!model.IsTransient && model is IDataChannelNode)
+            {
+                model.ClearLogicalEdges();
+                ReconcileDataChannels(notifyChanges: true);
+            }
         }
 
         protected virtual void DisposeNode(NodeModel node)
         {
+            if (node is IDataChannelNode channelNode)
+            {
+                channelNode.ChannelNameChanged -= OnDataChannelNameChanged;
+                node.ClearLogicalEdges();
+            }
+
             var functionNode = node as Function;
             if (functionNode != null)
             {
@@ -2108,6 +2143,239 @@ namespace Dynamo.Graph.Workspaces
             node.EditedWhileFrozen -= ClearAIChangeOnFrozenEdit;
             node.PropertyChanged -= ClearAIChangeOnSettingChange;
             node.Dispose();
+        }
+
+        private void OnDataChannelNameChanged(NodeModel node)
+        {
+            if (node == null || node.IsTransient)
+            {
+                return;
+            }
+
+            HasUnsavedChanges = true;
+            ReconcileDataChannels(notifyChanges: true);
+        }
+
+        private bool HasDataChannelNodes()
+        {
+            lock (nodes)
+            {
+                return nodes.Any(n => n is IDataChannelNode && !n.IsTransient);
+            }
+        }
+
+        private static string NormalizeDataChannelName(string name)
+        {
+            return string.IsNullOrWhiteSpace(name) ? string.Empty : name.Trim();
+        }
+
+        private static bool IsNodeReachable(NodeModel from, NodeModel target)
+        {
+            var visited = new HashSet<NodeModel>();
+            var stack = new Stack<NodeModel>();
+            stack.Push(from);
+            visited.Add(from);
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                foreach (var next in current.GetAllDownstreamNodes())
+                {
+                    if (ReferenceEquals(next, target))
+                    {
+                        return true;
+                    }
+
+                    if (visited.Add(next))
+                    {
+                        stack.Push(next);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        internal bool ReconcileDataChannels(bool notifyChanges, bool requestRun = true)
+        {
+            if (isReconcilingDataChannels)
+            {
+                return false;
+            }
+
+            isReconcilingDataChannels = true;
+            try
+            {
+                List<NodeModel> snapshot;
+                lock (nodes)
+                {
+                    snapshot = nodes.Where(n => !n.IsTransient).ToList();
+                }
+
+                var senders = new List<NodeModel>();
+                var receivers = new List<NodeModel>();
+                foreach (var n in snapshot)
+                {
+                    if (n is IDataChannelSender)
+                    {
+                        senders.Add(n);
+                    }
+                    if (n is IDataChannelReceiver)
+                    {
+                        receivers.Add(n);
+                    }
+                }
+
+                if (senders.Count == 0 && receivers.Count == 0)
+                {
+                    return false;
+                }
+
+                var sendersByChannel = new Dictionary<string, List<NodeModel>>(StringComparer.Ordinal);
+                foreach (var senderNode in senders)
+                {
+                    var key = NormalizeDataChannelName(((IDataChannelSender)senderNode).ChannelName);
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        continue;
+                    }
+
+                    if (!sendersByChannel.TryGetValue(key, out var list))
+                    {
+                        list = new List<NodeModel>();
+                        sendersByChannel[key] = list;
+                    }
+                    list.Add(senderNode);
+                }
+
+                var uniqueSenders = new Dictionary<string, NodeModel>(StringComparer.Ordinal);
+                var duplicateChannels = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var kvp in sendersByChannel)
+                {
+                    if (kvp.Value.Count == 1)
+                    {
+                        uniqueSenders[kvp.Key] = kvp.Value[0];
+                    }
+                    else
+                    {
+                        duplicateChannels.Add(kvp.Key);
+                    }
+                }
+
+                var availableChannels = sendersByChannel.Keys
+                    .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(k => k, StringComparer.Ordinal)
+                    .ToList();
+
+                var prevFrozenState = new Dictionary<NodeModel, bool>(receivers.Count);
+                foreach (var receiverNode in receivers)
+                {
+                    prevFrozenState[receiverNode] = receiverNode.IsFrozen;
+                }
+
+                foreach (var senderNode in senders)
+                {
+                    senderNode.ClearLogicalEdges();
+                    var sender = (IDataChannelSender)senderNode;
+                    var key = NormalizeDataChannelName(sender.ChannelName);
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        sender.UpdateChannelBinding(DataChannelBindingStatus.Unassigned);
+                    }
+                    else if (duplicateChannels.Contains(key))
+                    {
+                        sender.UpdateChannelBinding(DataChannelBindingStatus.DuplicateSender);
+                    }
+                    else
+                    {
+                        sender.UpdateChannelBinding(DataChannelBindingStatus.Bound);
+                    }
+                }
+
+                foreach (var receiverNode in receivers)
+                {
+                    receiverNode.ClearLogicalEdges();
+                }
+
+                var changedReceivers = new List<NodeModel>();
+                foreach (var receiverNode in receivers)
+                {
+                    var receiver = (IDataChannelReceiver)receiverNode;
+                    receiver.UpdateAvailableChannels(availableChannels);
+
+                    var key = NormalizeDataChannelName(receiver.ChannelName);
+                    NodeModel targetSender = null;
+                    DataChannelBindingStatus status;
+
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        status = DataChannelBindingStatus.Unassigned;
+                    }
+                    else if (duplicateChannels.Contains(key))
+                    {
+                        status = DataChannelBindingStatus.DuplicateSender;
+                    }
+                    else if (!uniqueSenders.TryGetValue(key, out var candidateSender))
+                    {
+                        status = DataChannelBindingStatus.MissingSender;
+                    }
+                    else if (ReferenceEquals(candidateSender, receiverNode) || IsNodeReachable(receiverNode, candidateSender))
+                    {
+                        status = DataChannelBindingStatus.CyclicDependency;
+                    }
+                    else
+                    {
+                        targetSender = candidateSender;
+                        status = DataChannelBindingStatus.Bound;
+                        receiverNode.SetLogicalUpstreamNode(candidateSender);
+                        candidateSender.AddLogicalDownstreamNode(receiverNode);
+                    }
+
+                    if (receiver.UpdateChannelBinding(targetSender, status))
+                    {
+                        changedReceivers.Add(receiverNode);
+                    }
+                }
+
+                bool anyRunNeeded = false;
+                foreach (var receiverNode in changedReceivers)
+                {
+                    receiverNode.ComputeUpstreamOnDownstreamNodes();
+
+                    bool wasFrozen = prevFrozenState[receiverNode];
+                    bool isNowFrozen = receiverNode.IsFrozen;
+
+                    if (notifyChanges)
+                    {
+                        if (!wasFrozen && isNowFrozen)
+                        {
+                            OnToggleNodeFreeze(receiverNode);
+                        }
+                        else if (wasFrozen && !isNowFrozen)
+                        {
+                            receiverNode.MarkDownStreamNodesAsModified(receiverNode);
+                            receiverNode.MarkNodeAsModified();
+                            anyRunNeeded = true;
+                        }
+                        else if (!isNowFrozen)
+                        {
+                            receiverNode.MarkNodeAsModified();
+                            anyRunNeeded = true;
+                        }
+                    }
+                }
+
+                if (notifyChanges && requestRun && anyRunNeeded)
+                {
+                    RequestRun();
+                }
+
+                return anyRunNeeded;
+            }
+            finally
+            {
+                isReconcilingDataChannels = false;
+            }
         }
 
         private void AddNote(NoteModel note)

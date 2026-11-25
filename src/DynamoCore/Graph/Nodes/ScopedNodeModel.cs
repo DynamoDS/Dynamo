@@ -46,6 +46,11 @@ namespace Dynamo.Graph.Nodes
                 }
             }
 
+            if (!node.LogicalDownstreamNodes.All(n => scopes.Contains(n)))
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -118,6 +123,16 @@ namespace Dynamo.Graph.Nodes
                             workingList.Enqueue(inputNode);
                             scopedNodes.Add(inputNode);
                         }
+                    }
+                }
+
+                foreach (var logicalInput in currentNode.LogicalUpstreamNodes)
+                {
+                    if (!scopedNodes.Contains(logicalInput) &&
+                        (!checkEscape || IsNodeInScope(logicalInput, scopedNodes)))
+                    {
+                        workingList.Enqueue(logicalInput);
+                        scopedNodes.Add(logicalInput);
                     }
                 }
             }

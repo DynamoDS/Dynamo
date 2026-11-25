@@ -48,9 +48,7 @@ namespace Dynamo.Engine.CodeGeneration
             {
                 nodeFlags[node] = MarkFlag.TempMark;
 
-                IEnumerable<NodeModel> outputs =
-                    node.OutputNodes.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
-                foreach (NodeModel output in outputs)
+                foreach (NodeModel output in node.GetAllDownstreamNodes())
                     MarkNode(output, nodeFlags, sortedList);
 
                 nodeFlags[node] = MarkFlag.Marked;
@@ -115,6 +113,11 @@ namespace Dynamo.Engine.CodeGeneration
                 BfsTraverse(t.Item2, nodeFlags, sortedNodes);
             }
 
+            foreach (var logicalUpstream in node.LogicalUpstreamNodes)
+            {
+                BfsTraverse(logicalUpstream, nodeFlags, sortedNodes);
+            }
+
             sortedNodes.Enqueue(node);
             nodeFlags[node] = MarkFlag.Marked;
         }
@@ -149,7 +152,7 @@ namespace Dynamo.Engine.CodeGeneration
             var sortedNodes = new Queue<NodeModel>();
 
             // Returns roots of these nodes
-            var roots = nodes.Where(n => !n.OutputNodes.Any());
+            var roots = nodes.Where(n => !n.HasAnyDownstreamNodes());
             foreach (NodeModel candidate in roots)
                 BfsTraverse(candidate, nodeFlags, sortedNodes);
 

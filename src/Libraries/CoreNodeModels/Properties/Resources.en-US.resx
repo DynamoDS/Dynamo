@@ -760,4 +760,41 @@ double[]</value>
   <data name="CurveMapperInfoMessage" xml:space="preserve">
     <value>When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range.</value>
   </data>
+  <data name="SendDescription" xml:space="preserve">
+    <value>Broadcasts data on a named channel within the current workspace so matching Receive nodes can read it without a physical wire.</value>
+    <comment>Description for Send</comment>
+  </data>
+  <data name="SendSearchTags" xml:space="preserve">
+    <value>send;shout;broadcast;publish;wireless;portal;relay;channel;variable</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to separate them</comment>
+  </data>
+  <data name="SendInputToolTip" xml:space="preserve">
+    <value>Data to send on the named channel.</value>
+  </data>
+  <data name="SendOutputToolTip" xml:space="preserve">
+    <value>Passthrough of the sent data.</value>
+  </data>
+  <data name="SendDuplicateChannelWarning" xml:space="preserve">
+    <value>Duplicate Send channel '{0}'. Channel names must be unique within a workspace.</value>
+  </data>
+  <data name="ReceiveDescription" xml:space="preserve">
+    <value>Receives data broadcast by a matching Send node in the current workspace without a physical wire.</value>
+    <comment>Description for Receive</comment>
+  </data>
+  <data name="ReceiveSearchTags" xml:space="preserve">
+    <value>receive;listen;subscribe;wireless;portal;relay;channel;variable</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to separate them</comment>
+  </data>
+  <data name="ReceiveOutputToolTip" xml:space="preserve">
+    <value>Data received from the matching Send node.</value>
+  </data>
+  <data name="ReceiveDuplicateSenderWarning" xml:space="preserve">
+    <value>Multiple Send nodes use channel '{0}'. Rename duplicates so only one Send node broadcasts on this channel.</value>
+  </data>
+  <data name="ReceiveMissingSenderWarning" xml:space="preserve">
+    <value>No Send node found for channel '{0}'.</value>
+  </data>
+  <data name="ReceiveCyclicDependencyWarning" xml:space="preserve">
+    <value>Cyclic dependency detected on channel '{0}'. A Send node cannot depend on a Receive node reading the same channel.</value>
+  </data>
 </root>

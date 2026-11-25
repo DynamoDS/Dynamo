@@ -1787,5 +1787,104 @@ namespace CoreNodeModels.Properties {
                 return ResourceManager.GetString("WebRequestPortDataUrlToolTip", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Broadcasts data on a named channel within the current workspace so matching Receive nodes can read it without a physical wire..
+        /// </summary>
+        public static string SendDescription {
+            get {
+                return ResourceManager.GetString("SendDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to send;shout;broadcast;publish;wireless;portal;relay;channel;variable.
+        /// </summary>
+        public static string SendSearchTags {
+            get {
+                return ResourceManager.GetString("SendSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to send on the named channel..
+        /// </summary>
+        public static string SendInputToolTip {
+            get {
+                return ResourceManager.GetString("SendInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passthrough of the sent data..
+        /// </summary>
+        public static string SendOutputToolTip {
+            get {
+                return ResourceManager.GetString("SendOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate Send channel &apos;{0}&apos;. Channel names must be unique within a workspace..
+        /// </summary>
+        public static string SendDuplicateChannelWarning {
+            get {
+                return ResourceManager.GetString("SendDuplicateChannelWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Receives data broadcast by a matching Send node in the current workspace without a physical wire..
+        /// </summary>
+        public static string ReceiveDescription {
+            get {
+                return ResourceManager.GetString("ReceiveDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to receive;listen;subscribe;wireless;portal;relay;channel;variable.
+        /// </summary>
+        public static string ReceiveSearchTags {
+            get {
+                return ResourceManager.GetString("ReceiveSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data received from the matching Send node..
+        /// </summary>
+        public static string ReceiveOutputToolTip {
+            get {
+                return ResourceManager.GetString("ReceiveOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple Send nodes use channel &apos;{0}&apos;. Rename duplicates so only one Send node broadcasts on this channel..
+        /// </summary>
+        public static string ReceiveDuplicateSenderWarning {
+            get {
+                return ResourceManager.GetString("ReceiveDuplicateSenderWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Send node found for channel &apos;{0}&apos;..
+        /// </summary>
+        public static string ReceiveMissingSenderWarning {
+            get {
+                return ResourceManager.GetString("ReceiveMissingSenderWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cyclic dependency detected on channel &apos;{0}&apos;. A Send node cannot depend on a Receive node reading the same channel..
+        /// </summary>
+        public static string ReceiveCyclicDependencyWarning {
+            get {
+                return ResourceManager.GetString("ReceiveCyclicDependencyWarning", resourceCulture);
+            }
+        }
     }
 }

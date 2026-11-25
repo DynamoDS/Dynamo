@@ -522,7 +522,7 @@ namespace Dynamo.Engine.NodeToCode
             List<NodeModel> path)
         {
             var leaf = path.Last();
-            var children = leaf.OutputNodes.Values.SelectMany(s => s).Select(t => t.Item2);
+            var children = leaf.GetAllDownstreamNodes();
             if (children.Any())
             {
                 foreach (var child in children)

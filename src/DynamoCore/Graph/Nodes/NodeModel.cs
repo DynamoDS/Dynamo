@@ -110,6 +110,8 @@ namespace Dynamo.Graph.Nodes
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
+        private readonly HashSet<NodeModel> logicalUpstreamNodes = new HashSet<NodeModel>();
+        private readonly HashSet<NodeModel> logicalDownstreamNodes = new HashSet<NodeModel>();
 
         #endregion
 
@@ -1211,12 +1213,11 @@ namespace Dynamo.Graph.Nodes
         internal void ComputeUpstreamCache()
         {
             this.UpstreamCache = new HashSet<NodeModel>();
-            var inpNodes = this.InputNodes.Values;
 
-            foreach (var inputnode in inpNodes.Where(x => x != null))
+            foreach (var inputNode in GetAllUpstreamNodes())
             {
-                this.UpstreamCache.Add(inputnode.Item2);
-                foreach (var upstreamNode in inputnode.Item2.UpstreamCache)
+                this.UpstreamCache.Add(inputNode);
+                foreach (var upstreamNode in inputNode.UpstreamCache)
                 {
                     this.UpstreamCache.Add(upstreamNode);
                 }
@@ -1243,11 +1244,10 @@ namespace Dynamo.Graph.Nodes
             foreach (var downstreamNode in AstBuilder.TopologicalSort(downStreamNodes))
             {
                 downstreamNode.UpstreamCache = new HashSet<NodeModel>();
-                var currentinpNodes = downstreamNode.InputNodes.Values;
-                foreach (var inputnode in currentinpNodes.Where(x => x != null))
+                foreach (var inputNode in downstreamNode.GetAllUpstreamNodes())
                 {
-                    downstreamNode.UpstreamCache.Add(inputnode.Item2);
-                    foreach (var upstreamNode in inputnode.Item2.UpstreamCache)
+                    downstreamNode.UpstreamCache.Add(inputNode);
+                    foreach (var upstreamNode in inputNode.UpstreamCache)
                     {
                         downstreamNode.UpstreamCache.Add(upstreamNode);
                     }
@@ -1274,7 +1274,7 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         internal bool IsUpstreamCacheRefreshInProgress { get; private set; }
 
-        private void MarkDownStreamNodesAsModified(NodeModel node)
+        internal void MarkDownStreamNodesAsModified(NodeModel node)
         {
             HashSet<NodeModel> gathered = new HashSet<NodeModel>();
             GetDownstreamNodes(node, gathered);
@@ -1296,9 +1296,7 @@ namespace Dynamo.Graph.Nodes
 
             gathered.Add(node);
 
-            var sets = node.OutputNodes.Values;
-            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2));
-            foreach (var outputNode in outputNodes)
+            foreach (var outputNode in node.GetAllDownstreamNodes())
             {
                 // Recursively get all downstream nodes.
                 GetDownstreamNodes(outputNode, gathered);
@@ -1832,8 +1830,61 @@ namespace Dynamo.Graph.Nodes
                     return port.Connectors.Any(connector => connector.End.Owner is Output);
                 }
 
+                if (HasLogicalDownstreamNodes)
+                    return false;
+
                 return true;
             }
+        }
+
+        internal IEnumerable<NodeModel> LogicalUpstreamNodes => logicalUpstreamNodes;
+
+        internal IEnumerable<NodeModel> LogicalDownstreamNodes => logicalDownstreamNodes;
+
+        internal bool HasLogicalDownstreamNodes => logicalDownstreamNodes.Count > 0;
+
+        internal void SetLogicalUpstreamNode(NodeModel upstream)
+        {
+            logicalUpstreamNodes.Clear();
+            if (upstream != null)
+            {
+                logicalUpstreamNodes.Add(upstream);
+            }
+        }
+
+        internal void AddLogicalDownstreamNode(NodeModel downstream)
+        {
+            if (downstream != null)
+            {
+                logicalDownstreamNodes.Add(downstream);
+            }
+        }
+
+        internal void ClearLogicalEdges()
+        {
+            logicalUpstreamNodes.Clear();
+            logicalDownstreamNodes.Clear();
+        }
+
+        internal IEnumerable<NodeModel> GetAllUpstreamNodes()
+        {
+            var physical = inputNodes.Values.Where(x => x != null).Select(x => x.Item2);
+            return logicalUpstreamNodes.Count == 0
+                ? physical
+                : physical.Concat(logicalUpstreamNodes).Distinct();
+        }
+
+        internal IEnumerable<NodeModel> GetAllDownstreamNodes()
+        {
+            var physical = outputNodes.Values.SelectMany(set => set.Select(t => t.Item2));
+            return logicalDownstreamNodes.Count == 0
+                ? physical.Distinct()
+                : physical.Concat(logicalDownstreamNodes).Distinct();
+        }
+
+        internal bool HasAnyDownstreamNodes()
+        {
+            return outputNodes.Values.Any(set => set.Count > 0) || logicalDownstreamNodes.Count > 0;
         }
 
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
