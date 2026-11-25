@@ -248,4 +248,10 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>何も変更されませんでした。このノードのスクリプトがこのウィンドウを開いた後に変更されたか、Python エディタに未保存の編集があるか閉じられました。</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

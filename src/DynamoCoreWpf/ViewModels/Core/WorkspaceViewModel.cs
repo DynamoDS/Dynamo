@@ -273,6 +273,29 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// True while the person drags a selection box. Nodes it selects keep their AI highlight until
+        /// it is released.
+        /// </summary>
+        internal bool IsBoxSelecting { get; private set; }
+
+        internal void OnBoxSelectionStarted()
+        {
+            IsBoxSelecting = true;
+        }
+
+        /// <summary>
+        /// Clears the AI highlight of the nodes the selection box selected and that are still selected.
+        /// </summary>
+        internal void OnBoxSelectionEnded()
+        {
+            IsBoxSelecting = false;
+            foreach (var node in Nodes.ToList())
+            {
+                node.ApplyPendingAIClear();
+            }
+        }
+
         #endregion
 
         internal event Action RequestNodeAutoCompleteSearch;

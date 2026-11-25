@@ -248,4 +248,10 @@
   <data name="PythonScriptReviewNothingChangedMessage" xml:space="preserve">
     <value>沒有任何內容改變。此節點的腳本在此視窗開啟後發生變更，或其 Python 編輯器有未儲存的編輯或被關閉。</value>
   </data>
+  <data name="NextChangeButtonTooltip" xml:space="preserve">
+    <value>Next change</value>
+  </data>
+  <data name="PreviousChangeButtonTooltip" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
 </root>

@@ -11,6 +11,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
+        <!--  The square where the two scroll bars meet uses this system colour; make it match the pane  -->
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
         <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment"
                     Value="Center" />
@@ -78,9 +80,13 @@
                    VerticalAlignment="Center"
                    Foreground="#808080"/>
 
+        <!-- Lines do not wrap, so both panes have the same rows. Scrolling one pane scrolls the other (see code-behind). -->
         <Grid Grid.Row="1"
               Grid.Column="0">
-            <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <ScrollViewer x:Name="BeforeScroll"
+                          VerticalScrollBarVisibility="Visible"
+                          HorizontalScrollBarVisibility="Auto"
+                          ScrollChanged="OnPaneScrollChanged">
                 <RichTextBox IsReadOnly="True"
                              x:Name="BeforePanel"
                              viewModels:RichTextBoxHandler.Update="{Binding BeforePane}" />
@@ -89,8 +95,11 @@
         </Grid>
 
         <Grid Grid.Row="1"
-              Grid.Column="3">
-            <ScrollViewer VerticalScrollBarVisibility="Visible">
+              Grid.Column="2">
+            <ScrollViewer x:Name="AfterScroll"
+                          VerticalScrollBarVisibility="Visible"
+                          HorizontalScrollBarVisibility="Auto"
+                          ScrollChanged="OnPaneScrollChanged">
                 <RichTextBox IsReadOnly="True"
                              x:Name="AfterPanel"
                              viewModels:RichTextBoxHandler.Update="{Binding AfterPane}"/>
