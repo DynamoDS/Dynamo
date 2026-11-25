@@ -184,8 +184,7 @@ Run what matches your change. Builds work on Windows (and `DynamoCore.sln` on Li
 Behavior-level changes (new or changed functional or non-functional requirements, architecture decisions) get an OpenSpec proposal in addition to the code. Specs live in `openspec/specs/`, active proposals in `openspec/changes/`, archived ones in `openspec/changes/archive/`. Config and per-artifact rules: `openspec/config.yaml`.
 
 - Use the `openspec-propose` skill to generate `proposal.md`, spec deltas, `design.md` and `tasks.md` in one pass. Planning only; implement with `openspec-apply-change`.
-- For a step-by-step flow, use `openspec-new-change` then `openspec-continue-change` (one artifact at a time), or `openspec-ff-change` to generate the rest. `bulk-archive` archives several completed changes at once.
-- Use `openspec-explore` to think through a change first, `openspec-update-change` to revise one, and `openspec-sync-specs` / `openspec-archive-change` to land it.
+- Use `openspec-explore` to think through a change first, and `openspec-archive-change` to land it.
 - **CLI:** not a repo dependency. Install globally (`npm i -g @fission-ai/openspec`) or prefix with `npx @fission-ai/openspec`. Validate with `openspec validate --all --no-interactive`.
 - Bug fixes, refactors, dependency bumps and other changes that leave observable behavior alone do not need a proposal.
 
