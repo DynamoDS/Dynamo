@@ -33,6 +33,23 @@ If you are working on legacy branches, you may need to install legacy .NET Frame
 The Dynamo user interface is Windows-only, but the Dynamo engine can be built for other platforms. [Directions for building Dynamo on Linux or OS X can be found here](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac).
 Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki) and [Dynamo Developer Resources](https://developer.dynamobim.org/).
 
+#### Incremental Builds
+
+To enable faster incremental builds during local development, assembly version information is not automatically regenerated on every build. This prevents unnecessary rebuilds of all projects.
+
+If you need to generate a new version number (e.g., for official builds or releases), pass the `RegenerateAssemblyInfo=true` property:
+
+```bash
+# For Windows with MSBuild
+msbuild src\Dynamo.All.sln /p:Configuration=Release /p:RegenerateAssemblyInfo=true
+
+# For Linux/Mac with dotnet
+dotnet build src/DynamoCore.sln -c Release /p:RegenerateAssemblyInfo=true
+```
+
+CI builds automatically regenerate version information with timestamps.
+
+
 ### Create a Node Library for Dynamo
 
 If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).
