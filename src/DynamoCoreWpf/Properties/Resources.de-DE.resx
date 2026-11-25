@@ -3986,13 +3986,13 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
     <value>Anzeigen</value>
   </data>
   <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
-    <value>Autodesk-Assistent</value>
+    <value>Autodesk Assistant</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
-    <value>Show summary of Assistant changes</value>
+    <value>Zusammenfassung der Assistant-Änderungen anzeigen</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
-    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
+    <value>Zeigt einen Chip am unteren Rand des Ansichtsbereichs an, auf dem die neuesten Autodesk Assistant-Änderungen zusammengefasst sind. Die Hervorhebung geänderter Blöcke wird nicht entfernt, wenn Sie diese Option deaktivieren.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
