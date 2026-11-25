@@ -306,6 +306,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next change.
+        /// </summary>
+        public static string NextChangeButtonTooltip {
+            get {
+                return ResourceManager.GetString("NextChangeButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
@@ -320,6 +329,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PackagedCustomNodesTooltip {
             get {
                 return ResourceManager.GetString("PackagedCustomNodesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous change.
+        /// </summary>
+        public static string PreviousChangeButtonTooltip {
+            get {
+                return ResourceManager.GetString("PreviousChangeButtonTooltip", resourceCulture);
             }
         }
         

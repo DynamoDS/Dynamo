@@ -361,7 +361,8 @@ namespace DSCore
                 var jobject = JObject.FromObject(value);
                 jobject.Add("$typeid", "dynamo.graphics:color-1.0.0");
 
-                jobject.WriteTo(writer);
+                // DYN-11186: the explicit converters array binds to the overload that older Newtonsoft hosts (Revit) have; 13.0.4 added the shorter one.
+                jobject.WriteTo(writer, Array.Empty<JsonConverter>());
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -387,7 +388,8 @@ namespace DSCore
                 var jobject = JObject.FromObject(value);
                 jobject.Add("$typeid", "dynamo.data:location-1.0.0");
 
-                jobject.WriteTo(writer);
+                // DYN-11186: the explicit converters array binds to the overload that older Newtonsoft hosts (Revit) have; 13.0.4 added the shorter one.
+                jobject.WriteTo(writer, Array.Empty<JsonConverter>());
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

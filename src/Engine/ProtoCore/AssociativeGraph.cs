@@ -865,6 +865,13 @@ namespace ProtoCore.AssociativeGraph
         public int exprUID { get; set; }
         public int ssaSubExpressionID { get; set; }
         public string CallsiteIdentifier { get; set; }
+
+        /// <summary>
+        /// True when this graphnode comes from a profiling marker statement
+        /// (see BinaryExpressionNode.IsProfilingMarker, DYN-11176).
+        /// </summary>
+        internal bool IsProfilingMarker { get; set; }
+
         public List<UpdateNode> dimensionNodeList { get; set; }
         public List<UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }

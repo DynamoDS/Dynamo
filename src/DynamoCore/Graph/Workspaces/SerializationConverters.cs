@@ -1223,7 +1223,8 @@ namespace Dynamo.Graph.Workspaces
             if (originalContent == null)
                 throw new ArgumentException("originalContent is not JSON compatible.");
 
-            originalContent.WriteTo(writer);
+            // DYN-11186: the explicit converters array binds to the overload that older Newtonsoft hosts (Revit) have; 13.0.4 added the shorter one.
+            originalContent.WriteTo(writer, Array.Empty<JsonConverter>());
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
