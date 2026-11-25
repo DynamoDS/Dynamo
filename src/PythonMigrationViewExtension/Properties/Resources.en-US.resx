@@ -256,6 +256,7 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   </data>
   <data name="PythonScriptApprovalWindowTitle" xml:space="preserve">
     <value>{0} - Approve Assistant Changes</value>
+  </data>
   <data name="NextChangeButtonTooltip" xml:space="preserve">
     <value>Next change</value>
   </data>
