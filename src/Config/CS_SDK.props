@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Platforms>AnyCPU;NET_Linux;Publish_Linux;</Platforms>
+    <Platforms>AnyCPU;NET_Linux;Publish_Linux;NET_OSX;Publish_OSX;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget >x64</PlatformTarget>
@@ -35,11 +35,11 @@
     <DebugSymbols>true</DebugSymbols>
     <SelfContained>false</SelfContained>
   </PropertyGroup>
-    <!--generate windows pdbs on windows and portable pdbs for linux builds - CER currently does not support portable-->
-    <PropertyGroup Condition="!$(Platform.Contains('Linux'))">
+    <!--generate windows pdbs on windows and portable pdbs for linux/osx builds - CER currently does not support portable-->
+    <PropertyGroup Condition="!$(Platform.Contains('Linux')) AND !$(Platform.Contains('OSX'))">
         <DebugType>full</DebugType>
     </PropertyGroup>
-    <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+    <PropertyGroup Condition="$(Platform.Contains('Linux')) OR $(Platform.Contains('OSX'))" >
         <DebugType>portable</DebugType>
     </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
@@ -62,6 +62,13 @@
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('OSX'))" >
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <DefineConstants>$(DefineConstants);_OSX</DefineConstants>
+    <!--Base PlatformTarget is x64; override to AnyCPU so it is compatible with the osx-arm64 RID
+        (NETSDK1032) and stays processor-agnostic for the x64-built package references.-->
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
     <TargetFramework>$(TargetFramework)-windows</TargetFramework>
