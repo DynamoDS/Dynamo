@@ -54,17 +54,16 @@ Dynamo.Graph.Workspaces.WorkspaceModel.StartAITurn(string turnId) -> void
 Dynamo.Engine.EngineController.IsProfilingEnabled.get -> bool
 Dynamo.Graph.Nodes.DataChannelBindingStatus
 Dynamo.Graph.Nodes.DataChannelBindingStatus.Bound = 1 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
-Dynamo.Graph.Nodes.DataChannelBindingStatus.CyclicDependency = 4 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
-Dynamo.Graph.Nodes.DataChannelBindingStatus.DuplicateSender = 2 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
-Dynamo.Graph.Nodes.DataChannelBindingStatus.MissingSender = 3 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
+Dynamo.Graph.Nodes.DataChannelBindingStatus.CyclicDependency = 3 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
+Dynamo.Graph.Nodes.DataChannelBindingStatus.MissingSender = 2 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
 Dynamo.Graph.Nodes.DataChannelBindingStatus.Unassigned = 0 -> Dynamo.Graph.Nodes.DataChannelBindingStatus
 Dynamo.Graph.Nodes.IDataChannelNode
 Dynamo.Graph.Nodes.IDataChannelNode.ChannelName.get -> string
 Dynamo.Graph.Nodes.IDataChannelNode.ChannelNameChanged -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.IDataChannelReceiver
-Dynamo.Graph.Nodes.IDataChannelReceiver.BoundSender.get -> Dynamo.Graph.Nodes.NodeModel
+Dynamo.Graph.Nodes.IDataChannelReceiver.BoundSenders.get -> System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.IDataChannelReceiver.UpdateAvailableChannels(System.Collections.Generic.IReadOnlyList<string> availableChannels) -> void
-Dynamo.Graph.Nodes.IDataChannelReceiver.UpdateChannelBinding(Dynamo.Graph.Nodes.NodeModel sender, Dynamo.Graph.Nodes.DataChannelBindingStatus status) -> bool
+Dynamo.Graph.Nodes.IDataChannelReceiver.UpdateChannelBinding(System.Collections.Generic.IReadOnlyList<Dynamo.Graph.Nodes.NodeModel> senders, Dynamo.Graph.Nodes.DataChannelBindingStatus status) -> bool
 Dynamo.Graph.Nodes.IDataChannelSender
 Dynamo.Graph.Nodes.IDataChannelSender.GetChannelOutputAstIdentifier() -> ProtoCore.AST.AssociativeAST.IdentifierNode
 Dynamo.Graph.Nodes.IDataChannelSender.UpdateChannelBinding(Dynamo.Graph.Nodes.DataChannelBindingStatus status) -> void

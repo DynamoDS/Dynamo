@@ -2196,6 +2196,55 @@ namespace Dynamo.Graph.Workspaces
             return false;
         }
 
+        /// <summary>
+        /// Performs case-sensitive glob matching supporting '*' (zero or more characters)
+        /// and '?' (any single character), matching Grasshopper 2 Shout/Listen pattern rules.
+        /// </summary>
+        internal static bool MatchesDataChannelPattern(string channelName, string pattern)
+        {
+            if (string.IsNullOrEmpty(channelName) || string.IsNullOrEmpty(pattern))
+            {
+                return false;
+            }
+
+            int t = 0;
+            int p = 0;
+            int starIdx = -1;
+            int matchIdx = 0;
+
+            while (t < channelName.Length)
+            {
+                if (p < pattern.Length && (pattern[p] == '?' || pattern[p] == channelName[t]))
+                {
+                    t++;
+                    p++;
+                }
+                else if (p < pattern.Length && pattern[p] == '*')
+                {
+                    starIdx = p;
+                    matchIdx = t;
+                    p++;
+                }
+                else if (starIdx != -1)
+                {
+                    p = starIdx + 1;
+                    matchIdx++;
+                    t = matchIdx;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            while (p < pattern.Length && pattern[p] == '*')
+            {
+                p++;
+            }
+
+            return p == pattern.Length;
+        }
+
         internal bool ReconcileDataChannels(bool notifyChanges, bool requestRun = true)
         {
             if (isReconcilingDataChannels)
@@ -2231,48 +2280,7 @@ namespace Dynamo.Graph.Workspaces
                     return false;
                 }
 
-                var sendersByChannel = new Dictionary<string, List<NodeModel>>(StringComparer.Ordinal);
-                foreach (var senderNode in senders)
-                {
-                    var key = NormalizeDataChannelName(((IDataChannelSender)senderNode).ChannelName);
-                    if (string.IsNullOrEmpty(key))
-                    {
-                        continue;
-                    }
-
-                    if (!sendersByChannel.TryGetValue(key, out var list))
-                    {
-                        list = new List<NodeModel>();
-                        sendersByChannel[key] = list;
-                    }
-                    list.Add(senderNode);
-                }
-
-                var uniqueSenders = new Dictionary<string, NodeModel>(StringComparer.Ordinal);
-                var duplicateChannels = new HashSet<string>(StringComparer.Ordinal);
-                foreach (var kvp in sendersByChannel)
-                {
-                    if (kvp.Value.Count == 1)
-                    {
-                        uniqueSenders[kvp.Key] = kvp.Value[0];
-                    }
-                    else
-                    {
-                        duplicateChannels.Add(kvp.Key);
-                    }
-                }
-
-                var availableChannels = sendersByChannel.Keys
-                    .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
-                    .ThenBy(k => k, StringComparer.Ordinal)
-                    .ToList();
-
-                var prevFrozenState = new Dictionary<NodeModel, bool>(receivers.Count);
-                foreach (var receiverNode in receivers)
-                {
-                    prevFrozenState[receiverNode] = receiverNode.IsFrozen;
-                }
-
+                var namedSenders = new List<(string Key, NodeModel Node)>();
                 foreach (var senderNode in senders)
                 {
                     senderNode.ClearLogicalEdges();
@@ -2282,18 +2290,31 @@ namespace Dynamo.Graph.Workspaces
                     {
                         sender.UpdateChannelBinding(DataChannelBindingStatus.Unassigned);
                     }
-                    else if (duplicateChannels.Contains(key))
-                    {
-                        sender.UpdateChannelBinding(DataChannelBindingStatus.DuplicateSender);
-                    }
                     else
                     {
+                        namedSenders.Add((key, senderNode));
                         sender.UpdateChannelBinding(DataChannelBindingStatus.Bound);
                     }
                 }
 
+                // Deterministic order: by channel key (ordinal), then node GUID for identical keys.
+                namedSenders.Sort((a, b) =>
+                {
+                    int cmp = string.CompareOrdinal(a.Key, b.Key);
+                    return cmp != 0 ? cmp : a.Node.GUID.CompareTo(b.Node.GUID);
+                });
+
+                var availableChannels = namedSenders
+                    .Select(s => s.Key)
+                    .Distinct(StringComparer.Ordinal)
+                    .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(k => k, StringComparer.Ordinal)
+                    .ToList();
+
+                var prevFrozenState = new Dictionary<NodeModel, bool>(receivers.Count);
                 foreach (var receiverNode in receivers)
                 {
+                    prevFrozenState[receiverNode] = receiverNode.IsFrozen;
                     receiverNode.ClearLogicalEdges();
                 }
 
@@ -2303,35 +2324,56 @@ namespace Dynamo.Graph.Workspaces
                     var receiver = (IDataChannelReceiver)receiverNode;
                     receiver.UpdateAvailableChannels(availableChannels);
 
-                    var key = NormalizeDataChannelName(receiver.ChannelName);
-                    NodeModel targetSender = null;
+                    var pattern = NormalizeDataChannelName(receiver.ChannelName);
+                    IReadOnlyList<NodeModel> targetSenders = Array.Empty<NodeModel>();
                     DataChannelBindingStatus status;
 
-                    if (string.IsNullOrEmpty(key))
+                    if (string.IsNullOrEmpty(pattern))
                     {
                         status = DataChannelBindingStatus.Unassigned;
                     }
-                    else if (duplicateChannels.Contains(key))
-                    {
-                        status = DataChannelBindingStatus.DuplicateSender;
-                    }
-                    else if (!uniqueSenders.TryGetValue(key, out var candidateSender))
-                    {
-                        status = DataChannelBindingStatus.MissingSender;
-                    }
-                    else if (ReferenceEquals(candidateSender, receiverNode) || IsNodeReachable(receiverNode, candidateSender))
-                    {
-                        status = DataChannelBindingStatus.CyclicDependency;
-                    }
                     else
                     {
-                        targetSender = candidateSender;
-                        status = DataChannelBindingStatus.Bound;
-                        receiverNode.SetLogicalUpstreamNode(candidateSender);
-                        candidateSender.AddLogicalDownstreamNode(receiverNode);
+                        var matches = new List<NodeModel>();
+                        bool hasCycle = false;
+
+                        foreach (var candidate in namedSenders)
+                        {
+                            if (!MatchesDataChannelPattern(candidate.Key, pattern))
+                            {
+                                continue;
+                            }
+
+                            if (ReferenceEquals(candidate.Node, receiverNode) || IsNodeReachable(receiverNode, candidate.Node))
+                            {
+                                hasCycle = true;
+                                break;
+                            }
+
+                            matches.Add(candidate.Node);
+                        }
+
+                        if (hasCycle)
+                        {
+                            status = DataChannelBindingStatus.CyclicDependency;
+                        }
+                        else if (matches.Count == 0)
+                        {
+                            status = DataChannelBindingStatus.MissingSender;
+                        }
+                        else
+                        {
+                            targetSenders = matches;
+                            status = DataChannelBindingStatus.Bound;
+                            receiverNode.SetLogicalUpstreamNodes(matches);
+                            foreach (var matchedSender in matches)
+                            {
+                                matchedSender.AddLogicalDownstreamNode(receiverNode);
+                            }
+                        }
                     }
 
-                    if (receiver.UpdateChannelBinding(targetSender, status))
+                    if (receiver.UpdateChannelBinding(targetSenders, status))
                     {
                         changedReceivers.Add(receiverNode);
                     }

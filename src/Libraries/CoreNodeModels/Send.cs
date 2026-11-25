@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -29,10 +28,9 @@ namespace CoreNodeModels
     {
         private string channelName = string.Empty;
         private DataChannelBindingStatus channelStatus = DataChannelBindingStatus.Unassigned;
-        private string currentChannelWarning;
 
         /// <summary>
-        /// Gets or sets the unique channel name used to match <see cref="Receive"/> nodes in the same workspace.
+        /// Gets or sets the channel key used to match <see cref="Receive"/> nodes in the same workspace.
         /// </summary>
         [JsonProperty("ChannelName")]
         public string ChannelName
@@ -91,18 +89,6 @@ namespace CoreNodeModels
                 channelStatus = status;
                 RaisePropertyChanged(nameof(ChannelStatus));
             }
-
-            if (status == DataChannelBindingStatus.DuplicateSender)
-            {
-                var message = string.Format(
-                    Properties.Resources.SendDuplicateChannelWarning,
-                    ChannelName?.Trim());
-                SetChannelWarning(message);
-            }
-            else
-            {
-                ClearChannelWarning();
-            }
         }
 
         /// <inheritdoc />
@@ -144,32 +130,6 @@ namespace CoreNodeModels
             base.DeserializeCore(nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             ChannelName = helper.ReadString("channelName", string.Empty);
-        }
-
-        private void SetChannelWarning(string message)
-        {
-            if (string.Equals(currentChannelWarning, message, StringComparison.Ordinal) &&
-                State == ElementState.PersistentWarning)
-            {
-                return;
-            }
-
-            ClearChannelWarning();
-            currentChannelWarning = message;
-            Warning(message, isPersistent: true);
-        }
-
-        private void ClearChannelWarning()
-        {
-            if (currentChannelWarning == null &&
-                State != ElementState.PersistentWarning &&
-                !NodeInfos.Any(x => x.State == ElementState.PersistentWarning))
-            {
-                return;
-            }
-
-            currentChannelWarning = null;
-            ClearErrorsAndWarnings();
         }
     }
 }

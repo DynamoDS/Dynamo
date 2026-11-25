@@ -12,8 +12,8 @@ using ProtoCore.AST.AssociativeAST;
 namespace CoreNodeModels
 {
     /// <summary>
-    /// Receives data published by a matching <see cref="Send"/> node in the same workspace
-    /// without a physical wire connection.
+    /// Receives data published by one or more matching <see cref="Send"/> nodes in the same workspace
+    /// without a physical wire connection. Supports case-sensitive wildcard patterns (<c>*</c> and <c>?</c>).
     /// </summary>
     [NodeName("Receive")]
     [NodeDescription(nameof(Properties.Resources.ReceiveDescription), typeof(Properties.Resources))]
@@ -26,12 +26,13 @@ namespace CoreNodeModels
     public class Receive : NodeModel, IDataChannelReceiver
     {
         private string channelName = string.Empty;
-        private NodeModel boundSender;
+        private IReadOnlyList<NodeModel> boundSenders = Array.Empty<NodeModel>();
         private DataChannelBindingStatus channelStatus = DataChannelBindingStatus.Unassigned;
         private string currentChannelWarning;
 
         /// <summary>
-        /// Gets or sets the channel name matching a <see cref="Send"/> node in the same workspace.
+        /// Gets or sets the case-sensitive key or wildcard pattern (<c>*</c>, <c>?</c>) used to match
+        /// <see cref="Send"/> nodes in the same workspace.
         /// </summary>
         [JsonProperty("ChannelName")]
         public string ChannelName
@@ -43,7 +44,6 @@ namespace CoreNodeModels
                 if (!string.Equals(channelName, updated, StringComparison.Ordinal))
                 {
                     channelName = updated;
-                    SyncDisplayChannels();
                     RaisePropertyChanged(nameof(ChannelName));
                     ChannelNameChanged?.Invoke(this);
                 }
@@ -52,7 +52,7 @@ namespace CoreNodeModels
 
         /// <inheritdoc />
         [JsonIgnore]
-        public NodeModel BoundSender => boundSender;
+        public IReadOnlyList<NodeModel> BoundSenders => boundSenders;
 
         /// <summary>
         /// Gets the current binding status of this channel receiver within its workspace.
@@ -66,13 +66,6 @@ namespace CoreNodeModels
         /// </summary>
         [JsonIgnore]
         public ObservableCollection<string> AvailableChannels { get; } = new ObservableCollection<string>();
-
-        /// <summary>
-        /// Gets the channel names displayed in the selection dropdown, including the currently configured
-        /// <see cref="ChannelName"/> if its matching sender is missing.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<string> DisplayChannels { get; } = new ObservableCollection<string>();
 
         /// <inheritdoc />
         public event Action<NodeModel> ChannelNameChanged;
@@ -96,13 +89,14 @@ namespace CoreNodeModels
         }
 
         /// <inheritdoc />
-        public bool UpdateChannelBinding(NodeModel sender, DataChannelBindingStatus status)
+        public bool UpdateChannelBinding(IReadOnlyList<NodeModel> senders, DataChannelBindingStatus status)
         {
-            bool senderChanged = !ReferenceEquals(boundSender, sender);
-            if (senderChanged)
+            var nextSenders = senders ?? Array.Empty<NodeModel>();
+            bool sendersChanged = !SequenceEqualReferences(boundSenders, nextSenders);
+            if (sendersChanged)
             {
-                boundSender = sender;
-                RaisePropertyChanged(nameof(BoundSender));
+                boundSenders = nextSenders;
+                RaisePropertyChanged(nameof(BoundSenders));
             }
 
             if (channelStatus != status)
@@ -114,9 +108,6 @@ namespace CoreNodeModels
             var displayKey = ChannelName?.Trim();
             switch (status)
             {
-                case DataChannelBindingStatus.DuplicateSender:
-                    SetChannelWarning(string.Format(Properties.Resources.ReceiveDuplicateSenderWarning, displayKey));
-                    break;
                 case DataChannelBindingStatus.MissingSender:
                     SetChannelWarning(string.Format(Properties.Resources.ReceiveMissingSenderWarning, displayKey));
                     break;
@@ -128,31 +119,46 @@ namespace CoreNodeModels
                     break;
             }
 
-            return senderChanged;
+            return sendersChanged;
         }
 
         /// <inheritdoc />
         public void UpdateAvailableChannels(IReadOnlyList<string> availableChannels)
         {
             var next = availableChannels ?? Array.Empty<string>();
-            if (!AvailableChannels.SequenceEqual(next, StringComparer.Ordinal))
+            if (AvailableChannels.SequenceEqual(next, StringComparer.Ordinal))
             {
-                AvailableChannels.Clear();
-                foreach (var channel in next)
-                {
-                    AvailableChannels.Add(channel);
-                }
+                return;
             }
 
-            SyncDisplayChannels();
+            AvailableChannels.Clear();
+            foreach (var channel in next)
+            {
+                AvailableChannels.Add(channel);
+            }
         }
 
         /// <inheritdoc />
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode sourceAst = boundSender is IDataChannelSender sender
-                ? sender.GetChannelOutputAstIdentifier()
-                : AstFactory.BuildNullNode();
+            var senderIdentifiers = boundSenders
+                .OfType<IDataChannelSender>()
+                .Select(s => (AssociativeNode)s.GetChannelOutputAstIdentifier())
+                .ToList();
+
+            AssociativeNode sourceAst;
+            if (senderIdentifiers.Count == 0)
+            {
+                sourceAst = AstFactory.BuildNullNode();
+            }
+            else if (senderIdentifiers.Count == 1)
+            {
+                sourceAst = senderIdentifiers[0];
+            }
+            else
+            {
+                sourceAst = AstFactory.BuildExprList(senderIdentifiers);
+            }
 
             return new[]
             {
@@ -188,27 +194,27 @@ namespace CoreNodeModels
             ChannelName = helper.ReadString("channelName", string.Empty);
         }
 
-        private void SyncDisplayChannels()
+        private static bool SequenceEqualReferences(IReadOnlyList<NodeModel> a, IReadOnlyList<NodeModel> b)
         {
-            var desired = new List<string>(AvailableChannels.Count + 1);
-            desired.AddRange(AvailableChannels);
-
-            var trimmed = ChannelName?.Trim();
-            if (!string.IsNullOrEmpty(trimmed) && !desired.Contains(trimmed, StringComparer.Ordinal))
+            if (ReferenceEquals(a, b))
             {
-                desired.Add(trimmed);
+                return true;
             }
 
-            if (DisplayChannels.SequenceEqual(desired, StringComparer.Ordinal))
+            if (a.Count != b.Count)
             {
-                return;
+                return false;
             }
 
-            DisplayChannels.Clear();
-            foreach (var item in desired)
+            for (int i = 0; i < a.Count; i++)
             {
-                DisplayChannels.Add(item);
+                if (!ReferenceEquals(a[i], b[i]))
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
 
         private void SetChannelWarning(string message)

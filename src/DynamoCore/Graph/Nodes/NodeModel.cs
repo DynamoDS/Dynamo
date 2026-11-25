@@ -1843,12 +1843,18 @@ namespace Dynamo.Graph.Nodes
 
         internal bool HasLogicalDownstreamNodes => logicalDownstreamNodes.Count > 0;
 
-        internal void SetLogicalUpstreamNode(NodeModel upstream)
+        internal void SetLogicalUpstreamNodes(IEnumerable<NodeModel> upstreams)
         {
             logicalUpstreamNodes.Clear();
-            if (upstream != null)
+            if (upstreams != null)
             {
-                logicalUpstreamNodes.Add(upstream);
+                foreach (var upstream in upstreams)
+                {
+                    if (upstream != null)
+                    {
+                        logicalUpstreamNodes.Add(upstream);
+                    }
+                }
             }
         }
 

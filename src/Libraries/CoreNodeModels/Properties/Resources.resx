@@ -774,27 +774,21 @@ double[]</value>
   <data name="SendOutputToolTip" xml:space="preserve">
     <value>Passthrough of the sent data.</value>
   </data>
-  <data name="SendDuplicateChannelWarning" xml:space="preserve">
-    <value>Duplicate Send channel '{0}'. Channel names must be unique within a workspace.</value>
-  </data>
   <data name="ReceiveDescription" xml:space="preserve">
-    <value>Receives data broadcast by a matching Send node in the current workspace without a physical wire.</value>
+    <value>Receives data broadcast by matching Send nodes in the current workspace without a physical wire. Supports case-sensitive '*' and '?' wildcards to gather multiple matching channels into a list.</value>
     <comment>Description for Receive</comment>
   </data>
   <data name="ReceiveSearchTags" xml:space="preserve">
-    <value>receive;listen;subscribe;wireless;portal;relay;channel;variable</value>
+    <value>receive;listen;subscribe;wireless;portal;relay;channel;variable;wildcard</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to separate them</comment>
   </data>
   <data name="ReceiveOutputToolTip" xml:space="preserve">
-    <value>Data received from the matching Send node.</value>
-  </data>
-  <data name="ReceiveDuplicateSenderWarning" xml:space="preserve">
-    <value>Multiple Send nodes use channel '{0}'. Rename duplicates so only one Send node broadcasts on this channel.</value>
+    <value>Data received from the matching Send node(s).</value>
   </data>
   <data name="ReceiveMissingSenderWarning" xml:space="preserve">
-    <value>No Send node found for channel '{0}'.</value>
+    <value>No Send node matching '{0}' was found in this workspace.</value>
   </data>
   <data name="ReceiveCyclicDependencyWarning" xml:space="preserve">
-    <value>Cyclic dependency detected on channel '{0}'. A Send node cannot depend on a Receive node reading the same channel.</value>
+    <value>Cyclic dependency detected on pattern '{0}'. A Send node cannot depend on a Receive node matching it.</value>
   </data>
 </root>

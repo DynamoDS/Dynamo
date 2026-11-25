@@ -10,27 +10,22 @@ namespace Dynamo.Graph.Nodes
     public enum DataChannelBindingStatus
     {
         /// <summary>
-        /// The node has no channel name configured.
+        /// The node has no channel key or pattern configured.
         /// </summary>
         Unassigned,
 
         /// <summary>
-        /// The channel is uniquely matched and active.
+        /// The channel key or pattern is active and matched.
         /// </summary>
         Bound,
 
         /// <summary>
-        /// Multiple senders in the workspace share the same channel name.
-        /// </summary>
-        DuplicateSender,
-
-        /// <summary>
-        /// No sender in the workspace matches the requested channel name.
+        /// No sender in the workspace matches the requested channel pattern.
         /// </summary>
         MissingSender,
 
         /// <summary>
-        /// Binding to the matching sender would create a cyclic dependency in the graph.
+        /// Binding to a matching sender would create a cyclic dependency in the graph.
         /// </summary>
         CyclicDependency
     }
@@ -41,7 +36,7 @@ namespace Dynamo.Graph.Nodes
     public interface IDataChannelNode
     {
         /// <summary>
-        /// Gets the channel name used to match senders and receivers in the same workspace.
+        /// Gets the channel key (on a sender) or wildcard pattern (on a receiver) used for matching in the same workspace.
         /// </summary>
         string ChannelName { get; }
 
@@ -70,22 +65,23 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// Represents a node that receives data from a matching <see cref="IDataChannelSender"/> in the same workspace.
+    /// Represents a node that receives data from one or more matching <see cref="IDataChannelSender"/> nodes
+    /// in the same workspace.
     /// </summary>
     public interface IDataChannelReceiver : IDataChannelNode
     {
         /// <summary>
-        /// Gets the currently bound sender node, or <see langword="null"/> if unbound.
+        /// Gets the deterministically ordered list of currently bound sender nodes.
         /// </summary>
-        NodeModel BoundSender { get; }
+        IReadOnlyList<NodeModel> BoundSenders { get; }
 
         /// <summary>
-        /// Updates the receiver's bound sender and status as determined by workspace channel reconciliation.
+        /// Updates the receiver's bound senders and status as determined by workspace channel reconciliation.
         /// </summary>
-        /// <param name="sender">The matched sender node, or <see langword="null"/> if unbound.</param>
+        /// <param name="senders">The matched sender nodes in deterministic order (empty when unbound).</param>
         /// <param name="status">The resolved channel status for this receiver.</param>
-        /// <returns><see langword="true"/> if the bound sender changed and AST recompilation is required.</returns>
-        bool UpdateChannelBinding(NodeModel sender, DataChannelBindingStatus status);
+        /// <returns><see langword="true"/> if the bound sender sequence changed and AST recompilation is required.</returns>
+        bool UpdateChannelBinding(IReadOnlyList<NodeModel> senders, DataChannelBindingStatus status);
 
         /// <summary>
         /// Updates the list of available channel names currently defined by senders in the same workspace.

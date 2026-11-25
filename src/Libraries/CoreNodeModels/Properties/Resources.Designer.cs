@@ -1825,16 +1825,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate Send channel &apos;{0}&apos;. Channel names must be unique within a workspace..
-        /// </summary>
-        public static string SendDuplicateChannelWarning {
-            get {
-                return ResourceManager.GetString("SendDuplicateChannelWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Receives data broadcast by a matching Send node in the current workspace without a physical wire..
+        ///   Looks up a localized string similar to Receives data broadcast by matching Send nodes in the current workspace without a physical wire. Supports case-sensitive &apos;*&apos; and &apos;?&apos; wildcards to gather multiple matching channels into a list..
         /// </summary>
         public static string ReceiveDescription {
             get {
@@ -1843,7 +1834,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to receive;listen;subscribe;wireless;portal;relay;channel;variable.
+        ///   Looks up a localized string similar to receive;listen;subscribe;wireless;portal;relay;channel;variable;wildcard.
         /// </summary>
         public static string ReceiveSearchTags {
             get {
@@ -1852,7 +1843,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data received from the matching Send node..
+        ///   Looks up a localized string similar to Data received from the matching Send node(s)..
         /// </summary>
         public static string ReceiveOutputToolTip {
             get {
@@ -1861,16 +1852,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple Send nodes use channel &apos;{0}&apos;. Rename duplicates so only one Send node broadcasts on this channel..
-        /// </summary>
-        public static string ReceiveDuplicateSenderWarning {
-            get {
-                return ResourceManager.GetString("ReceiveDuplicateSenderWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Send node found for channel &apos;{0}&apos;..
+        ///   Looks up a localized string similar to No Send node matching &apos;{0}&apos; was found in this workspace..
         /// </summary>
         public static string ReceiveMissingSenderWarning {
             get {
@@ -1879,7 +1861,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cyclic dependency detected on channel &apos;{0}&apos;. A Send node cannot depend on a Receive node reading the same channel..
+        ///   Looks up a localized string similar to Cyclic dependency detected on pattern &apos;{0}&apos;. A Send node cannot depend on a Receive node matching it..
         /// </summary>
         public static string ReceiveCyclicDependencyWarning {
             get {
