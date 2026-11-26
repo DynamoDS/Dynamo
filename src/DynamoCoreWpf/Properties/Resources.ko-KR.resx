@@ -3985,13 +3985,13 @@ Dynamo 3.3–3.6.x에서 이 그래프를 열려면 패키지 관리자에서 Py
     <value>표시</value>
   </data>
   <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
-    <value>Autodesk 도우미</value>
+    <value>Autodesk Assistant</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
-    <value>Show summary of Assistant changes</value>
+    <value>Assistant 변경 사항 요약 표시</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
-    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
+    <value>캔버스 하단에 최신 Autodesk Assistant 변경 사항을 요약하는 칩을 표시합니다. 이 옵션을 끄더라도 변경된 노드의 강조 표시는 제거되지 않습니다.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

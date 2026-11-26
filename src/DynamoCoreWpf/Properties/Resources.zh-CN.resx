@@ -3986,13 +3986,13 @@
     <value>显示</value>
   </data>
   <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
-    <value>Autodesk 助手</value>
+    <value>Autodesk Assistant</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
-    <value>Show summary of Assistant changes</value>
+    <value>显示 Assistant 更改摘要</value>
   </data>
   <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
-    <value>Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes.</value>
+    <value>在画布底部显示一个标签块，其中总结了最新的 Autodesk Assistant 更改。禁用此选项不会移除已更改节点上的亮显。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
