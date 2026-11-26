@@ -38,6 +38,10 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public bool TrackAsMigration => true;
 
+        public bool CanAcceptAll => false;
+
+        public bool AcceptAllCode() => false;
+
         /// <summary>
         /// Reject on the migrator just closes the window. No code is changed.
         /// </summary>

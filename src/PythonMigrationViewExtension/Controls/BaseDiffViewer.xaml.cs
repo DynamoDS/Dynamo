@@ -147,6 +147,16 @@ namespace Dynamo.PythonMigration.Controls
             TrackDiffChoice("Accept");
         }
 
+        private void OnAcceptAllForNodeButtonClicked(object sender, RoutedEventArgs e)
+        {
+            if (!ViewModel.AcceptAllCode())
+            {
+                return;
+            }
+
+            Close();
+        }
+
         private void OnRejectButtonClicked(object sender, RoutedEventArgs e)
         {
             if (!ViewModel.RejectCode())

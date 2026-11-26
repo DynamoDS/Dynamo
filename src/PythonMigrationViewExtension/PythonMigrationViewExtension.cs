@@ -42,6 +42,8 @@ namespace Dynamo.PythonMigration
         internal Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
         private readonly Dictionary<Guid, BaseDiffViewer> pythonReviewWindows = new Dictionary<Guid, BaseDiffViewer>();
 
+        private readonly Dictionary<Guid, string> acceptedNodes = new Dictionary<Guid, string>();
+
         /// <summary>
         /// Extension GUID
         /// </summary>
@@ -396,6 +398,7 @@ namespace Dynamo.PythonMigration
             {
                 pythonNode.ScriptConflictReviewRequested -= OnScriptConflictReviewRequested;
                 ClosePythonReviewWindow(pythonNode.GUID);
+                acceptedNodes.Remove(pythonNode.GUID);
             }
         }
 
@@ -404,21 +407,38 @@ namespace Dynamo.PythonMigration
             var node = sender as PythonNode;
             if (node == null)
             {
+                e.Approval?.TrySetResult(false);
+                return;
+            }
+
+            var askPreference = DynamoViewModel?.Model?.PreferenceSettings?.AskBeforeAIPythonChanges != false;
+            acceptedNodes.TryGetValue(node.GUID, out var acceptedFor);
+            if (PythonScriptConflictViewModel.IsAssistantChange(e.Kind) && !ShouldAsk(askPreference, acceptedFor, e.TurnId))
+            {
+                e.Approval?.TrySetResult(true);
                 return;
             }
 
             ClosePythonReviewWindow(node.GUID);
 
-            var viewModel = PythonScriptConflictViewModel.Create(node, e, DynamoViewModel);
+            Action acceptAll = null;
+            if (e.Kind == PythonScriptReviewKind.AssistantProposal && !string.IsNullOrEmpty(e.TurnId))
+            {
+                acceptAll = () => acceptedNodes[node.GUID] = e.TurnId;
+            }
+            var viewModel = PythonScriptConflictViewModel.Create(node, e, DynamoViewModel, acceptAll);
 
             var window = new BaseDiffViewer(viewModel)
             {
                 Owner = LoadedParams.DynamoWindow
             };
 
+            var closed = false;
             pythonReviewWindows[node.GUID] = window;
             window.Closed += (_, _) =>
             {
+                closed = true;
+                viewModel.OnWindowClosed();
                 if (pythonReviewWindows.TryGetValue(node.GUID, out var current) &&
                     ReferenceEquals(current, window))
                 {
@@ -426,9 +446,33 @@ namespace Dynamo.PythonMigration
                 }
             };
 
-            // Non-blocking: the assistant call has already returned, and the user may keep working.
+            // The assistant stopped waiting.
+            if (e.Approval != null && e.CancellationToken.CanBeCanceled)
+            {
+                var registration = e.CancellationToken.Register(
+                    () => window.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (!closed)
+                        {
+                            window.Close();
+                        }
+                    })));
+                window.Closed += (_, _) => registration.Dispose();
+            }
+
+            // Non-blocking: the user may keep working.
             window.Show();
         }
+
+        /// <summary>
+        /// Whether an assistant change needs a window.
+        /// </summary>
+        /// <param name="askPreference">The "Ask before the Assistant changes Python scripts" preference.</param>
+        /// <param name="acceptedFor">The request Accept All covers on this node, or null.</param>
+        /// <param name="turnId">The request this change belongs to, or null when unknown.</param>
+        internal static bool ShouldAsk(bool askPreference, string acceptedFor, string turnId)
+            => askPreference &&
+               (acceptedFor == null || !string.Equals(acceptedFor, turnId, StringComparison.Ordinal));
 
         private void ClosePythonReviewWindow(Guid nodeId)
         {

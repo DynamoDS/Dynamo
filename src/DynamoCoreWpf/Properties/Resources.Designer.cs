@@ -8412,6 +8412,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ask before the Assistant changes Python scripts.
+        /// </summary>
+        public static string PreferencesViewAskBeforeAIPythonChanges {
+            get {
+                return ResourceManager.GetString("PreferencesViewAskBeforeAIPythonChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows the Autodesk Assistant's changes to an existing Python script and writes them only after you click Accept. Turn this off to let the Assistant change Python scripts without asking. You are still asked when a Python editor has unsaved edits..
+        /// </summary>
+        public static string PreferencesViewAskBeforeAIPythonChangesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewAskBeforeAIPythonChangesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk Assistant.
         /// </summary>
         public static string PreferencesViewAutodeskAssistant {

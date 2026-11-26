@@ -1098,6 +1098,7 @@
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
@@ -1121,6 +1122,31 @@
                                                ToolTipService.ShowDuration="30000">
                                             <Image.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesViewShowAIChangeSummaryChipTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Image.ToolTip>
+                                        </Image>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                        <ToggleButton Name="AskBeforeAIPythonChangesToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=AskBeforeAIPythonChangesIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewAskBeforeAIPythonChanges}" 
+                                               Margin="10,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Image Name="AskBeforeAIPythonChangesToolTip"
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-default-16px.png"
+                                               ToolTipService.ShowDuration="30000">
+                                            <Image.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewAskBeforeAIPythonChangesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                                             </Image.ToolTip>
                                         </Image>
                                     </StackPanel>
