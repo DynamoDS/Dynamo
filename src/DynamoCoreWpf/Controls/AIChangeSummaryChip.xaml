@@ -19,6 +19,28 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="ChipSentence" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="8,6" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="buttonBackground" Background="Transparent" CornerRadius="2" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="buttonBackground" Property="Background" Value="{StaticResource HoverFontColorBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="ChipButton" TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="8,6" />
                 <Setter Property="FontSize" Value="14" />
@@ -66,8 +88,7 @@
             <Button x:Name="messageButton"
                     Content="{Binding Message}"
                     AutomationProperties.Name="{Binding Message}"
-                    AutomationProperties.LiveSetting="Polite"
-                    Style="{StaticResource ChipButton}"
+                    Style="{StaticResource ChipSentence}"
                     Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                     Margin="0,0,106,0"
                     GotKeyboardFocus="OnChipButtonGotKeyboardFocus" />

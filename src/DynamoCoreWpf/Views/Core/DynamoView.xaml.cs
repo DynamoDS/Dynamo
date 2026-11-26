@@ -1055,7 +1055,8 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// Tab on the window selects neighbouring nodes, so it never reaches the summary chip.
-        /// While the chip is showing, Tab walks its sentence, then Show, then Dismiss.
+        /// While the chip is showing, Tab walks its sentence, then Show, then Dismiss, and the
+        /// next Tab leaves. Shift+Tab walks back, and Shift+Tab on the sentence leaves.
         /// </summary>
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
@@ -1077,10 +1078,23 @@ namespace Dynamo.Controls
                 return;
             }
 
+            if (TryHandleSummaryChipTab(forward))
+            {
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Moves Tab through the summary chip. Returns false when the key should fall through,
+        /// including Tab on Dismiss and Shift+Tab on the sentence.
+        /// </summary>
+        /// <param name="forward">True for Tab, false for Shift+Tab.</param>
+        internal bool TryHandleSummaryChipTab(bool forward)
+        {
             var chip = FindVisibleSummaryChip();
             if (chip == null)
             {
-                return;
+                return false;
             }
 
             var current = ChipButtonWithFocus(chip);
@@ -1088,26 +1102,21 @@ namespace Dynamo.Controls
             {
                 if (!forward)
                 {
-                    return;
+                    return false;
                 }
 
                 Keyboard.Focus(chip.MessageButton);
-                e.Handled = true;
-                return;
+                return true;
             }
 
             var next = forward ? NextChipButton(chip, current) : PreviousChipButton(chip, current);
             if (next == null)
             {
-                return;
+                return false;
             }
 
-            if (!ReferenceEquals(next, current))
-            {
-                Keyboard.Focus(next);
-            }
-
-            e.Handled = true;
+            Keyboard.Focus(next);
+            return true;
         }
 
         /// <summary>The chip button that currently has focus, or null when focus is outside the chip.</summary>
@@ -1140,7 +1149,8 @@ namespace Dynamo.Controls
                 return chip.DismissButton;
             }
 
-            return chip.DismissButton;
+            // Tab on Dismiss leaves the chip.
+            return null;
         }
 
         private static Button PreviousChipButton(AIChangeSummaryChip chip, Button current)
@@ -1163,13 +1173,7 @@ namespace Dynamo.Controls
         {
             for (var current = element; current != null; current = VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current))
             {
-                if (current is TextBoxBase or PasswordBox)
-                {
-                    return true;
-                }
-
-                // Code block and Python editors
-                if (current.GetType().Name == "TextArea")
+                if (current is TextBoxBase or PasswordBox || current is ICSharpCode.AvalonEdit.Editing.TextArea)
                 {
                     return true;
                 }

@@ -43,6 +43,9 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
+            // The sentence is a button so Narrator has a name to read. It has no command:
+            // Show and Dismiss are the actions. A notification is what Narrator speaks, because
+            // it does not read a button name when focus moves inside the graph.
             var peer = UIElementAutomationPeer.FromElement(button)
                 ?? UIElementAutomationPeer.CreatePeerForElement(button);
             peer?.RaiseNotificationEvent(
