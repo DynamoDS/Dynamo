@@ -50,9 +50,26 @@ namespace Dynamo.Graph.Workspaces
             return result;
         }
 
+        // Match a type declaration only where it is a JSON property name, that is a quoted name
+        // followed by a colon. The quotes may be escaped, so that property names of json stored
+        // inside a string value (for example the "$typeid" of cached geometry) keep being swapped
+        // exactly as before, which graphs saved by earlier versions rely on.
+        // Any other occurrence inside a string value is left alone.
+        private const RegexOptions typeDeclarationRegexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
+        // The patterns are linear in the input, without nested quantifiers. A match timeout applies to the whole
+        // Replace over the whole graph json, so a fixed limit could fail to open or save a large graph,
+        // for example one with megabytes of cached geometry, on a slow machine.
+        private static readonly TimeSpan typeDeclarationRegexTimeout = Regex.InfiniteMatchTimeout;
+        private static readonly Regex concreteTypePropertyRegex =
+            new Regex(@"(?<!\\)(?<quote>\\*"")ConcreteType(?<suffix>(?:id)?)\k<quote>(?=\s*:)", typeDeclarationRegexOptions, typeDeclarationRegexTimeout);
+        private static readonly Regex typePropertyRegex =
+            new Regex(@"(?<!\\)(?<quote>\\*"")\$type(?<suffix>(?:id)?)\k<quote>(?=\s*:)", typeDeclarationRegexOptions, typeDeclarationRegexTimeout);
+
         /// <summary>
         /// Strips $type references from the generated json, replacing them with 
         /// type names matching those expected by the server.
+        /// Only quoted names followed by a colon are replaced, including the property names of json
+        /// stored inside a string value. Other occurrences in string values are preserved.
         /// </summary>
         /// <param name="json">The json to parse.</param>
         /// <param name="fromServer">A flag indicating whether this json is coming from the server, and thus
@@ -60,20 +77,9 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal static string ReplaceTypeDeclarations(string json, bool fromServer = false)
         {
-            var result = json;
-
-            if (fromServer)
-            {
-                var rgx2 = new Regex(@"ConcreteType");
-                result = rgx2.Replace(result, "$type");
-            }
-            else
-            {
-                var rgx2 = new Regex(@"\$type");
-                result = rgx2.Replace(result, "ConcreteType");
-            }
-
-            return result;
+            return fromServer
+                ? concreteTypePropertyRegex.Replace(json, "${quote}$$type${suffix}${quote}")
+                : typePropertyRegex.Replace(json, "${quote}ConcreteType${suffix}${quote}");
         }
 
         [Obsolete("Remove method after obsoleting IntegerSlider and replacing it with IntegerSlider64Bit")]
