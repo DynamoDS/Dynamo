@@ -6,7 +6,10 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              DataContextChanged="OnDataContextChanged"
              MouseDown="OnMouseButton"
-             MouseUp="OnMouseButton">
+             MouseUp="OnMouseButton"
+             Focusable="False"
+             IsTabStop="False"
+             KeyboardNavigation.TabNavigation="Continue">
     <!-- AI summary chip (DYN-11011). DataContext: AIChangeSummaryChipViewModel. -->
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,6 +18,28 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="ChipSentence" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="8,6" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="buttonBackground" Background="Transparent" CornerRadius="2" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="buttonBackground" Property="Background" Value="{StaticResource HoverFontColorBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
             <Style x:Key="ChipButton" TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="8,6" />
@@ -49,8 +74,6 @@
 
     <Border x:Name="chip"
             Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"
-            AutomationProperties.Name="{Binding Message}"
-            AutomationProperties.LiveSetting="Polite"
             Padding="16,0,28,0"
             Height="48"
             CornerRadius="24"
@@ -61,15 +84,19 @@
 
         <StackPanel Orientation="Horizontal">
             <Image Source="/DynamoCoreWpf;component/UI/Images/ai-icon-wrapper-96px.png" Width="24" Height="24" Margin="0,0,10,0" />
-            <TextBlock Text="{Binding Message}"
-                       Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                       FontSize="14"
-                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                       FontWeight="Medium"
-                       VerticalAlignment="Center"
-                       Margin="0,0,106,0" />
-            <Button Content="{x:Static p:Resources.AIChangeSummaryChipShow}"
+            <!-- Narrator reads a button name. The border around the chip has nothing it can read. -->
+            <Button x:Name="messageButton"
+                    Content="{Binding Message}"
+                    AutomationProperties.Name="{Binding Message}"
+                    Style="{StaticResource ChipSentence}"
+                    Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                    Margin="0,0,106,0"
+                    GotKeyboardFocus="OnChipButtonGotKeyboardFocus" />
+            <Button x:Name="showButton"
+                    Content="{x:Static p:Resources.AIChangeSummaryChipShow}"
+                    AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipShow}"
                     Command="{Binding ShowCommand}"
+                    GotKeyboardFocus="OnChipButtonGotKeyboardFocus"
                     Style="{StaticResource ChipButton}"
                     Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Button.Foreground>
@@ -81,8 +108,11 @@
                        Margin="8,0"
                        Fill="{StaticResource MidGreyBrush}"
                        Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-            <Button Content="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
+            <Button x:Name="dismissButton"
+                    Content="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
+                    AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
                     Command="{Binding DismissCommand}"
+                    GotKeyboardFocus="OnChipButtonGotKeyboardFocus"
                     Foreground="{StaticResource DefaultFontColorBrush}"
                     Style="{StaticResource ChipButton}" />
         </StackPanel>

@@ -2,6 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Controls;
+using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -348,6 +352,151 @@ namespace DynamoCoreWpfTests
 
             Assert.Greater(chipView.ActualHeight, 0, "The chip is on screen.");
             Assert.LessOrEqual(nodeBottom, chipTop, "The lowest framed node sits above the chip.");
+        }
+
+        #endregion
+
+        #region Keyboard
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void ChipSentenceHasANameNarratorCanRead()
+        {
+            PlaceByAssistant();
+            var chipView = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
+
+            Assert.AreEqual("Autodesk Assistant added 1 node", PeerName(chipView.MessageButton));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TabLandsOnTheChipSentence()
+        {
+            PlaceByAssistant();
+            var message = View.ChildrenOfType<WorkspaceView>().First()
+                .ChildrenOfType<AIChangeSummaryChip>().First().MessageButton;
+
+            PressTab();
+            Assert.IsTrue(message.IsKeyboardFocused, "Tab from the window lands on the sentence.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [SetUICulture("en-US")]
+        public void TabMovesFromTheSentenceToShowThenDismiss()
+        {
+            PlaceByAssistant();
+            var chip = View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
+
+            PressTab();
+            PressTab();
+            Assert.IsTrue(chip.ShowButton.IsKeyboardFocused, "The next Tab lands on Show.");
+            Assert.AreEqual("Show", PeerName(chip.ShowButton));
+
+            PressTab();
+            Assert.IsTrue(chip.DismissButton.IsKeyboardFocused, "The Tab after that lands on Dismiss.");
+            Assert.AreEqual("Dismiss", PeerName(chip.DismissButton));
+        }
+
+        [Test]
+        public void TabOnDismissLeavesTheChip()
+        {
+            PlaceByAssistant();
+            var chip = ChipView();
+
+            PressTab();
+            PressTab();
+            PressTab();
+            Assert.IsTrue(chip.DismissButton.IsKeyboardFocused);
+
+            var left = PressTab();
+            Assert.IsFalse(left.Handled, "Tab on Dismiss is not swallowed, so focus can leave the chip.");
+        }
+
+        [Test]
+        public void ShiftTabWalksBackAndLeavesFromTheSentence()
+        {
+            PlaceByAssistant();
+            var chip = ChipView();
+
+            PressTab();
+            PressTab();
+            PressTab();
+            Assert.IsTrue(View.TryHandleSummaryChipTab(forward: false));
+            Assert.IsTrue(chip.ShowButton.IsKeyboardFocused, "Shift+Tab from Dismiss lands on Show.");
+
+            Assert.IsTrue(View.TryHandleSummaryChipTab(forward: false));
+            Assert.IsTrue(chip.MessageButton.IsKeyboardFocused, "Shift+Tab from Show lands on the sentence.");
+
+            Assert.IsFalse(View.TryHandleSummaryChipTab(forward: false), "Shift+Tab on the sentence leaves the chip.");
+            Assert.IsTrue(chip.MessageButton.IsKeyboardFocused);
+        }
+
+        [Test]
+        public void TabDoesNothingToAHiddenChip()
+        {
+            PlaceByAssistant();
+            Chip.Dismiss();
+            DispatcherUtil.DoEvents();
+
+            var tab = PressTab();
+            Assert.IsFalse(tab.Handled, "Tab is left alone once the chip is hidden.");
+            Assert.IsFalse(View.TryHandleSummaryChipTab(forward: true));
+        }
+
+        [Test]
+        public void TabWhileTypingIsLeftAlone()
+        {
+            PlaceByAssistant();
+            var box = new TextBox();
+            View.ChildOfType<Grid>().Children.Add(box);
+            Keyboard.Focus(box);
+            DispatcherUtil.DoEvents();
+
+            var tab = PressTab();
+            Assert.IsFalse(tab.Handled, "Tab inside a text box is not taken by the chip.");
+            Assert.IsTrue(box.IsKeyboardFocused);
+        }
+
+        [Test]
+        public void TabSkipsShowWhenItIsHidden()
+        {
+            var node = PlaceByAssistant();
+            DeleteByAssistant(node);
+            Assert.IsTrue(Chip.IsVisible);
+            Assert.IsFalse(Chip.CanShow, "Nothing is left to show, so Show is hidden.");
+
+            var chip = ChipView();
+            PressTab();
+            Assert.IsTrue(chip.MessageButton.IsKeyboardFocused);
+
+            PressTab();
+            Assert.IsTrue(chip.DismissButton.IsKeyboardFocused, "Tab goes from the sentence to Dismiss when Show is hidden.");
+        }
+
+        private AIChangeSummaryChip ChipView()
+        {
+            return View.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AIChangeSummaryChip>().First();
+        }
+
+        private KeyEventArgs PressTab()
+        {
+            var tab = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(View), 0, Key.Tab)
+            {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent
+            };
+            View.RaiseEvent(tab);
+            DispatcherUtil.DoEvents();
+            return tab;
+        }
+
+        private static string PeerName(UIElement element)
+        {
+            var peer = UIElementAutomationPeer.CreatePeerForElement(element);
+            Assert.IsNotNull(peer, "Narrator has no name to read.");
+            Assert.AreEqual(AutomationControlType.Button, peer.GetAutomationControlType());
+            return peer.GetName();
         }
 
         #endregion
