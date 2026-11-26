@@ -1054,8 +1054,10 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Tab on the window selects neighbouring nodes, so it never lands on the sparkle.
-        /// While a sparkle is showing, Tab goes there and stays there.
+        /// Tab on the window selects neighbouring nodes, so a plain Tab moves to a sparkle
+        /// instead, unless focus is in a menu, toolbar, or editor. Narrator speaks when the
+        /// sparkle gets focus. The next Tab moves to the next sparkle, and from the last one
+        /// it moves on, so focus can leave. Ctrl+Tab and Alt+Tab are not taken.
         /// </summary>
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
@@ -1065,22 +1067,38 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (IsTyping(Keyboard.FocusedElement as DependencyObject))
+            var focused = Keyboard.FocusedElement as DependencyObject;
+            if (focused == null || IsTyping(focused) || IsInChangedInput(focused) || KeepsItsOwnTab(focused))
             {
                 return;
             }
 
-            var badge = FindVisibleAIBadge();
+            var current = BadgeWithFocus(focused);
+            if (current != null)
+            {
+                var next = NextVisibleBadge(current);
+                if (next != null)
+                {
+                    Keyboard.Focus(next);
+                }
+                else
+                {
+                    // Leave the sparkle for the next control. Handling the key stops Tab from
+                    // selecting neighbouring nodes instead.
+                    current.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+
+                e.Handled = true;
+                return;
+            }
+
+            var badge = BadgeToEnter();
             if (badge == null)
             {
                 return;
             }
 
-            if (!ReferenceEquals(Keyboard.FocusedElement, badge))
-            {
-                Keyboard.Focus(badge);
-            }
-
+            Keyboard.Focus(badge);
             e.Handled = true;
         }
 
@@ -1103,17 +1121,108 @@ namespace Dynamo.Controls
             return false;
         }
 
-        private Button FindVisibleAIBadge()
+        /// <summary>The sparkle that has focus, or null.</summary>
+        private static Button BadgeWithFocus(DependencyObject element)
         {
+            for (var current = element; current != null; current = ParentOf(current))
+            {
+                if (current is Button button && button.Name == "aiBadge")
+                {
+                    return button;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>A changed input handles Tab itself, to open its review panel.</summary>
+        private static bool IsInChangedInput(DependencyObject element)
+        {
+            for (var current = element; current != null; current = ParentOf(current))
+            {
+                if (current is InPorts)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Menus, toolbars, lists, and tab controls keep Tab. The canvas and the window itself do not.
+        /// </summary>
+        private static bool KeepsItsOwnTab(DependencyObject element)
+        {
+            for (var current = element; current != null; current = ParentOf(current))
+            {
+                if (current is WorkspaceView)
+                {
+                    return false;
+                }
+
+                if (current is MenuBase or ToolBar or ComboBox or TabControl or ListBox or TreeView)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static DependencyObject ParentOf(DependencyObject element)
+        {
+            return VisualTreeHelper.GetParent(element) ?? LogicalTreeHelper.GetParent(element);
+        }
+
+        /// <summary>The next sparkle after this one, or null when this is the last.</summary>
+        private Button NextVisibleBadge(Button current)
+        {
+            var passed = false;
             foreach (var node in this.ChildrenOfType<NodeView>())
             {
-                if (node.AIBadge is Button badge && badge.IsVisible)
+                if (node.AIBadge is not Button badge || !badge.IsVisible)
+                {
+                    continue;
+                }
+
+                if (passed)
+                {
+                    return badge;
+                }
+
+                if (ReferenceEquals(badge, current))
+                {
+                    passed = true;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>The selected node's sparkle, or the first visible one.</summary>
+        private Button BadgeToEnter()
+        {
+            Button first = null;
+            foreach (var node in this.ChildrenOfType<NodeView>())
+            {
+                if (node.AIBadge is not Button badge || !badge.IsVisible)
+                {
+                    continue;
+                }
+
+                if (first == null)
+                {
+                    first = badge;
+                }
+
+                if (node.ViewModel?.IsSelected == true)
                 {
                     return badge;
                 }
             }
 
-            return null;
+            return first;
         }
 
         private void OnRequestPaste()

@@ -1,12 +1,10 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
@@ -78,12 +76,14 @@ namespace Dynamo.UI.Controls
 
             UndoButton = CreateButton("aiChangeUndo", Resources.AIChangePopoverUndo, HorizontalAlignment.Left);
             UndoButton.Click += (s, e) => UndoRequested?.Invoke();
+            UndoButton.GotKeyboardFocus += OnActionGotKeyboardFocus;
 
             // Explains why the button is disabled, so it must show while disabled
             ToolTipService.SetShowOnDisabled(UndoButton, true);
 
             NextButton = CreateButton("aiChangeNext", Resources.AIChangePopoverNextChange, HorizontalAlignment.Right);
             NextButton.Click += (s, e) => NextRequested?.Invoke();
+            NextButton.GotKeyboardFocus += OnActionGotKeyboardFocus;
 
             var actions = new DockPanel { Margin = new Thickness(0, 12, 0, 0), LastChildFill = false };
             DockPanel.SetDock(UndoButton, Dock.Left);
@@ -210,11 +210,9 @@ namespace Dynamo.UI.Controls
 
                 if (button != null)
                 {
-                    // A click wakes this popup for Narrator. Keyboard focus alone does not,
-                    // so wake it the same way before asking Narrator to say the button.
-                    ActivateForNarrator();
+                    // Focusing the button raises GotKeyboardFocus, which asks Narrator to read it.
+                    // The popup stays inactive, so this does not pull activation off DynamoView.
                     Keyboard.Focus(button);
-                    AccessibleAnnouncement.Speak(button, button.Content as string);
                 }
             }), DispatcherPriority.Input);
         }
@@ -318,41 +316,25 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// The popover is a transparent popup, which Windows leaves inactive until a click.
-        /// Narrator ignores keyboard focus there. Clearing that flag is what a click does.
+        /// The popover stays inactive, so Narrator does not follow focus into it. One notification
+        /// is the sentence it speaks for this button.
         /// </summary>
-        private void ActivateForNarrator()
+        private static void OnActionGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (PresentationSource.FromVisual(content) is not HwndSource source)
+            if (!ReferenceEquals(e.OriginalSource, sender))
             {
                 return;
             }
 
-            const int GWL_EXSTYLE = -20;
-            const int WS_EX_NOACTIVATE = 0x08000000;
-            var handle = source.Handle;
-            var style = GetWindowLongPtr(handle, GWL_EXSTYLE).ToInt64();
-            if ((style & WS_EX_NOACTIVATE) != 0)
-            {
-                SetWindowLongPtr(handle, GWL_EXSTYLE, new IntPtr(style & ~WS_EX_NOACTIVATE));
-            }
-
-            SetFocus(handle);
+            var button = (Button)sender;
+            AccessibleAnnouncement.Speak(button, button.Content as string);
         }
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
-        private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetFocus(IntPtr hWnd);
     }
 
     /// <summary>
-    /// Narrator does not announce keyboard focus inside the graph, or inside a popup it has not
-    /// woken up. A notification is the sentence it will speak.
+    /// Narrator does not follow keyboard focus into the graph, or into a popup that stays
+    /// inactive. A notification is the sentence it will speak. The sparkle keeps its name for
+    /// the automation peer, and this notification is what Narrator actually says.
     /// </summary>
     internal static class AccessibleAnnouncement
     {

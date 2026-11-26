@@ -13,7 +13,9 @@ using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.UI.Controls;
+using Dynamo.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
@@ -173,6 +175,83 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(KeyboardNavigation.GetIsTabStop(editedBadge));
             Assert.AreEqual("Edited by Autodesk Assistant", AutomationProperties.GetName(editedBadge));
             AssertBadgeName(editedBadge, "Edited by Autodesk Assistant");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TabFromTheCanvasEntersTheSelectedBadgeRatherThanTheFirst()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnB);
+            var secondBadge = ViewOf(second).AIBadge;
+
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(second);
+            Keyboard.Focus(View.ChildOfType<WorkspaceView>());
+            PressTab(View);
+
+            Assert.IsTrue(secondBadge.IsKeyboardFocused, "Tab enters the selected node's sparkle, not whichever sparkle comes first.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TabFromTheCanvasEntersTheSelectedNodesBadgeThenTheNextAndThenLeaves()
+        {
+            var first = AddNumberNode();
+            var second = AddNumberNode();
+            Workspace.RecordAINodeChange(first.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(second.GUID, AIChangeKind.Placed, TurnB);
+            var firstBadge = ViewOf(first).AIBadge;
+            var secondBadge = ViewOf(second).AIBadge;
+            var workspace = View.ChildOfType<WorkspaceView>();
+
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(first);
+            Keyboard.Focus(workspace);
+            var entered = PressTab(View);
+            Assert.IsTrue(entered.Handled, "Tab from the canvas moves to a sparkle instead of selecting neighbours.");
+            Assert.IsTrue(firstBadge.IsKeyboardFocused, "Tab enters the selected node's sparkle.");
+
+            var moved = PressTab(View);
+            Assert.IsTrue(moved.Handled);
+            Assert.IsTrue(secondBadge.IsKeyboardFocused, "The next Tab reaches the other sparkle.");
+
+            var left = PressTab(View);
+            Assert.IsTrue(left.Handled, "Tab on the last sparkle is taken so it does not select neighbouring nodes.");
+            Assert.IsFalse(secondBadge.IsKeyboardFocused, "Tab moves on from the last sparkle.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EscapeOnTheBadgeReturnsFocusToTheCanvas()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            var badge = ViewOf(node).AIBadge;
+            var workspace = View.ChildOfType<WorkspaceView>();
+
+            Keyboard.Focus(badge);
+            badge.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(badge), 0, Key.Escape)
+            {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsFalse(badge.IsKeyboardFocused);
+            Assert.IsTrue(workspace.IsKeyboardFocused, "Escape leaves the sparkle for the canvas.");
+        }
+
+        private static KeyEventArgs PressTab(UIElement source)
+        {
+            var args = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(source), 0, Key.Tab)
+            {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent
+            };
+            source.RaiseEvent(args);
+            DispatcherUtil.DoEvents();
+            return args;
         }
 
         /// <summary>

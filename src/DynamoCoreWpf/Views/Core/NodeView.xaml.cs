@@ -1789,9 +1789,11 @@ namespace Dynamo.Controls
                 Template = new ControlTemplate(typeof(AIBadgeButton)) { VisualTree = presenter },
                 Content = image
             };
-            // Tab on the canvas selects neighbouring nodes. The window sends Tab here, and this
-            // keeps the following Tab from leaving the sparkle.
+            // The window moves a plain Tab between sparkles and then lets it leave. Ctrl+Tab and
+            // Alt+Tab are not taken. Escape leaves this sparkle for the canvas.
             badge.PreviewKeyDown += OnAIBadgePreviewKeyDown;
+            // Narrator does not read this button's name when focus moves inside the graph.
+            // The notification is the one sentence it speaks.
             badge.GotKeyboardFocus += OnAIBadgeGotKeyboardFocus;
 
             // Clicks bubble to the node, which selects it. Most of the badge sits outside the
@@ -1828,11 +1830,20 @@ namespace Dynamo.Controls
 
         private static void OnAIBadgePreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Tab || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
+            // Plain Tab, Ctrl+Tab, and Alt+Tab are not taken here. The window walks plain Tab
+            // across the sparkles and then lets it leave. Escape returns to the canvas.
+            if (e.Key != Key.Escape || Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None)
             {
                 return;
             }
 
+            var workspace = WorkspaceOf(sender as DependencyObject);
+            if (workspace == null)
+            {
+                return;
+            }
+
+            Keyboard.Focus(workspace);
             e.Handled = true;
         }
 
@@ -1845,6 +1856,19 @@ namespace Dynamo.Controls
 
             var badge = (UIElement)sender;
             AccessibleAnnouncement.Speak(badge, AutomationProperties.GetName(badge));
+        }
+
+        private static WorkspaceView WorkspaceOf(DependencyObject element)
+        {
+            for (var current = element; current != null; current = VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current))
+            {
+                if (current is WorkspaceView workspace)
+                {
+                    return workspace;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
