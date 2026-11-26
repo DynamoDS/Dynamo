@@ -150,6 +150,12 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Уведомления</value>
   </data>
+  <data name="InvalidSettingsFileDetail" xml:space="preserve">
+    <value>Dynamo не удалось прочитать ваш профиль, поэтому для этого сеанса будут использоваться параметры по умолчанию. Исходный профиль будет сохранен в виде копии BAK в папке «Профили» каталога резервных копий графов, а профиль будет обновлен с учетом параметров этого сеанса.</value>
+  </data>
+  <data name="InvalidSettingsFileTitle" xml:space="preserve">
+    <value>Не удалось прочитать профиль</value>
+  </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>В доверенных расположениях обнаружен небезопасный путь:</value>
   </data>

@@ -575,6 +575,15 @@ value : bool = false</value>
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>搜尋</value>
   </data>
+  <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
+    <value>該紀要是從舊版 Dynamo 移轉。</value>
+  </data>
+  <data name="UnreadableProfileSavedAs" xml:space="preserve">
+    <value>無法讀取的紀要已另存成 {0}。</value>
+  </data>
+  <data name="UnreadableProfileBackupFailed" xml:space="preserve">
+    <value>該紀要未更新，因為無法備份無法讀取的紀要: {0}</value>
+  </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>搜尋自動完成結果</value>
   </data>

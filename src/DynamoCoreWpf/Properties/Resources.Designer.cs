@@ -205,6 +205,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input {0}.
+        /// </summary>
+        public static string AIChangePopoverInputName {
+            get {
+                return ResourceManager.GetString("AIChangePopoverInputName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next change ›.
         /// </summary>
         public static string AIChangePopoverNextChange {
@@ -246,6 +255,96 @@ namespace Dynamo.Wpf.Properties {
         public static string AIChangePopoverUndoUnavailable {
             get {
                 return ResourceManager.GetString("AIChangePopoverUndoUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant added {0} nodes.
+        /// </summary>
+        public static string AIChangeSummaryChipAddedNodes {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipAddedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant added 1 node.
+        /// </summary>
+        public static string AIChangeSummaryChipAddedOneNode {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipAddedOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to changed {0}.
+        /// </summary>
+        public static string AIChangeSummaryChipChangedCount {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipChangedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant changed {0} nodes.
+        /// </summary>
+        public static string AIChangeSummaryChipChangedNodes {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipChangedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant changed 1 node.
+        /// </summary>
+        public static string AIChangeSummaryChipChangedOneNode {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipChangedOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to deleted {0}.
+        /// </summary>
+        public static string AIChangeSummaryChipDeletedCount {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDeletedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant deleted {0} nodes.
+        /// </summary>
+        public static string AIChangeSummaryChipDeletedNodes {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDeletedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant deleted 1 node.
+        /// </summary>
+        public static string AIChangeSummaryChipDeletedOneNode {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDeletedOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string AIChangeSummaryChipDismiss {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string AIChangeSummaryChipShow {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipShow", resourceCulture);
             }
         }
         
@@ -3113,6 +3212,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ExportSettingsFailedMessage {
             get {
                 return ResourceManager.GetString("ExportSettingsFailedMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The profile {0} was not exported because Dynamo could not read it.
+        /// </summary>
+        public static string ExportSettingsUnreadableFileMessage {
+            get {
+                return ResourceManager.GetString("ExportSettingsUnreadableFileMessage", resourceCulture);
             }
         }
         
@@ -8394,6 +8502,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant.
+        /// </summary>
+        public static string PreferencesViewAutodeskAssistant {
+            get {
+                return ResourceManager.GetString("PreferencesViewAutodeskAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collapsed Group.
         /// </summary>
         public static string PreferencesViewCollapsedGroupHeader {
@@ -8772,6 +8889,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSettingIncludeTimestampExportPath {
             get {
                 return ResourceManager.GetString("PreferencesViewSettingIncludeTimestampExportPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show summary of Assistant changes.
+        /// </summary>
+        public static string PreferencesViewShowAIChangeSummaryChip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowAIChangeSummaryChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows a chip at the bottom of the canvas that summarizes the latest Autodesk Assistant changes. Turning this off does not remove the highlight on changed nodes..
+        /// </summary>
+        public static string PreferencesViewShowAIChangeSummaryChipTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowAIChangeSummaryChipTooltip", resourceCulture);
             }
         }
         

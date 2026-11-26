@@ -1139,21 +1139,94 @@ namespace Dynamo.Core
             var uiCulture = CultureInfo.CurrentUICulture.Name;
             var templateDirectory = Path.Combine(dataRootDirectory, Configurations.TemplatesAsString, uiCulture);
 
-            // If the localized template directory does not exist then fall back 
-            // to using the en-US template folder. Do an additional check to see 
-            // if the localized folder is available but is empty.
-            // 
-            var di = new DirectoryInfo(templateDirectory);
-            if (!Directory.Exists(templateDirectory) ||
-                !di.GetDirectories().Any() ||
-                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
+            // Shipped templates are flat *.dyn files in the locale folder. Fall back to
+            // en-US only when that folder is missing or contains no graphs. Requiring
+            // subdirectories (as samples do) made every localized folder look empty.
+            if (!TemplateDirectoryContainsGraphs(templateDirectory))
             {
-                var neturalCommonTemplates = Path.Combine(dataRootDirectory, Configurations.TemplatesAsString, "en-US");
-                if (Directory.Exists(neturalCommonTemplates))
-                    templateDirectory = neturalCommonTemplates;
+                var neutralCommonTemplates = Path.Combine(dataRootDirectory, Configurations.TemplatesAsString, Configurations.FallbackUiCulture);
+                if (TemplateDirectoryContainsGraphs(neutralCommonTemplates))
+                    templateDirectory = neutralCommonTemplates;
             }
 
             return templateDirectory;
+        }
+
+        /// <summary>
+        /// If <paramref name="filePath"/> is a shipped template under templates\&lt;locale&gt;,
+        /// returns the same file name in the active templates directory when that file exists.
+        /// Recent files keep the path from the language in use when they were opened; this
+        /// maps them onto the current language so Recent shows and opens the localized graph.
+        /// </summary>
+        /// <param name="filePath">A graph path, possibly under another templates locale folder.</param>
+        /// <returns>The localized path, or <paramref name="filePath"/> when it is not a shipped template.</returns>
+        internal string LocalizeTemplateFilePath(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(templatesDirectory))
+                return filePath;
+
+            string directory;
+            try
+            {
+                directory = Path.GetDirectoryName(filePath);
+            }
+            catch (ArgumentException)
+            {
+                return filePath;
+            }
+
+            if (string.IsNullOrEmpty(directory) || !IsInstallRootedTemplatesDirectory(directory))
+                return filePath;
+
+            if (AreTemplateDirectoriesEqual(directory, templatesDirectory))
+                return filePath;
+
+            var localizedPath = Path.Combine(templatesDirectory, Path.GetFileName(filePath));
+            return File.Exists(localizedPath) ? localizedPath : filePath;
+        }
+
+        /// <summary>
+        /// Recomputes the shipped templates directory from the current UI culture.
+        /// PathManager is constructed before the saved Dynamo language is applied, so the
+        /// first resolution can still follow the process culture. Call after
+        /// <see cref="DynamoModel.SetUICulture"/>. A templates directory the user chose
+        /// (anything other than the previous shipped default) is left unchanged.
+        /// </summary>
+        internal void RefreshDefaultTemplatesDirectory()
+        {
+            if (string.IsNullOrEmpty(commonDataDir))
+                return;
+
+            var previousDefault = defaultTemplatesDirectory;
+            defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
+
+            if (string.IsNullOrEmpty(templatesDirectory) ||
+                AreTemplateDirectoriesEqual(templatesDirectory, previousDefault))
+            {
+                templatesDirectory = defaultTemplatesDirectory;
+            }
+        }
+
+        /// <summary>
+        /// True when the directory exists and contains at least one .dyn file at any depth.
+        /// </summary>
+        private static bool TemplateDirectoryContainsGraphs(string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
+                return false;
+
+            try
+            {
+                return Directory.EnumerateFiles(directoryPath, "*.dyn", SearchOption.AllDirectories).Any();
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)

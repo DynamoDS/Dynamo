@@ -84,8 +84,17 @@ namespace Dynamo.Controls
 
         private void NodeView_MouseLeave(object sender, MouseEventArgs e)
         {
+            // Leaving the node lets its glow run on
+            viewModel?.SetAIHaloHovered(false);
+
             if (viewModel != null && viewModel.OnMouseLeave != null)
                 viewModel.OnMouseLeave();
+        }
+
+        private void NodeView_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Hovering the node holds its glow at its current value
+            viewModel?.SetAIHaloHovered(true);
         }
 
         internal PreviewControl PreviewControl
@@ -133,6 +142,7 @@ namespace Dynamo.Controls
         private Brush nodeBorderBrushWithoutHalo;
         private AnimationClock aiHaloClock;
         private AIHaloGlow aiHaloClockGlow;
+        private int aiHaloClockVersion;
         private Button aiBadge;
         private TextBlock aiBadgeToolTipText;
         private ItemsControl outputPortControl;
@@ -197,10 +207,14 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
         private static SolidColorBrush nodeAITouchedHaloBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeAITouchedHaloBrush"] as SolidColorBrush;
 
-        // AI-touched halo - a glow that extends 8px past the node edge with an 18px Figma layer blur.
-        // Figma's layer blur value is twice the Gaussian standard deviation (18 -> 9),
-        // and WPF's BlurEffect uses a standard deviation of about Radius/3, so a radius of 27 gives the same falloff
+        // AI-touched halo. On a default node the glow extends 8px past the edge. A frozen node or a
+        // node with preview off already draws its own border, so the glow moves out to 16px and sits
+        // outside that border (DYN-11001). Figma's layer blur value is twice the Gaussian standard
+        // deviation (18 -> 9), and WPF's BlurEffect uses a standard deviation of about Radius/3, so a
+        // radius of 27 gives the same falloff.
+        private const double AIHaloNodeCornerRadius = 8;
         private const double AIHaloSpread = 8;
+        private const double AIHaloSpreadOutsideStateBorder = 16;
         private const double AIHaloBlurRadius = 27;
         private static readonly BlurEffect aiHaloBlur = new BlurEffect
         {
@@ -237,6 +251,12 @@ namespace Dynamo.Controls
         private static readonly BitmapImage nodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
         private static readonly BitmapImage nodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
         private static readonly BitmapImage aiBadgeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/ai-badge-96px.png"));
+        private static readonly SolidColorBrush aiBadgeToolTipBackgroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["AIBadgeToolTipBackgroundBrush"] as SolidColorBrush;
+        private static readonly SolidColorBrush aiBadgeToolTipForegroundBrush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["AIBadgeToolTipForegroundBrush"] as SolidColorBrush;
+        private static readonly ControlTemplate aiBadgeToolTipTemplate = CreateAIBadgeToolTipTemplate();
+
+        // Below the node and clear of its halo, which extends up to 16px past the edge
+        private const double AIBadgeToolTipGap = 20;
         private static ImageBrush defaultNodeIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
             Stretch = Stretch.UniformToFill
@@ -285,6 +305,9 @@ namespace Dynamo.Controls
         public NodeView()
         {
             InitializeComponent();
+
+            // Tab between the AI badge and changed inputs instead of selecting neighbours
+            PreviewKeyDown += OnPreviewKeyDownAIReview;
 
             this.grid = new Grid()
             {
@@ -1368,6 +1391,10 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
+            MouseEnter -= NodeView_MouseEnter;
+
+            // A view that goes away under the mouse gets no MouseLeave; let the glow run on
+            ViewModel.SetAIHaloHovered(false);
 
             // The glow lives on the view model; a rebuilt view resumes it
             StopAIHaloAnimation();
@@ -1553,6 +1580,7 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
+            MouseEnter += NodeView_MouseEnter;
 
             // The node may already carry an AI change record, for example when its view is rebuilt
             UpdateAIHalo();
@@ -1561,7 +1589,9 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(NodeViewModel.AIHaloGlow))
+            if (e.PropertyName == nameof(NodeViewModel.AIHaloGlow)
+                || e.PropertyName == nameof(NodeViewModel.IsFrozen)
+                || e.PropertyName == nameof(NodeViewModel.IsVisible))
             {
                 UpdateAIHalo();
             }
@@ -1594,21 +1624,47 @@ namespace Dynamo.Controls
             }
 
             var glow = ViewModel?.AIHaloGlow;
-            if (glow == null || glow.IsFinished)
+
+            // No glow, still waiting to come on screen, or faded out: no halo
+            if (glow == null || !glow.IsGlowing)
             {
                 HideAIHalo();
                 return;
             }
 
-            // Already playing this glow
-            if (aiHaloClock != null && ReferenceEquals(aiHaloClockGlow, glow))
+            var version = glow.Version;
+            if (aiHaloClock == null || !ReferenceEquals(aiHaloClockGlow, glow) || aiHaloClockVersion != version)
             {
-                return;
+                PlayAIHalo(glow, version);
             }
 
-            // A node touched again restarts its glow from where it is now, so it never blinks off.
-            // A new or hidden halo starts from 0.
-            var startOpacity = aiHalo?.Visibility == Visibility.Visible ? aiHalo.Opacity : 0;
+            // Freeze and preview-off change the spread without starting a new glow.
+            if (aiHalo != null)
+            {
+                ApplyAIHaloSpread();
+            }
+
+            // Hover holds the halo at its current value; leaving lets it run on from there. The
+            // glow's clock is the reference, so the halo matches it after every hold.
+            var controller = aiHaloClock?.Controller;
+            if (controller == null) return;
+
+            controller.Seek(glow.Elapsed, TimeSeekOrigin.BeginTime);
+            if (glow.IsHeld)
+            {
+                controller.Pause();
+            }
+            else
+            {
+                controller.Resume();
+            }
+        }
+
+        private void PlayAIHalo(AIHaloGlow glow, int version)
+        {
+            // Restart from the current opacity so the halo never blinks off; a rebuilt view reuses it.
+            var currentOpacity = aiHalo?.Visibility == Visibility.Visible ? aiHalo.Opacity : 0;
+            var startOpacity = glow.StartOpacityFor(version, currentOpacity);
             StopAIHaloAnimation();
 
             if (aiHalo == null)
@@ -1620,11 +1676,12 @@ namespace Dynamo.Controls
 
             // Base value until the animation's first frame, so the halo never flashes at full strength
             aiHalo.Opacity = startOpacity;
-            aiHalo.Visibility = Visibility.Visible;
+            ApplyAIHaloSpread();
 
             // The node's 1px border is drawn in the canvas colour. Over the halo it would show as a
             // pale ring between the node and the glow, so it is hidden while the halo is on. The
             // border keeps its thickness, so the node's size and layout do not change.
+            aiHalo.Visibility = Visibility.Visible;
             nodeBorder.BorderBrush = Brushes.Transparent;
 
             // Only the opacity animates. The blurred glow is a cached bitmap, so this never re-blurs.
@@ -1632,14 +1689,8 @@ namespace Dynamo.Controls
             clock.Completed += AIHaloClock_Completed;
             aiHaloClock = clock;
             aiHaloClockGlow = glow;
+            aiHaloClockVersion = version;
             aiHalo.ApplyAnimationClock(UIElement.OpacityProperty, clock);
-
-            // A view rebuilt mid-glow (for example after switching tabs) picks up where the glow is
-            var elapsed = glow.Elapsed;
-            if (elapsed > TimeSpan.Zero)
-            {
-                clock.Controller.Seek(elapsed, TimeSeekOrigin.BeginTime);
-            }
         }
 
         private void AIHaloClock_Completed(object sender, EventArgs e)
@@ -1673,12 +1724,29 @@ namespace Dynamo.Controls
             aiHaloClockGlow = null;
         }
 
+        /// <summary>
+        /// Puts the glow 8px outside a default node, or 16px when the node already draws a frozen or
+        /// preview-off border, so the glow sits outside that border.
+        /// </summary>
+        private void ApplyAIHaloSpread()
+        {
+            var outsideStateBorder = ViewModel != null && (ViewModel.IsFrozen || !ViewModel.IsVisible);
+            var spread = outsideStateBorder ? AIHaloSpreadOutsideStateBorder : AIHaloSpread;
+            aiHalo.Margin = new Thickness(-spread);
+
+            if (aiHalo.Children[0] is Border glow)
+            {
+                var corner = AIHaloNodeCornerRadius + spread;
+                glow.CornerRadius = new CornerRadius(corner, corner, 0, 0);
+            }
+        }
+
         private static Grid CreateAIHalo()
         {
             var glow = new Border
             {
                 Background = nodeAITouchedHaloBrush,
-                CornerRadius = new CornerRadius(8 + AIHaloSpread, 8 + AIHaloSpread, 0, 0),
+                CornerRadius = new CornerRadius(AIHaloNodeCornerRadius + AIHaloSpread, AIHaloNodeCornerRadius + AIHaloSpread, 0, 0),
                 Effect = aiHaloBlur
             };
 
@@ -1735,6 +1803,9 @@ namespace Dynamo.Controls
             {
                 aiBadge = CreateAIBadge(out aiBadgeToolTipText);
                 grid.Children.Add(aiBadge);
+
+                // Figma 8:304 puts the tooltip under the node, lined up with its left edge
+                ((ToolTip)aiBadge.ToolTip).PlacementTarget = nodeBorder;
             }
 
             aiBadgeToolTipText.Text = ViewModel.AIBadgeToolTip;
@@ -1748,6 +1819,68 @@ namespace Dynamo.Controls
         /// badge. Exposed for tests.
         /// </summary>
         internal string AIBadgeToolTipText => aiBadgeToolTipText?.Text;
+
+        /// <summary>
+        /// Moves keyboard focus to the AI Assistant badge, which shows its tooltip. From there, Tab
+        /// and Shift+Tab move between the badge and the inputs the Assistant changed, opening each
+        /// input's popover, and Escape returns focus to the canvas.
+        /// </summary>
+        /// <returns>False if the node has no badge.</returns>
+        internal bool FocusAIReview()
+        {
+            if (aiBadge?.Visibility != Visibility.Visible) return false;
+
+            return ReferenceEquals(Keyboard.Focus(aiBadge), aiBadge);
+        }
+
+        /// <summary>
+        /// What Tab moves between while reviewing this node's AI change: the badge, then each changed
+        /// input in port order. Changed inputs are the only focusable port views.
+        /// </summary>
+        private List<UIElement> GetAIReviewTargets()
+        {
+            var targets = new List<UIElement>();
+            if (aiBadge?.Visibility == Visibility.Visible)
+            {
+                targets.Add(aiBadge);
+            }
+
+            foreach (var port in this.ChildrenOfType<InPorts>())
+            {
+                if (port.Focusable && port.IsVisible)
+                {
+                    targets.Add(port);
+                }
+            }
+
+            return targets;
+        }
+
+        private void OnPreviewKeyDownAIReview(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Tab && e.Key != Key.Escape) return;
+
+            // Ctrl+Tab and Alt+Tab keep their usual meaning
+            if ((Keyboard.Modifiers & (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Alt)) != 0) return;
+
+            // Only while reviewing: focus anywhere else in the node, such as a text box, is left alone
+            var targets = GetAIReviewTargets();
+            var current = targets.IndexOf(Keyboard.FocusedElement as UIElement);
+            if (current < 0) return;
+
+            if (e.Key == Key.Escape)
+            {
+                ViewModel?.DynamoViewModel.OnRequestReturnFocusToView();
+            }
+            else
+            {
+                var step = (Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Shift) != 0 ? -1 : 1;
+                Keyboard.Focus(targets[(current + step + targets.Count) % targets.Count]);
+            }
+
+            // Handled here, the window's Tab binding (select neighbours) does not run
+            e.Handled = true;
+        }
 
         private static Button CreateAIBadge(out TextBlock toolTipText)
         {
@@ -1803,20 +1936,22 @@ namespace Dynamo.Controls
 
             toolTipText = new TextBlock
             {
-                Padding = new Thickness(10),
                 FontFamily = artifactElementReg,
                 FontSize = 14,
-                FontWeight = FontWeights.Medium,
-                TextAlignment = TextAlignment.Center,
+                Foreground = aiBadgeToolTipForegroundBrush,
                 TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 280
             };
 
-            badge.ToolTip = new DynamoToolTip
+            // Figma 8:304: white text on dark grey, below the node
+            badge.ToolTip = new ToolTip
             {
-                AttachmentSide = DynamoToolTip.Side.Top,
+                Name = "aiBadgeToolTip",
                 OverridesDefaultStyle = true,
                 HasDropShadow = false,
-                Style = DynamoToolTipTopStyle,
+                Template = aiBadgeToolTipTemplate,
+                Placement = PlacementMode.Bottom,
+                VerticalOffset = AIBadgeToolTipGap,
                 Content = toolTipText
             };
             ToolTipService.SetShowsToolTipOnKeyboardFocus(badge, true);
@@ -1880,6 +2015,22 @@ namespace Dynamo.Controls
             protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
             {
             }
+        }
+
+        /// <summary>
+        /// The AI badge's tooltip: a dark grey rounded box with the text inside (Figma 8:304).
+        /// </summary>
+        private static ControlTemplate CreateAIBadgeToolTipTemplate()
+        {
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.SetValue(Border.BackgroundProperty, aiBadgeToolTipBackgroundBrush);
+            border.SetValue(Border.CornerRadiusProperty, new CornerRadius(4));
+            border.SetValue(Border.PaddingProperty, new Thickness(12, 8, 12, 8));
+            border.AppendChild(new FrameworkElementFactory(typeof(ContentPresenter)));
+
+            var template = new ControlTemplate(typeof(ToolTip)) { VisualTree = border };
+            template.Seal();
+            return template;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

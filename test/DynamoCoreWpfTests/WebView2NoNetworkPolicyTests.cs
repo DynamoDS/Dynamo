@@ -1,4 +1,5 @@
 using System;
+using Dynamo.UI.Views;
 using Dynamo.Wpf.Utilities;
 using Microsoft.Web.WebView2.Wpf;
 using NUnit.Framework;
@@ -27,6 +28,7 @@ namespace DynamoCoreWpfTests
             StringAssert.Contains("--disable-background-networking", creationProperties.AdditionalBrowserArguments);
             StringAssert.Contains("--disable-component-update", creationProperties.AdditionalBrowserArguments);
             StringAssert.Contains("--no-pings", creationProperties.AdditionalBrowserArguments);
+            StringAssert.Contains("--host-resolver-rules=\"MAP * ~NOTFOUND, EXCLUDE localhost\"", creationProperties.AdditionalBrowserArguments);
         }
 
         [Test]
@@ -137,6 +139,20 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\data\WebView2-NoNetwork", WebView2Utilities.GetNoNetworkUserDataFolder(@"C:\data\WebView2"));
             // A trailing separator must not produce a nested empty segment.
             Assert.AreEqual(@"C:\data\WebView2-NoNetwork", WebView2Utilities.GetNoNetworkUserDataFolder(@"C:\data\WebView2\"));
+        }
+
+        [Test]
+        public void WhenNoNetworkModeEnabledThenHomePageDoesNotSendTrainingVideos()
+        {
+            // The Learning page renders each video as a YouTube iframe, so the list must not be sent.
+            Assert.IsFalse(HomePage.ShouldSendVideoData(noNetworkMode: true));
+        }
+
+        [Test]
+        public void WhenNoNetworkModeDisabledThenHomePageSendsTrainingVideos()
+        {
+            // Default behavior must be preserved when the flag is off.
+            Assert.IsTrue(HomePage.ShouldSendVideoData(noNetworkMode: false));
         }
 
         [Test]

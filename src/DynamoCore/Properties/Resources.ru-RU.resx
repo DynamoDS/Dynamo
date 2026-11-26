@@ -575,6 +575,15 @@
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Поиск</value>
   </data>
+  <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
+    <value>Профиль перенесен из предыдущей версии Dynamo.</value>
+  </data>
+  <data name="UnreadableProfileSavedAs" xml:space="preserve">
+    <value>Нечитаемый профиль был сохранен как {0}.</value>
+  </data>
+  <data name="UnreadableProfileBackupFailed" xml:space="preserve">
+    <value>Профиль не был обновлен, так как не удалось создать резервную копию нечитаемого профиля: {0}</value>
+  </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>Поиск в результатах автозаполнения</value>
   </data>

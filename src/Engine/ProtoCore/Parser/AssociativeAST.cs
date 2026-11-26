@@ -2032,6 +2032,14 @@ namespace ProtoCore.AST.AssociativeAST
         public bool isSSAPointerAssignment { get; set; }
         public bool IsFirstIdentListNode { get; set; }
 
+        /// <summary>
+        /// True for the begin and end markers that profiling adds around a node's statements.
+        /// Function calls in a marker take their callsite IDs from a separate counter, so a node's
+        /// own callsite IDs, and the trace data keyed by them, are the same whether or not
+        /// profiling is on (DYN-11176).
+        /// </summary>
+        internal bool IsProfilingMarker { get; set; }
+
         public BinaryExpressionNode(AssociativeNode left = null, AssociativeNode right = null, Operator optr = Operator.none)
         {
             isSSAAssignment = false;
@@ -2067,6 +2075,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
             IsInputExpression = rhs.IsInputExpression;
             IsFirstIdentListNode = rhs.IsFirstIdentListNode;
+            IsProfilingMarker = rhs.IsProfilingMarker;
         }
 
         /// <summary>

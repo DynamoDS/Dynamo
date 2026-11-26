@@ -452,6 +452,50 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void MovingOrResizingTheNodeInCodeKeepsTheRecord()
+        {
+            // Align, layout and groups expanding move nodes in code; only a drag in the UI clears the record
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            node.CenterX += 50;
+            node.CenterY += 50;
+            node.SetSize(node.Width + 40, node.Height + 10);
+
+            Assert.IsNotNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UnpluggingAnInputClearsOnlyTheRecordOfTheNodeItFed()
+        {
+            var source = AddNumberNode();
+            var target = AddNode(new WatchNode());
+            var connector = ConnectorModel.Make(source, target, 0, 0);
+            Assert.IsNotNull(connector);
+            Workspace.RecordAINodeChange(source.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(target.GUID, AIChangeKind.Placed, TurnA);
+
+            connector.Delete();
+
+            Assert.IsNull(target.AIChange, "Its input was unplugged.");
+            Assert.IsNotNull(source.AIChange, "The node at the other end of the wire keeps its record.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangingAValueClearsTheRecord()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            ((DoubleInput)node).Value = "5";
+
+            Assert.IsNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void EditsDuringAnAIEditKeepTheRecord()
         {
             var node = AddNumberNode();
@@ -846,6 +890,166 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Starting a turn (DYN-11002)
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnClearsEarlierTurnsRecordsButKeepsTheirHistory()
+        {
+            var placed = AddNumberNode();
+            var modified = AddNumberNode();
+            Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(modified.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Workspace.StartAITurn(TurnB);
+
+            Assert.IsNull(placed.AIChange);
+            Assert.IsNull(modified.AIChange);
+            CollectionAssert.AreEquivalent(new[] { placed.GUID, modified.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds,
+                "Turn A's own history is kept.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnKeepsTheRecordsThatTurnAlreadyMade()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.StartAITurn(TurnA);
+
+            Assert.AreEqual(TurnA, node.AIChange?.TurnId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnThatChangesNothingRecordsNoTurn()
+        {
+            Workspace.StartAITurn(TurnA);
+
+            Assert.IsNull(Workspace.GetAITurnSummary(TurnA));
+            CollectionAssert.IsEmpty(Workspace.GetAITurnSummaries());
+
+            // Turn numbers count only turns that changed something
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnB);
+            Assert.AreEqual(1, node.AIChange.TurnNumber);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeInATurnThatWasNotStartedKeepsEarlierRecords()
+        {
+            // An ungrouped DynamoMCP edit has its own turn and must not clear earlier records
+            var earlier = AddNumberNode();
+            var later = AddNumberNode();
+            Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.RecordAINodeChange(later.GUID, AIChangeKind.Placed, "call-1");
+
+            Assert.AreEqual(TurnA, earlier.AIChange?.TurnId);
+            Assert.AreEqual("call-1", later.AIChange?.TurnId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RecordClearedByANewTurnIsNotBroughtBackWhenThatTurnNetsToNothing()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            Workspace.StartAITurn(TurnB);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "2", "3");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "3", "2");
+
+            Assert.IsNull(node.AIChange, "Turn A's cleared record must not return.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnThatAlreadyRecordedChangesNeverBringsBackAnEarlierTurnsRecord()
+        {
+            // Turn B records changes before it is started (e.g. its first start failed and was retried)
+            var node = AddNumberNode();
+            var other = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "2", "3");
+            Workspace.RecordAINodeChange(other.GUID, AIChangeKind.Placed, TurnB);
+
+            Workspace.StartAITurn(TurnB);
+            Assert.AreEqual(TurnB, node.AIChange?.TurnId, "Turn B keeps its own records.");
+            Assert.AreEqual(TurnB, other.AIChange?.TurnId);
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnB, "Value", "3", "2");
+
+            Assert.IsNull(node.AIChange, "Turn A's record, gone once turn B started, must not come back.");
+            CollectionAssert.AreEqual(new[] { node.GUID }, Workspace.GetAITurnSummary(TurnA).NodeIds, "Turn A keeps its history.");
+            CollectionAssert.AreEqual(new[] { other.GUID }, Workspace.GetAITurnSummary(TurnB).NodeIds, "Turn B keeps its history.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void LateChangeFromAnEarlierTurnNeverBringsBackARecordClearedByANewTurn()
+        {
+            // Turn A takes the node over from an older turn, then a late call for A arrives after B started
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, "turn-older", "Value", "1", "2");
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "2", "3");
+
+            Workspace.StartAITurn(TurnB);
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "3", "2");
+
+            Assert.IsNull(node.AIChange, "The older turn's record, cleared when turn B started, must not come back.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnInsideItsAIEditClearsEarlierTurnsRecords()
+        {
+            // DynamoMCP starts a turn at its first recorded change, inside that turn's BeginAIEdit scope
+            var earlier = AddNumberNode();
+            var placed = AddNumberNode();
+            Workspace.RecordAINodeChange(earlier.GUID, AIChangeKind.Placed, TurnA);
+
+            AsAIEdit(() =>
+            {
+                Workspace.StartAITurn(TurnB);
+                Workspace.RecordAINodeChange(placed.GUID, AIChangeKind.Placed, TurnB);
+            });
+
+            Assert.IsNull(earlier.AIChange);
+            Assert.AreEqual(TurnB, placed.AIChange?.TurnId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnWithoutATurnIdIsRejected()
+        {
+            Assert.Throws<ArgumentException>(() => Workspace.StartAITurn(null));
+            Assert.Throws<ArgumentException>(() => Workspace.StartAITurn(string.Empty));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnIsNotAnUndoStep()
+        {
+            var node = AddNumberNode();
+            using (Workspace.UndoRecorder.BeginActionGroup())
+            {
+                Workspace.UndoRecorder.RecordCreationForUndo(node);
+            }
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            Workspace.StartAITurn(TurnB);
+
+            // One undo must undo the node's creation, not the start of the turn
+            Workspace.UndoRecorder.Undo();
+            CollectionAssert.DoesNotContain(Workspace.Nodes, node);
+            Assert.IsFalse(Workspace.UndoRecorder.CanUndo);
+        }
+
+        #endregion
+
         #region Never saved, never unsaved
 
         [Test]
@@ -861,6 +1065,20 @@ namespace Dynamo.Tests
             Assert.IsFalse(Workspace.HasUnsavedChanges);
 
             Workspace.ClearAIChanges();
+            Assert.IsFalse(Workspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void StartingATurnNeverMarksTheGraphUnsaved()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.HasUnsavedChanges = false;
+
+            Workspace.StartAITurn(TurnB);
+
+            Assert.IsNull(node.AIChange);
             Assert.IsFalse(Workspace.HasUnsavedChanges);
         }
 

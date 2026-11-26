@@ -575,6 +575,15 @@ value : bool = false</value>
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Wyszukiwanie</value>
   </data>
+  <data name="SettingsMigratedFromPreviousVersion" xml:space="preserve">
+    <value>Przeniesiono profil z poprzedniej wersji dodatku Dynamo.</value>
+  </data>
+  <data name="UnreadableProfileSavedAs" xml:space="preserve">
+    <value>Niemożliwy do odczytania profil zapisano jako {0}.</value>
+  </data>
+  <data name="UnreadableProfileBackupFailed" xml:space="preserve">
+    <value>Nie zaktualizowano profilu, ponieważ nie udało się utworzyć kopii zapasowej niemożliwego do odczytania profilu: {0}</value>
+  </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>Wyniki autouzupełniania wyszukiwania</value>
   </data>

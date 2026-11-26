@@ -74,10 +74,17 @@ namespace Dynamo.Configuration
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
+        private bool showAIChangeSummaryChip;
         private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
+
+        // Set once the unreadable file is copied, so later saves do not back up the replacement.
+        private bool unreadableFileBackedUp;
+        // Set once the unreadable file has been replaced by a valid one on disk.
+        private bool unreadableFileReplaced;
+        private const string ProfileBackupDirectoryName = "profiles";
         private string backupLocation;
         private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
@@ -779,6 +786,23 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines if the chip that summarises the latest Autodesk Assistant changes is shown on the canvas.
+        /// </summary>
+        public bool ShowAIChangeSummaryChip
+        {
+            get
+            {
+                return showAIChangeSummaryChip;
+            }
+            set
+            {
+                if (showAIChangeSummaryChip == value) return;
+                showAIChangeSummaryChip = value;
+                RaisePropertyChanged(nameof(ShowAIChangeSummaryChip));
+            }
+        }
+
+        /// <summary>
         /// This defines if user wants the Extensions settings to persist across sessions.
         /// </summary>
         public bool EnablePersistExtensions
@@ -1099,6 +1123,7 @@ namespace Dynamo.Configuration
             MLRecommendationNumberOfResults = 10;
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
+            ShowAIChangeSummaryChip = true;
             isStaticSplashScreenEnabled = true;
             isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
@@ -1154,7 +1179,64 @@ namespace Dynamo.Configuration
                 preferenceFilePath = DynamoTestPath;
             }
 
-            return Save(preferenceFilePath);
+            // The file could not be read, so these are defaults; keep a copy before replacing it.
+            if (IsProfileUnreadable && !unreadableFileBackedUp && !TryBackUpUnreadableFile(preferenceFilePath))
+            {
+                return false;
+            }
+
+            var saved = Save(preferenceFilePath);
+            if (saved && !IsCreatedFromValidFile)
+            {
+                unreadableFileReplaced = true;
+            }
+            return saved;
+        }
+
+        /// <summary>
+        /// Copies the unreadable profile to the profiles folder in the backup location,
+        /// using the first free name among DynamoSettings.xml.bak, DynamoSettings.xml.bak1, DynamoSettings.xml.bak2 and so on.
+        /// </summary>
+        /// <returns>True if there is nothing to copy or the copy succeeded; false if it failed.</returns>
+        private bool TryBackUpUnreadableFile(string preferenceFilePath)
+        {
+            if (!File.Exists(preferenceFilePath))
+            {
+                return true;
+            }
+
+            try
+            {
+                if (string.IsNullOrEmpty(BackupLocation))
+                {
+                    throw new InvalidOperationException("The backup location is not set.");
+                }
+
+                var profileDirectory = Path.Combine(BackupLocation, ProfileBackupDirectoryName);
+                Directory.CreateDirectory(profileDirectory);
+
+                var baseName = Path.Combine(profileDirectory, Path.GetFileName(preferenceFilePath) + ".bak");
+                var backupPath = baseName;
+                var index = 0;
+                while (File.Exists(backupPath))
+                {
+                    index++;
+                    backupPath = baseName + index;
+                }
+
+                File.Copy(preferenceFilePath, backupPath);
+                unreadableFileBackedUp = true;
+                OnMessageLogged(LogMessage.Info(string.Format(global::Dynamo.Properties.Resources.UnreadableProfileSavedAs, backupPath)));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Do not replace a file that could not be backed up.
+                OnMessageLogged(LogMessage.Warning(
+                    string.Format(global::Dynamo.Properties.Resources.UnreadableProfileBackupFailed, ex.Message),
+                    WarningLevel.Moderate));
+                return false;
+            }
         }
 
         /// <summary>
@@ -1281,6 +1363,34 @@ namespace Dynamo.Configuration
                 72,
                 96
             };
+            }
+        }
+
+        /// <summary>
+        /// Renames the default group styles to the current UI culture. The names of the default styles are
+        /// saved in the settings file, so without this they keep the language Dynamo had when the file was
+        /// written. Custom styles are never changed, and a default style keeps its name if the new name
+        /// is already used by another style. Call it after the UI culture has been applied.
+        /// </summary>
+        internal void RefreshDefaultGroupStyleNames()
+        {
+            foreach (var defaultStyle in GroupStyleItem.DefaultGroupStyleItems)
+            {
+                var localizedName = GroupStyleItem.GetLocalizedDefaultName(defaultStyle.GroupStyleId);
+                if (localizedName != null) defaultStyle.Name = localizedName;
+            }
+
+            if (GroupStyleItemsList == null) return;
+
+            foreach (var style in GroupStyleItemsList)
+            {
+                if (!style.IsDefault) continue;
+
+                var localizedName = GroupStyleItem.GetLocalizedDefaultName(style.GroupStyleId);
+                if (localizedName == null || style.Name == localizedName) continue;
+                if (GroupStyleItemsList.Any(other => !ReferenceEquals(other, style) && other.Name == localizedName)) continue;
+
+                style.Name = localizedName;
             }
         }
 
@@ -1554,6 +1664,13 @@ namespace Dynamo.Configuration
         {
             get { return isCreatedFromValidFile; }
         }
+
+        /// <summary>
+        /// True while the profile could not be read and has not yet been replaced on disk by a valid one.
+        /// Unlike <see cref="IsCreatedFromValidFile"/>, which describes how the instance was loaded, this
+        /// becomes false after a successful save.
+        /// </summary>
+        internal bool IsProfileUnreadable => !isCreatedFromValidFile && !unreadableFileReplaced;
 
     }
 }
