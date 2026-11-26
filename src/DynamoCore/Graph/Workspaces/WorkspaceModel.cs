@@ -1096,12 +1096,23 @@ namespace Dynamo.Graph.Workspaces
 
         #region AI change record
 
+        private readonly System.Threading.Lock aiTurnsLock = new System.Threading.Lock();
         private readonly Dictionary<string, AITurnState> aiTurns = new Dictionary<string, AITurnState>(StringComparer.Ordinal);
         private int lastAITurnNumber;
 
         private int aiEditDepth;
         private int currentAIEdit;
         private static int lastAIEdit;
+
+        /// <summary>
+        /// Raised when the AI change record changes (DYN-11011 summary chip).
+        /// </summary>
+        internal event Action AIChangesUpdated;
+
+        private void OnAIChangesUpdated()
+        {
+            AIChangesUpdated?.Invoke();
+        }
 
         /// <summary>
         /// True while a <see cref="BeginAIEdit"/> scope is open; node edits then keep
@@ -1181,38 +1192,52 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
-            // Combine with the turn's own copy: the node's current record may have been cleared by a
-            // person or belong to an earlier turn.
-            var turn = GetOrCreateAITurn(turnId);
-            if (node.AIChange == null || !string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+            // Update the turn under the lock; set the node's record after, since that raises events.
+            AINodeChange change;
+            AINodeChange markBeforeTurn = null;
+            lock (aiTurnsLock)
             {
-                // The turn takes over the node's record (first touch, or after a person cleared it or
-                // another turn replaced it). Remember what it shows now, to restore if the net effect
-                // becomes nothing, so a cleared record is not brought back.
-                turn.RememberMarkBeforeTurn(nodeId, node.AIChange);
-            }
+                // Combine with the turn's own copy: the node's current record may have been cleared by a
+                // person or belong to an earlier turn.
+                var turn = GetOrCreateAITurn(turnId);
+                var current = node.AIChange;
+                if (current == null || !string.Equals(current.TurnId, turn.TurnId, StringComparison.Ordinal))
+                {
+                    // The turn takes over the node's record (first touch, or after a person cleared it or
+                    // another turn replaced it). Remember what it shows now, to restore if the net effect
+                    // becomes nothing, so a cleared record is not brought back.
+                    turn.RememberMarkBeforeTurn(nodeId, current);
+                }
 
-            var change = AINodeChange.Apply(
-                turn.GetNodeChange(nodeId),
-                nodeId,
-                turn.TurnId,
-                turn.TurnNumber,
-                new AIChangeReport(kind, inputName, before, after));
-            turn.SetNodeChange(nodeId, change);
+                change = AINodeChange.Apply(
+                    turn.GetNodeChange(nodeId),
+                    nodeId,
+                    turn.TurnId,
+                    turn.TurnNumber,
+                    new AIChangeReport(kind, inputName, before, after));
+                turn.SetNodeChange(nodeId, change);
+
+                if (change == null)
+                {
+                    markBeforeTurn = turn.TakeMarkBeforeTurn(nodeId);
+                }
+            }
 
             if (change != null)
             {
                 node.AIChange = change;
+                OnAIChangesUpdated();
                 return;
             }
 
             // Net effect is now nothing: restore the record from before this turn (none if a person has
             // edited the node since).
-            var markBeforeTurn = turn.TakeMarkBeforeTurn(nodeId);
-            if (node.AIChange != null && string.Equals(node.AIChange.TurnId, turn.TurnId, StringComparison.Ordinal))
+            if (node.AIChange != null && string.Equals(node.AIChange.TurnId, turnId, StringComparison.Ordinal))
             {
                 node.AIChange = markBeforeTurn;
             }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1232,16 +1257,21 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
-            var turn = GetOrCreateAITurn(turnId);
-            turn.SetNodeChange(nodeId, null);
-            turn.TakeMarkBeforeTurn(nodeId);
-
-            // Ask the turn, not its node changes: the first report removes the change, but a repeat must
-            // still know the turn placed it.
-            if (!turn.PlacedNode(nodeId))
+            lock (aiTurnsLock)
             {
-                turn.NodeDeleted(nodeId);
+                var turn = GetOrCreateAITurn(turnId);
+                turn.SetNodeChange(nodeId, null);
+                turn.TakeMarkBeforeTurn(nodeId);
+
+                // Ask the turn, not its node changes: the first report removes the change, but a repeat must
+                // still know the turn placed it.
+                if (!turn.PlacedNode(nodeId))
+                {
+                    turn.NodeDeleted(nodeId);
+                }
             }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1250,8 +1280,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public void RecordAIConnectorAdded(Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex, string turnId)
         {
-            GetOrCreateAITurn(turnId).ConnectorAdded(
-                AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
+            lock (aiTurnsLock)
+            {
+                GetOrCreateAITurn(turnId).ConnectorAdded(
+                    AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
+            }
         }
 
         /// <summary>
@@ -1259,8 +1292,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public void RecordAIConnectorRemoved(Guid startNodeId, int startPortIndex, Guid endNodeId, int endPortIndex, string turnId)
         {
-            GetOrCreateAITurn(turnId).ConnectorRemoved(
-                AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
+            lock (aiTurnsLock)
+            {
+                GetOrCreateAITurn(turnId).ConnectorRemoved(
+                    AITurnState.ConnectorKey(startNodeId, startPortIndex, endNodeId, endPortIndex));
+            }
         }
 
         /// <summary>
@@ -1269,12 +1305,15 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="turnId">Identifies the turn.</param>
         public AITurnSummary GetAITurnSummary(string turnId)
         {
-            if (string.IsNullOrEmpty(turnId) || !aiTurns.TryGetValue(turnId, out var turn))
+            if (string.IsNullOrEmpty(turnId))
             {
                 return null;
             }
 
-            return BuildAITurnSummary(turn);
+            lock (aiTurnsLock)
+            {
+                return aiTurns.TryGetValue(turnId, out var turn) ? BuildAITurnSummary(turn) : null;
+            }
         }
 
         /// <summary>
@@ -1282,11 +1321,15 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public IReadOnlyList<AITurnSummary> GetAITurnSummaries()
         {
-            return aiTurns.Values
-                .OrderBy(t => t.TurnNumber)
-                .Select(BuildAITurnSummary)
-                .ToList()
-                .AsReadOnly();
+            // Summaries are copies, so callers can read them without the lock
+            lock (aiTurnsLock)
+            {
+                return aiTurns.Values
+                    .OrderBy(t => t.TurnNumber)
+                    .Select(BuildAITurnSummary)
+                    .ToList()
+                    .AsReadOnly();
+            }
         }
 
         /// <summary>
@@ -1300,8 +1343,13 @@ namespace Dynamo.Graph.Workspaces
                 node.ClearAIChange();
             }
 
-            aiTurns.Clear();
-            lastAITurnNumber = 0;
+            lock (aiTurnsLock)
+            {
+                aiTurns.Clear();
+                lastAITurnNumber = 0;
+            }
+
+            OnAIChangesUpdated();
         }
 
         /// <summary>
@@ -1323,10 +1371,15 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            foreach (var turn in aiTurns.Values)
+            lock (aiTurnsLock)
             {
-                turn.ForgetMarksBeforeTurn();
+                foreach (var turn in aiTurns.Values)
+                {
+                    turn.ForgetMarksBeforeTurn();
+                }
             }
+
+            OnAIChangesUpdated();
         }
 
         private NodeModel FindNodeForAIRecord(Guid nodeId)
@@ -1357,6 +1410,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        // Call under aiTurnsLock
         private AITurnState GetOrCreateAITurn(string turnId)
         {
             ValidateAITurnId(turnId);
@@ -1370,6 +1424,7 @@ namespace Dynamo.Graph.Workspaces
             return turn;
         }
 
+        // Call under aiTurnsLock
         private static AITurnSummary BuildAITurnSummary(AITurnState turn)
         {
             return new AITurnSummary(turn.TurnId, turn.TurnNumber, turn.NodeChanges, turn.DeletedNodeCount, turn.RemovedConnectorCount);
@@ -1409,6 +1464,15 @@ namespace Dynamo.Graph.Workspaces
             }
 
             node.ClearAIChange();
+        }
+
+        // A node's record changed outside the Record methods, e.g. cleared by a person's edit or undo
+        private void RaiseAIChangesUpdatedOnNodeRecordChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NodeModel.AIChange))
+            {
+                OnAIChangesUpdated();
+            }
         }
 
         /// <summary>
@@ -1882,8 +1946,12 @@ namespace Dynamo.Graph.Workspaces
             Log(Resources.ClearingWorkSpace);
 
             // Turns belong to this graph; a cleared workspace has none
-            aiTurns.Clear();
-            lastAITurnNumber = 0;
+            lock (aiTurnsLock)
+            {
+                aiTurns.Clear();
+                lastAITurnNumber = 0;
+            }
+            OnAIChangesUpdated();
 
             DynamoSelection.Instance.ClearSelection();
 
@@ -2014,6 +2082,7 @@ namespace Dynamo.Graph.Workspaces
             node.Modified += NodeModified;
             node.EditedWhileFrozen += ClearAIChangeOnFrozenEdit;
             node.PropertyChanged += ClearAIChangeOnSettingChange;
+            node.PropertyChanged += RaiseAIChangesUpdatedOnNodeRecordChange;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection += OnToggleNodeFreeze;
 
@@ -2107,6 +2176,7 @@ namespace Dynamo.Graph.Workspaces
             node.Modified -= NodeModified;
             node.EditedWhileFrozen -= ClearAIChangeOnFrozenEdit;
             node.PropertyChanged -= ClearAIChangeOnSettingChange;
+            node.PropertyChanged -= RaiseAIChangesUpdatedOnNodeRecordChange;
             node.Dispose();
         }
 

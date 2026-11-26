@@ -863,6 +863,12 @@ namespace Dynamo.Views
             double fitWidth = outerCanvas.ActualWidth - 2 * viewportPadding;
             double fitHeight = outerCanvas.ActualHeight - 2 * viewportPadding;
 
+            // Keep the AI summary chip's area free, so it does not cover the fitted nodes
+            if (aiChangeSummaryChip.ActualHeight > 0)
+            {
+                fitHeight = Math.Max(fitHeight - aiChangeSummaryChip.ActualHeight - aiChangeSummaryChip.Margin.Bottom, viewportPadding);
+            }
+
             // Find the zoom required for fitview
             double scaleRequired = 1; // 100% zoom
             if (zoomArgs.hasZoom()) // FitView
@@ -997,6 +1003,7 @@ namespace Dynamo.Views
         internal static readonly TimeSpan AIHaloCheckDelay = TimeSpan.FromMilliseconds(150);
 
         private DispatcherTimer aiHaloCheckTimer;
+        private bool isDisposed;
 
         /// <summary>
         /// Checks for glows to start once the view has settled; see <see cref="AIHaloCheckDelay"/>.
@@ -1004,6 +1011,8 @@ namespace Dynamo.Views
         /// </summary>
         internal void RequestAIHaloVisibilityCheck()
         {
+            if (isDisposed) return;
+
             if (!Dispatcher.CheckAccess())
             {
                 Dispatcher.BeginInvoke(new Action(RequestAIHaloVisibilityCheck));
@@ -1424,6 +1433,7 @@ namespace Dynamo.Views
 
         public void Dispose()
         {
+            isDisposed = true;
             RemoveViewModelsubscriptions(ViewModel);
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
             Loaded -= WorkspaceView_Loaded;

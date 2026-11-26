@@ -758,6 +758,7 @@ namespace Dynamo.Models
                 // Pass EnableUnTrustedLocationsNotifications from config to PreferenceSettings
                 preferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
                 SetUICulture(CLILocale ?? preferenceSettings.Locale);
+                preferenceSettings.RefreshDefaultGroupStyleNames();
                 // The shipped templates folder was resolved during PathManager construction,
                 // before this culture was applied. Recompute it so Recent and From Template
                 // open templates\<locale> instead of templates\en-US.
@@ -849,6 +850,7 @@ namespace Dynamo.Models
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
+                    PreferenceSettings.RefreshDefaultGroupStyleNames();
 
                     Logger.Log(Resources.SettingsMigratedFromPreviousVersion);
                 }

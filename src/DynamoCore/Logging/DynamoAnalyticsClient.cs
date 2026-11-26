@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -141,7 +142,29 @@ namespace Dynamo.Logging
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
             }
-            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = "", AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
+            // Dynamo applies its language setting to the UI culture (DynamoModel.SetUICulture) before
+            // analytics starts. Passing it on as the product locale is how the Autodesk Assistant panel
+            // learns the language to show; without it the panel follows the OS language (DYN-11035).
+            product = new ProductInfo()
+            {
+                Id = "DYN",
+                Name = hostName,
+                VersionString = "",
+                AppVersion = appversion,
+                BuildId = buildId,
+                ReleaseId = releaseId,
+                Locale = GetProductLocale(CultureInfo.CurrentUICulture)
+            };
+        }
+
+        /// <summary>
+        /// The product locale reported to ADP for the given UI culture, for example "fr-FR".
+        /// Returns null for the invariant culture or null, which have no language to report.
+        /// </summary>
+        internal static string GetProductLocale(CultureInfo uiCulture)
+        {
+            var name = uiCulture?.Name;
+            return string.IsNullOrEmpty(name) ? null : name;
         }
 
         private void RegisterADPTracker(Service service)

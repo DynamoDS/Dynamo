@@ -3133,19 +3133,19 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Sì</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>Anteprima in sola lettura. Nodi, script e pacchetti vengono caricati solo dopo che l'utente ha scelto Sì.</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>Il file è stato modificato durante l'apertura, pertanto non è stato aperto. Aprirlo di nuovo per rivedere la versione più recente.</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>No, non aprire</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
     <value>Caricamento anteprima in corso...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>Nessuna anteprima disponibile per questo file.</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>L'esecuzione del grafico viene sospesa fino alla risoluzione dell'avviso</value>
@@ -3445,7 +3445,7 @@ In alcuni scenari complessi di programmi host o grafici, la modalità Automatico
     <value>Esportazione non riuscita</value>
   </data>
   <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
-    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+    <value>Il profilo {0} non è stato esportato perché Dynamo non è stato in grado di leggerlo.</value>
   </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>Quando l'opzione è attivata, Dynamo sfrutta l'accelerazione hardware per migliorare la levigatezza della grafica e le prestazioni generali, poiché il lavoro viene scaricato dalle unità di elaborazione centrali (CPU) alle unità di elaborazione grafica (GPU).</value>
@@ -3938,6 +3938,45 @@ Per aprire questo grafico in Dynamo 3.3-3.6.x: installare il pacchetto PythonNet
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Sincronizzazione automatica con selezione del nodo.</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
+    <value>Autodesk Assistant ha aggiunto {0} nodi</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant ha aggiunto 1 nodo</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
+    <value>ha modificato {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
+    <value>ha eliminato {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
+    <value>Autodesk Assistant ha modificato {0} nodi</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant ha modificato 1 nodo</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
+    <value>Autodesk Assistant ha eliminato {0} nodi</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant ha eliminato 1 nodo</value>
+  </data>
+  <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
+    <value>Ignora</value>
+  </data>
+  <data name="AIChangeSummaryChipShow" xml:space="preserve">
+    <value>Mostra</value>
+  </data>
+  <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
+    <value>Autodesk Assistant</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
+    <value>Mostra riepilogo delle modifiche di Assistant</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
+    <value>Mostra un riquadro nella parte inferiore dell'area di disegno che riassume le ultime modifiche apportate da Autodesk Assistant. Disattivando questa opzione, l'evidenziazione dei nodi modificati non viene rimossa.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

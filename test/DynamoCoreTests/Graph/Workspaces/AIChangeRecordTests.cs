@@ -452,6 +452,50 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void MovingOrResizingTheNodeInCodeKeepsTheRecord()
+        {
+            // Align, layout and groups expanding move nodes in code; only a drag in the UI clears the record
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            node.CenterX += 50;
+            node.CenterY += 50;
+            node.SetSize(node.Width + 40, node.Height + 10);
+
+            Assert.IsNotNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UnpluggingAnInputClearsOnlyTheRecordOfTheNodeItFed()
+        {
+            var source = AddNumberNode();
+            var target = AddNode(new WatchNode());
+            var connector = ConnectorModel.Make(source, target, 0, 0);
+            Assert.IsNotNull(connector);
+            Workspace.RecordAINodeChange(source.GUID, AIChangeKind.Placed, TurnA);
+            Workspace.RecordAINodeChange(target.GUID, AIChangeKind.Placed, TurnA);
+
+            connector.Delete();
+
+            Assert.IsNull(target.AIChange, "Its input was unplugged.");
+            Assert.IsNotNull(source.AIChange, "The node at the other end of the wire keeps its record.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangingAValueClearsTheRecord()
+        {
+            var node = AddNumberNode();
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Modified, TurnA, "Value", "1", "2");
+
+            ((DoubleInput)node).Value = "5";
+
+            Assert.IsNull(node.AIChange);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void EditsDuringAnAIEditKeepTheRecord()
         {
             var node = AddNumberNode();

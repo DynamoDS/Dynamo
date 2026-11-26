@@ -705,6 +705,8 @@ namespace Dynamo.ViewModels
 
         private AIHaloGlow aiHaloGlow;
         private volatile bool isAIHaloHovered;
+        private bool wasSelected;
+        private bool aiClearPending;
 
         // Guards glow replacement and hover state: an AI edit can replace the glow off the UI thread.
         private readonly object aiHaloSync = new object();
@@ -712,15 +714,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The halo's current glow (DYN-11004), or null when the node has no AI change record. A glow
         /// is created when the AI Assistant touches a node that is not glowing, and its clock starts
-        /// when the node comes on screen (DYN-11005). Once it has faded out or been dismissed
+        /// when the node comes on screen (DYN-11005). Once it has faded out
         /// (<see cref="Dynamo.ViewModels.AIHaloGlow.IsFinished"/>) only the badge remains, until the
-        /// record is cleared or the node is touched again. The glow changes in place (hover, Esc,
+        /// record is cleared or the node is touched again. The glow changes in place (hover,
         /// restart); each change is announced under this property's name.
         /// </summary>
         internal AIHaloGlow AIHaloGlow => aiHaloGlow;
 
         /// <summary>
-        /// True while the mouse is over the node. Esc then ends this node's glow (DYN-11005).
+        /// True while the mouse is over the node. Esc then clears this node's AI highlight (DYN-11005).
         /// </summary>
         internal bool IsAIHaloHovered => isAIHaloHovered;
 
@@ -765,7 +767,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    // A new glow, including for a node touched again after its glow faded out or was dismissed
+                    // A new glow, including for a node touched again after its glow faded out
                     var glow = AIHaloGlow.Create(strength, breathes);
                     if (isAIHaloHovered)
                     {
@@ -839,17 +841,43 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Ends this node's glow (Esc while hovering it). The badge and the change record stay, and
-        /// the workspace is not marked as changed.
+        /// True while the node shows an AI highlight: its halo is on screen, or it has the badge.
         /// </summary>
-        /// <returns>True if the node was glowing.</returns>
-        internal bool DismissAIHaloGlow()
-        {
-            var glow = AIHaloGlow;
-            if (glow == null || !glow.Dismiss()) return false;
+        internal bool HasVisibleAIHighlight => ShowAIBadge || AIHaloGlow?.IsGlowing == true;
 
-            RaisePropertyChanged(nameof(AIHaloGlow));
+        /// <summary>
+        /// Clears the node's AI change record (Esc while hovering it), which removes its halo and
+        /// badge. Never marks the workspace as unsaved, and the turn history is kept.
+        /// </summary>
+        /// <returns>True if the node showed an AI highlight.</returns>
+        internal bool ClearAIHighlight()
+        {
+            if (!HasVisibleAIHighlight) return false;
+
+            NodeModel.ClearAIChange();
             return true;
+        }
+
+        /// <summary>
+        /// Clears the AI change record when a person selects the node. Selections inside an AI edit keep it.
+        /// </summary>
+        internal void ClearAIChangeOnSelect()
+        {
+            var node = NodeModel;
+            if (node?.AIChange == null) return;
+            if (WorkspaceViewModel?.Model?.IsAIEditInProgress == true) return;
+
+            node.ClearAIChange();
+        }
+
+        /// <summary>
+        /// Clears the AI change record if a box selection selected the node and it is still selected.
+        /// </summary>
+        internal void ApplyPendingAIClear()
+        {
+            if (!aiClearPending) return;
+            aiClearPending = false;
+            if (IsSelected) ClearAIChangeOnSelect();
         }
 
         private void RequestAIHaloCheckIfWaiting()
@@ -887,6 +915,30 @@ namespace Dynamo.ViewModels
 
             RaisePropertyChanged(nameof(AIHaloGlow));
             return true;
+        }
+
+        /// <summary>
+        /// Plays the halo's glow again from the start, even if it faded out or was dismissed (DYN-11011).
+        /// The new glow waits until the node is on screen, like any new glow, so nodes that come on screen
+        /// together are staggered. No-op without an AI change record.
+        /// </summary>
+        internal void ReplayAIHaloGlow()
+        {
+            var change = NodeModel?.AIChange;
+            if (change == null) return;
+
+            lock (aiHaloSync)
+            {
+                var glow = AIHaloGlow.Create(AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+                if (isAIHaloHovered)
+                {
+                    glow.Hold();
+                }
+                aiHaloGlow = glow;
+            }
+
+            RaisePropertyChanged(nameof(AIHaloGlow));
+            WorkspaceViewModel?.OnAIHaloGlowWaiting();
         }
 
         /// <summary>
@@ -1161,6 +1213,7 @@ namespace Dynamo.ViewModels
 
             nodeLogic = logic;
             previewPinned = logic.PreviewPinned;
+            wasSelected = logic.IsSelected;
 
             //respond to collection changed events to add
             //and remove port model views
@@ -1510,9 +1563,22 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsSelected");
                     RaisePropertyChanged("PreviewState");
                     if (IsSelected)
+                    {
                         delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserRefreshTime, HandleDocumentationBrowserRefresh);
+                        // IsSelected notifies even when unchanged, e.g. Arrange reselecting the selection
+                        if (!wasSelected)
+                        {
+                            // The box can still move off the node, so wait until it is released
+                            if (WorkspaceViewModel?.IsBoxSelecting == true) aiClearPending = true;
+                            else ClearAIChangeOnSelect();
+                        }
+                    }
                     else
+                    {
                         delayDocumentBrowserRefresh?.Cancel();
+                        aiClearPending = false;
+                    }
+                    wasSelected = IsSelected;
                     break;
                 case "State":
                     RaisePropertyChanged("State");

@@ -151,10 +151,10 @@
     <value>Notifications</value>
   </data>
   <data name="InvalidSettingsFileDetail" xml:space="preserve">
-    <value>Dynamo could not read your profile and will use default settings for this session. The original profile will be saved as a .bak copy in the "profiles" folder of your graph backup location, and the profile will be updated with this session's settings.</value>
+    <value>Dynamo n'a pas pu lire votre profil et utilisera les paramètres par défaut pour cette session. Le profil d'origine sera enregistré sous forme de copie .bak dans le dossier "profiles" de l'emplacement de sauvegarde de vos graphiques, et le profil sera mis à jour avec les paramètres de cette session.</value>
   </data>
   <data name="InvalidSettingsFileTitle" xml:space="preserve">
-    <value>The profile could not be read</value>
+    <value>Impossible de lire le profil</value>
   </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
     <value>Un chemin non sécurisé a été détecté dans les emplacements approuvés:</value>

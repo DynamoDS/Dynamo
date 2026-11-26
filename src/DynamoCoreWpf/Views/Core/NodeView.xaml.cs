@@ -1612,7 +1612,7 @@ namespace Dynamo.Controls
 
             var glow = ViewModel?.AIHaloGlow;
 
-            // No glow, still waiting to come on screen, faded out or dismissed: no halo
+            // No glow, still waiting to come on screen, or faded out: no halo
             if (glow == null || !glow.IsGlowing)
             {
                 HideAIHalo();
@@ -2088,8 +2088,15 @@ namespace Dynamo.Controls
             view?.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
+            var wasSelected = ViewModel.IsSelected;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            // An already-selected node raises no selection change
+            if (wasSelected && ViewModel.IsSelected)
+            {
+                ViewModel.ClearAIChangeOnSelect();
+            }
 
             viewModel.OnSelected(this, EventArgs.Empty);
 

@@ -759,6 +759,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Python section-->
@@ -1088,11 +1089,49 @@
                                 </Grid>
                             </Expander>
                             
+                            <!--This Grid row contains the Autodesk Assistant section-->
+                            <Expander x:Name="AutodeskAssistantExpander" 
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=AutodeskAssistantExpander}"
+                                      Grid.Row="3"
+                                      Header="{x:Static p:Resources.PreferencesViewAutodeskAssistant}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="ShowAIChangeSummaryChipToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=ShowAIChangeSummaryChipIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewShowAIChangeSummaryChip}" 
+                                               Margin="10,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Image Name="ShowAIChangeSummaryChipToolTip"
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-default-16px.png"
+                                               ToolTipService.ShowDuration="30000">
+                                            <Image.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewShowAIChangeSummaryChipTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Image.ToolTip>
+                                        </Image>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+
                             <!--This Grid row contains the Experimental section-->
                             <Expander x:Name="ExperimentalExpander" 
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
-                                      Grid.Row="3"
+                                      Grid.Row="4"
                                       Visibility="{Binding IsExperimentalExpanderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                       Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
                                 <Grid>
@@ -1108,7 +1147,7 @@
                             <Expander x:Name="ExtentionsExpander" 
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExtentionsExpander}"
-                                      Grid.Row="4"
+                                      Grid.Row="5"
                                       Header="{x:Static p:Resources.PreferencesViewExtensions}">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -1132,7 +1171,7 @@
                                 <Expander x:Name="DocumentationBrowserExpander" 
                                     Style="{StaticResource MenuExpanderStyle}" 
                                     IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=DocumentationBrowserExpander}"
-                                    Grid.Row="5"
+                                    Grid.Row="6"
                                     Header="{x:Static p:Resources.DocumentationBrowserPreferences}">
                                     <Grid>
                                         <Grid.RowDefinitions>

@@ -523,6 +523,9 @@
     <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
       <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AIChangeSummaryChip.xaml.cs">
+      <DependentUpon>AIChangeSummaryChip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
     </Compile>
@@ -909,6 +912,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
+    <Compile Include="ViewModels\Core\AIChangeSummaryChipViewModel.cs" />
     <Compile Include="ViewModels\Core\AIHaloGlow.cs" />
     <Compile Include="ViewModels\Core\NodeViewModel.cs" />
     <Compile Include="ViewModels\Core\NoteViewModel.cs" />
@@ -1093,6 +1097,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\AIChangeSummaryChip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\InCanvasSearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1198,6 +1206,7 @@
     </Resource>
     <Resource Include="UI\Images\adsk-logo-16px.png" />
     <Resource Include="UI\Images\ai-badge-96px.png" />
+    <Resource Include="UI\Images\ai-icon-wrapper-96px.png" />
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />

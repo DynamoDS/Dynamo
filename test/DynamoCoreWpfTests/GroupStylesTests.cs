@@ -226,6 +226,49 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// Validates that importing a settings file saved in another language shows the default group styles
+        /// in the current language, and that the imported defaults do not count as customised.
+        /// </summary>
+        [Test]
+        public void ImportSettings_ShowsDefaultGroupStyleNamesInTheCurrentLanguage()
+        {
+            Open(@"UI\GroupTest.dyn");
+
+            var dynamoViewModel = View.DataContext as DynamoViewModel;
+            Assert.IsNotNull(dynamoViewModel);
+            var preferencesViewModel = new PreferencesViewModel(dynamoViewModel);
+            var expectedNames = GroupStyleItem.DefaultGroupStyleItems.Select(style => style.Name).ToList();
+
+            // A file as a German session would have saved it: default styles keep their ids but carry German names.
+            var germanNames = new[] { "Aktionen", "Eingaben", "Ausgaben", "Überprüfung" };
+            var importedSettings = new PreferenceSettings();
+            importedSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems
+                .Select((style, index) => new GroupStyleItem
+                {
+                    Name = germanNames[index],
+                    HexColorString = style.HexColorString,
+                    FontSize = style.FontSize,
+                    GroupStyleId = style.GroupStyleId,
+                    IsDefault = true
+                })
+                .ToList();
+            var settingsFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"DynamoSettings-{Guid.NewGuid()}.xml");
+            try
+            {
+                Assert.IsTrue(importedSettings.Save(settingsFile));
+
+                Assert.IsTrue(preferencesViewModel.importSettings(settingsFile));
+            }
+            finally
+            {
+                System.IO.File.Delete(settingsFile);
+            }
+
+            CollectionAssert.AreEqual(expectedNames, preferencesViewModel.StyleItemsList.Select(style => style.Name).ToList());
+            Assert.IsFalse(preferencesViewModel.CanResetGroupStyles);
+        }
+
+        /// <summary>
         /// Edits a default GroupStyle and validates that the Reset button restores all default values
         /// </summary>
         [Test]

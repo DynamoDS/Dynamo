@@ -1026,8 +1026,8 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// What the latest AI Assistant turn that touched this node did: placed, modified or moved it,
-        /// which turn, and which inputs changed. Null if no turn touched it, or if a person's edit or
-        /// undo/redo cleared it.
+        /// which turn, and which inputs changed. Null if no turn touched it, or if a person's edit,
+        /// selecting the node in the canvas, or undo/redo cleared it.
         /// </summary>
         /// <remarks>
         /// A review aid only: does not affect execution, is never saved to the .dyn file or undo

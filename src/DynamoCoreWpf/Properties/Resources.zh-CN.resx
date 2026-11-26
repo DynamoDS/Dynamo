@@ -3150,19 +3150,19 @@
     <value>是</value>
   </data>
   <data name="FileTrustPreviewCaption" xml:space="preserve">
-    <value>Read-only preview. Nodes, scripts, and packages load only after you choose Yes.</value>
+    <value>只读预览。仅当选择“是”后才会加载节点、脚本和软件包。</value>
   </data>
   <data name="FileTrustPreviewFileChanged" xml:space="preserve">
-    <value>The file changed while it was being opened, so it wasn't opened. Open it again to review the latest version.</value>
+    <value>文件在打开过程中发生了更改，因此未成功打开。再次打开它以查看最新版本。</value>
   </data>
   <data name="FileTrustPreviewDecline" xml:space="preserve">
-    <value>No, don't open</value>
+    <value>不，不要打开</value>
   </data>
   <data name="FileTrustPreviewLoading" xml:space="preserve">
     <value>正在加载预览...</value>
   </data>
   <data name="FileTrustPreviewUnavailable" xml:space="preserve">
-    <value>No preview available for this file.</value>
+    <value>此文件没有可用预览。</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
     <value>在解决警告之前图形执行处于暂停状态</value>
@@ -3461,7 +3461,7 @@
     <value>输出失败</value>
   </data>
   <data name="ExportSettingsUnreadableFileMessage" xml:space="preserve">
-    <value>The profile {0} was not exported because Dynamo could not read it.</value>
+    <value>未导出配置文件 {0}，因为 Dynamo 无法读取它。</value>
   </data>
   <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
     <value>启用后，由于工作从中央处理单元(CPU)转移到图形处理单元(GPU)，因此 Dynamo 可利用硬件加速来提高图形的平滑度和整体性能。</value>
@@ -3954,6 +3954,45 @@
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>与节点选择自动同步。</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedNodes" xml:space="preserve">
+    <value>Autodesk Assistant 添加了 {0} 个节点</value>
+  </data>
+  <data name="AIChangeSummaryChipAddedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant 添加了 1 个节点</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedCount" xml:space="preserve">
+    <value>已更改 {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedCount" xml:space="preserve">
+    <value>已删除 {0}</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedNodes" xml:space="preserve">
+    <value>Autodesk Assistant 已更改 {0} 节点</value>
+  </data>
+  <data name="AIChangeSummaryChipChangedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant 已更改 1 个节点</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedNodes" xml:space="preserve">
+    <value>Autodesk Assistant 删除了 {0} 个节点</value>
+  </data>
+  <data name="AIChangeSummaryChipDeletedOneNode" xml:space="preserve">
+    <value>Autodesk Assistant 删除了 1 个节点</value>
+  </data>
+  <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="AIChangeSummaryChipShow" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
+    <value>Autodesk Assistant</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChip" xml:space="preserve">
+    <value>显示 Assistant 更改摘要</value>
+  </data>
+  <data name="PreferencesViewShowAIChangeSummaryChipTooltip" xml:space="preserve">
+    <value>在画布底部显示一个标签块，其中总结了最新的 Autodesk Assistant 更改。禁用此选项不会移除已更改节点上的亮显。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
