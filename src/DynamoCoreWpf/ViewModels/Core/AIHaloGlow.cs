@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 using System.Windows.Media.Animation;
 
 namespace Dynamo.ViewModels
@@ -14,7 +15,8 @@ namespace Dynamo.ViewModels
     /// Placed and modified nodes: fade in over 0.6 s, two 2 s breaths (100% to 65% to 100%), settle
     /// to 70%, hold until 13.4 s, fade out by 14.9 s. Nodes the AI Assistant only moved get the same
     /// timing without the breaths: fade in, hold, fade out. Their halo is already faint (40%), so a
-    /// breath would barely show.
+    /// breath would barely show. When Windows animation is off, placed and modified nodes use that
+    /// same fade-in, hold, fade-out path. The badge does not animate either way.
     /// </para>
     /// <para>
     /// Only the halo's opacity animates; its blur and size never change. The glow belongs to the
@@ -114,6 +116,17 @@ namespace Dynamo.ViewModels
         /// Time since Dynamo started, from a monotonic clock.
         /// </summary>
         internal static TimeSpan DefaultClock() => stopwatch.Elapsed;
+
+        /// <summary>
+        /// True when the halo may breathe. False when Windows animation is off, so the glow fades
+        /// in once and fades out. Tests replace this; set it back to <see cref="DefaultPrefersMotion"/>.
+        /// </summary>
+        internal static Func<bool> PrefersMotion { get; set; } = DefaultPrefersMotion;
+
+        /// <summary>
+        /// Windows' "Animation effects" setting. False means reduced motion.
+        /// </summary>
+        internal static bool DefaultPrefersMotion() => SystemParameters.ClientAreaAnimation;
 
         #endregion
 

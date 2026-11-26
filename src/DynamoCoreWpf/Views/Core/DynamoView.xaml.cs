@@ -1,4 +1,5 @@
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -1051,6 +1052,178 @@ namespace Dynamo.Controls
             FocusableGrid.Focus();
             // keep handling input bindings of DynamoView
             Keyboard.Focus(this);
+        }
+
+        /// <summary>
+        /// Tab on the window selects neighbouring nodes, so a plain Tab moves to a sparkle
+        /// instead, unless focus is in a menu, toolbar, or editor. Narrator speaks when the
+        /// sparkle gets focus. The next Tab moves to the next sparkle, and from the last one
+        /// it moves on, so focus can leave. Ctrl+Tab and Alt+Tab are not taken.
+        /// </summary>
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+            if (e.Handled || e.Key != Key.Tab || Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None)
+            {
+                return;
+            }
+
+            var focused = Keyboard.FocusedElement as DependencyObject;
+            if (focused == null || IsTyping(focused) || IsInChangedInput(focused) || KeepsItsOwnTab(focused))
+            {
+                return;
+            }
+
+            var current = BadgeWithFocus(focused);
+            if (current != null)
+            {
+                var next = NextVisibleBadge(current);
+                if (next != null)
+                {
+                    Keyboard.Focus(next);
+                }
+                else
+                {
+                    // Leave the sparkle for the next control. Handling the key stops Tab from
+                    // selecting neighbouring nodes instead.
+                    current.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+
+                e.Handled = true;
+                return;
+            }
+
+            var badge = BadgeToEnter();
+            if (badge == null)
+            {
+                return;
+            }
+
+            Keyboard.Focus(badge);
+            e.Handled = true;
+        }
+
+        private static bool IsTyping(DependencyObject element)
+        {
+            for (var current = element; current != null; current = VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current))
+            {
+                if (current is TextBoxBase or PasswordBox)
+                {
+                    return true;
+                }
+
+                // Code block and Python editors
+                if (current.GetType().Name == "TextArea")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>The sparkle that has focus, or null.</summary>
+        private static Button BadgeWithFocus(DependencyObject element)
+        {
+            for (var current = element; current != null; current = ParentOf(current))
+            {
+                if (current is Button button && button.Name == "aiBadge")
+                {
+                    return button;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>A changed input handles Tab itself, to open its review panel.</summary>
+        private static bool IsInChangedInput(DependencyObject element)
+        {
+            for (var current = element; current != null; current = ParentOf(current))
+            {
+                if (current is InPorts)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Menus, toolbars, lists, and tab controls keep Tab. The canvas and the window itself do not.
+        /// </summary>
+        private static bool KeepsItsOwnTab(DependencyObject element)
+        {
+            for (var current = element; current != null; current = ParentOf(current))
+            {
+                if (current is WorkspaceView)
+                {
+                    return false;
+                }
+
+                if (current is MenuBase or ToolBar or ComboBox or TabControl or ListBox or TreeView)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static DependencyObject ParentOf(DependencyObject element)
+        {
+            return VisualTreeHelper.GetParent(element) ?? LogicalTreeHelper.GetParent(element);
+        }
+
+        /// <summary>The next sparkle after this one, or null when this is the last.</summary>
+        private Button NextVisibleBadge(Button current)
+        {
+            var passed = false;
+            foreach (var node in this.ChildrenOfType<NodeView>())
+            {
+                if (node.AIBadge is not Button badge || !badge.IsVisible)
+                {
+                    continue;
+                }
+
+                if (passed)
+                {
+                    return badge;
+                }
+
+                if (ReferenceEquals(badge, current))
+                {
+                    passed = true;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>The selected node's sparkle, or the first visible one.</summary>
+        private Button BadgeToEnter()
+        {
+            Button first = null;
+            foreach (var node in this.ChildrenOfType<NodeView>())
+            {
+                if (node.AIBadge is not Button badge || !badge.IsVisible)
+                {
+                    continue;
+                }
+
+                if (first == null)
+                {
+                    first = badge;
+                }
+
+                if (node.ViewModel?.IsSelected == true)
+                {
+                    return badge;
+                }
+            }
+
+            return first;
         }
 
         private void OnRequestPaste()
@@ -2465,6 +2638,12 @@ namespace Dynamo.Controls
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
 
+            if (e.Key == Key.Enter && TryFocusSelectedNodeAIReview())
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (e.Key != Key.Escape) return;
 
             // A new press starts fresh, even if the last release never reached the window
@@ -2513,6 +2692,38 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// Enter on the canvas with a node the AI Assistant placed or modified selected: moves
+        /// keyboard focus to that node's AI badge, the way into its review by keyboard (see
+        /// <see cref="NodeView.FocusAIReview"/>). Does nothing while a text box or other control has
+        /// focus, so Enter keeps its meaning there.
+        /// </summary>
+        /// <returns>True if focus moved to a badge.</returns>
+        internal bool TryFocusSelectedNodeAIReview()
+        {
+            if (Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None) return false;
+
+            // The canvas has focus when the window or one of its focus-holding grids has it
+            var focused = Keyboard.FocusedElement;
+            if (!ReferenceEquals(focused, this) && !ReferenceEquals(focused, FocusableGrid)
+                && !ReferenceEquals(focused, mainGrid))
+            {
+                return false;
+            }
+
+            // Skip walking the canvas unless a selected node has an AI change to review
+            if (!Dynamo.Selection.DynamoSelection.Instance.Selection
+                .OfType<Dynamo.Graph.Nodes.NodeModel>().Any(node => node.AIChange != null))
+            {
+                return false;
+            }
+
+            var nodeView = this.ChildrenOfType<NodeView>()
+                .FirstOrDefault(view => view.ViewModel?.IsSelected == true && view.ViewModel.ShowAIBadge);
+
+            return nodeView?.FocusAIReview() == true;
         }
 
         /// <summary>

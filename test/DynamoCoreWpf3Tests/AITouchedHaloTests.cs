@@ -33,10 +33,17 @@ namespace DynamoCoreWpfTests
         private const string TurnA = "turn-a";
         private const string TurnB = "turn-b";
 
+        [SetUp]
+        public void AnimationsAreOn()
+        {
+            AIHaloGlow.PrefersMotion = () => true;
+        }
+
         [TearDown]
         public void RestoreTheGlowClock()
         {
             AIHaloGlow.Now = AIHaloGlow.DefaultClock;
+            AIHaloGlow.PrefersMotion = AIHaloGlow.DefaultPrefersMotion;
         }
 
         private WorkspaceModel Workspace => ViewModel.Model.CurrentWorkspace;
@@ -132,6 +139,25 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void ReducedMotionFadesInOnceAndDoesNotBreathe()
+        {
+            AIHaloGlow.PrefersMotion = () => false;
+            var node = AddNumberNode();
+
+            Workspace.RecordAINodeChange(node.GUID, AIChangeKind.Placed, TurnA);
+
+            var glow = ViewModelOf(node).AIHaloGlow;
+            Assert.IsFalse(glow.Breathes, "Reduced motion fades in, holds and fades out.");
+            Assert.IsTrue(ViewModelOf(node).ShowAIBadge, "The badge does not change.");
+
+            var trough = glow.CreateAnimation().KeyFrames
+                .OfType<DoubleKeyFrame>()
+                .Any(frame => Math.Abs(frame.Value - AIHaloGlow.BreathLow) < 1e-6);
+            Assert.IsFalse(trough, "The fade has no breath.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ModifiedNodeShowsFullHalo()
         {
             var node = AddNumberNode();
@@ -220,10 +246,11 @@ namespace DynamoCoreWpfTests
                 Assert.Less(haloZIndex, Panel.GetZIndex(child));
             }
 
-            // Extends past the node edge and never takes mouse clicks.
+            // Extends past the node edge and never takes mouse clicks. The badge takes the pointer
+            // for its tooltip (DYN-11007).
             Assert.AreEqual(new System.Windows.Thickness(-8), halo.Margin);
             Assert.IsFalse(halo.IsHitTestVisible);
-            Assert.IsFalse(badge.IsHitTestVisible);
+            Assert.IsTrue(badge.IsHitTestVisible);
 
             // The halo and the badge are the only new parts, and the node's fill is unchanged.
             // Part opacities are not compared: some parts fade in over 0.2 s, so their value
@@ -1842,13 +1869,13 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(new System.Windows.Thickness(0, -13.5, -13.5, 0), badge.Margin);
 
             // In front of every other part of the node, including the zoomed-out overlay, and
-            // never takes mouse clicks.
+            // takes the pointer for its tooltip (DYN-11007).
             var badgeZIndex = Panel.GetZIndex(badge);
             foreach (var child in nodeView.grid.Children.OfType<UIElement>().Where(c => c != badge))
             {
                 Assert.Greater(badgeZIndex, Panel.GetZIndex(child));
             }
-            Assert.IsFalse(badge.IsHitTestVisible);
+            Assert.IsTrue(badge.IsHitTestVisible);
         }
 
         [Test]
