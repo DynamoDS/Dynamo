@@ -22,7 +22,9 @@ namespace Dynamo.Graph.Workspaces
             int turnNumber,
             IReadOnlyList<AINodeChange> nodes,
             int deletedNodeCount,
-            int removedConnectorCount)
+            int removedConnectorCount,
+            bool isUndone = false,
+            int removedStandaloneConnectorCount = 0)
         {
             TurnId = turnId;
             TurnNumber = turnNumber;
@@ -30,6 +32,8 @@ namespace Dynamo.Graph.Workspaces
             NodeIds = nodes.Select(n => n.NodeId).ToList().AsReadOnly();
             DeletedNodeCount = deletedNodeCount;
             RemovedConnectorCount = removedConnectorCount;
+            IsUndone = isUndone;
+            RemovedStandaloneConnectorCount = removedStandaloneConnectorCount;
         }
 
         /// <summary>The turn's identifier, as given by the caller.</summary>
@@ -52,6 +56,14 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>How many pre-existing connections the turn removed.</summary>
         public int RemovedConnectorCount { get; }
+
+        /// <summary>True after Undo all (DYN-11008), also after a redo.</summary>
+        internal bool IsUndone { get; }
+
+        /// <summary>
+        /// Removed connections that did not go with a deleted node, for the summary chip (DYN-11012).
+        /// </summary>
+        internal int RemovedStandaloneConnectorCount { get; }
     }
 
     /// <summary>
@@ -73,6 +85,14 @@ namespace Dynamo.Graph.Workspaces
             TurnNumber = turnNumber;
         }
 
+        internal bool IsUndone { get; set; }
+
+        /// <summary>
+        /// True when a change was reported inside an AI edit that had no turn id (an older DynamoMCP), so the
+        /// turn's undo steps are not labelled and Undo all is not supported.
+        /// </summary>
+        internal bool EditedWithoutUndoLabel { get; set; }
+
         internal string TurnId { get; }
 
         internal int TurnNumber { get; }
@@ -80,6 +100,17 @@ namespace Dynamo.Graph.Workspaces
         internal int DeletedNodeCount => deletedNodes.Count;
 
         internal int RemovedConnectorCount => connectors.Values.Count(c => c.ExistedBeforeTurn && !c.ExistsNow);
+
+        internal int RemovedStandaloneConnectorCount => connectors
+            .Where(pair => pair.Value.ExistedBeforeTurn && !pair.Value.ExistsNow)
+            .Count(pair => !IsOnDeletedNode(pair.Key));
+
+        private bool IsOnDeletedNode(string connectorKey)
+        {
+            var end = connectorKey.IndexOf('>') + 1;
+            return deletedNodes.Contains(Guid.ParseExact(connectorKey.Substring(0, 32), "N"))
+                || deletedNodes.Contains(Guid.ParseExact(connectorKey.Substring(end, 32), "N"));
+        }
 
         /// <summary>The turn's changes to each node, in the order the turn first touched them.</summary>
         internal IReadOnlyList<AINodeChange> NodeChanges => nodeOrder.Select(id => nodeChanges[id]).ToList().AsReadOnly();

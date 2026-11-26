@@ -164,6 +164,7 @@ namespace Dynamo.Views
             ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnStepNode -= CenterViewOnStepNode;
             ViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
 
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
@@ -197,6 +198,7 @@ namespace Dynamo.Views
             ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnStepNode += CenterViewOnStepNode;
             ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
 
             ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
@@ -855,19 +857,35 @@ namespace Dynamo.Views
             vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
         }
 
+        private const double FitViewportPadding = 30;
+
+        // The canvas area a fit uses: inside the padding, and above the AI summary chip so it does not
+        // cover the fitted nodes
+        private (double Width, double Height) GetFitArea()
+        {
+            double fitWidth = outerCanvas.ActualWidth - 2 * FitViewportPadding;
+            double fitHeight = outerCanvas.ActualHeight - 2 * FitViewportPadding;
+
+            if (aiChangeSummaryChip.ActualHeight > 0)
+            {
+                fitHeight = Math.Max(fitHeight - aiChangeSummaryChip.ActualHeight - aiChangeSummaryChip.Margin.Bottom, FitViewportPadding);
+            }
+
+            return (fitWidth, fitHeight);
+        }
+
+        // Centres a node for the AI summary chip's stepper
+        private void CenterViewOnStepNode(NodeModel node)
+        {
+            var (fitWidth, fitHeight) = GetFitArea();
+            var zoom = WorkspaceViewModel.StepZoom(ViewModel.Zoom, node.Width, node.Height, fitWidth, fitHeight);
+            vm_ZoomToFitView(this, new ZoomEventArgs(new Point2D(node.X, node.Y), node.Width, node.Height, zoom));
+        }
+
         void vm_ZoomToFitView(object sender, EventArgs e)
         {
             ZoomEventArgs zoomArgs = (e as ZoomEventArgs);
-
-            double viewportPadding = 30;
-            double fitWidth = outerCanvas.ActualWidth - 2 * viewportPadding;
-            double fitHeight = outerCanvas.ActualHeight - 2 * viewportPadding;
-
-            // Keep the AI summary chip's area free, so it does not cover the fitted nodes
-            if (aiChangeSummaryChip.ActualHeight > 0)
-            {
-                fitHeight = Math.Max(fitHeight - aiChangeSummaryChip.ActualHeight - aiChangeSummaryChip.Margin.Bottom, viewportPadding);
-            }
+            var (fitWidth, fitHeight) = GetFitArea();
 
             // Find the zoom required for fitview
             double scaleRequired = 1; // 100% zoom
@@ -880,15 +898,11 @@ namespace Dynamo.Views
                 scaleRequired = scaleX > scaleY ? scaleY : scaleX; // get least zoom required
             }
 
-            // Limit Zoom
-            if (scaleRequired > WorkspaceViewModel.ZOOM_MAXIMUM)
-                scaleRequired = WorkspaceViewModel.ZOOM_MAXIMUM;
-            else if (scaleRequired < WorkspaceViewModel.ZOOM_MINIMUM)
-                scaleRequired = WorkspaceViewModel.ZOOM_MINIMUM;
+            scaleRequired = WorkspaceViewModel.ClampZoom(scaleRequired);
 
             // Center position
-            double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
-            double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
+            double centerOffsetX = FitViewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
+            double centerOffsetY = FitViewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
 
             var resultOffset = new Point2D();
             resultOffset.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;

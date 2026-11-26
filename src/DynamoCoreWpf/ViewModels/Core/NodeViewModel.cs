@@ -924,12 +924,28 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ReplayAIHaloGlow()
         {
+            StartAIHaloGlowAgain(pulse: false);
+        }
+
+        /// <summary>
+        /// Gives the halo one slow breath when stepping to this node (DYN-11012). No-op without an AI
+        /// change record.
+        /// </summary>
+        internal void PulseAIHaloGlow()
+        {
+            StartAIHaloGlowAgain(pulse: true);
+        }
+
+        private void StartAIHaloGlowAgain(bool pulse)
+        {
             var change = NodeModel?.AIChange;
             if (change == null) return;
 
             lock (aiHaloSync)
             {
-                var glow = AIHaloGlow.Create(AIHaloOpacity, change.Kind != AIChangeKind.Moved);
+                var glow = pulse
+                    ? AIHaloGlow.CreatePulse(AIHaloOpacity)
+                    : AIHaloGlow.Create(AIHaloOpacity, change.Kind != AIChangeKind.Moved);
                 if (isAIHaloHovered)
                 {
                     glow.Hold();

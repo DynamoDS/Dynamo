@@ -4359,8 +4359,47 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="AIChangeSummaryChipDismiss" xml:space="preserve">
     <value>Dismiss</value>
   </data>
+  <data name="AIChangeSummaryChipPrevious" xml:space="preserve">
+    <value>Previous change</value>
+  </data>
+  <data name="AIChangeSummaryChipNext" xml:space="preserve">
+    <value>Next change</value>
+  </data>
   <data name="AIChangeSummaryChipShow" xml:space="preserve">
-    <value>Show</value>
+    <value>Show all</value>
+  </data>
+  <data name="AIChangeSummaryChipRemovedConnections" xml:space="preserve">
+    <value>Autodesk Assistant removed {0} connections</value>
+  </data>
+  <data name="AIChangeSummaryChipRemovedOneConnection" xml:space="preserve">
+    <value>Autodesk Assistant removed 1 connection</value>
+  </data>
+  <data name="AIChangeSummaryChipRemovedConnectionsCount" xml:space="preserve">
+    <value>removed {0} connections</value>
+  </data>
+  <data name="AIChangeSummaryChipRemovedOneConnectionCount" xml:space="preserve">
+    <value>removed 1 connection</value>
+  </data>
+  <data name="AIChangeSummaryChipStepPosition" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="AIChangeSummaryChipUndoAll" xml:space="preserve">
+    <value>Undo all</value>
+  </data>
+  <data name="AIChangeSummaryChipUndoAllToolTip" xml:space="preserve">
+    <value>Undo everything Autodesk Assistant did in this turn</value>
+  </data>
+  <data name="AIChangeSummaryChipUndoAllWorking" xml:space="preserve">
+    <value>Available when Autodesk Assistant has finished</value>
+  </data>
+  <data name="AIChangeSummaryChipUndoAllEditedSince" xml:space="preserve">
+    <value>The graph was edited after these changes. Use Undo (Ctrl+Z) instead.</value>
+  </data>
+  <data name="AIChangeSummaryChipUndoAllEditedDuringTurn" xml:space="preserve">
+    <value>The graph was edited while Autodesk Assistant was working. Use Undo (Ctrl+Z) instead.</value>
+  </data>
+  <data name="AIChangeSummaryChipUndoAllUnavailable" xml:space="preserve">
+    <value>These changes can no longer be undone here</value>
   </data>
   <data name="PreferencesViewAutodeskAssistant" xml:space="preserve">
     <value>Autodesk Assistant</value>

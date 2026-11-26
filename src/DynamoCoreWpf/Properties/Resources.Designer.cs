@@ -250,7 +250,124 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show.
+        ///   Looks up a localized string similar to Previous change.
+        /// </summary>
+        public static string AIChangeSummaryChipPrevious {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next change.
+        /// </summary>
+        public static string AIChangeSummaryChipNext {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant removed {0} connections.
+        /// </summary>
+        public static string AIChangeSummaryChipRemovedConnections {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipRemovedConnections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk Assistant removed 1 connection.
+        /// </summary>
+        public static string AIChangeSummaryChipRemovedOneConnection {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipRemovedOneConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to removed {0} connections.
+        /// </summary>
+        public static string AIChangeSummaryChipRemovedConnectionsCount {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipRemovedConnectionsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to removed 1 connection.
+        /// </summary>
+        public static string AIChangeSummaryChipRemovedOneConnectionCount {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipRemovedOneConnectionCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string AIChangeSummaryChipStepPosition {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipStepPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo all.
+        /// </summary>
+        public static string AIChangeSummaryChipUndoAll {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipUndoAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo everything Autodesk Assistant did in this turn.
+        /// </summary>
+        public static string AIChangeSummaryChipUndoAllToolTip {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipUndoAllToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available when Autodesk Assistant has finished.
+        /// </summary>
+        public static string AIChangeSummaryChipUndoAllWorking {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipUndoAllWorking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The graph was edited after these changes. Use Undo (Ctrl+Z) instead..
+        /// </summary>
+        public static string AIChangeSummaryChipUndoAllEditedSince {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipUndoAllEditedSince", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The graph was edited while Autodesk Assistant was working. Use Undo (Ctrl+Z) instead..
+        /// </summary>
+        public static string AIChangeSummaryChipUndoAllEditedDuringTurn {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipUndoAllEditedDuringTurn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These changes can no longer be undone here.
+        /// </summary>
+        public static string AIChangeSummaryChipUndoAllUnavailable {
+            get {
+                return ResourceManager.GetString("AIChangeSummaryChipUndoAllUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all.
         /// </summary>
         public static string AIChangeSummaryChipShow {
             get {

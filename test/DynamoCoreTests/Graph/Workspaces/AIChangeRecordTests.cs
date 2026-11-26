@@ -430,6 +430,43 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, Workspace.GetAITurnSummary(TurnA).RemovedConnectorCount);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void ConnectionsRemovedWithADeletedNodeAreNotCountedOnTheirOwn()
+        {
+            var kept = AddNumberNode();
+            var deleted = AddNumberNode();
+
+            Workspace.RecordAIConnectorRemoved(Guid.NewGuid(), 0, kept.GUID, 0, TurnA);
+            // As DynamoMCP reports a deletion: the node's connections, then the node
+            Workspace.RecordAIConnectorRemoved(deleted.GUID, 0, kept.GUID, 1, TurnA);
+            Workspace.RecordAINodeDeleted(deleted.GUID, TurnA);
+
+            var summary = Workspace.GetAITurnSummary(TurnA);
+            Assert.AreEqual(2, summary.RemovedConnectorCount, "Every removed connection, as reported to DynamoMCP.");
+            Assert.AreEqual(1, summary.RemovedStandaloneConnectorCount, "Only the one removed on its own, for the chip.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RecordingAConnectionChangeRaisesAnUpdate()
+        {
+            var raised = 0;
+            Action onUpdated = () => raised++;
+            Workspace.AIChangesUpdated += onUpdated;
+            try
+            {
+                Workspace.RecordAIConnectorAdded(Guid.NewGuid(), 0, Guid.NewGuid(), 0, TurnA);
+                Workspace.RecordAIConnectorRemoved(Guid.NewGuid(), 0, Guid.NewGuid(), 0, TurnA);
+            }
+            finally
+            {
+                Workspace.AIChangesUpdated -= onUpdated;
+            }
+
+            Assert.AreEqual(2, raised);
+        }
+
         #endregion
 
         #region When a node's record is cleared

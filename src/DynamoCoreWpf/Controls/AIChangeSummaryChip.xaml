@@ -30,6 +30,9 @@
                                 <ContentPresenter VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="buttonBackground" Property="Opacity" Value="0.4" />
+                                </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="buttonBackground" Property="Background" Value="{StaticResource HoverFontColorBrush}" />
                                 </Trigger>
@@ -67,7 +70,43 @@
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        FontWeight="Medium"
                        VerticalAlignment="Center"
-                       Margin="0,0,106,0" />
+                       Margin="0,0,40,0" />
+
+            <!-- Stepper (DYN-11012) -->
+            <StackPanel x:Name="stepper"
+                        Orientation="Horizontal"
+                        Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Button Content="&#x2039;"
+                        Command="{Binding PreviousCommand}"
+                        AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipPrevious}"
+                        Style="{StaticResource ChipButton}">
+                    <Button.Foreground>
+                        <SolidColorBrush Color="{StaticResource AIPurple300}" />
+                    </Button.Foreground>
+                </Button>
+                <TextBlock Text="{Binding StepText}"
+                           AutomationProperties.LiveSetting="Polite"
+                           Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                           FontSize="14"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           FontWeight="Medium"
+                           VerticalAlignment="Center"
+                           MinWidth="56"
+                           TextAlignment="Center" />
+                <Button Content="&#x203A;"
+                        Command="{Binding NextCommand}"
+                        AutomationProperties.Name="{x:Static p:Resources.AIChangeSummaryChipNext}"
+                        Style="{StaticResource ChipButton}">
+                    <Button.Foreground>
+                        <SolidColorBrush Color="{StaticResource AIPurple300}" />
+                    </Button.Foreground>
+                </Button>
+                <Rectangle Width="1"
+                           Height="20"
+                           Margin="16,0,8,0"
+                           Fill="{StaticResource MidGreyBrush}" />
+            </StackPanel>
+
             <Button Content="{x:Static p:Resources.AIChangeSummaryChipShow}"
                     Command="{Binding ShowCommand}"
                     Style="{StaticResource ChipButton}"
@@ -76,15 +115,23 @@
                     <SolidColorBrush Color="{StaticResource AIPurple300}" />
                 </Button.Foreground>
             </Button>
-            <Rectangle Width="1"
-                       Height="20"
-                       Margin="8,0"
-                       Fill="{StaticResource MidGreyBrush}"
-                       Visibility="{Binding CanShow, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+            <Button Content="{x:Static p:Resources.AIChangeSummaryChipUndoAll}"
+                    Command="{Binding UndoAllCommand}"
+                    Foreground="{StaticResource DefaultFontColorBrush}"
+                    Style="{StaticResource ChipButton}"
+                    Margin="8,0,0,0"
+                    Visibility="{Binding ShowUndoAll, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                    ToolTipService.ShowOnDisabled="True"
+                    AutomationProperties.HelpText="{Binding UndoAllToolTip}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding UndoAllToolTip}" Style="{StaticResource GenericToolTipLight}" />
+                </Button.ToolTip>
+            </Button>
             <Button Content="{x:Static p:Resources.AIChangeSummaryChipDismiss}"
                     Command="{Binding DismissCommand}"
                     Foreground="{StaticResource DefaultFontColorBrush}"
-                    Style="{StaticResource ChipButton}" />
+                    Style="{StaticResource ChipButton}"
+                    Margin="8,0,0,0" />
         </StackPanel>
     </Border>
 </UserControl>
