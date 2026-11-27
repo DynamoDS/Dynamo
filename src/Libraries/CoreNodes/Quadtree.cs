@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !OPEN_GEOMETRY
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -450,3 +451,4 @@ namespace DSCore
         }
     }
 }
+#endif

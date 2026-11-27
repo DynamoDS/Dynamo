@@ -14,4 +14,10 @@
       Fail the build instead of warning. -->
     <WarningsAsErrors>$(WarningsAsErrors);NU1504</WarningsAsErrors>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(UseOpenGeometry)' == 'true'">
+    <!-- Isolate NuGet restore assets from the default LibG/ASM build profile. -->
+    <BaseIntermediateOutputPath>obj\open-geometry\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(MSBuildProjectDirectory)\obj\open-geometry\</MSBuildProjectExtensionsPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;int\**</DefaultItemExcludes>
+  </PropertyGroup>
 </Project>

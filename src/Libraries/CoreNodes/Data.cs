@@ -91,6 +91,7 @@ namespace DSCore
 
                 switch (typeid)
                 {
+#if !OPEN_GEOMETRY
                     //autodesk.math to abstract ProtoGeometry types
                     case "autodesk.math:vector3d-1.0.0":
                         return Vector.FromJson(jObject.ToString());
@@ -114,6 +115,7 @@ namespace DSCore
                     case "dynamo.geometry:solid-1.0.0":
                     case string geoId when geoId.Contains("autodesk.geometry"):
                         return Geometry.FromJson(jObject.ToString());
+#endif
 
                     //Dynamo types
                     case "dynamo.graphics:color-1.0.0":
@@ -173,6 +175,7 @@ namespace DSCore
                 }
             }
 
+#if !OPEN_GEOMETRY
             if (jObject.ContainsKey("typeid"))
             {
                 var typeid = jObject["typeid"].ToString();
@@ -181,6 +184,7 @@ namespace DSCore
                     return Geometry.FromSolidDef(jObject.ToString());
                 }
             }
+#endif
 
             return null;
         }
@@ -308,6 +312,7 @@ namespace DSCore
         {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
+#if !OPEN_GEOMETRY
                 string serializedValue;
 
                 switch (value)
@@ -334,6 +339,7 @@ namespace DSCore
                         writer.WriteRawValue(item.ToJson());
                         return;
                 }
+#endif
 
                 throw new NotSupportedException(Properties.Resources.Exception_Serialize_DesignScript_Unsupported);
             }
@@ -350,7 +356,11 @@ namespace DSCore
 
             public override bool CanConvert(Type objectType)
             {
+#if OPEN_GEOMETRY
+                return typeof(Geometry).IsAssignableFrom(objectType);
+#else
                 return typeof(DesignScriptEntity).IsAssignableFrom(objectType);
+#endif
             }
         }
 
@@ -584,6 +594,28 @@ namespace DSCore
         /// </summary>
         static Data()
         {
+#if OPEN_GEOMETRY
+            var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 1, false, null, solid, "autodesk.geometry.surface:cylinder-2.0.0");
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, true, null, solid, "dynamo.geometry:cuboid-1.0.0");
+
+            var typeList = new List<DataNodeDynamoType>
+            {
+                new(typeof(bool), typeId: "Bool"),
+                new(typeof(DSCore.Color), typeId: "dynamo.graphics:color-1.0.0"),
+                new(typeof(System.Drawing.Bitmap), "Image", typeId: "dynamo.graphics:png-1.0.0"),
+                new(typeof(System.DateTime), typeId: "DateTime"),
+                new(typeof(double), "Number", typeId: "Float64"),
+                new(typeof(long), "Integer", typeId: "Int64"),
+                new(typeof(Location), typeId: "dynamo.data:location-1.0.0"),
+                new(typeof(Autodesk.DesignScript.Geometry.Point), typeId: "autodesk.math:point3d-1.0.0"),
+                solid,
+                cylinder,
+                cuboid,
+                new(typeof(string), typeId: "String"),
+                new(typeof(System.TimeSpan), typeId: "TimeSpan")
+            };
+#else
             var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
             var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve, "autodesk.geometry.curve:compositecurve-1.0.0");
             var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve, "autodesk.geometry.curve:polyline-1.0.0");
@@ -634,6 +666,7 @@ namespace DSCore
                 new(typeof(UV), typeId: "autodesk.math:uv-1.0.0"),
                 new(typeof(Vector), typeId: "autodesk.math:vector3d-1.0.0")
             };
+#endif
 
             DataNodeDynamoTypeList = new ReadOnlyCollection<DataNodeDynamoType>(typeList);
         }

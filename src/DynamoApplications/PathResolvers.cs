@@ -31,15 +31,19 @@ namespace Dynamo.Applications
                 "ProtoGeometry.dll",
                 "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
+#if !OPEN_GEOMETRY
                 "DSOffice.dll",
                 "DSCPython.dll",
+#endif
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
+#if !OPEN_GEOMETRY
                 "Tessellation.dll",
                 "Analysis.dll",
                 "GeometryColor.dll"
+#endif
             };
 
         }
@@ -123,15 +127,19 @@ namespace Dynamo.Applications
                 "ProtoGeometry.dll",
                 "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
+#if !OPEN_GEOMETRY
                 "DSOffice.dll",
                 "DSCPython.dll",
+#endif
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
+#if !OPEN_GEOMETRY
                 "Tessellation.dll",
                 "Analysis.dll",
                 "GeometryColor.dll"
+#endif
             };
 
             UserDataRootFolder = userDataFolder;

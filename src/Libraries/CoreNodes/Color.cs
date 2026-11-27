@@ -161,12 +161,14 @@ namespace DSCore
             return ColorRange1D.GetColorAtParameter(colorRange,parameter);
         }
 
+#if !OPEN_GEOMETRY
         [IsVisibleInDynamoLibrary(false)]
         public static Color BuildColorFrom2DRange(IList<Color> colors, IList<UV> parameters, UV parameter)
         {
             var colorRange = ColorRange.ByColorsAndParameters(colors, parameters);
             return colorRange.GetColorAtParameter(parameter);
         }
+#endif
 
         /// <summary>
         /// Linearly interpolate between two colors.
@@ -199,6 +201,7 @@ namespace DSCore
             return ByARGB(num[0], num[1], num[2], num[3]);
         }
 
+#if !OPEN_GEOMETRY
         /// <summary>
         /// Bilinearly interpolate between a set of colors.
         /// </summary>
@@ -243,6 +246,7 @@ namespace DSCore
             var v = System.Math.Sqrt(System.Math.Pow(max.V - min.V, 2));
             return u * v;
         }
+#endif
 
         public override string ToString()
         {
@@ -350,6 +354,7 @@ namespace DSCore
             }
         }
 
+#if !OPEN_GEOMETRY
         [IsVisibleInDynamoLibrary(false)]
         public class IndexedColor2D
         {
@@ -362,6 +367,7 @@ namespace DSCore
                 Parameter = parameter;
             }
         }
+#endif
     }
 
     [IsVisibleInDynamoLibrary(false)]
@@ -541,6 +547,7 @@ namespace DSCore
         };
     }
 
+#if !OPEN_GEOMETRY
     [IsVisibleInDynamoLibrary(true)]
     public class ColorRange
     {
@@ -584,4 +591,5 @@ namespace DSCore
             return color;
         }
     }
+#endif
 }

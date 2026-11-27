@@ -484,7 +484,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" />
       <PackageReference Include="System.Configuration.ConfigurationManager" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Condition=" '$(UseOpenGeometry)' != 'true' " />
     <PackageReference Include="FontAwesome5" />
     <PackageReference Include="AvalonEdit" CopyXML="true" />
     <PackageReference Include="Greg" />
@@ -2314,7 +2314,7 @@
 	<Copy SourceFiles="@(HTMLZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-CN" />
 	<Copy SourceFiles="@(HTMLZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-TW" />
   </Target>
-  <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
+  <Target Name="CopyDocXML" AfterTargets="AfterBuildOps" Condition=" '$(UseOpenGeometry)' != 'true' ">
 	 <ItemGroup>
 		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml" />
 	</ItemGroup>
@@ -2511,7 +2511,7 @@
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhCNFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-CN" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhTWFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-TW" SkipUnchangedFiles="True" />
   </Target>
-    <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
+    <Target Name="CopyDocXML" AfterTargets="AfterBuildOps" Condition=" '$(UseOpenGeometry)' != 'true' ">
       <ItemGroup>
         <DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml" />
 	  </ItemGroup>

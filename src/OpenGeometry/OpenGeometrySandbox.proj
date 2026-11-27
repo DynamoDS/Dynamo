@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <UseOpenGeometry>true</UseOpenGeometry>
+    <OpenGeometryNativeDirectory Condition="'$(OpenGeometryNativeDirectory)' == ''">$(MSBuildThisFileDirectory)..\..\bin\open-geometry\native\Release</OpenGeometryNativeDirectory>
+    <OpenGeometryStagingDir Condition="'$(OpenGeometryStagingDir)' == ''">$(MSBuildThisFileDirectory)..\..\bin\open-geometry\sandbox\$(Configuration)</OpenGeometryStagingDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SandboxProject Include="..\DynamoSandbox\DynamoSandbox.csproj" />
+    <SandboxProject Include="..\Libraries\CoreNodeModels\CoreNodeModels.csproj" />
+    <SandboxProject Include="..\Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj" />
+    <SandboxProject Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj" />
+    <SandboxProject Include="..\Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj" />
+    <SandboxProject Include="..\Libraries\DynamoConversions\DynamoConversions.csproj" />
+    <SandboxProject Include="..\LibraryViewExtensionWebView2\LibraryViewExtensionWebView2.csproj" />
+    <SandboxProject Include="..\DynamoPackagesWPF\DynamoPackagesWPF.csproj" />
+  </ItemGroup>
+
+  <Target Name="Restore">
+    <MSBuild Projects="@(SandboxProject)"
+             Targets="Restore"
+             Properties="Configuration=$(Configuration);Platform=$(Platform);UseOpenGeometry=true;OpenGeometryNativeDirectory=$(OpenGeometryNativeDirectory);OpenGeometryStagingDir=$(OpenGeometryStagingDir)" />
+  </Target>
+
+  <Target Name="Build">
+    <MSBuild Projects="@(SandboxProject)"
+             Targets="Build"
+             BuildInParallel="false"
+             Properties="Configuration=$(Configuration);Platform=$(Platform);UseOpenGeometry=true;OpenGeometryNativeDirectory=$(OpenGeometryNativeDirectory);OpenGeometryStagingDir=$(OpenGeometryStagingDir)" />
+  </Target>
+</Project>

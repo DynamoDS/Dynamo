@@ -17,7 +17,9 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Updates;
 using DynamoApplications.Properties;
+#if !OPEN_GEOMETRY
 using DynamoShapeManager;
+#endif
 using DynamoUtilities;
 using Microsoft.Win32;
 
@@ -154,6 +156,10 @@ namespace Dynamo.Applications
         [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Use the overload that returns asmVersion and asmPath out parameters for better diagnostics.")]
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
+#if OPEN_GEOMETRY
+            geometryFactoryPath = string.Empty;
+            preloaderLocation = string.Empty;
+#else
             var exePath = Assembly.GetExecutingAssembly().Location;
             var rootFolder = Path.GetDirectoryName(exePath);
 
@@ -167,6 +173,7 @@ namespace Dynamo.Applications
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
+#endif
         }
 
         /// <summary>
@@ -185,6 +192,12 @@ namespace Dynamo.Applications
             out Version asmVersion,
             out string asmPath)
         {
+#if OPEN_GEOMETRY
+            geometryFactoryPath = string.Empty;
+            preloaderLocation = string.Empty;
+            asmVersion = null;
+            asmPath = string.Empty;
+#else
             var exePath = Assembly.GetExecutingAssembly().Location;
             var rootFolder = Path.GetDirectoryName(exePath);
 
@@ -213,6 +226,7 @@ namespace Dynamo.Applications
                     Console.WriteLine("ASM Version extraction failed");
                 }
             }
+#endif
         }
 
         /// <summary>
@@ -363,6 +377,13 @@ namespace Dynamo.Applications
         
         private static bool PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation, out Version asmVersion, out string asmLoadedFrom)
         {
+#if OPEN_GEOMETRY
+            geometryFactoryPath = string.Empty;
+            preloaderLocation = string.Empty;
+            asmVersion = null;
+            asmLoadedFrom = string.Empty;
+            return true;
+#else
             if (string.IsNullOrEmpty(asmPath) && OSHelper.IsWindows())
             {
                 geometryFactoryPath = string.Empty;
@@ -418,6 +439,7 @@ namespace Dynamo.Applications
                 Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
                 return false;
             }
+#endif
         }
 
         private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode,
@@ -452,6 +474,9 @@ namespace Dynamo.Applications
             };
             var model = DynamoModel.Start(config);
 
+#if OPEN_GEOMETRY
+            model.Logger.Log("OpenGeometry (SMLib) geometry engine active.");
+#else
             // Log ASM version and path
             if (asmVersion != null)
             {
@@ -466,6 +491,7 @@ namespace Dynamo.Applications
             {
                 model.Logger.LogWarning("ASM could not be loaded", WarningLevel.Moderate);
             }
+#endif
 
             return model;
         }

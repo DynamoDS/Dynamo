@@ -19,8 +19,12 @@
     <Compile Remove="GeometryColor.cs" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0"/>
-    
+    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Condition=" '$(UseOpenGeometry)' != 'true' " />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(UseOpenGeometry)' == 'true' ">
+    <ProjectReference Include="..\..\OpenGeometry\ProtoGeometry\ProtoGeometry.csproj">
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

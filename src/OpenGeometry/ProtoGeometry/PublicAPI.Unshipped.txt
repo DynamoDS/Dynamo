@@ -1,0 +1,15 @@
+Autodesk.DesignScript.Geometry.Cuboid
+Autodesk.DesignScript.Geometry.Cylinder
+Autodesk.DesignScript.Geometry.Geometry
+Autodesk.DesignScript.Geometry.Geometry.Dispose() -> void
+Autodesk.DesignScript.Geometry.Point
+Autodesk.DesignScript.Geometry.Point.X.get -> double
+Autodesk.DesignScript.Geometry.Point.Y.get -> double
+Autodesk.DesignScript.Geometry.Point.Z.get -> double
+Autodesk.DesignScript.Geometry.Solid
+Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid other) -> Autodesk.DesignScript.Geometry.Solid
+Autodesk.DesignScript.Geometry.Solid.Volume.get -> double
+static Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point origin, double width = 1, double length = 1, double height = 1) -> Autodesk.DesignScript.Geometry.Cuboid
+static Autodesk.DesignScript.Geometry.Cuboid.ByLengths(double width = 1, double length = 1, double height = 1) -> Autodesk.DesignScript.Geometry.Cuboid
+static Autodesk.DesignScript.Geometry.Cylinder.ByPointsRadius(Autodesk.DesignScript.Geometry.Point startPoint, Autodesk.DesignScript.Geometry.Point endPoint, double radius) -> Autodesk.DesignScript.Geometry.Cylinder
+static Autodesk.DesignScript.Geometry.Point.ByCoordinates(double x = 0, double y = 0, double z = 0) -> Autodesk.DesignScript.Geometry.Point

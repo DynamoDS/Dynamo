@@ -32,9 +32,9 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" />
     <PackageReference Include="Greg" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0_debug" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Condition=" '$(UseOpenGeometry)' != 'true' " GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0" Condition=" '$(Configuration)' == 'Release' AND '$(UseOpenGeometry)' != 'true' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_233_0_0_debug" Condition=" '$(Configuration)' == 'Debug' AND '$(UseOpenGeometry)' != 'true' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="Newtonsoft.Json" CopyXML="true" />
     <PackageReference Include="RestSharp" CopyXML="true" />
     <PackageReference Include="Lucene.Net" />
@@ -82,6 +82,9 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\OpenGeometry\ProtoGeometry\ProtoGeometry.csproj" Condition=" '$(UseOpenGeometry)' == 'true' ">
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -114,7 +117,7 @@
   </ItemGroup>
 
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
-    <PropertyGroup>
+    <PropertyGroup Condition=" '$(UseOpenGeometry)' != 'true' ">
         <LIBGVerMain>libg_233_0_0</LIBGVerMain>
         <LIBGVerSecondary>libg_232_0_0</LIBGVerSecondary>
         <LibGMainPackagePath Condition=" '$(Configuration)' == 'Release' ">$(PkgDynamoVisualProgramming_LibG_233_0_0)</LibGMainPackagePath>
@@ -122,13 +125,15 @@
         <LibGSecondaryPackagePath>$(PkgDynamoVisualProgramming_LibG_232_0_0)</LibGSecondaryPackagePath>
         <LibGProtoGeometryLibGLocale>$(LibGMainPackagePath)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
-    <ItemGroup>
+    <ItemGroup Condition=" '$(UseOpenGeometry)' != 'true' ">
         <LibGInterface Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\LibG.Interface.dll" />
         <LibGProtoGeometryDLL Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\ProtoGeometry.dll" />
         <LibGProtoGeometryXML Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\ProtoGeometry.XML" />
         <LibGMainDeps Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\asm_deps.csproj" />
         <LibGMain Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerMain)\*" />
         <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
+    </ItemGroup>
+    <ItemGroup>
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
         <TemplateFiles Include="$(SolutionDir)..\doc\distrib\Templates\**\*.*" />
         <DefinitionFiles Include="$(SolutionDir)..\doc\distrib\Definitions\**\*.*" />
@@ -209,19 +214,19 @@
     <Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True" />
     <Copy SourceFiles="@(NodeHelpXLSXFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
     <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
-    <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
-    <ItemGroup>
+    <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <ItemGroup Condition=" '$(UseOpenGeometry)' != 'true' ">
       <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resx"
                                              Exclude="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\Microsoft.CodeAnalysis*.resources.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(LibGProtoGeometryUICultureAllLanguages)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
-    <Copy SourceFiles="@(LibGMainDeps)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\asm_deps\" />
-    <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path '$(LibGProtoGeometryLibGLocale)' -Destination '$(OutputPath)' -Recurse -Force" />
-    <Copy SourceFiles="@(LibGSecondary)" DestinationFolder="$(OutputPath)$(LIBGVerSecondary)\" />
-    <Copy SourceFiles="@(LibGMain)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\" />
+    <Copy SourceFiles="@(LibGProtoGeometryUICultureAllLanguages)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(LibGMainDeps)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\asm_deps\" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path '$(LibGProtoGeometryLibGLocale)' -Destination '$(OutputPath)' -Recurse -Force" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(LibGSecondary)" DestinationFolder="$(OutputPath)$(LIBGVerSecondary)\" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(LibGMain)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\" Condition=" '$(UseOpenGeometry)' != 'true' " />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(TemplateFiles)" DestinationFolder="$(OutputPath)templates\%(RecursiveDir)" />
     <Copy SourceFiles="@(DefinitionFiles)" DestinationFolder="$(OutputPath)definitions\%(RecursiveDir)" />
@@ -254,12 +259,19 @@
     <Copy SourceFiles="@(DllExtra)" DestinationFolder="$(DestExtra)" SkipUnchangedFiles="True" />  
   </Target>
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
-    <ItemGroup>
+    <ItemGroup Condition=" '$(UseOpenGeometry)' != 'true' ">
       <ASMLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
     </ItemGroup>
-    <Copy SourceFiles="@(ASMLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(ASMLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" Condition=" '$(UseOpenGeometry)' != 'true' " />
+    <ItemGroup Condition=" '$(UseOpenGeometry)' == 'true' ">
+      <OpenGeometryNativeBins Include="$(OpenGeometryNativeDirectory)\OpenGeometryBridge.dll;$(OpenGeometryNativeDirectory)\SM_API.dll;$(OpenGeometryNativeDirectory)\SMLib.dll" />
+      <OpenGeometryProtoGeometryMetadata Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry_DynamoCustomization.xml;$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.Migrations.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(OpenGeometryNativeBins)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="True" Condition=" '$(UseOpenGeometry)' == 'true' " />
+    <Copy SourceFiles="@(OpenGeometryProtoGeometryMetadata)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="True" Condition=" '$(UseOpenGeometry)' == 'true' " />
+    <Copy SourceFiles="$(OutputPath)\ProtoGeometry.xml" DestinationFolder="$(OutputPath)\$(UICulture)" SkipUnchangedFiles="True" Condition=" '$(UseOpenGeometry)' == 'true' AND Exists('$(OutputPath)\ProtoGeometry.xml') " />
   </Target>
   <Target AfterTargets="AfterBuildOps" Name="gen_resources" Condition=" $(RuntimeIdentifier.Contains('win')) ">
         <!-- Generate customization dll for DynamoCore -->

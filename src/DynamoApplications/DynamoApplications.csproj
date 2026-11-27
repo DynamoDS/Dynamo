@@ -27,7 +27,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+    <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj" Condition=" '$(UseOpenGeometry)' != 'true' ">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
       <Private>False</Private>

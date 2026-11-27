@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IsTestProject>true</IsTestProject>
+    <UseOpenGeometry>true</UseOpenGeometry>
+    <OpenGeometryNativeDirectory Condition="'$(OpenGeometryNativeDirectory)' == ''">$(MSBuildThisFileDirectory)../../../bin/open-geometry/native/Release</OpenGeometryNativeDirectory>
+    <OpenGeometryStagingDir Condition="'$(OpenGeometryStagingDir)' == ''">$(MSBuildThisFileDirectory)../../../bin/open-geometry/sandbox/$(Configuration)</OpenGeometryStagingDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" />
+    <ProjectReference Include="../../../src/OpenGeometry/ProtoGeometry/ProtoGeometry.csproj" />
+    <ProjectReference Include="../../../src/DynamoCore/DynamoCore.csproj" />
+    <ProjectReference Include="../../../src/DynamoApplications/DynamoApplications.csproj" />
+    <ProjectReference Include="../../../src/DynamoCoreWpf/DynamoCoreWpf.csproj" />
+    <ProjectReference Include="../../../src/Libraries/CoreNodes/CoreNodes.csproj" />
+    <ProjectReference Include="../../../src/Libraries/DynamoConversions/DynamoConversions.csproj" />
+    <ProjectReference Include="../../../src/Libraries/DynamoUnits/UnitsCore.csproj" />
+    <None Include="../Fixtures/CenteredCuboidCylinderCut.dyn" Link="Fixtures/CenteredCuboidCylinderCut.dyn" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(OpenGeometryNativeDirectory)/OpenGeometryBridge.dll" Link="OpenGeometryBridge.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(OpenGeometryNativeDirectory)/SM_API.dll" Link="SM_API.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(OpenGeometryNativeDirectory)/SMLib.dll" Link="SMLib.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../../src/Engine/ProtoCore/ExtendedLibraries/BuiltIn.ds" Link="BuiltIn.ds" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../../src/Engine/ProtoCore/ExtendedLibraries/FunctionObject.ds" Link="FunctionObject.ds" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="StageSandboxRuntimeForTests" AfterTargets="Build">
+    <ItemGroup>
+      <StagedNodeFiles Include="$(OpenGeometryStagingDir)\nodes\**\*.*" />
+      <StagedEnUsFiles Include="$(OpenGeometryStagingDir)\en-US\**\*.*" />
+      <StagedProtoMeta Include="$(OpenGeometryStagingDir)\ProtoGeometry_DynamoCustomization.xml;$(OpenGeometryStagingDir)\ProtoGeometry.Migrations.xml" />
+    </ItemGroup>
+    <MakeDir Directories="$(OutDir)nodes" />
+    <Copy SourceFiles="@(StagedNodeFiles)" DestinationFolder="$(OutDir)nodes\%(RecursiveDir)" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="@(StagedEnUsFiles)" DestinationFolder="$(OutDir)en-US\%(RecursiveDir)" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="@(StagedProtoMeta)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="True" />
+  </Target>
+</Project>

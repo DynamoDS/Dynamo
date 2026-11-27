@@ -14,6 +14,9 @@
     <FileAlignment>512</FileAlignment>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
+    <OpenGeometryNativeDirectory Condition="'$(OpenGeometryNativeDirectory)' == ''">$(SolutionDir)..\bin\open-geometry\native\Release</OpenGeometryNativeDirectory>
+    <OpenGeometryStagingDir Condition="'$(OpenGeometryStagingDir)' == ''">$(SolutionDir)..\bin\open-geometry\sandbox\$(Configuration)</OpenGeometryStagingDir>
+    <OutputPath Condition=" '$(OutputPath)' == '' AND '$(UseOpenGeometry)' == 'true' ">$(OpenGeometryStagingDir)</OutputPath>
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
     <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
@@ -50,6 +53,9 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(UseOpenGeometry)' == 'true' ">
+    <DefineConstants>$(DefineConstants);OPEN_GEOMETRY</DefineConstants>
+  </PropertyGroup>
     <PropertyGroup>
     <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -72,9 +78,13 @@
     <!--When under the Publish_ config, forces all test projects to not copy any dependencies into the output path-->
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(UseOpenGeometry)' != 'true'">
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseOpenGeometry)' == 'true'">
+    <BaseIntermediateOutputPath>int\open-geometry\$(TargetFramework)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>obj\open-geometry\$(TargetFramework)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />

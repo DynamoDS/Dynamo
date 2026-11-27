@@ -245,7 +245,15 @@ namespace Dynamo.UI.Views
                 {
                     webView.NavigationCompleted -= WebView_NavigationCompleted;
                     webView.Focus();
-                    System.Windows.Forms.SendKeys.SendWait("{TAB}");
+                    try
+                    {
+                        System.Windows.Forms.SendKeys.SendWait("{TAB}");
+                    }
+                    catch (Win32Exception ex)
+                    {
+                        // Non-interactive or UIPI-restricted sessions can reject SendInput without affecting startup.
+                        Debug.WriteLine($"SplashScreen focus tab skipped: {ex.Message}");
+                    }
                 }
                 OnRequestDynamicSplashScreen();
             }
@@ -378,7 +386,8 @@ namespace Dynamo.UI.Views
             LoadPreferencesFileAtStartup();
 
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
-            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            if ((viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+                && viewModel.Automation?.IsInPlaybackMode != true)
             {
                 authManager.LoginStateChanged += OnLoginStateChanged;
                 SetSignInStatus(authManager.IsLoggedInInitial());
