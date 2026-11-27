@@ -7,7 +7,12 @@ endif()
 
 find_package(Git REQUIRED)
 set(USD_BREP_SOURCE "" CACHE PATH "Path to the pinned usd-brep checkout")
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/usd-brep.ref" usd_brep_ref)
+set(USD_BREP_EXPECTED_REF "" CACHE STRING "Optional override commit SHA for independent usd-brep update rehearsal")
+if(USD_BREP_EXPECTED_REF STREQUAL "")
+    file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/usd-brep.ref" usd_brep_ref)
+else()
+    set(usd_brep_ref "${USD_BREP_EXPECTED_REF}")
+endif()
 execute_process(
     COMMAND "${GIT_EXECUTABLE}" -C "${USD_BREP_SOURCE}" rev-parse HEAD
     RESULT_VARIABLE git_result
