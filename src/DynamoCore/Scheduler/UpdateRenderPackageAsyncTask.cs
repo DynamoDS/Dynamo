@@ -235,8 +235,7 @@ namespace Dynamo.Scheduler
                 {
                     CreatePlaneTessellation(package, plane);
                 }
-                else
-                if (graphicItem is IInstanceableGraphicItem instanceableItem &&
+                else if (graphicItem is IInstanceableGraphicItem instanceableItem &&
                     instanceableItem.InstanceInfoAvailable 
                     && packageWithInstances != null
                     && instancingEnabled)

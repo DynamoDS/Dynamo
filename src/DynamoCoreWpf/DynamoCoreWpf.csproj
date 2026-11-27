@@ -2314,7 +2314,7 @@
 	<Copy SourceFiles="@(HTMLZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-CN" />
 	<Copy SourceFiles="@(HTMLZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-TW" />
   </Target>
-  <Target Name="CopyDocXML" AfterTargets="AfterBuildOps" Condition=" '$(UseOpenGeometry)' != 'true' ">
+  <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
 	 <ItemGroup>
 		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml" />
 	</ItemGroup>

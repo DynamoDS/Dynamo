@@ -308,6 +308,8 @@ namespace DSCore
         {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
+                string serializedValue;
+
                 switch (value)
                 {
                     case Mesh item:
