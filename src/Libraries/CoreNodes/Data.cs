@@ -595,25 +595,49 @@ namespace DSCore
         static Data()
         {
 #if OPEN_GEOMETRY
+            var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve, "autodesk.geometry.curve:compositecurve-1.0.0");
+            var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve, "autodesk.geometry.curve:polyline-1.0.0");
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve, "dynamo.geometry:rectangle-1.0.0");
             var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid, "dynamo.geometry:cone-1.0.0");
             var cylinder = new DataNodeDynamoType(typeof(Cylinder), 1, false, null, solid, "autodesk.geometry.surface:cylinder-2.0.0");
-            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, true, null, solid, "dynamo.geometry:cuboid-1.0.0");
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid, "dynamo.geometry:cuboid-1.0.0");
+            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid, "autodesk.geometry.surface:sphere-1.0.0");
+            var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
 
             var typeList = new List<DataNodeDynamoType>
             {
                 new(typeof(bool), typeId: "Bool"),
+                new(typeof(BoundingBox), typeId: "autodesk.geometry:boundingbox3d-1.0.0"),
+                new(typeof(CoordinateSystem), typeId: "autodesk.math:matrix44d-1.0.0"),
                 new(typeof(DSCore.Color), typeId: "dynamo.graphics:color-1.0.0"),
+                curve,
+                new(typeof(Arc), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
+                new(typeof(Circle), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
                 new(typeof(System.Drawing.Bitmap), "Image", typeId: "dynamo.graphics:png-1.0.0"),
+                new(typeof(Line), 1, false, null, curve, "autodesk.geometry.curve:line-1.0.0"),
+                new(typeof(NurbsCurve), 1, false, null, curve, "autodesk.geometry.curve:bcurve-1.0.0"),
+                polyCurve,
+                polygon,
+                rectangle,
                 new(typeof(System.DateTime), typeId: "DateTime"),
                 new(typeof(double), "Number", typeId: "Float64"),
                 new(typeof(long), "Integer", typeId: "Int64"),
                 new(typeof(Location), typeId: "dynamo.data:location-1.0.0"),
+                new(typeof(Plane), typeId: "autodesk.geometry.surface:plane-1.0.0"),
                 new(typeof(Autodesk.DesignScript.Geometry.Point), typeId: "autodesk.math:point3d-1.0.0"),
                 solid,
+                cone,
                 cylinder,
                 cuboid,
+                sphere,
                 new(typeof(string), typeId: "String"),
-                new(typeof(System.TimeSpan), typeId: "TimeSpan")
+                surface,
+                new(typeof(PolySurface), 1, true, null, surface, "dynamo.geometry:sab-1.0.0"),
+                new(typeof(System.TimeSpan), typeId: "TimeSpan"),
+                new(typeof(UV), typeId: "autodesk.math:uv-1.0.0"),
+                new(typeof(Vector), typeId: "autodesk.math:vector3d-1.0.0")
             };
 #else
             var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null, "dynamo.geometry:sab-1.0.0");

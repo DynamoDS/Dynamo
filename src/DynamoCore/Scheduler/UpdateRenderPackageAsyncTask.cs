@@ -231,13 +231,11 @@ namespace Dynamo.Scheduler
 
                 //Todo Plane tessellation needs to be handled here vs in LibG currently
                 bool instancingEnabled = factory.TessellationParameters.UseRenderInstancing;
-#if !OPEN_GEOMETRY
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);
                 }
                 else
-#endif
                 if (graphicItem is IInstanceableGraphicItem instanceableItem &&
                     instanceableItem.InstanceInfoAvailable 
                     && packageWithInstances != null
@@ -250,7 +248,6 @@ namespace Dynamo.Scheduler
                         instanceableItem.AddBaseTessellation(packageWithInstances, factory.TessellationParameters);
                         var prevLineIndex = package.LineVertexCount;
                         //if edges is on, then also add edges to base tessellation.
-#if !OPEN_GEOMETRY
                         if (factory.TessellationParameters.ShowEdges)
                         {
                             //TODO if we start to instance more types, expand this edge generation.
@@ -281,7 +278,6 @@ namespace Dynamo.Scheduler
                                 topologyInIdentityCS?.Dispose();
                             }
                         }
-#endif
                     }
 
                     instanceableItem.AddInstance(packageWithInstances, factory.TessellationParameters, labelKey);
@@ -344,7 +340,6 @@ namespace Dynamo.Scheduler
                     EnsureColorExistsPerVertex(package, previousPointVertexCount, previousLineVertexCount,
                         previousMeshVertexCount);
 
-#if !OPEN_GEOMETRY
                     if (factory.TessellationParameters.ShowEdges)
                     {
                         if (graphicItem is Topology topology)
@@ -370,7 +365,6 @@ namespace Dynamo.Scheduler
                             }
                         }
                     }
-#endif
                 }
 
                 //If the package has a transform that is not the identity matrix
@@ -406,7 +400,6 @@ namespace Dynamo.Scheduler
             }
         }
 
-#if !OPEN_GEOMETRY
         private static void CreatePlaneTessellation(IRenderPackage package, Plane plane)
         {
             package.RequiresPerVertexColoration = true;
@@ -466,7 +459,6 @@ namespace Dynamo.Scheduler
             d.Dispose();
             cs.Dispose();
         }
-#endif
 
         private static void EnsureColorExistsPerVertex(IRenderPackage package, int previousPointVertexCount, int previousLineVertexCount, int previousMeshVertexCount)
         {

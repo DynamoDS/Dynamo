@@ -6,9 +6,30 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="IncompatibleBridge" xml:space="preserve"><value>The Open Geometry native bridge has an incompatible ABI.</value></data>
   <data name="OperationFailed" xml:space="preserve"><value>{0} failed with Open Geometry status {1}.</value></data>
+  <data name="UnsupportedFormat" xml:space="preserve"><value>{0} is not supported by OpenGeometry (SMLib) because it requires proprietary Autodesk ASM persistence.</value></data>
   <data name="Box" xml:space="preserve"><value>Cuboid creation</value></data>
   <data name="Cylinder" xml:space="preserve"><value>Cylinder creation</value></data>
+  <data name="Sphere" xml:space="preserve"><value>Sphere creation</value></data>
+  <data name="Cone" xml:space="preserve"><value>Cone creation</value></data>
   <data name="Difference" xml:space="preserve"><value>Solid subtraction</value></data>
+  <data name="Union" xml:space="preserve"><value>Solid union</value></data>
+  <data name="Intersect" xml:space="preserve"><value>Solid intersection</value></data>
+  <data name="Translate" xml:space="preserve"><value>Geometry translation</value></data>
+  <data name="Rotate" xml:space="preserve"><value>Geometry rotation</value></data>
+  <data name="Scale" xml:space="preserve"><value>Geometry scaling</value></data>
+  <data name="Transform" xml:space="preserve"><value>Geometry transform</value></data>
   <data name="Volume" xml:space="preserve"><value>Solid volume calculation</value></data>
+  <data name="Area" xml:space="preserve"><value>Area calculation</value></data>
+  <data name="Centroid" xml:space="preserve"><value>Solid centroid calculation</value></data>
+  <data name="BoundingBox" xml:space="preserve"><value>Bounding box calculation</value></data>
+  <data name="ClosestPoint" xml:space="preserve"><value>Closest point calculation</value></data>
+  <data name="Distance" xml:space="preserve"><value>Distance calculation</value></data>
   <data name="Tessellation" xml:space="preserve"><value>Preview tessellation</value></data>
+  <data name="CurveCreation" xml:space="preserve"><value>Curve creation</value></data>
+  <data name="CurveQuery" xml:space="preserve"><value>Curve query</value></data>
+  <data name="CurveTransform" xml:space="preserve"><value>Curve transform</value></data>
+  <data name="SurfaceCreation" xml:space="preserve"><value>Surface creation</value></data>
+  <data name="SurfaceEvaluation" xml:space="preserve"><value>Surface evaluation</value></data>
+  <data name="SurfaceJoin" xml:space="preserve"><value>Surface joining</value></data>
+  <data name="TopologyQuery" xml:space="preserve"><value>Topology query</value></data>
 </root>
