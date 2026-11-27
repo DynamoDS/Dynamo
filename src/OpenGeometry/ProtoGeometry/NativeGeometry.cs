@@ -12,10 +12,13 @@ namespace OpenGeometry
     [StructLayout(LayoutKind.Sequential)]
     internal readonly record struct NativeVertex(NativePoint Position, NativePoint Normal);
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal readonly record struct NativeUv(double U, double V);
+
     internal static class NativeGeometry
     {
         private const string Bridge = "OpenGeometryBridge";
-        private const uint SupportedAbi = 9;
+        private const uint SupportedAbi = 11;
         private static readonly ResourceManager Messages = new("OpenGeometry.Messages", typeof(NativeGeometry).Assembly);
 
         internal sealed class SolidHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -199,6 +202,18 @@ namespace OpenGeometry
             var vertices = new NativeVertex[checked((int)GetVertexCount(snapshot))];
             Check(CopyVertices(snapshot, vertices, (uint)vertices.Length), "Tessellation");
             return vertices;
+        }
+
+        internal static (NativeVertex[] Vertices, NativeUv[] Uvs) TessellateWithUvs(SolidHandle solid, double tolerance)
+        {
+            var status = CreateMesh(solid, tolerance, out var mesh);
+            using var snapshot = CheckHandle(status, mesh, "Tessellation");
+            var count = checked((int)GetVertexCount(snapshot));
+            var vertices = new NativeVertex[count];
+            var uvs = new NativeUv[count];
+            Check(CopyVertices(snapshot, vertices, (uint)count), "Tessellation");
+            Check(CopyMeshUvs(snapshot, uvs, (uint)count), "Tessellation");
+            return (vertices, uvs);
         }
 
         /* ==================== Curves ==================== */
@@ -813,6 +828,14 @@ namespace OpenGeometry
             return CheckHandle(status, result, "ImportSmb");
         }
 
+        /* ==================== Slice J: Surface Isocurves ==================== */
+
+        internal static CurveHandle SurfaceIsoCurve(SolidHandle surface, int isoDirection, double parameter)
+        {
+            var status = ExtractSurfaceIsoCurve(surface, isoDirection, parameter, out var result);
+            return CheckHandle(status, result, "SurfaceIsoCurve");
+        }
+
         private static byte[] DrainBytes(BytesHandle handle, string operation)
         {
             var len = GetBytesLength(handle);
@@ -1413,5 +1436,14 @@ namespace OpenGeometry
 
         [DllImport(Bridge, EntryPoint = "og_brep_import_smb", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int ImportBrepSmbNative(string filePath, int binary, out SolidHandle result);
+
+        /* Slice I P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_copy_mesh_uvs", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CopyMeshUvs(MeshHandle mesh, [Out] NativeUv[] uvs, uint capacity);
+
+        /* Slice J P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_surface_isocurve", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ExtractSurfaceIsoCurve(
+            SolidHandle surface, int isoDirection, double normalizedParam, out CurveHandle result);
     }
 }

@@ -29,6 +29,11 @@ typedef struct OgVertex
     OgPoint normal;
 } OgVertex;
 
+typedef struct OgUv
+{
+    double u, v;
+} OgUv;
+
 enum OgStatus
 {
     OG_SUCCESS = 0,
@@ -355,6 +360,13 @@ OG_API int32_t og_bytes_copy(const OgBytes* bytes, uint8_t* out_data, uint32_t c
 OG_API void og_release_bytes(OgBytes* bytes);
 OG_API int32_t og_brep_export_smb(const OgSolid* solid, const char* file_path, int32_t binary);
 OG_API int32_t og_brep_import_smb(const char* file_path, int32_t binary, OgSolid** result);
+
+/* Slice I: Normalized per-vertex face UV coordinates for surface color maps */
+OG_API int32_t og_copy_mesh_uvs(const OgMesh* mesh, OgUv* uvs, uint32_t capacity);
+
+/* Slice J: Exact surface isocurve extraction */
+OG_API int32_t og_surface_isocurve(
+    const OgSolid* surface, int32_t iso_direction, double normalized_param, OgCurve** result);
 
 #ifdef __cplusplus
 }

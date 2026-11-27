@@ -2,7 +2,7 @@
 
 This inventory is derived from Dynamo's checked-in public node documentation (`doc/distrib/NodeHelpFiles/en-US/Autodesk.DesignScript.Geometry.*.md`, 533 documented members across 43 types) and checked-in sample graphs (`doc/distrib/Samples/**/*.dyn`, 294 graphs across 14 locales; 21 distinct English sample graphs).
 
-The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v9).
+The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v11).
 
 ## Sample Corpus Coverage
 
@@ -16,7 +16,7 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 
 | Type | Public Docs | Status | Implemented Slice | Notes |
 |---|---:|---|---|---|
-| `Geometry` | 26 | Implemented (core) | Baseline + A–H | `Dispose`, `Tessellate` (`IGraphicItem` with per-vertex preview colors), `Translate`, `Rotate`, `Scale`, `Transform`, `Mirror`, `BoundingBox`, `DistanceTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`, `ToJson`/`FromJson` (exact SMLib BRep/curve stream payloads, wired to `DSCore.Data.StringifyJSON`/`ParseJSON`/`Remember`); explicit `NotSupportedException` for SAT/SAB/SolidDef |
+| `Geometry` | 26 | Implemented (core) | Baseline + A–I | `Dispose`, `Tessellate` (`IGraphicItem` with per-vertex preview colors and normalized `[0,1]` face UVs for `GeometryColor.BySurfaceColors`), `Translate`, `Rotate`, `Scale`, `Transform`, `Mirror`, `BoundingBox`, `DistanceTo`, `IsAlmostEqualTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`, `ToJson`/`FromJson` (exact SMLib BRep/curve stream payloads, wired to `DSCore.Data.StringifyJSON`/`ParseJSON`/`Remember`); explicit `NotSupportedException` for SAT/SAB/SolidDef |
 | `Point` | 14 | Implemented (core) | Baseline + A | `ByCoordinates` (2D & 3D), `Origin`, `ByCartesianCoordinates`, `X/Y/Z`, `Add`, `Subtract`, `AsVector`, `DistanceTo`, transforms |
 | `Vector` | 26 | Implemented (core) | Slice A + H | `ByCoordinates`, `ByTwoPoints`, `XAxis/YAxis/ZAxis`, `Length`, `Normalized`, `Dot`, `Cross`, `Scale`, `Add`, `Subtract`, `Reverse`, `AngleWithVector`, `IsParallel`, `IsPerpendicular`, `AsPoint`, `ToJson`/`FromJson` |
 | `UV` | 3 | Implemented | Slice A | `ByCoordinates`, `U`, `V` |
@@ -43,7 +43,7 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 | `PolyCurve` | 13 | Implemented (core) | Slice B | `ByJoinedCurves`, `ByPoints`, `Curves()`, `NumberOfCurves`, full `Curve` overrides |
 | `Polygon` | 8 | Implemented (core) | Slice B | `ByPoints`, `RegularPolygon`, `Points`, `Center()` |
 | `Rectangle` | 3 | Implemented | Slice B | `ByWidthLength` (default, CS, Plane overloads), `ByCornerPoints`, `Width`, `Height` |
-| `Surface` | 35 | Implemented (core) | Slice B–G | `ByPerimeterPoints`, `ByPatch`, `ByLoft` (with & without guide curves), `ByRuledLoft`, `BySweep`, `BySweep2Rails`, `ByRevolve`, `TrimWithEdgeLoops`, `Area`, `Perimeter`, `PerimeterCurves()`, `PointAtParameter`, `NormalAtParameter`, `Offset`, `Thicken`, transforms, `Mirror`, preview |
+| `Surface` | 35 | Implemented (core) | Slice B–J | `ByPerimeterPoints`, `ByPatch`, `ByLoft` (with & without guide curves), `ByRuledLoft`, `BySweep`, `BySweep2Rails`, `ByRevolve`, `TrimWithEdgeLoops`, `GetIsoline`, `Area`, `Perimeter`, `PerimeterCurves()`, `PointAtParameter`, `NormalAtParameter`, `Offset`, `Thicken`, transforms, `Mirror`, preview |
 | `NurbsSurface` | 14 | Implemented (core) | Slice D | `ByPoints`, `ByControlPoints`, `DegreeU`, `DegreeV`, `NumControlPointsU`, `NumControlPointsV`, `IsPeriodicInU`, `IsPeriodicInV`, `IsRational`, `ControlPoints()`, `Weights()`, `UKnots()`, `VKnots()` |
 | `PolySurface` | 15 | Implemented (core) | Slice B + Corpus | Inherits `Surface`; `ByJoinedSurfaces`, `BySolid`, `Surfaces()`, `SurfaceCount`, `EdgeCount`, `VertexCount`, `Solid()` |
 | `Mesh` | 53 | Implemented (core) | Slice C + E + F + H | `ByGeometry`, `ByPointsFaceIndices`, `ByPointsIndexGroups`, `ByPointsIndices`, `ByVerticesAndIndices`, `Cuboid`, `Sphere`, `Cone`, `Plane`, `BooleanUnion`/`Difference`/`Intersection`, `PlaneCut`, `Intersect(Plane)`, `MakeWatertight`, `Nearest`, `Mirror`, `Edges`, `Explode`, `Smooth`, `ImportFile`/`ExportMeshes` (`.obj`/`.stl`/`.ply`), `ToJson`/`FromJson`, `Triangles`, `TriangleNormals`, `TriangleCentroids`, flat coordinate accessors, `Area`, `Volume`, transforms, preview |

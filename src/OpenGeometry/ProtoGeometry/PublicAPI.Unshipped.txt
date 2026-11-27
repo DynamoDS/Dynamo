@@ -112,6 +112,7 @@ virtual Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScr
 Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(string filePath) -> string
 virtual Autodesk.DesignScript.Geometry.Geometry.Intersect(Autodesk.DesignScript.Geometry.Geometry other) -> Autodesk.DesignScript.Geometry.Geometry[]
 Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Geometry> others) -> Autodesk.DesignScript.Geometry.Geometry[]
+virtual Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Geometry other) -> bool
 Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane mirrorPlane) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane basePlane, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
 abstract Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector axis, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
@@ -227,6 +228,7 @@ Autodesk.DesignScript.Geometry.Point.AsVector() -> Autodesk.DesignScript.Geometr
 override Autodesk.DesignScript.Geometry.Point.BoundingBox.get -> Autodesk.DesignScript.Geometry.BoundingBox
 override Autodesk.DesignScript.Geometry.Point.DistanceTo(Autodesk.DesignScript.Geometry.Geometry other) -> double
 Autodesk.DesignScript.Geometry.Point.DistanceTo(Autodesk.DesignScript.Geometry.Point other) -> double
+override Autodesk.DesignScript.Geometry.Point.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Geometry other) -> bool
 override Autodesk.DesignScript.Geometry.Point.Rotate(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector axis, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
 override Autodesk.DesignScript.Geometry.Point.Scale(Autodesk.DesignScript.Geometry.Point basePoint, double xamount, double yamount, double zamount) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Point.Subtract(Autodesk.DesignScript.Geometry.Vector vectorToSubtract) -> Autodesk.DesignScript.Geometry.Point
@@ -296,6 +298,7 @@ Autodesk.DesignScript.Geometry.Sphere.Radius.get -> double
 Autodesk.DesignScript.Geometry.Surface
 Autodesk.DesignScript.Geometry.Surface.Area.get -> double
 override Autodesk.DesignScript.Geometry.Surface.DistanceTo(Autodesk.DesignScript.Geometry.Geometry other) -> double
+Autodesk.DesignScript.Geometry.Surface.GetIsoline(int isoDirection, double parameter) -> Autodesk.DesignScript.Geometry.Curve
 Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(double u, double v) -> Autodesk.DesignScript.Geometry.Vector
 Autodesk.DesignScript.Geometry.Surface.Offset(double distance) -> Autodesk.DesignScript.Geometry.Surface
 Autodesk.DesignScript.Geometry.Surface.Perimeter.get -> double
@@ -326,6 +329,7 @@ Autodesk.DesignScript.Geometry.Vector.AsPoint() -> Autodesk.DesignScript.Geometr
 Autodesk.DesignScript.Geometry.Vector.Cross(Autodesk.DesignScript.Geometry.Vector otherVector) -> Autodesk.DesignScript.Geometry.Vector
 Autodesk.DesignScript.Geometry.Vector.Dispose() -> void
 Autodesk.DesignScript.Geometry.Vector.Dot(Autodesk.DesignScript.Geometry.Vector otherVector) -> double
+Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector other) -> bool
 Autodesk.DesignScript.Geometry.Vector.IsParallel(Autodesk.DesignScript.Geometry.Vector otherVector) -> bool
 Autodesk.DesignScript.Geometry.Vector.IsPerpendicular(Autodesk.DesignScript.Geometry.Vector otherVector) -> bool
 Autodesk.DesignScript.Geometry.Vector.Length.get -> double
@@ -333,6 +337,7 @@ Autodesk.DesignScript.Geometry.Vector.Normalized() -> Autodesk.DesignScript.Geom
 Autodesk.DesignScript.Geometry.Vector.Reverse() -> Autodesk.DesignScript.Geometry.Vector
 Autodesk.DesignScript.Geometry.Vector.Scale(double scale_factor) -> Autodesk.DesignScript.Geometry.Vector
 Autodesk.DesignScript.Geometry.Vector.Subtract(Autodesk.DesignScript.Geometry.Vector vectorToSubtract) -> Autodesk.DesignScript.Geometry.Vector
+Autodesk.DesignScript.Geometry.Vector.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage package, Autodesk.DesignScript.Interfaces.TessellationParameters parameters) -> void
 Autodesk.DesignScript.Geometry.Vector.ToJson() -> string
 override Autodesk.DesignScript.Geometry.Vector.ToString() -> string
 Autodesk.DesignScript.Geometry.Vector.X.get -> double
@@ -374,8 +379,11 @@ static Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScrip
 static Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector xAxisRadius, Autodesk.DesignScript.Geometry.Vector yAxisRadius) -> Autodesk.DesignScript.Geometry.Ellipse
 static Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane plane, double xAxisRadius, double yAxisRadius) -> Autodesk.DesignScript.Geometry.Ellipse
 static Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles(Autodesk.DesignScript.Geometry.Plane plane, double xRadius, double yRadius, double startAngle, double sweepAngle) -> Autodesk.DesignScript.Geometry.EllipseArc
+static Autodesk.DesignScript.Geometry.Geometry.DeserializeFromSAB(byte[] buffer, double mmPerUnit = -1) -> Autodesk.DesignScript.Geometry.Geometry[]
 static Autodesk.DesignScript.Geometry.Geometry.FromJson(string json) -> Autodesk.DesignScript.Geometry.Geometry
 static Autodesk.DesignScript.Geometry.Geometry.FromSolidDef(string solidDefJson) -> Autodesk.DesignScript.Geometry.Geometry[]
+static Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(string filePath, double mmPerUnit = -1) -> Autodesk.DesignScript.Geometry.Geometry[]
+static Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(System.IO.FileInfo file, double mmPerUnit = -1) -> Autodesk.DesignScript.Geometry.Geometry[]
 static Autodesk.DesignScript.Geometry.GeometryExtension.ForEach<T>(this T[] array, System.Action<T> action) -> void
 static Autodesk.DesignScript.Geometry.GeometryExtension.ForEach<T>(this T[][] array, System.Action<T> action) -> void
 static Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point axisPoint, Autodesk.DesignScript.Geometry.Vector axisDirection, Autodesk.DesignScript.Geometry.Point startPoint, double pitch, double angleTurns) -> Autodesk.DesignScript.Geometry.Helix

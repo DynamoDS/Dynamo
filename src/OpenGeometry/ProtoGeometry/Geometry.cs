@@ -117,6 +117,20 @@ namespace Autodesk.DesignScript.Geometry
             throw new NotSupportedException($"DistanceTo between {GetType().Name} and {other.GetType().Name} is not yet supported.");
         }
 
+        /// <summary>Returns true when this geometry is within modeling tolerance of <paramref name="other"/>.</summary>
+        /// <param name="other">Other geometry to compare.</param>
+        /// <returns>True when geometries are almost equal; otherwise false.</returns>
+        public virtual bool IsAlmostEqualTo(Geometry other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other is null || GetType() != other.GetType())
+                return false;
+            return BoundingBox.MinPoint.DistanceTo(other.BoundingBox.MinPoint) <= 1e-6
+                && BoundingBox.MaxPoint.DistanceTo(other.BoundingBox.MaxPoint) <= 1e-6
+                && DistanceTo(other) <= 1e-6;
+        }
+
         /// <summary>Splits this geometry using another geometry tool (for example, splitting a solid with a plane).</summary>
         /// <param name="tool">Splitting tool geometry.</param>
         /// <returns>The resulting split geometry pieces.</returns>
@@ -202,8 +216,29 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>SAT export is unsupported in OpenGeometry (tracked compatibility gap).</summary>
         public string ExportToSAT(string filePath) => throw NativeGeometry.UnsupportedFormat("SAT export");
 
+        /// <summary>SAT import is unsupported in OpenGeometry (tracked compatibility gap).</summary>
+        /// <param name="filePath">Path to a SAT file.</param>
+        /// <param name="mmPerUnit">Optional millimeters-per-unit scale factor.</param>
+        /// <returns>Never returns; throws <see cref="NotSupportedException"/>.</returns>
+        public static Geometry[] ImportFromSAT(string filePath, double mmPerUnit = -1) =>
+            throw NativeGeometry.UnsupportedFormat("SAT import");
+
+        /// <summary>SAT import is unsupported in OpenGeometry (tracked compatibility gap).</summary>
+        /// <param name="file">SAT file handle.</param>
+        /// <param name="mmPerUnit">Optional millimeters-per-unit scale factor.</param>
+        /// <returns>Never returns; throws <see cref="NotSupportedException"/>.</returns>
+        public static Geometry[] ImportFromSAT(System.IO.FileInfo file, double mmPerUnit = -1) =>
+            throw NativeGeometry.UnsupportedFormat("SAT import");
+
         /// <summary>SAB serialization is unsupported in OpenGeometry (tracked compatibility gap).</summary>
         public byte[] SerializeAsSAB() => throw NativeGeometry.UnsupportedFormat("SAB serialization");
+
+        /// <summary>SAB deserialization is unsupported in OpenGeometry (tracked compatibility gap).</summary>
+        /// <param name="buffer">SAB binary payload.</param>
+        /// <param name="mmPerUnit">Optional millimeters-per-unit scale factor.</param>
+        /// <returns>Never returns; throws <see cref="NotSupportedException"/>.</returns>
+        public static Geometry[] DeserializeFromSAB(byte[] buffer, double mmPerUnit = -1) =>
+            throw NativeGeometry.UnsupportedFormat("SAB deserialization");
 
         /// <summary>SolidDef serialization is unsupported in OpenGeometry (tracked compatibility gap).</summary>
         public string ToSolidDef() => throw NativeGeometry.UnsupportedFormat("SolidDef serialization");
@@ -257,13 +292,15 @@ namespace Autodesk.DesignScript.Geometry
             IRenderPackage package, NativeGeometry.SolidHandle handle, TessellationParameters parameters)
         {
             var chordTolerance = parameters.Tolerance > 0 ? parameters.Tolerance : 0;
-            foreach (var vertex in NativeGeometry.Tessellate(handle, chordTolerance))
+            var (vertices, uvs) = NativeGeometry.TessellateWithUvs(handle, chordTolerance);
+            for (var i = 0; i < vertices.Length; i++)
             {
-                var position = vertex.Position;
-                var normal = vertex.Normal;
+                var position = vertices[i].Position;
+                var normal = vertices[i].Normal;
+                var uv = uvs[i];
                 package.AddTriangleVertex(position.X, position.Y, position.Z);
                 package.AddTriangleVertexNormal(normal.X, normal.Y, normal.Z);
-                package.AddTriangleVertexUV(0, 0);
+                package.AddTriangleVertexUV(uv.U, uv.V);
                 package.AddTriangleVertexColor(
                     DefaultMeshColorR, DefaultMeshColorG, DefaultMeshColorB, DefaultMeshColorA);
             }

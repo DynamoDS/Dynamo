@@ -264,6 +264,17 @@ namespace Autodesk.DesignScript.Geometry
             return new Surface(NativeGeometry.SurfaceTrimWithCurves(Handle, allHandles.ToArray(), counts));
         }
 
+        /// <summary>Extracts an iso-parameter curve on this surface along U (isoDirection = 0) or V (isoDirection = 1).</summary>
+        /// <param name="isoDirection">0 for a U parameter line (constant V); 1 for a V parameter line (constant U).</param>
+        /// <param name="parameter">Normalized parameter in [0, 1] along the constant direction.</param>
+        /// <returns>The extracted iso-parameter curve.</returns>
+        public Curve GetIsoline(int isoDirection, double parameter)
+        {
+            if (isoDirection != 0 && isoDirection != 1)
+                throw new ArgumentOutOfRangeException(nameof(isoDirection), "isoDirection must be 0 (U) or 1 (V).");
+            return new Curve(NativeGeometry.SurfaceIsoCurve(Handle, isoDirection, parameter));
+        }
+
         /// <inheritdoc />
         public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)
         {

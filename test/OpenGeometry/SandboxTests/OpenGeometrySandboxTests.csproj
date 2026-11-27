@@ -20,6 +20,9 @@
     <ProjectReference Include="../../../src/DynamoApplications/DynamoApplications.csproj" />
     <ProjectReference Include="../../../src/DynamoCoreWpf/DynamoCoreWpf.csproj" />
     <ProjectReference Include="../../../src/Libraries/CoreNodes/CoreNodes.csproj" />
+    <ProjectReference Include="../../../src/Libraries/Analysis/Analysis.csproj" />
+    <ProjectReference Include="../../../src/Libraries/GeometryColor/GeometryColor.csproj" />
+    <ProjectReference Include="../../../src/Libraries/Tesellation/Tessellation.csproj" />
     <ProjectReference Include="../../../src/Libraries/DynamoConversions/DynamoConversions.csproj" />
     <ProjectReference Include="../../../src/Libraries/DynamoUnits/UnitsCore.csproj" />
     <None Include="../Fixtures/CenteredCuboidCylinderCut.dyn" Link="Fixtures/CenteredCuboidCylinderCut.dyn" CopyToOutputDirectory="PreserveNewest" />

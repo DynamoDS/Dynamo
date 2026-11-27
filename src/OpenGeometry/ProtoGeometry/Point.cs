@@ -136,6 +136,12 @@ namespace Autodesk.DesignScript.Geometry
         }
 
         /// <inheritdoc />
+        public override bool IsAlmostEqualTo(Geometry other)
+        {
+            return other is Point pt && DistanceTo(pt) <= 1e-6;
+        }
+
+        /// <inheritdoc />
         public override double DistanceTo(Geometry other)
         {
             ArgumentNullException.ThrowIfNull(other);

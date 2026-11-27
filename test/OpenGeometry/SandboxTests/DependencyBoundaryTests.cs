@@ -57,6 +57,9 @@ namespace OpenGeometry.SandboxTests
             var violations = new List<string>();
             bool foundDynamoCoreProjectRef = false;
             bool foundCoreNodesProjectRef = false;
+            bool foundAnalysisProjectRef = false;
+            bool foundGeometryColorProjectRef = false;
+            bool foundTessellationProjectRef = false;
 
             foreach (var assetFile in assetFiles)
             {
@@ -86,6 +89,12 @@ namespace OpenGeometry.SandboxTests
                                     foundDynamoCoreProjectRef = true;
                                 if (assetFile.Contains($"{Path.DirectorySeparatorChar}CoreNodes{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
                                     foundCoreNodesProjectRef = true;
+                                if (assetFile.Contains($"{Path.DirectorySeparatorChar}Analysis{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+                                    foundAnalysisProjectRef = true;
+                                if (assetFile.Contains($"{Path.DirectorySeparatorChar}GeometryColor{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+                                    foundGeometryColorProjectRef = true;
+                                if (assetFile.Contains($"{Path.DirectorySeparatorChar}Tesellation{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+                                    foundTessellationProjectRef = true;
                             }
                         }
                     }
@@ -109,6 +118,9 @@ namespace OpenGeometry.SandboxTests
                 Assert.That(violations, Is.Empty, "Found forbidden LibG/ASM/Autodesk ProtoGeometry restore assets.");
                 Assert.That(foundDynamoCoreProjectRef, Is.True, "DynamoCore should reference the fork ProtoGeometry project.");
                 Assert.That(foundCoreNodesProjectRef, Is.True, "CoreNodes should reference the fork ProtoGeometry project.");
+                Assert.That(foundAnalysisProjectRef, Is.True, "Analysis should reference the fork ProtoGeometry project.");
+                Assert.That(foundGeometryColorProjectRef, Is.True, "GeometryColor should reference the fork ProtoGeometry project.");
+                Assert.That(foundTessellationProjectRef, Is.True, "Tessellation should reference the fork ProtoGeometry project.");
             });
         }
 
@@ -131,6 +143,9 @@ namespace OpenGeometry.SandboxTests
                 "BuiltIn.ds",
                 "FunctionObject.ds",
                 "DSCoreNodes.dll",
+                "Analysis.dll",
+                "GeometryColor.dll",
+                "Tessellation.dll",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
                 Path.Combine("nodes", "CoreNodeModels.dll"),

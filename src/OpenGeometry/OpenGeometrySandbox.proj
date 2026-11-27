@@ -14,6 +14,9 @@
     <SandboxProject Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj" />
     <SandboxProject Include="..\Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj" />
     <SandboxProject Include="..\Libraries\DynamoConversions\DynamoConversions.csproj" />
+    <SandboxProject Include="..\Libraries\Analysis\Analysis.csproj" />
+    <SandboxProject Include="..\Libraries\GeometryColor\GeometryColor.csproj" />
+    <SandboxProject Include="..\Libraries\Tesellation\Tessellation.csproj" />
     <SandboxProject Include="..\LibraryViewExtensionWebView2\LibraryViewExtensionWebView2.csproj" />
     <SandboxProject Include="..\DynamoPackagesWPF\DynamoPackagesWPF.csproj" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 # Open Geometry for Dynamo
 
-OpenGeometry replaces Autodesk's proprietary ASM / LibG / `ProtoGeometry.dll` stack with a fork-owned `ProtoGeometry.dll` backed by NVIDIA's open-source `usd-brep` BRep solid modeling kernel (`SMLib` + `SM_API`) behind a versioned C ABI bridge (`OpenGeometryBridge.dll`, ABI v9).
+OpenGeometry replaces Autodesk's proprietary ASM / LibG / `ProtoGeometry.dll` stack with a fork-owned `ProtoGeometry.dll` backed by NVIDIA's open-source `usd-brep` BRep solid modeling kernel (`SMLib` + `SM_API`) behind a versioned C ABI bridge (`OpenGeometryBridge.dll`, ABI v11).
 
 The Sandbox integration is opt-in (`-p:UseOpenGeometry=true`), keeping upstream Dynamo's default build profile intact while staging an isolated Windows x64 Sandbox build under `bin/open-geometry/sandbox/Release` with zero ASM, LibG, Autodesk ProtoGeometry, OpenUSD, Python, or TBB dependencies.
 
@@ -42,4 +42,4 @@ dotnet build src/OpenGeometry/ProtoGeometry/ProtoGeometry.csproj -c Release /p:P
 
 - **Native boundary**: `src/OpenGeometry/native/` builds `SMLib.dll`, `SM_API.dll`, and `OpenGeometryBridge.dll` from pinned sources with parallel/TBB allocators disabled and no OpenUSD/Python dependencies. All SMLib calls are serialized behind a process-global mutex, and non-mutating Dynamo semantics are enforced by deep-copying operands before kernel mutators/consumers.
 - **Managed geometry**: `src/OpenGeometry/ProtoGeometry/` implements `Autodesk.DesignScript.Geometry` types, Zero-Touch signatures, `IGraphicItem` preview tessellation, localized `Messages.resx` diagnostics, and `PublicAPI.Unshipped.txt` tracking.
-- **Compatibility inventory**: See [COMPATIBILITY.md](COMPATIBILITY.md) for type-by-type coverage across Slices A–H, the 13/13 checked-in Dynamo sample corpus results, `DSCore.Data` (`StringifyJSON`/`ParseJSON`/`Remember`) persistence, and tracked gaps (T-Splines, SAT/SAB/SolidDef, downstream binary compatibility).
+- **Compatibility inventory**: See [COMPATIBILITY.md](COMPATIBILITY.md) for type-by-type coverage across Slices A–J, the 13/13 checked-in Dynamo sample corpus results, `DSCore.Data` (`StringifyJSON`/`ParseJSON`/`Remember`) persistence, `Analysis` + `GeometryColor` (`ByGeometryColor`/`BySurfaceColors`/`ByMeshColors`) + `Tessellation` (`Voronoi`/`Delaunay`/`ConvexHull`) support, and tracked gaps (T-Splines, SAT/SAB/SolidDef, downstream binary compatibility).

@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <sstream>
@@ -52,6 +53,7 @@ struct OgCurve
 struct OgMesh
 {
     std::vector<OgVertex> vertices;
+    std::vector<OgUv> uvs;
 };
 
 struct OgGeomList
@@ -395,7 +397,7 @@ int32_t copy_index_array(
 
 uint32_t og_abi_version()
 {
-    return 9;
+    return 11;
 }
 
 int32_t og_create_box(const OgPoint* corner, double size_x, double size_y, double size_z, OgSolid** result)
@@ -750,6 +752,8 @@ int32_t og_tessellate(const OgSolid* solid, double chord_tolerance, OgMesh** res
             return OG_INTERNAL_ERROR;
 
         mesh->vertices.reserve(static_cast<size_t>(faces.GetSize()) * 3);
+        mesh->uvs.reserve(static_cast<size_t>(faces.GetSize()) * 3);
+        std::map<std::pair<const SmFace*, const SmPolyVertex*>, OgUv> uv_cache;
         for (ULONG i = 0; i < faces.GetSize(); ++i)
         {
             SmTArray<SmPolyLoop*> loops;
@@ -762,13 +766,66 @@ int32_t og_tessellate(const OgSolid* solid, double chord_tolerance, OgMesh** res
             if (edges.GetSize() != 3)
                 return OG_KERNEL_ERROR;
 
+            SmFace* orig_face = faces[i]->GetOriginalFace();
+            SmSurface* srf = orig_face ? orig_face->GetSurface() : nullptr;
+            SmExtent2d dom;
+            bool has_uv_dom = false;
+            if (orig_face && srf)
+            {
+                dom = orig_face->GetUVDomain();
+                if (dom.GetMax().x - dom.GetMin().x <= 1e-12 || dom.GetMax().y - dom.GetMin().y <= 1e-12)
+                    dom = srf->GetNaturalUVDomain();
+                has_uv_dom = (dom.GetMax().x - dom.GetMin().x > 1e-12) && (dom.GetMax().y - dom.GetMin().y > 1e-12);
+            }
+
             const auto normal = faces[i]->GetNormal(TRUE, FALSE);
             for (ULONG corner = 0; corner < 3; ++corner)
             {
                 auto& vertex = *edges[corner]->GetStartPolyVertex();
                 mesh->vertices.push_back({
-                    to_point(vertex.GetPoint()), vertex_normal(vertex, faces[i]->GetOriginalFace(), normal)
+                    to_point(vertex.GetPoint()), vertex_normal(vertex, orig_face, normal)
                 });
+
+                OgUv uv_out{0.0, 0.0};
+                if (has_uv_dom)
+                {
+                    const auto key = std::make_pair(static_cast<const SmFace*>(orig_face), static_cast<const SmPolyVertex*>(&vertex));
+                    const auto it = uv_cache.find(key);
+                    if (it != uv_cache.end())
+                    {
+                        uv_out = it->second;
+                    }
+                    else
+                    {
+                        SmPoint3d closest;
+                        SmTArray<SmPoint2d> sol_uvs;
+                        double dist = 0.0;
+                        if (SmApiSurfaceClosestPoint(srf, vertex.GetPoint(), closest, sol_uvs, dist) == SM_SUCCESS
+                            && sol_uvs.GetSize() > 0)
+                        {
+                            SmPoint2d chosen = sol_uvs[0];
+                            for (ULONG k = 0; k < sol_uvs.GetSize(); ++k)
+                            {
+                                const auto& cand = sol_uvs[k];
+                                if (cand.x >= dom.GetMin().x - 1e-6 && cand.x <= dom.GetMax().x + 1e-6
+                                    && cand.y >= dom.GetMin().y - 1e-6 && cand.y <= dom.GetMax().y + 1e-6)
+                                {
+                                    chosen = cand;
+                                    break;
+                                }
+                            }
+                            const double u_norm = (chosen.x - dom.GetMin().x) / (dom.GetMax().x - dom.GetMin().x);
+                            const double v_norm = (chosen.y - dom.GetMin().y) / (dom.GetMax().y - dom.GetMin().y);
+                            if (std::isfinite(u_norm) && std::isfinite(v_norm))
+                            {
+                                uv_out.u = std::clamp(u_norm, 0.0, 1.0);
+                                uv_out.v = std::clamp(v_norm, 0.0, 1.0);
+                            }
+                        }
+                        uv_cache.emplace(key, uv_out);
+                    }
+                }
+                mesh->uvs.push_back(uv_out);
             }
         }
         *result = mesh.release();
@@ -1495,11 +1552,11 @@ int32_t og_surface_by_loft(const OgCurve* const* profiles, uint32_t count, OgSol
 int32_t og_surface_evaluate(
     const OgSolid* surface_brep, double normalized_u, double normalized_v, OgPoint* point, OgPoint* normal)
 {
-    if (!surface_brep || !surface_brep->brep || !finite(normalized_u) || !finite(normalized_v)
-        || normalized_u < -1e-9 || normalized_u > 1.0 + 1e-9
-        || normalized_v < -1e-9 || normalized_v > 1.0 + 1e-9)
+    if (!surface_brep || !surface_brep->brep || !finite(normalized_u) || !finite(normalized_v))
         return OG_INVALID_ARGUMENT;
 
+    // Clamp finite out-of-domain parameters to [0, 1] to match Dynamo's Surface.PointAtParameter contract
+    // (relied on by Tessellation.Voronoi.ByParametersOnSurface for circumcenters outside [0, 1]).
     const double u_clamped = std::clamp(normalized_u, 0.0, 1.0);
     const double v_clamped = std::clamp(normalized_v, 0.0, 1.0);
 
@@ -2334,6 +2391,23 @@ int32_t og_copy_mesh_vertices(const OgMesh* mesh, OgVertex* vertices, uint32_t c
         return OG_INVALID_ARGUMENT;
     if (!mesh->vertices.empty())
         std::copy(mesh->vertices.begin(), mesh->vertices.end(), vertices);
+    return OG_SUCCESS;
+}
+
+int32_t og_copy_mesh_uvs(const OgMesh* mesh, OgUv* uvs, uint32_t capacity)
+{
+    if (!mesh || mesh->vertices.size() > capacity || (!uvs && capacity != 0))
+        return OG_INVALID_ARGUMENT;
+    if (mesh->uvs.size() == mesh->vertices.size())
+    {
+        if (!mesh->uvs.empty())
+            std::copy(mesh->uvs.begin(), mesh->uvs.end(), uvs);
+    }
+    else
+    {
+        for (size_t i = 0; i < mesh->vertices.size(); ++i)
+            uvs[i] = {0.0, 0.0};
+    }
     return OG_SUCCESS;
 }
 
@@ -3970,5 +4044,48 @@ int32_t og_brep_import_smb(const char* file_path, int32_t binary, OgSolid** resu
         if (stat != SM_SUCCESS)
             return OG_KERNEL_ERROR;
         return publish_solid(SM_SUCCESS, std::move(brep), result);
+    });
+}
+
+/* =========================== Slice J: Surface Isocurves =========================== */
+
+int32_t og_surface_isocurve(
+    const OgSolid* surface, int32_t iso_direction, double normalized_param, OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!surface || !surface->brep || (iso_direction != 0 && iso_direction != 1) || !finite(normalized_param))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<SmFace*> faces;
+        surface->brep->GetFaces(faces);
+        if (faces.GetSize() == 0 || !faces[0])
+            return OG_KERNEL_ERROR;
+
+        SmFace* face = faces[0];
+        SmSurface* srf = face->GetSurface();
+        if (!srf)
+            return OG_KERNEL_ERROR;
+
+        SmExtent2d dom = face->GetUVDomain();
+        if (dom.GetMax().x - dom.GetMin().x <= 1e-12 || dom.GetMax().y - dom.GetMin().y <= 1e-12)
+            dom = srf->GetNaturalUVDomain();
+
+        const double t = std::clamp(normalized_param, 0.0, 1.0);
+        // Dynamo isoDirection == 0 => U-parameter line (varies along U, constant V = t).
+        // Dynamo isoDirection == 1 => V-parameter line (varies along V, constant U = t).
+        const SmSurfParamType sm_dir = (iso_direction == 0) ? SM_SP_V : SM_SP_U;
+        const double iso_val = (iso_direction == 0)
+            ? dom.GetMin().y + t * (dom.GetMax().y - dom.GetMin().y)
+            : dom.GetMin().x + t * (dom.GetMax().x - dom.GetMin().x);
+
+        SmBSplineCurve* iso_curve = nullptr;
+        const auto stat = srf->CreateIsoParametricCurve(
+            *SmApiGetOrCreateContext(), sm_dir, iso_val, 0.0, iso_curve, &dom);
+        if (stat != SM_SUCCESS || !iso_curve)
+            return OG_KERNEL_ERROR;
+        return publish_curve_natural(SM_SUCCESS, std::unique_ptr<SmCurve>(iso_curve), result);
     });
 }

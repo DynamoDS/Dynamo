@@ -1,10 +1,12 @@
 using System;
+using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using OpenGeometry;
 
 namespace Autodesk.DesignScript.Geometry
 {
     /// <summary>A 3D Euclidean vector.</summary>
-    public sealed class Vector : IDisposable
+    public sealed class Vector : IGraphicItem, IDisposable
     {
         internal NativePoint Components { get; }
 
@@ -155,6 +157,16 @@ namespace Autodesk.DesignScript.Geometry
             return Math.Abs(Dot(otherVector)) <= 1e-6 * denom;
         }
 
+        /// <summary>Returns true if this vector is almost equal to another vector within tolerance.</summary>
+        /// <param name="other">The vector to compare against.</param>
+        /// <returns>True when component distance is within tolerance.</returns>
+        public bool IsAlmostEqualTo(Vector other)
+        {
+            if (other is null)
+                return false;
+            return Subtract(other).Length <= 1e-6;
+        }
+
         /// <summary>Converts this vector to a point with the same coordinates.</summary>
         public Point AsPoint() => Point.ByCoordinates(X, Y, Z);
 
@@ -166,6 +178,16 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="json">JSON string representing a vector.</param>
         /// <returns>The deserialized vector.</returns>
         public static Vector FromJson(string json) => GeometryJsonSerializer.DeserializeVector(json);
+
+        /// <summary>Vectors are directional quantities without a fixed origin and emit no standalone preview geometry.</summary>
+        /// <param name="package">Target render package.</param>
+        /// <param name="parameters">Tessellation parameters.</param>
+        [IsVisibleInDynamoLibrary(false)]
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
+        {
+            ArgumentNullException.ThrowIfNull(package);
+            ArgumentNullException.ThrowIfNull(parameters);
+        }
 
         /// <summary>Releases resources owned by this vector.</summary>
         public void Dispose() { }
