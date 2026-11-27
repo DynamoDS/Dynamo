@@ -2,7 +2,7 @@
 
 This inventory is derived from Dynamo's checked-in public node documentation (`doc/distrib/NodeHelpFiles/en-US/Autodesk.DesignScript.Geometry.*.md`, 533 documented members across 43 types) and checked-in sample graphs (`doc/distrib/Samples/**/*.dyn`, 294 graphs across 14 locales; 21 distinct English sample graphs).
 
-The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v6).
+The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v8).
 
 ## Sample Corpus Coverage
 
@@ -16,7 +16,7 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 
 | Type | Public Docs | Status | Implemented Slice | Notes |
 |---|---:|---|---|---|
-| `Geometry` | 26 | Implemented (core) | Baseline + A–D | `Dispose`, `Tessellate` (`IGraphicItem`), `Translate`, `Rotate`, `Scale`, `Transform`, `BoundingBox`, `DistanceTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`; explicit `NotSupportedException` for SAT/SAB/SolidDef |
+| `Geometry` | 26 | Implemented (core) | Baseline + A–G | `Dispose`, `Tessellate` (`IGraphicItem`), `Translate`, `Rotate`, `Scale`, `Transform`, `Mirror`, `BoundingBox`, `DistanceTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`; explicit `NotSupportedException` for SAT/SAB/SolidDef |
 | `Point` | 14 | Implemented (core) | Baseline + A | `ByCoordinates` (2D & 3D), `Origin`, `ByCartesianCoordinates`, `X/Y/Z`, `Add`, `Subtract`, `AsVector`, `DistanceTo`, transforms |
 | `Vector` | 26 | Implemented (core) | Slice A | `ByCoordinates`, `ByTwoPoints`, `XAxis/YAxis/ZAxis`, `Length`, `Normalized`, `Dot`, `Cross`, `Scale`, `Add`, `Subtract`, `Reverse`, `AngleWithVector`, `IsParallel`, `IsPerpendicular`, `AsPoint` |
 | `UV` | 3 | Implemented | Slice A | `ByCoordinates`, `U`, `V` |
@@ -32,23 +32,23 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 | `Face` | 3 | Implemented | Slice B | `SurfaceGeometry()`, `Edges`, `Vertices`, `Area`, `BoundingBox` |
 | `Edge` | 4 | Implemented | Slice B | `CurveGeometry`, `StartVertex`, `EndVertex`, `AdjacentFaces`, `Length` |
 | `Vertex` | 3 | Implemented | Slice B | `PointGeometry`, `AdjacentEdges`, `AdjacentFaces` |
-| `Curve` | 55 | Implemented (core) | Slice B–D | `StartPoint`, `EndPoint`, `Length`, `IsClosed`, `PointAtParameter`, `TangentAtParameter`, `NormalAtParameter`, `PointAtSegmentLength`, `ParameterAtSegmentLength`, `ParameterAtPoint`, `Reverse`, `SplitByParameter`, `TrimByParameter`, `Offset`, `Project`, `Patch`, `Extrude`, `ExtrudeAsSolid`, transforms, preview |
+| `Curve` | 55 | Implemented (core) | Slice B–G | `StartPoint`, `EndPoint`, `Length`, `IsClosed`, `PointAtParameter`, `TangentAtParameter`, `NormalAtParameter`, `PointAtSegmentLength`, `ParameterAtSegmentLength`, `ParameterAtPoint`, `Reverse`, `SplitByParameter`, `TrimByParameter`, `Offset`, `OffsetMany`, `Project`, `Patch`, `Extrude`, `ExtrudeAsSolid`, transforms, `Mirror`, preview |
 | `Line` | 5 | Implemented (core) | Slice B + Corpus | `ByStartPointEndPoint`, `ByStartPointDirectionLength`, `ByBestFitThroughPoints`, `Direction` |
 | `Circle` | 7 | Implemented (core) | Slice B | `ByCenterPointRadius`, `ByCenterPointRadiusNormal`, `ByPlaneRadius`, `ByThreePoints`, `CenterPoint`, `Radius`, `Normal` |
 | `Arc` | 12 | Implemented (core) | Slice B | `ByCenterPointRadiusAngle`, `ByThreePoints`, `CenterPoint`, `Radius`, `StartAngle`, `SweepAngle`, `Normal` |
 | `Ellipse` | 7 | Implemented | Slice D | `ByOriginRadii`, `ByOriginVectors`, `ByCoordinateSystemRadii`, `ByPlaneRadii`, `CenterPoint`, `MajorAxis`, `MinorAxis` |
 | `EllipseArc` | 7 | Implemented | Slice D | `ByPlaneRadiiAngles`, `CenterPoint`, `MajorAxis`, `MinorAxis`, `Plane`, `StartAngle`, `SweepAngle` |
 | `Helix` | 6 | Implemented | Slice D | `ByAxis`, `AxisPoint`, `AxisDirection`, `Pitch`, `Radius`, `Angle` |
-| `NurbsCurve` | 12 | Implemented (core) | Slice B + Corpus | `ByPoints`, `ByControlPoints` (with degree & closure), `Degree` |
+| `NurbsCurve` | 12 | Implemented (core) | Slice B + Corpus + G | `ByPoints`, `ByControlPoints` (with degree & closure), `ByControlPointsWeightsKnots` (rational NURBS), `Degree` |
 | `PolyCurve` | 13 | Implemented (core) | Slice B | `ByJoinedCurves`, `ByPoints`, `Curves()`, `NumberOfCurves`, full `Curve` overrides |
 | `Polygon` | 8 | Implemented (core) | Slice B | `ByPoints`, `RegularPolygon`, `Points`, `Center()` |
 | `Rectangle` | 3 | Implemented | Slice B | `ByWidthLength` (default, CS, Plane overloads), `ByCornerPoints`, `Width`, `Height` |
-| `Surface` | 35 | Implemented (core) | Slice B–D | `ByPerimeterPoints`, `ByPatch`, `ByLoft`, `ByRuledLoft`, `BySweep`, `BySweep2Rails`, `ByRevolve`, `TrimWithEdgeLoops`, `Area`, `Perimeter`, `PerimeterCurves()`, `PointAtParameter`, `NormalAtParameter`, `Offset`, `Thicken`, transforms, preview |
+| `Surface` | 35 | Implemented (core) | Slice B–G | `ByPerimeterPoints`, `ByPatch`, `ByLoft` (with & without guide curves), `ByRuledLoft`, `BySweep`, `BySweep2Rails`, `ByRevolve`, `TrimWithEdgeLoops`, `Area`, `Perimeter`, `PerimeterCurves()`, `PointAtParameter`, `NormalAtParameter`, `Offset`, `Thicken`, transforms, `Mirror`, preview |
 | `NurbsSurface` | 14 | Implemented (core) | Slice D | `ByPoints`, `ByControlPoints`, `DegreeU`, `DegreeV`, `NumControlPointsU`, `NumControlPointsV`, `IsPeriodicInU`, `IsPeriodicInV`, `IsRational`, `ControlPoints()`, `Weights()`, `UKnots()`, `VKnots()` |
 | `PolySurface` | 15 | Implemented (core) | Slice B + Corpus | Inherits `Surface`; `ByJoinedSurfaces`, `BySolid`, `Surfaces()`, `SurfaceCount`, `EdgeCount`, `VertexCount`, `Solid()` |
-| `Mesh` | 53 | Implemented (core) | Slice C + E | `ByGeometry`, `ByPointsFaceIndices`, `ByPointsIndexGroups`, `ByPointsIndices`, `ByVerticesAndIndices`, `Cuboid`, `Sphere`, `Cone`, `Plane`, `BooleanUnion`, `BooleanDifference`, `BooleanIntersection` (via `SmPolyBrep`), `Triangles`, `TriangleNormals`, `TriangleCentroids`, flat coordinate accessors, `Area`, `Volume`, transforms, preview |
+| `Mesh` | 53 | Implemented (core) | Slice C + E + F | `ByGeometry`, `ByPointsFaceIndices`, `ByPointsIndexGroups`, `ByPointsIndices`, `ByVerticesAndIndices`, `Cuboid`, `Sphere`, `Cone`, `Plane`, `BooleanUnion`/`Difference`/`Intersection`, `PlaneCut`, `Intersect(Plane)`, `MakeWatertight`, `Nearest`, `Mirror`, `Edges`, `Explode`, `Smooth`, `ImportFile`/`ExportMeshes` (`.obj`/`.stl`/`.ply`), `Triangles`, `TriangleNormals`, `TriangleCentroids`, flat coordinate accessors, `Area`, `Volume`, transforms, preview |
 | `IndexGroup` | 7 | Implemented | Slice C | `ByIndices` (3 & 4 indices), `A`, `B`, `C`, `D`, `Count` |
-| `PanelSurface` / `PanelSurfaceBoundaryCondition` | 24 | Implemented (core) | Slice E | `PanelSurfaceBoundaryCondition` enum (`CoreNodes/ProtoGeometryHelper.cs` unguarded), `ByQuads`, `ByDiagonallySplitSquares`, `ByCrossSplitSquares`, `NumPanels`, `NumVertices`, `GetPoint`, `GetVertexIndex`, `GetNumPanelVertices`, `GetPanelPoints`, `GetPanelPolygon`, transforms, preview |
+| `PanelSurface` / `PanelSurfaceBoundaryCondition` | 24 | Implemented (core) | Slice E + G | `PanelSurfaceBoundaryCondition` enum (`CoreNodes/ProtoGeometryHelper.cs` unguarded), `ByQuads`, `ByDiagonallySplitSquares`, `ByCrossSplitSquares`, `ByDiamonds`, `ByHexagons`, `ByStaggeredQuads`, `ByParallelograms`, `NumPanels`, `NumVertices`, `GetPoint`, `GetVertexIndex`, `GetNumPanelVertices`, `GetPanelPoints`, `GetPanelPolygon`, transforms, `Mirror`, preview |
 
 ## Tracked Compatibility Gaps
 

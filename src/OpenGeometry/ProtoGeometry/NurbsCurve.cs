@@ -62,5 +62,31 @@ namespace Autodesk.DesignScript.Geometry
                 list.Add(list[0]);
             return ByControlPoints(list, degree);
         }
+
+        /// <summary>Creates a rational or non-rational NURBS curve from explicit control vertices, weights, knot vector, and degree.</summary>
+        /// <param name="controlVertices">Ordered control points.</param>
+        /// <param name="weights">Strictly positive weight per control point.</param>
+        /// <param name="knots">Non-decreasing knot vector of length <c>controlVertices.Count + degree + 1</c>.</param>
+        /// <param name="degree">Polynomial degree (at least 1 and less than control point count).</param>
+        /// <returns>The created rational NURBS curve.</returns>
+        public static NurbsCurve ByControlPointsWeightsKnots(
+            IEnumerable<Point> controlVertices, double[] weights, double[] knots, int degree)
+        {
+            ArgumentNullException.ThrowIfNull(controlVertices);
+            ArgumentNullException.ThrowIfNull(weights);
+            ArgumentNullException.ThrowIfNull(knots);
+            var pts = controlVertices.Where(p => p != null).Select(p => p.Position).ToArray();
+            if (pts.Length < 2)
+                throw new ArgumentException("At least 2 control points are required.", nameof(controlVertices));
+            if (weights.Length != pts.Length)
+                throw new ArgumentException("Weight count must match control point count.", nameof(weights));
+            if (degree < 1 || degree >= pts.Length)
+                throw new ArgumentOutOfRangeException(nameof(degree), "Degree must be between 1 and control point count - 1.");
+            if (knots.Length != pts.Length + degree + 1)
+                throw new ArgumentException("Knot vector length must equal control point count + degree + 1.", nameof(knots));
+
+            var handle = NativeGeometry.RationalCurve(pts, weights, knots, degree);
+            return new NurbsCurve(handle, degree);
+        }
     }
 }

@@ -103,6 +103,22 @@ namespace Autodesk.DesignScript.Geometry
         /// <returns>The offset curve.</returns>
         public virtual Curve Offset(double distance) => new(NativeGeometry.CurveOffset(Handle, distance));
 
+        /// <summary>Offsets this planar curve by <paramref name="signedDistance"/> using <paramref name="planeNormal"/> to orient the offset side consistently.</summary>
+        /// <param name="signedDistance">Signed offset distance.</param>
+        /// <param name="planeNormal">Reference normal of the curve's plane (defaults to curve normal / world Z).</param>
+        /// <returns>Resulting offset curve(s).</returns>
+        public virtual Curve[] OffsetMany(double signedDistance, Vector planeNormal = null)
+        {
+            var dist = signedDistance;
+            if (planeNormal != null)
+            {
+                var refNorm = GetDefaultExtrudeDirection();
+                if (refNorm.Dot(planeNormal.Normalized()) < 0)
+                    dist = -dist;
+            }
+            return new[] { Offset(dist) };
+        }
+
         /// <summary>Projects this curve onto <paramref name="baseGeometry"/> along <paramref name="projectionDirection"/>.</summary>
         /// <param name="baseGeometry">Target surface, polysurface, solid, or plane.</param>
         /// <param name="projectionDirection">Direction vector along which to project.</param>
@@ -210,6 +226,15 @@ namespace Autodesk.DesignScript.Geometry
                 cs.XAxis.Components,
                 cs.YAxis.Components,
                 cs.ZAxis.Components));
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            return new Curve(NativeGeometry.CurveMirror(
+                Handle,
+                mirrorPlane.Origin.Position,
+                mirrorPlane.XAxis.Components,
+                mirrorPlane.YAxis.Components));
         }
 
         /// <inheritdoc />

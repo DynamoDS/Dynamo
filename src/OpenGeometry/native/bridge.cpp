@@ -385,7 +385,7 @@ int32_t copy_index_array(
 
 uint32_t og_abi_version()
 {
-    return 6;
+    return 8;
 }
 
 int32_t og_create_box(const OgPoint* corner, double size_x, double size_y, double size_z, OgSolid** result)
@@ -3449,5 +3449,271 @@ int32_t og_poly_boolean(
             return OG_KERNEL_ERROR;
         *result = mesh.release();
         return OG_SUCCESS;
+    });
+}
+
+/* =========================== Slice F: Mesh Plane Cut, Sectioning, Watertight =========================== */
+
+int32_t og_poly_plane_cut(
+    const OgPoint* verts,
+    uint32_t vert_count,
+    const uint32_t* tris,
+    uint32_t tri_count,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_normal,
+    int32_t make_solid,
+    OgMesh** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!verts || vert_count < 4 || !tris || tri_count < 4 || !finite(plane_origin) || !finite(plane_normal))
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d n = to_vector(*plane_normal);
+    const double nlen = n.Length();
+    if (!positive(nlen))
+        return OG_INVALID_ARGUMENT;
+    const SmVector3d un = n / nlen;
+    const SmPoint3d orig = to_sm_point(*plane_origin);
+
+    return with_kernel([&]() -> int32_t {
+        auto poly = build_poly_brep(verts, vert_count, tris, tri_count);
+        if (!poly)
+            return OG_INVALID_ARGUMENT;
+
+        SmPolyBrep* out = nullptr;
+        // TrimWithPlane with bKeepPositiveSide=FALSE removes the +normal half-space (matching Dynamo Mesh.PlaneCut).
+        const auto status = poly->TrimWithPlane(orig, un, FALSE, out);
+        if (status != SM_SUCCESS || !out)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+
+        std::unique_ptr<SmPolyBrep> out_owner;
+        SmPolyBrep* target = poly.get();
+        if (out != poly.get())
+        {
+            out_owner.reset(out);
+            target = out_owner.get();
+        }
+
+        auto mesh = extract_poly_mesh(*target);
+        if (!mesh || mesh->vertices.empty())
+            return OG_KERNEL_ERROR;
+
+        if (!make_solid)
+        {
+            // Strip cap triangles lying coplanar on the cutting plane.
+            std::vector<OgVertex> filtered;
+            filtered.reserve(mesh->vertices.size());
+            for (size_t i = 0; i + 2 < mesh->vertices.size(); i += 3)
+            {
+                const OgPoint& p0 = mesh->vertices[i].position;
+                const OgPoint& p1 = mesh->vertices[i + 1].position;
+                const OgPoint& p2 = mesh->vertices[i + 2].position;
+                const double d0 = std::abs((to_sm_point(p0) - orig).Dot(un));
+                const double d1 = std::abs((to_sm_point(p1) - orig).Dot(un));
+                const double d2 = std::abs((to_sm_point(p2) - orig).Dot(un));
+                if (d0 <= 1e-4 && d1 <= 1e-4 && d2 <= 1e-4)
+                    continue;
+                filtered.push_back(mesh->vertices[i]);
+                filtered.push_back(mesh->vertices[i + 1]);
+                filtered.push_back(mesh->vertices[i + 2]);
+            }
+            if (filtered.empty())
+                return OG_KERNEL_ERROR;
+            mesh->vertices = std::move(filtered);
+        }
+
+        *result = mesh.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_poly_section_plane(
+    const OgPoint* verts,
+    uint32_t vert_count,
+    const uint32_t* tris,
+    uint32_t tri_count,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_normal,
+    OgGeomList** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!verts || vert_count < 3 || !tris || tri_count < 1 || !finite(plane_origin) || !finite(plane_normal))
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d n = to_vector(*plane_normal);
+    const double nlen = n.Length();
+    if (!positive(nlen))
+        return OG_INVALID_ARGUMENT;
+    const SmVector3d un = n / nlen;
+    const SmPoint3d orig = to_sm_point(*plane_origin);
+
+    return with_kernel([&]() -> int32_t {
+        auto poly = build_poly_brep(verts, vert_count, tris, tri_count);
+        if (!poly)
+            return OG_INVALID_ARGUMENT;
+
+        SmTArray<SmPoint3d> segs;
+        const auto status = poly->DoSectioning(orig, un, SmZoneTol3d(1e-5), &segs, nullptr);
+        auto list = std::make_unique<OgGeomList>();
+        if (status == SM_SUCCESS)
+        {
+            for (ULONG i = 0; i + 1 < segs.GetSize(); i += 2)
+            {
+                list->points.push_back({segs[i].x, segs[i].y, segs[i].z});
+                list->points.push_back({segs[i + 1].x, segs[i + 1].y, segs[i + 1].z});
+            }
+        }
+        else if (status != SM_ERR)
+        {
+            return OG_KERNEL_ERROR;
+        }
+        *result = list.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_poly_make_watertight(
+    const OgPoint* verts,
+    uint32_t vert_count,
+    const uint32_t* tris,
+    uint32_t tri_count,
+    OgMesh** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!verts || vert_count < 3 || !tris || tri_count < 1)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto poly = build_poly_brep(verts, vert_count, tris, tri_count);
+        if (!poly)
+            return OG_INVALID_ARGUMENT;
+
+        if (poly->FillLaminaHoles() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+        poly->CleanSolidMesh(FALSE);
+
+        auto mesh = extract_poly_mesh(*poly);
+        if (!mesh || mesh->vertices.empty())
+            return OG_KERNEL_ERROR;
+        *result = mesh.release();
+        return OG_SUCCESS;
+    });
+}
+
+/* =========================== Slice G: Exact Mirroring & Rational NURBS =========================== */
+
+int32_t og_brep_mirror(
+    const OgSolid* solid,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_x,
+    const OgPoint* plane_y,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    SmVector3d ux, uy;
+    if (!solid || !solid->brep || !finite(plane_origin) || !build_unit_frame(plane_x, plane_y, ux, uy))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto copy = copy_solid(*solid);
+        if (!copy)
+            return OG_KERNEL_ERROR;
+        SmAxis2Placement mirror_plane(to_sm_point(*plane_origin), ux, uy);
+        const auto status = copy->Mirror(mirror_plane);
+        return publish_solid(status, std::move(copy), result);
+    });
+}
+
+int32_t og_curve_mirror(
+    const OgCurve* curve,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_x,
+    const OgPoint* plane_y,
+    OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    SmVector3d ux, uy;
+    if (!curve || !curve->curve || !finite(plane_origin) || !build_unit_frame(plane_x, plane_y, ux, uy))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto bsp = materialize_bspline_curve(*curve);
+        if (!bsp)
+            return OG_KERNEL_ERROR;
+        SmAxis2Placement mirror_plane(to_sm_point(*plane_origin), ux, uy);
+        SmCurve* mirrored = nullptr;
+        const auto status = bsp->CreateMirrorCurve(*SmApiGetOrCreateContext(), mirror_plane, mirrored);
+        return publish_curve_natural(status, std::unique_ptr<SmCurve>(mirrored), result);
+    });
+}
+
+int32_t og_curve_create_rational(
+    const OgPoint* points,
+    const double* weights,
+    uint32_t point_count,
+    const double* knots,
+    uint32_t knot_count,
+    int32_t degree,
+    OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!points || !weights || !knots || point_count < 2 || degree < 1
+        || static_cast<uint32_t>(degree) >= point_count
+        || knot_count != point_count + static_cast<uint32_t>(degree) + 1)
+        return OG_INVALID_ARGUMENT;
+
+    for (uint32_t i = 0; i < point_count; ++i)
+    {
+        if (!finite(&points[i]) || !finite(weights[i]) || weights[i] <= 1e-11)
+            return OG_INVALID_ARGUMENT;
+    }
+    for (uint32_t i = 0; i < knot_count; ++i)
+    {
+        if (!finite(knots[i]))
+            return OG_INVALID_ARGUMENT;
+        if (i > 0 && knots[i] < knots[i - 1] - 1e-12)
+            return OG_INVALID_ARGUMENT;
+    }
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<SmPoint3d> cps;
+        SmTArray<double> wts;
+        for (uint32_t i = 0; i < point_count; ++i)
+        {
+            cps.Add(to_sm_point(points[i]));
+            wts.Add(weights[i]);
+        }
+
+        SmTArray<double> unique_knots;
+        SmTArray<ULONG> mults;
+        for (uint32_t i = 0; i < knot_count; ++i)
+        {
+            if (unique_knots.GetSize() > 0 && std::abs(knots[i] - unique_knots[unique_knots.GetSize() - 1]) <= 1e-12)
+            {
+                mults[mults.GetSize() - 1] += 1;
+            }
+            else
+            {
+                unique_knots.Add(knots[i]);
+                mults.Add(1);
+            }
+        }
+
+        SmBSplineCurve* crv = nullptr;
+        const auto status = SmApiCreateCanonicalCurve(
+            cps, unique_knots, mults, &wts, static_cast<ULONG>(degree), SM_CF_UNSPECIFIED, crv);
+        return publish_curve_natural(status, std::unique_ptr<SmCurve>(crv), result);
     });
 }

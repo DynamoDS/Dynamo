@@ -128,6 +128,13 @@ namespace Autodesk.DesignScript.Geometry
             return new Point(cs.TransformPoint(Position));
         }
 
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var n = mirrorPlane.Normal.Normalized();
+            var d = Vector.ByTwoPoints(mirrorPlane.Origin, this).Dot(n);
+            return Subtract(n.Scale(2.0 * d));
+        }
+
         /// <inheritdoc />
         public override double DistanceTo(Geometry other)
         {

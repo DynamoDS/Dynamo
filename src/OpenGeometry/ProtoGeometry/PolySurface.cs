@@ -94,6 +94,15 @@ namespace Autodesk.DesignScript.Geometry
                 cs.ZAxis.Components));
         }
 
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            return new PolySurface(NativeGeometry.BrepMirror(
+                Handle,
+                mirrorPlane.Origin.Position,
+                mirrorPlane.XAxis.Components,
+                mirrorPlane.YAxis.Components));
+        }
+
         /// <inheritdoc />
         public override double DistanceTo(Geometry other)
         {

@@ -111,6 +111,60 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>Creates a ruled loft surface linearly interpolating between cross-section curves.</summary>
         public static Surface ByRuledLoft(IEnumerable<Curve> crossSections) => ByLoft(crossSections);
 
+        /// <summary>Creates a lofted surface through cross-section curves guided by one or more rail/guide curves.</summary>
+        /// <param name="crossSections">At least two profile curves.</param>
+        /// <param name="guideCurves">Guide rail curves connecting the cross-sections.</param>
+        /// <returns>The guided loft surface.</returns>
+        public static Surface ByLoft(IEnumerable<Curve> crossSections, IEnumerable<Curve> guideCurves)
+        {
+            ArgumentNullException.ThrowIfNull(crossSections);
+            var profiles = crossSections.Where(c => c != null).ToArray();
+            if (profiles.Length < 2)
+                throw new ArgumentException("Surface.ByLoft requires at least 2 cross-section curves.", nameof(crossSections));
+
+            var guides = guideCurves?.Where(c => c != null).ToArray() ?? Array.Empty<Curve>();
+            if (guides.Length >= 2 && profiles.Length == 2)
+                return BySweep2Rails(guides[0], guides[1], profiles[0]);
+            if (guides.Length == 1 && profiles.Length == 2)
+            {
+                // Sample guided intermediate sections between the two profiles along the guide curve.
+                var g = guides[0];
+                var p0 = profiles[0];
+                var p1 = profiles[1];
+                var g0 = g.StartPoint;
+                var g1 = g.EndPoint;
+                var flip = g0.DistanceTo(p1.StartPoint) < g0.DistanceTo(p0.StartPoint);
+                var generated = new List<Curve>();
+                try
+                {
+                    var all = new List<Curve> { p0 };
+                    const int interior = 5;
+                    for (var i = 1; i <= interior; i++)
+                    {
+                        var t = (double)i / (interior + 1);
+                        var gt = flip ? 1.0 - t : t;
+                        var gp = g.PointAtParameter(gt);
+                        var gl = Point.ByCoordinates(
+                            (1.0 - gt) * g0.X + gt * g1.X,
+                            (1.0 - gt) * g0.Y + gt * g1.Y,
+                            (1.0 - gt) * g0.Z + gt * g1.Z);
+                        var shift = Vector.ByTwoPoints(gl, gp);
+                        var linearDelta = Vector.ByTwoPoints(p0.StartPoint, p1.StartPoint).Scale(t);
+                        var moved = (Curve)p0.Translate(linearDelta.Add(shift));
+                        generated.Add(moved);
+                        all.Add(moved);
+                    }
+                    all.Add(p1);
+                    return ByLoft(all);
+                }
+                finally
+                {
+                    foreach (var c in generated) c.Dispose();
+                }
+            }
+            return ByLoft(profiles);
+        }
+
         /// <summary>Creates a surface by sweeping a profile curve along a path curve.</summary>
         /// <param name="profile">Curve to sweep.</param>
         /// <param name="path">Path curve to sweep along.</param>
@@ -241,6 +295,15 @@ namespace Autodesk.DesignScript.Geometry
                 cs.XAxis.Components,
                 cs.YAxis.Components,
                 cs.ZAxis.Components));
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            return new Surface(NativeGeometry.BrepMirror(
+                Handle,
+                mirrorPlane.Origin.Position,
+                mirrorPlane.XAxis.Components,
+                mirrorPlane.YAxis.Components));
         }
 
         /// <inheritdoc />

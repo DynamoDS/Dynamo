@@ -270,6 +270,11 @@ namespace Autodesk.DesignScript.Geometry
             return new PolyCurve(segments.Select(s => (Curve)s.Transform(cs)).ToArray());
         }
 
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            return new PolyCurve(segments.Select(s => (Curve)s.Mirror(mirrorPlane)).ToArray());
+        }
+
         /// <inheritdoc />
         public override double DistanceTo(Geometry other)
         {

@@ -50,4 +50,8 @@
   <data name="SurfaceTrim" xml:space="preserve"><value>Surface trimming</value></data>
   <data name="Intersection" xml:space="preserve"><value>Geometry intersection</value></data>
   <data name="MeshBoolean" xml:space="preserve"><value>Mesh Boolean operation</value></data>
+  <data name="MeshPlaneCut" xml:space="preserve"><value>Mesh plane cut</value></data>
+  <data name="MeshSection" xml:space="preserve"><value>Mesh plane section</value></data>
+  <data name="MeshWatertight" xml:space="preserve"><value>Mesh hole filling</value></data>
+  <data name="Mirror" xml:space="preserve"><value>Geometry mirror</value></data>
 </root>

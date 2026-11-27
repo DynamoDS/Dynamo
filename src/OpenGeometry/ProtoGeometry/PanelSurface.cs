@@ -158,6 +158,171 @@ namespace Autodesk.DesignScript.Geometry
             return new PanelSurface(pts.ToArray(), panelList.ToArray());
         }
 
+        /// <summary>Subdivides a surface into a diamond-shaped panel pattern.</summary>
+        public static PanelSurface ByDiamonds(
+            Surface surface,
+            int numU = 10,
+            int numV = 10,
+            PanelSurfaceBoundaryCondition boundaryCondition = PanelSurfaceBoundaryCondition.Keep)
+        {
+            ArgumentNullException.ThrowIfNull(surface);
+            ValidateCounts(numU, numV);
+            _ = boundaryCondition;
+
+            var pts = new List<Point>();
+            var panelList = new List<int[]>(numU * numV);
+            for (var u = 0; u < numU; u++)
+            {
+                var u0 = (double)u / numU;
+                var u1 = (double)(u + 1) / numU;
+                var um = 0.5 * (u0 + u1);
+                for (var v = 0; v < numV; v++)
+                {
+                    var v0 = (double)v / numV;
+                    var v1 = (double)(v + 1) / numV;
+                    var vm = 0.5 * (v0 + v1);
+                    var b = pts.Count;
+                    pts.Add(surface.PointAtParameter(um, v0));
+                    pts.Add(surface.PointAtParameter(u1, vm));
+                    pts.Add(surface.PointAtParameter(um, v1));
+                    pts.Add(surface.PointAtParameter(u0, vm));
+                    panelList.Add(new[] { b, b + 1, b + 2, b + 3 });
+                }
+            }
+            return new PanelSurface(pts.ToArray(), panelList.ToArray());
+        }
+
+        /// <summary>Subdivides a surface into a hexagonal tiling pattern.</summary>
+        public static PanelSurface ByHexagons(
+            Surface surface,
+            int numU = 10,
+            int numV = 10,
+            PanelSurfaceBoundaryCondition boundaryCondition = PanelSurfaceBoundaryCondition.Keep)
+        {
+            ArgumentNullException.ThrowIfNull(surface);
+            ValidateCounts(numU, numV);
+            _ = boundaryCondition;
+
+            var pts = new List<Point>();
+            var panelList = new List<int[]>(numU * numV);
+            var du = 1.0 / numU;
+            var dv = 1.0 / numV;
+            for (var u = 0; u < numU; u++)
+            {
+                for (var v = 0; v < numV; v++)
+                {
+                    var uShift = (v % 2 == 1) ? 0.5 * du : 0.0;
+                    var cu = Math.Clamp((u + 0.5) * du + uShift * 0.5, 0.0, 1.0);
+                    var cv = (v + 0.5) * dv;
+                    var ru = 0.45 * du;
+                    var rv = 0.45 * dv;
+                    var b = pts.Count;
+                    for (var k = 0; k < 6; k++)
+                    {
+                        var ang = k * (Math.PI / 3.0);
+                        var pu = Math.Clamp(cu + ru * Math.Cos(ang), 0.0, 1.0);
+                        var pv = Math.Clamp(cv + rv * Math.Sin(ang), 0.0, 1.0);
+                        pts.Add(surface.PointAtParameter(pu, pv));
+                    }
+                    panelList.Add(new[] { b, b + 1, b + 2, b + 3, b + 4, b + 5 });
+                }
+            }
+            return new PanelSurface(pts.ToArray(), panelList.ToArray());
+        }
+
+        /// <summary>Subdivides a surface into a staggered quad (brick) pattern.</summary>
+        public static PanelSurface ByStaggeredQuads(
+            Surface surface,
+            int numU = 10,
+            int numV = 10,
+            bool staggerVertically = false,
+            double displacementFactor = 0.5,
+            PanelSurfaceBoundaryCondition boundaryCondition = PanelSurfaceBoundaryCondition.Keep)
+        {
+            ArgumentNullException.ThrowIfNull(surface);
+            ValidateCounts(numU, numV);
+            _ = boundaryCondition;
+
+            var pts = new List<Point>();
+            var panelList = new List<int[]>(numU * numV);
+            var du = 1.0 / numU;
+            var dv = 1.0 / numV;
+            for (var u = 0; u < numU; u++)
+            {
+                for (var v = 0; v < numV; v++)
+                {
+                    var uOff = (!staggerVertically && (v % 2 == 1)) ? displacementFactor * du : 0.0;
+                    var vOff = (staggerVertically && (u % 2 == 1)) ? displacementFactor * dv : 0.0;
+                    var u0 = Math.Clamp(u * du + uOff, 0.0, 1.0);
+                    var u1 = Math.Clamp((u + 1) * du + uOff, 0.0, 1.0);
+                    var v0 = Math.Clamp(v * dv + vOff, 0.0, 1.0);
+                    var v1 = Math.Clamp((v + 1) * dv + vOff, 0.0, 1.0);
+                    if (u1 - u0 <= 1e-9 || v1 - v0 <= 1e-9)
+                        continue;
+                    var b = pts.Count;
+                    pts.Add(surface.PointAtParameter(u0, v0));
+                    pts.Add(surface.PointAtParameter(u1, v0));
+                    pts.Add(surface.PointAtParameter(u1, v1));
+                    pts.Add(surface.PointAtParameter(u0, v1));
+                    panelList.Add(new[] { b, b + 1, b + 2, b + 3 });
+                }
+            }
+            return new PanelSurface(pts.ToArray(), panelList.ToArray());
+        }
+
+        /// <summary>Subdivides a surface into sheared parallelogram panels.</summary>
+        public static PanelSurface ByParallelograms(
+            Surface surface,
+            int numU = 10,
+            int numV = 10,
+            double shearFactor = 0.5,
+            bool alignWithUAxis = false,
+            PanelSurfaceBoundaryCondition boundaryCondition = PanelSurfaceBoundaryCondition.Keep)
+        {
+            ArgumentNullException.ThrowIfNull(surface);
+            ValidateCounts(numU, numV);
+            _ = boundaryCondition;
+
+            var pts = new List<Point>();
+            var panelList = new List<int[]>(numU * numV);
+            var du = 1.0 / numU;
+            var dv = 1.0 / numV;
+            for (var u = 0; u < numU; u++)
+            {
+                for (var v = 0; v < numV; v++)
+                {
+                    var u0 = u * du;
+                    var u1 = (u + 1) * du;
+                    var v0 = v * dv;
+                    var v1 = (v + 1) * dv;
+                    var b = pts.Count;
+                    if (!alignWithUAxis)
+                    {
+                        var su = shearFactor * du;
+                        pts.Add(surface.PointAtParameter(u0, v0));
+                        pts.Add(surface.PointAtParameter(u1, v0));
+                        pts.Add(surface.PointAtParameter(Math.Clamp(u1 + su, 0.0, 1.0), v1));
+                        pts.Add(surface.PointAtParameter(Math.Clamp(u0 + su, 0.0, 1.0), v1));
+                    }
+                    else
+                    {
+                        var sv = shearFactor * dv;
+                        pts.Add(surface.PointAtParameter(u0, v0));
+                        pts.Add(surface.PointAtParameter(u1, Math.Clamp(v0 + sv, 0.0, 1.0)));
+                        pts.Add(surface.PointAtParameter(u1, Math.Clamp(v1 + sv, 0.0, 1.0)));
+                        pts.Add(surface.PointAtParameter(u0, v1));
+                    }
+                    panelList.Add(new[] { b, b + 1, b + 2, b + 3 });
+                }
+            }
+            return new PanelSurface(pts.ToArray(), panelList.ToArray());
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane) =>
+            new PanelSurface(
+                vertices.Select(v => (Point)v.Mirror(mirrorPlane)).ToArray(),
+                panels.Select(p => p.Reverse().ToArray()).ToArray());
+
         /// <inheritdoc />
         public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) =>
             new PanelSurface(

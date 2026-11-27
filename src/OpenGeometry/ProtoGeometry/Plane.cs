@@ -134,6 +134,15 @@ namespace Autodesk.DesignScript.Geometry
             return ByOriginNormalXAxis(newOrigin, newN, newX);
         }
 
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var n = mirrorPlane.Normal.Normalized();
+            var newOrigin = (Point)Origin.Mirror(mirrorPlane);
+            var newNormal = Normal.Subtract(n.Scale(2.0 * Normal.Dot(n))).Normalized();
+            var newX = XAxis.Subtract(n.Scale(2.0 * XAxis.Dot(n))).Normalized();
+            return ByOriginNormalXAxis(newOrigin, newNormal, newX);
+        }
+
         internal override void WritePreview(IRenderPackage package, TessellationParameters parameters)
         {
             var s = 2.5;

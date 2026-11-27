@@ -96,6 +96,18 @@ namespace Autodesk.DesignScript.Geometry
             return Transform(fromCoordinateSystem.Inverse().Compose(contextCoordinateSystem));
         }
 
+        /// <summary>Reflects this geometry across <paramref name="mirrorPlane"/>.</summary>
+        /// <param name="mirrorPlane">Plane of reflection.</param>
+        /// <returns>The mirrored geometry.</returns>
+        public Geometry Mirror(Plane mirrorPlane)
+        {
+            ArgumentNullException.ThrowIfNull(mirrorPlane);
+            return MirrorCore(mirrorPlane);
+        }
+
+        internal virtual Geometry MirrorCore(Plane mirrorPlane) =>
+            throw new NotSupportedException($"Mirror is not supported for {GetType().Name}.");
+
         /// <summary>Computes the shortest Euclidean distance to another geometry.</summary>
         /// <param name="other">Other geometry.</param>
         /// <returns>Minimum distance.</returns>

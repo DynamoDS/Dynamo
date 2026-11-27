@@ -55,6 +55,7 @@ virtual Autodesk.DesignScript.Geometry.Curve.IsClosed.get -> bool
 virtual Autodesk.DesignScript.Geometry.Curve.Length.get -> double
 virtual Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(double param) -> Autodesk.DesignScript.Geometry.Vector
 virtual Autodesk.DesignScript.Geometry.Curve.Offset(double distance) -> Autodesk.DesignScript.Geometry.Curve
+virtual Autodesk.DesignScript.Geometry.Curve.OffsetMany(double signedDistance, Autodesk.DesignScript.Geometry.Vector planeNormal = null) -> Autodesk.DesignScript.Geometry.Curve[]
 virtual Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point point) -> double
 virtual Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(double segmentLength) -> double
 Autodesk.DesignScript.Geometry.Curve.Patch() -> Autodesk.DesignScript.Geometry.Surface
@@ -108,6 +109,7 @@ virtual Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScr
 Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(string filePath) -> string
 virtual Autodesk.DesignScript.Geometry.Geometry.Intersect(Autodesk.DesignScript.Geometry.Geometry other) -> Autodesk.DesignScript.Geometry.Geometry[]
 Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Geometry> others) -> Autodesk.DesignScript.Geometry.Geometry[]
+Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane mirrorPlane) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane basePlane, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
 abstract Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector axis, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
 abstract Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point basePoint, double xamount, double yamount, double zamount) -> Autodesk.DesignScript.Geometry.Geometry
@@ -147,10 +149,18 @@ Autodesk.DesignScript.Geometry.Mesh.BooleanIntersection(Autodesk.DesignScript.Ge
 Autodesk.DesignScript.Geometry.Mesh.BooleanUnion(Autodesk.DesignScript.Geometry.Mesh tool) -> Autodesk.DesignScript.Geometry.Mesh
 override Autodesk.DesignScript.Geometry.Mesh.BoundingBox.get -> Autodesk.DesignScript.Geometry.BoundingBox
 Autodesk.DesignScript.Geometry.Mesh.EdgeCount.get -> int
+Autodesk.DesignScript.Geometry.Mesh.Edges() -> Autodesk.DesignScript.Geometry.Line[]
 Autodesk.DesignScript.Geometry.Mesh.EdgesAsSixNumbers.get -> double[]
+Autodesk.DesignScript.Geometry.Mesh.Explode() -> Autodesk.DesignScript.Geometry.Mesh[]
 Autodesk.DesignScript.Geometry.Mesh.FaceIndices.get -> Autodesk.DesignScript.Geometry.IndexGroup[]
+Autodesk.DesignScript.Geometry.Mesh.Intersect(Autodesk.DesignScript.Geometry.Plane plane) -> Autodesk.DesignScript.Geometry.PolyCurve[]
+Autodesk.DesignScript.Geometry.Mesh.MakeWatertight() -> Autodesk.DesignScript.Geometry.Mesh
+Autodesk.DesignScript.Geometry.Mesh.Mirror(Autodesk.DesignScript.Geometry.Plane mirrorPlane) -> Autodesk.DesignScript.Geometry.Mesh
+Autodesk.DesignScript.Geometry.Mesh.Nearest(Autodesk.DesignScript.Geometry.Point point) -> Autodesk.DesignScript.Geometry.Point
+Autodesk.DesignScript.Geometry.Mesh.PlaneCut(Autodesk.DesignScript.Geometry.Plane plane, bool makeSolid = true) -> Autodesk.DesignScript.Geometry.Mesh
 override Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector axis, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
 override Autodesk.DesignScript.Geometry.Mesh.Scale(Autodesk.DesignScript.Geometry.Point basePoint, double xamount, double yamount, double zamount) -> Autodesk.DesignScript.Geometry.Geometry
+Autodesk.DesignScript.Geometry.Mesh.Smooth(double scale = 1) -> Autodesk.DesignScript.Geometry.Mesh
 override Autodesk.DesignScript.Geometry.Mesh.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem cs) -> Autodesk.DesignScript.Geometry.Geometry
 override Autodesk.DesignScript.Geometry.Mesh.Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Mesh.TriangleCentroids() -> Autodesk.DesignScript.Geometry.Point[]
@@ -371,16 +381,23 @@ static Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Ge
 static Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Point> vertexPositions, System.Collections.Generic.IEnumerable<int> indices) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.Cone(Autodesk.DesignScript.Geometry.Point origin, double baseRadius = 1, double topRadius = 0, double height = 1, int divisions = 32, bool cap = true) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.Cuboid(Autodesk.DesignScript.Geometry.Point origin, double length = 1, double width = 1, double height = 1, int xDivisions = 1, int yDivisions = 1, int zDivisions = 1) -> Autodesk.DesignScript.Geometry.Mesh
+static Autodesk.DesignScript.Geometry.Mesh.ExportMeshes(string filePath, System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Mesh> meshes) -> string
+static Autodesk.DesignScript.Geometry.Mesh.ImportFile(string filePath) -> Autodesk.DesignScript.Geometry.Mesh[]
 static Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point origin, double xWidth = 1, double yWidth = 1, int xDivisions = 1, int yDivisions = 1) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.Sphere(Autodesk.DesignScript.Geometry.Point origin, double radius = 1, int divisions = 2, bool icosphere = false) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Point> points, int degree = 3) -> Autodesk.DesignScript.Geometry.NurbsCurve
 static Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Point> points, int degree, bool closeCurve) -> Autodesk.DesignScript.Geometry.NurbsCurve
+static Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Point> controlVertices, double[] weights, double[] knots, int degree) -> Autodesk.DesignScript.Geometry.NurbsCurve
 static Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Point> points) -> Autodesk.DesignScript.Geometry.NurbsCurve
 static Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints(Autodesk.DesignScript.Geometry.Point[][] controlVertices, int uDegree = 3, int vDegree = 3) -> Autodesk.DesignScript.Geometry.NurbsSurface
 static Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints(Autodesk.DesignScript.Geometry.Point[][] points, int uDegree = 3, int vDegree = 3) -> Autodesk.DesignScript.Geometry.NurbsSurface
 static Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
 static Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, bool alternativeDiagonal = false, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
+static Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
+static Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
+static Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, double shearFactor = 0.5, bool alignWithUAxis = false, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
 static Autodesk.DesignScript.Geometry.PanelSurface.ByQuads(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
+static Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads(Autodesk.DesignScript.Geometry.Surface surface, int numU = 10, int numV = 10, bool staggerVertically = false, double displacementFactor = 0.5, Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition boundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep) -> Autodesk.DesignScript.Geometry.PanelSurface
 static Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector normal) -> Autodesk.DesignScript.Geometry.Plane
 static Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector normal, Autodesk.DesignScript.Geometry.Vector xAxis) -> Autodesk.DesignScript.Geometry.Plane
 static Autodesk.DesignScript.Geometry.Plane.ByThreePoints(Autodesk.DesignScript.Geometry.Point p1, Autodesk.DesignScript.Geometry.Point p2, Autodesk.DesignScript.Geometry.Point p3) -> Autodesk.DesignScript.Geometry.Plane
@@ -411,6 +428,7 @@ static Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geomet
 static Autodesk.DesignScript.Geometry.Solid.ByUnion(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Solid> solids) -> Autodesk.DesignScript.Geometry.Solid
 static Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point centerPoint, double radius = 1) -> Autodesk.DesignScript.Geometry.Sphere
 static Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Curve> crossSections) -> Autodesk.DesignScript.Geometry.Surface
+static Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Curve> crossSections, System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Curve> guideCurves) -> Autodesk.DesignScript.Geometry.Surface
 static Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve closedCurve) -> Autodesk.DesignScript.Geometry.Surface
 static Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Point> points) -> Autodesk.DesignScript.Geometry.Surface
 static Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve profile, Autodesk.DesignScript.Geometry.Point axisOrigin, Autodesk.DesignScript.Geometry.Vector axisDirection, double startAngle, double sweepAngle) -> Autodesk.DesignScript.Geometry.Surface

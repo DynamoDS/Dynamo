@@ -15,7 +15,7 @@ namespace OpenGeometry
     internal static class NativeGeometry
     {
         private const string Bridge = "OpenGeometryBridge";
-        private const uint SupportedAbi = 6;
+        private const uint SupportedAbi = 8;
         private static readonly ResourceManager Messages = new("OpenGeometry.Messages", typeof(NativeGeometry).Assembly);
 
         internal sealed class SolidHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -671,6 +671,72 @@ namespace OpenGeometry
             return vertices;
         }
 
+        internal static NativeVertex[] PolyPlaneCut(
+            NativePoint[] verts, uint[] tris, NativePoint planeOrigin, NativePoint planeNormal, bool makeSolid)
+        {
+            var status = RunPolyPlaneCut(
+                verts,
+                (uint)verts.Length,
+                tris,
+                (uint)(tris.Length / 3),
+                in planeOrigin,
+                in planeNormal,
+                makeSolid ? 1 : 0,
+                out var mesh);
+            using var snapshot = CheckHandle(status, mesh, "MeshPlaneCut");
+            var vertices = new NativeVertex[checked((int)GetVertexCount(snapshot))];
+            Check(CopyVertices(snapshot, vertices, (uint)vertices.Length), "MeshPlaneCut");
+            return vertices;
+        }
+
+        internal static NativePoint[] PolySectionPlane(
+            NativePoint[] verts, uint[] tris, NativePoint planeOrigin, NativePoint planeNormal)
+        {
+            var status = RunPolySectionPlane(
+                verts,
+                (uint)verts.Length,
+                tris,
+                (uint)(tris.Length / 3),
+                in planeOrigin,
+                in planeNormal,
+                out var list);
+            using var owned = CheckHandle(status, list, "MeshSection");
+            var (points, _) = DrainGeomList(owned, "MeshSection");
+            return points;
+        }
+
+        internal static NativeVertex[] PolyMakeWatertight(NativePoint[] verts, uint[] tris)
+        {
+            var status = RunPolyMakeWatertight(
+                verts, (uint)verts.Length, tris, (uint)(tris.Length / 3), out var mesh);
+            using var snapshot = CheckHandle(status, mesh, "MeshWatertight");
+            var vertices = new NativeVertex[checked((int)GetVertexCount(snapshot))];
+            Check(CopyVertices(snapshot, vertices, (uint)vertices.Length), "MeshWatertight");
+            return vertices;
+        }
+
+        internal static SolidHandle BrepMirror(
+            SolidHandle solid, NativePoint planeOrigin, NativePoint planeX, NativePoint planeY)
+        {
+            var status = MirrorBrep(solid, in planeOrigin, in planeX, in planeY, out var result);
+            return CheckHandle(status, result, "Mirror");
+        }
+
+        internal static CurveHandle CurveMirror(
+            CurveHandle curve, NativePoint planeOrigin, NativePoint planeX, NativePoint planeY)
+        {
+            var status = MirrorCurve(curve, in planeOrigin, in planeX, in planeY, out var result);
+            return CheckHandle(status, result, "Mirror");
+        }
+
+        internal static CurveHandle RationalCurve(
+            NativePoint[] points, double[] weights, double[] knots, int degree)
+        {
+            var status = CreateRationalCurve(
+                points, weights, (uint)points.Length, knots, (uint)knots.Length, degree, out var result);
+            return CheckHandle(status, result, "CurveCreation");
+        }
+
         private static (NativePoint[] Points, CurveHandle[] Curves) DrainGeomList(
             GeomListHandle list, string operation)
         {
@@ -1195,5 +1261,62 @@ namespace OpenGeometry
             uint triCountB,
             int operation,
             out MeshHandle result);
+
+        /* Slice F P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_poly_plane_cut", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RunPolyPlaneCut(
+            [In] NativePoint[] verts,
+            uint vertCount,
+            [In] uint[] tris,
+            uint triCount,
+            in NativePoint planeOrigin,
+            in NativePoint planeNormal,
+            int makeSolid,
+            out MeshHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_poly_section_plane", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RunPolySectionPlane(
+            [In] NativePoint[] verts,
+            uint vertCount,
+            [In] uint[] tris,
+            uint triCount,
+            in NativePoint planeOrigin,
+            in NativePoint planeNormal,
+            out GeomListHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_poly_make_watertight", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RunPolyMakeWatertight(
+            [In] NativePoint[] verts,
+            uint vertCount,
+            [In] uint[] tris,
+            uint triCount,
+            out MeshHandle result);
+
+        /* Slice G P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_brep_mirror", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int MirrorBrep(
+            SolidHandle solid,
+            in NativePoint planeOrigin,
+            in NativePoint planeX,
+            in NativePoint planeY,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_mirror", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int MirrorCurve(
+            CurveHandle curve,
+            in NativePoint planeOrigin,
+            in NativePoint planeX,
+            in NativePoint planeY,
+            out CurveHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_create_rational", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateRationalCurve(
+            [In] NativePoint[] points,
+            [In] double[] weights,
+            uint pointCount,
+            [In] double[] knots,
+            uint knotCount,
+            int degree,
+            out CurveHandle result);
     }
 }

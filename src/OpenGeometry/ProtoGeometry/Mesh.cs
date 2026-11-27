@@ -187,6 +187,282 @@ namespace Autodesk.DesignScript.Geometry
         /// <returns>The difference mesh.</returns>
         public Mesh BooleanDifference(Mesh tool) => RunPolyBoolean(tool, operation: 2);
 
+        /// <summary>Cuts this mesh by <paramref name="plane"/>, removing the half-space in the plane normal direction.</summary>
+        /// <param name="plane">Cutting plane.</param>
+        /// <param name="makeSolid">If true, caps the cut boundary to produce a closed solid mesh.</param>
+        /// <returns>The cut mesh.</returns>
+        public Mesh PlaneCut(Plane plane, bool makeSolid = true)
+        {
+            ArgumentNullException.ThrowIfNull(plane);
+            var (verts, tris) = ExportTriangles();
+            var rawResult = NativeGeometry.PolyPlaneCut(
+                verts, tris, plane.Origin.Position, plane.Normal.Components, makeSolid);
+            return FromNativeTriangleVertices(rawResult);
+        }
+
+        /// <summary>Intersects this mesh with <paramref name="plane"/> and returns the resulting section outlines as <see cref="PolyCurve"/>s.</summary>
+        /// <param name="plane">Sectioning plane.</param>
+        /// <returns>Section polycurves (empty if the plane does not intersect the mesh).</returns>
+        public PolyCurve[] Intersect(Plane plane)
+        {
+            ArgumentNullException.ThrowIfNull(plane);
+            var (verts, tris) = ExportTriangles();
+            var segPts = NativeGeometry.PolySectionPlane(verts, tris, plane.Origin.Position, plane.Normal.Components);
+            if (segPts.Length < 2)
+                return Array.Empty<PolyCurve>();
+
+            // Stitch unordered section segments into contiguous chains/loops.
+            var remaining = new List<(Point A, Point B)>(segPts.Length / 2);
+            for (var i = 0; i + 1 < segPts.Length; i += 2)
+            {
+                var a = new Point(segPts[i]);
+                var b = new Point(segPts[i + 1]);
+                if (a.DistanceTo(b) > 1e-6)
+                    remaining.Add((a, b));
+            }
+
+            const double tol = 1e-4;
+            var chains = new List<PolyCurve>();
+            while (remaining.Count > 0)
+            {
+                var chain = new List<Point> { remaining[0].A, remaining[0].B };
+                remaining.RemoveAt(0);
+
+                var extended = true;
+                while (extended && remaining.Count > 0)
+                {
+                    extended = false;
+                    for (var i = 0; i < remaining.Count; i++)
+                    {
+                        var seg = remaining[i];
+                        if (chain[^1].DistanceTo(seg.A) <= tol)
+                        {
+                            chain.Add(seg.B);
+                            remaining.RemoveAt(i);
+                            extended = true;
+                            break;
+                        }
+                        if (chain[^1].DistanceTo(seg.B) <= tol)
+                        {
+                            chain.Add(seg.A);
+                            remaining.RemoveAt(i);
+                            extended = true;
+                            break;
+                        }
+                        if (chain[0].DistanceTo(seg.B) <= tol)
+                        {
+                            chain.Insert(0, seg.A);
+                            remaining.RemoveAt(i);
+                            extended = true;
+                            break;
+                        }
+                        if (chain[0].DistanceTo(seg.A) <= tol)
+                        {
+                            chain.Insert(0, seg.B);
+                            remaining.RemoveAt(i);
+                            extended = true;
+                            break;
+                        }
+                    }
+                }
+
+                var closed = chain.Count >= 3 && chain[0].DistanceTo(chain[^1]) <= tol;
+                if (closed)
+                    chain.RemoveAt(chain.Count - 1);
+                if (chain.Count >= 2)
+                    chains.Add(PolyCurve.ByPoints(chain, connectLastToFirst: closed));
+            }
+            return chains.ToArray();
+        }
+
+        /// <summary>Stitches boundary edges and fills lamina holes via SMLib <c>SmPolyBrep</c> to return a watertight mesh.</summary>
+        /// <returns>The repaired watertight mesh.</returns>
+        public Mesh MakeWatertight()
+        {
+            var (verts, tris) = ExportTriangles();
+            var rawResult = NativeGeometry.PolyMakeWatertight(verts, tris);
+            return FromNativeTriangleVertices(rawResult);
+        }
+
+        /// <summary>Converts all unique mesh edges into <see cref="Line"/> segments.</summary>
+        public Line[] Edges()
+        {
+            return CollectUniqueEdges()
+                .Select(e => Line.ByStartPointEndPoint(vertices[e.U], vertices[e.V]))
+                .ToArray();
+        }
+
+        /// <summary>Explodes each triangulated face of this mesh into an individual 1-triangle <see cref="Mesh"/>.</summary>
+        public Mesh[] Explode()
+        {
+            var triFace = new[] { IndexGroup.ByIndices(0, 1, 2) };
+            return EnumerateTriangles()
+                .Select(t => new Mesh(new[] { vertices[t.A], vertices[t.B], vertices[t.C] }, triFace))
+                .ToArray();
+        }
+
+        /// <summary>Finds the closest point on any triangle of this mesh to <paramref name="point"/>.</summary>
+        /// <param name="point">Query point.</param>
+        /// <returns>Nearest point lying on the mesh surface.</returns>
+        public Point Nearest(Point point)
+        {
+            ArgumentNullException.ThrowIfNull(point);
+            Point best = null;
+            var bestDistSq = double.PositiveInfinity;
+            foreach (var (a, b, c) in EnumerateTriangles())
+            {
+                var candidate = ClosestPointOnTriangle(point, vertices[a], vertices[b], vertices[c]);
+                var dx = candidate.X - point.X;
+                var dy = candidate.Y - point.Y;
+                var dz = candidate.Z - point.Z;
+                var distSq = dx * dx + dy * dy + dz * dz;
+                if (distSq < bestDistSq)
+                {
+                    bestDistSq = distSq;
+                    best = candidate;
+                }
+            }
+            return best ?? vertices[0];
+        }
+
+        /// <summary>Reflects this mesh across <paramref name="mirrorPlane"/> while preserving outward face winding.</summary>
+        /// <param name="mirrorPlane">Plane of reflection.</param>
+        /// <returns>The mirrored mesh.</returns>
+        public new Mesh Mirror(Plane mirrorPlane)
+        {
+            ArgumentNullException.ThrowIfNull(mirrorPlane);
+            var n = mirrorPlane.Normal.Normalized();
+            var reflected = new Point[vertices.Length];
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var rel = Vector.ByTwoPoints(mirrorPlane.Origin, vertices[i]);
+                var dist = rel.Dot(n);
+                reflected[i] = vertices[i].Subtract(n.Scale(2.0 * dist));
+            }
+            // Reverse face winding because reflection flips orientation.
+            var flippedFaces = new IndexGroup[faces.Length];
+            for (var i = 0; i < faces.Length; i++)
+            {
+                var f = faces[i];
+                flippedFaces[i] = f.Count == 4
+                    ? IndexGroup.ByIndices(f.A, f.D, f.C, f.B)
+                    : IndexGroup.ByIndices(f.A, f.C, f.B);
+            }
+            return new Mesh(reflected, flippedFaces);
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane) => Mirror(mirrorPlane);
+
+        /// <summary>Applies iterative Laplacian smoothing to vertex positions while preserving mesh topology.</summary>
+        /// <param name="scale">Smoothing strength scale (must be positive).</param>
+        /// <returns>A smoothed copy of this mesh.</returns>
+        public Mesh Smooth(double scale = 1.0)
+        {
+            if (!double.IsFinite(scale) || scale <= 0)
+                throw new ArgumentOutOfRangeException(nameof(scale), "Smoothing scale must be positive.");
+
+            var neighbors = new HashSet<int>[vertices.Length];
+            for (var i = 0; i < vertices.Length; i++)
+                neighbors[i] = new HashSet<int>();
+            foreach (var (u, v) in CollectUniqueEdges())
+            {
+                neighbors[u].Add(v);
+                neighbors[v].Add(u);
+            }
+
+            var iterations = Math.Clamp((int)Math.Ceiling(scale), 1, 20);
+            var lambda = Math.Clamp(scale / iterations * 0.5, 0.05, 0.5);
+            var current = vertices.ToArray();
+            var next = new Point[vertices.Length];
+
+            for (var iter = 0; iter < iterations; iter++)
+            {
+                for (var i = 0; i < current.Length; i++)
+                {
+                    if (neighbors[i].Count == 0)
+                    {
+                        next[i] = current[i];
+                        continue;
+                    }
+                    double sx = 0, sy = 0, sz = 0;
+                    foreach (var nb in neighbors[i])
+                    {
+                        sx += current[nb].X;
+                        sy += current[nb].Y;
+                        sz += current[nb].Z;
+                    }
+                    var inv = 1.0 / neighbors[i].Count;
+                    var ax = sx * inv;
+                    var ay = sy * inv;
+                    var az = sz * inv;
+                    next[i] = Point.ByCoordinates(
+                        current[i].X + lambda * (ax - current[i].X),
+                        current[i].Y + lambda * (ay - current[i].Y),
+                        current[i].Z + lambda * (az - current[i].Z));
+                }
+                (current, next) = (next, current);
+            }
+            return new Mesh(current, faces.ToArray());
+        }
+
+        /// <summary>Imports one or more meshes from an open mesh file (<c>.obj</c>, <c>.stl</c>, or <c>.ply</c>).</summary>
+        /// <param name="filePath">Path to the mesh file.</param>
+        /// <returns>Imported meshes.</returns>
+        public static Mesh[] ImportFile(string filePath) => MeshFileIO.ImportFile(filePath);
+
+        /// <summary>Exports one or more meshes to an open mesh file (<c>.obj</c>, <c>.stl</c>, or <c>.ply</c>) selected by extension.</summary>
+        /// <param name="filePath">Destination file path.</param>
+        /// <param name="meshes">Meshes to export.</param>
+        /// <returns>The output file path.</returns>
+        public static string ExportMeshes(string filePath, IEnumerable<Mesh> meshes) =>
+            MeshFileIO.ExportMeshes(filePath, meshes);
+
+        private static Point ClosestPointOnTriangle(Point p, Point a, Point b, Point c)
+        {
+            var ab = Vector.ByTwoPoints(a, b);
+            var ac = Vector.ByTwoPoints(a, c);
+            var ap = Vector.ByTwoPoints(a, p);
+            var d1 = ab.Dot(ap);
+            var d2 = ac.Dot(ap);
+            if (d1 <= 0 && d2 <= 0) return a;
+
+            var bp = Vector.ByTwoPoints(b, p);
+            var d3 = ab.Dot(bp);
+            var d4 = ac.Dot(bp);
+            if (d3 >= 0 && d4 <= d3) return b;
+
+            var vc = d1 * d4 - d3 * d2;
+            if (vc <= 0 && d1 >= 0 && d3 <= 0)
+            {
+                var v = d1 / (d1 - d3);
+                return a.Add(ab.Scale(v));
+            }
+
+            var cp = Vector.ByTwoPoints(c, p);
+            var d5 = ab.Dot(cp);
+            var d6 = ac.Dot(cp);
+            if (d6 >= 0 && d5 <= d6) return c;
+
+            var vb = d5 * d2 - d1 * d6;
+            if (vb <= 0 && d2 >= 0 && d6 <= 0)
+            {
+                var w = d2 / (d2 - d6);
+                return a.Add(ac.Scale(w));
+            }
+
+            var va = d3 * d6 - d5 * d4;
+            if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0)
+            {
+                var w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+                return b.Add(Vector.ByTwoPoints(b, c).Scale(w));
+            }
+
+            var denom = 1.0 / (va + vb + vc);
+            var vCoord = vb * denom;
+            var wCoord = vc * denom;
+            return a.Add(ab.Scale(vCoord)).Add(ac.Scale(wCoord));
+        }
+
         /// <summary>Creates a mesh by tessellating a solid, surface, polysurface, or existing mesh.</summary>
         /// <param name="geometry">Geometry to convert into a mesh.</param>
         /// <param name="maxGridLines">Optional tessellation density parameter (reserved).</param>

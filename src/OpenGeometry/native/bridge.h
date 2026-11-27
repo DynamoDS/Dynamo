@@ -297,6 +297,53 @@ OG_API int32_t og_poly_boolean(
     int32_t operation,
     OgMesh** result);
 
+/* Slice F: Mesh plane cut, plane sectioning, and watertight hole filling via SmPolyBrep */
+OG_API int32_t og_poly_plane_cut(
+    const OgPoint* verts,
+    uint32_t vert_count,
+    const uint32_t* tris,
+    uint32_t tri_count,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_normal,
+    int32_t make_solid,
+    OgMesh** result);
+OG_API int32_t og_poly_section_plane(
+    const OgPoint* verts,
+    uint32_t vert_count,
+    const uint32_t* tris,
+    uint32_t tri_count,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_normal,
+    OgGeomList** result);
+OG_API int32_t og_poly_make_watertight(
+    const OgPoint* verts,
+    uint32_t vert_count,
+    const uint32_t* tris,
+    uint32_t tri_count,
+    OgMesh** result);
+
+/* Slice G: Exact BRep/curve mirroring and rational NURBS curves */
+OG_API int32_t og_brep_mirror(
+    const OgSolid* solid,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_x,
+    const OgPoint* plane_y,
+    OgSolid** result);
+OG_API int32_t og_curve_mirror(
+    const OgCurve* curve,
+    const OgPoint* plane_origin,
+    const OgPoint* plane_x,
+    const OgPoint* plane_y,
+    OgCurve** result);
+OG_API int32_t og_curve_create_rational(
+    const OgPoint* points,
+    const double* weights,
+    uint32_t point_count,
+    const double* knots,
+    uint32_t knot_count,
+    int32_t degree,
+    OgCurve** result);
+
 #ifdef __cplusplus
 }
 #endif
