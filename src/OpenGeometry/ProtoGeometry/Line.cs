@@ -159,6 +159,38 @@ namespace Autodesk.DesignScript.Geometry
             return ByStartPointEndPoint(centroid.Add(dir.Scale(minT)), centroid.Add(dir.Scale(maxT)));
         }
 
+        /// <inheritdoc />
+        public override Curve Reverse() => ByStartPointEndPoint(EndPoint, StartPoint);
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) =>
+            ByStartPointEndPoint(
+                (Point)StartPoint.Translate(xTranslation, yTranslation, zTranslation),
+                (Point)EndPoint.Translate(xTranslation, yTranslation, zTranslation));
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees) =>
+            ByStartPointEndPoint(
+                (Point)StartPoint.Rotate(origin, axis, degrees),
+                (Point)EndPoint.Rotate(origin, axis, degrees));
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount) =>
+            ByStartPointEndPoint(
+                (Point)StartPoint.Scale(basePoint, xamount, yamount, zamount),
+                (Point)EndPoint.Scale(basePoint, xamount, yamount, zamount));
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs) =>
+            ByStartPointEndPoint(
+                (Point)StartPoint.Transform(cs),
+                (Point)EndPoint.Transform(cs));
+
+        internal override Geometry MirrorCore(Plane mirrorPlane) =>
+            ByStartPointEndPoint(
+                (Point)StartPoint.Mirror(mirrorPlane),
+                (Point)EndPoint.Mirror(mirrorPlane));
+
         internal override uint PreviewSegmentCount => 1;
     }
 }

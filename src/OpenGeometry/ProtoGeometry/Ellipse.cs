@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A closed planar ellipse curve.</summary>
     public class Ellipse : Curve
     {
-        private Ellipse(NativeGeometry.CurveHandle handle, Point center, Vector majorAxis, Vector minorAxis)
+        internal Ellipse(NativeGeometry.CurveHandle handle, Point center, Vector majorAxis, Vector minorAxis)
             : base(handle)
         {
             CenterPoint = center;
@@ -22,6 +22,17 @@ namespace Autodesk.DesignScript.Geometry
 
         /// <summary>Gets the minor axis vector (scaled by the minor semi-axis length).</summary>
         public Vector MinorAxis { get; }
+
+        /// <inheritdoc />
+        public override Vector Normal
+        {
+            get
+            {
+                var radial = Vector.ByTwoPoints(CenterPoint, PointAtParameter(0.0));
+                var cross = radial.Cross(TangentAtParameter(0.0));
+                return cross.Length > 1e-9 ? cross.Normalized() : MajorAxis.Cross(MinorAxis).Normalized();
+            }
+        }
 
         /// <summary>Creates an ellipse in the world XY plane centered at <paramref name="origin"/>.</summary>
         /// <param name="origin">Origin point of the ellipse.</param>
@@ -86,6 +97,74 @@ namespace Autodesk.DesignScript.Geometry
             var vy = uy.Scale(yAxisRadius);
             var (major, minor) = xAxisRadius >= yAxisRadius ? (vx, vy) : (vy, vx);
             return new Ellipse(handle, plane.Origin, major, minor);
+        }
+
+        /// <inheritdoc />
+        public override Curve Reverse() =>
+            new Ellipse(NativeGeometry.CurveReverse(Handle), CenterPoint, MajorAxis, MinorAxis);
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)
+        {
+            var h = NativeGeometry.CurveTranslate(Handle, new NativePoint(xTranslation, yTranslation, zTranslation));
+            var newCenter = (Point)CenterPoint.Translate(xTranslation, yTranslation, zTranslation);
+            return new Ellipse(h, newCenter, MajorAxis, MinorAxis);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees)
+        {
+            ArgumentNullException.ThrowIfNull(origin);
+            ArgumentNullException.ThrowIfNull(axis);
+            var h = NativeGeometry.CurveRotate(Handle, origin.Position, axis.Components, degrees);
+            var newCenter = (Point)CenterPoint.Rotate(origin, axis, degrees);
+            var newMajor = GeometryMath.RotateVector(MajorAxis, axis, degrees);
+            var newMinor = GeometryMath.RotateVector(MinorAxis, axis, degrees);
+            return new Ellipse(h, newCenter, newMajor, newMinor);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount)
+        {
+            ArgumentNullException.ThrowIfNull(basePoint);
+            var h = NativeGeometry.CurveScale(Handle, basePoint.Position, xamount, yamount, zamount);
+            var newCenter = (Point)CenterPoint.Scale(basePoint, xamount, yamount, zamount);
+            var scaledA = Vector.ByCoordinates(MajorAxis.X * xamount, MajorAxis.Y * yamount, MajorAxis.Z * zamount);
+            var scaledB = Vector.ByCoordinates(MinorAxis.X * xamount, MinorAxis.Y * yamount, MinorAxis.Z * zamount);
+            if (scaledA.IsPerpendicular(scaledB))
+            {
+                var (major, minor) = scaledA.Length >= scaledB.Length ? (scaledA, scaledB) : (scaledB, scaledA);
+                return new Ellipse(h, newCenter, major, minor);
+            }
+            return new Curve(h);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs)
+        {
+            ArgumentNullException.ThrowIfNull(cs);
+            var h = NativeGeometry.CurveTransform(
+                Handle, cs.Origin.Position, cs.XAxis.Components, cs.YAxis.Components, cs.ZAxis.Components);
+            var newCenter = (Point)CenterPoint.Transform(cs);
+            var newA = cs.TransformVector(MajorAxis);
+            var newB = cs.TransformVector(MinorAxis);
+            if (newA.IsPerpendicular(newB))
+            {
+                var (major, minor) = newA.Length >= newB.Length ? (newA, newB) : (newB, newA);
+                return new Ellipse(h, newCenter, major, minor);
+            }
+            return new Curve(h);
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var h = NativeGeometry.CurveMirror(
+                Handle, mirrorPlane.Origin.Position, mirrorPlane.XAxis.Components, mirrorPlane.YAxis.Components);
+            var newCenter = (Point)CenterPoint.Mirror(mirrorPlane);
+            var n = mirrorPlane.Normal.Normalized();
+            var newMajor = MajorAxis.Subtract(n.Scale(2.0 * MajorAxis.Dot(n)));
+            var newMinor = MinorAxis.Subtract(n.Scale(2.0 * MinorAxis.Dot(n)));
+            return new Ellipse(h, newCenter, newMajor, newMinor);
         }
     }
 }

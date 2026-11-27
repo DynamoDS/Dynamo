@@ -368,6 +368,19 @@ OG_API int32_t og_copy_mesh_uvs(const OgMesh* mesh, OgUv* uvs, uint32_t capacity
 OG_API int32_t og_surface_isocurve(
     const OgSolid* surface, int32_t iso_direction, double normalized_param, OgCurve** result);
 
+/* Slice K: NURBS curve control polygon, weights, and knot vector queries */
+OG_API int32_t og_curve_nurbs_control_points(
+    const OgCurve* curve,
+    OgPoint* points,
+    double* weights,
+    uint32_t capacity,
+    uint32_t* actual_count);
+OG_API int32_t og_curve_nurbs_knots(
+    const OgCurve* curve,
+    double* knots,
+    uint32_t capacity,
+    uint32_t* actual_count);
+
 #ifdef __cplusplus
 }
 #endif

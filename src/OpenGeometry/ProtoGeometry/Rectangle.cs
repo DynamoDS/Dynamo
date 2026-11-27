@@ -87,5 +87,55 @@ namespace Autodesk.DesignScript.Geometry
                 throw new ArgumentException("Rectangle.ByCornerPoints requires exactly 4 points.", nameof(points));
             return ByCornerPoints(pts[0], pts[1], pts[2], pts[3]);
         }
+
+        /// <inheritdoc />
+        public override Curve Reverse()
+        {
+            var pts = Points;
+            return ByCornerPoints(pts[0], pts[3], pts[2], pts[1]);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)
+        {
+            var pts = Points.Select(p => (Point)p.Translate(xTranslation, yTranslation, zTranslation)).ToArray();
+            return ByCornerPoints(pts[0], pts[1], pts[2], pts[3]);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees)
+        {
+            var pts = Points.Select(p => (Point)p.Rotate(origin, axis, degrees)).ToArray();
+            return ByCornerPoints(pts[0], pts[1], pts[2], pts[3]);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount)
+        {
+            var pts = Points.Select(p => (Point)p.Scale(basePoint, xamount, yamount, zamount)).ToArray();
+            return WrapTransformed(pts);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs)
+        {
+            var pts = Points.Select(p => (Point)p.Transform(cs)).ToArray();
+            return WrapTransformed(pts);
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var pts = Points.Select(p => (Point)p.Mirror(mirrorPlane)).ToArray();
+            return ByCornerPoints(pts[0], pts[1], pts[2], pts[3]);
+        }
+
+        private static Polygon WrapTransformed(Point[] pts)
+        {
+            var e0 = Vector.ByTwoPoints(pts[0], pts[1]);
+            var e1 = Vector.ByTwoPoints(pts[1], pts[2]);
+            return e0.IsPerpendicular(e1)
+                ? ByCornerPoints(pts[0], pts[1], pts[2], pts[3])
+                : Polygon.ByPoints(pts);
+        }
     }
 }

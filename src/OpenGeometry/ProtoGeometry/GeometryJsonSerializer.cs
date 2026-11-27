@@ -224,7 +224,9 @@ namespace OpenGeometry
                     writer.WriteString("$typeid", CircleTypeId);
                     WritePointProp(writer, "center", circle.CenterPoint);
                     WriteVectorProp(writer, "normal", circle.Normal);
+                    WriteVectorProp(writer, "xAxis", circle.Plane.XAxis);
                     writer.WriteNumber("radius", circle.Radius);
+                    writer.WriteString("curveSmb", Convert.ToBase64String(NativeGeometry.SerializeCurve(circle.Handle)));
                     writer.WriteEndObject();
                     return;
 
@@ -248,6 +250,7 @@ namespace OpenGeometry
                     WritePointProp(writer, "center", ellipse.CenterPoint);
                     WriteVectorProp(writer, "majorAxis", ellipse.MajorAxis);
                     WriteVectorProp(writer, "minorAxis", ellipse.MinorAxis);
+                    writer.WriteString("curveSmb", Convert.ToBase64String(NativeGeometry.SerializeCurve(ellipse.Handle)));
                     writer.WriteEndObject();
                     return;
 
@@ -259,8 +262,11 @@ namespace OpenGeometry
                     WriteVectorProp(writer, "xAxis", ellipseArc.Plane.XAxis);
                     WriteVectorProp(writer, "majorAxis", ellipseArc.MajorAxis);
                     WriteVectorProp(writer, "minorAxis", ellipseArc.MinorAxis);
+                    writer.WriteNumber("xRadius", ellipseArc.XRadius);
+                    writer.WriteNumber("yRadius", ellipseArc.YRadius);
                     writer.WriteNumber("startAngle", ellipseArc.StartAngle);
                     writer.WriteNumber("sweepAngle", ellipseArc.SweepAngle);
+                    writer.WriteString("curveSmb", Convert.ToBase64String(NativeGeometry.SerializeCurve(ellipseArc.Handle)));
                     writer.WriteEndObject();
                     return;
 
@@ -431,10 +437,20 @@ namespace OpenGeometry
                         ReadPoint(root.GetProperty("end")));
 
                 case CircleTypeId:
-                    return Circle.ByCenterPointRadiusNormal(
-                        ReadPoint(root.GetProperty("center")),
-                        root.GetProperty("radius").GetDouble(),
-                        ReadVector(root.GetProperty("normal")));
+                {
+                    var center = ReadPoint(root.GetProperty("center"));
+                    var normal = ReadVector(root.GetProperty("normal"));
+                    var radius = root.GetProperty("radius").GetDouble();
+                    var plane = root.TryGetProperty("xAxis", out var xAxisEl)
+                        ? Plane.ByOriginNormalXAxis(center, normal, ReadVector(xAxisEl))
+                        : Plane.ByOriginNormal(center, normal);
+                    if (root.TryGetProperty("curveSmb", out var smbEl) && smbEl.ValueKind == JsonValueKind.String)
+                    {
+                        var handle = NativeGeometry.DeserializeCurve(Convert.FromBase64String(smbEl.GetString()));
+                        return new Circle(handle, center, radius, plane);
+                    }
+                    return Circle.ByPlaneRadius(plane, radius);
+                }
 
                 case ArcTypeId:
                 {
@@ -452,10 +468,17 @@ namespace OpenGeometry
                 }
 
                 case EllipseTypeId:
-                    return Ellipse.ByOriginVectors(
-                        ReadPoint(root.GetProperty("center")),
-                        ReadVector(root.GetProperty("majorAxis")),
-                        ReadVector(root.GetProperty("minorAxis")));
+                {
+                    var center = ReadPoint(root.GetProperty("center"));
+                    var major = ReadVector(root.GetProperty("majorAxis"));
+                    var minor = ReadVector(root.GetProperty("minorAxis"));
+                    if (root.TryGetProperty("curveSmb", out var smbEl) && smbEl.ValueKind == JsonValueKind.String)
+                    {
+                        var handle = NativeGeometry.DeserializeCurve(Convert.FromBase64String(smbEl.GetString()));
+                        return new Ellipse(handle, center, major, minor);
+                    }
+                    return Ellipse.ByOriginVectors(center, major, minor);
+                }
 
                 case EllipseArcTypeId:
                 {
@@ -466,8 +489,15 @@ namespace OpenGeometry
                     var minor = ReadVector(root.GetProperty("minorAxis"));
                     var startAngle = root.GetProperty("startAngle").GetDouble();
                     var sweepAngle = root.GetProperty("sweepAngle").GetDouble();
+                    var xRadius = root.TryGetProperty("xRadius", out var xrEl) ? xrEl.GetDouble() : major.Length;
+                    var yRadius = root.TryGetProperty("yRadius", out var yrEl) ? yrEl.GetDouble() : minor.Length;
                     var plane = Plane.ByOriginNormalXAxis(center, normal, xAxis);
-                    return EllipseArc.ByPlaneRadiiAngles(plane, major.Length, minor.Length, startAngle, sweepAngle);
+                    if (root.TryGetProperty("curveSmb", out var smbEl) && smbEl.ValueKind == JsonValueKind.String)
+                    {
+                        var handle = NativeGeometry.DeserializeCurve(Convert.FromBase64String(smbEl.GetString()));
+                        return new EllipseArc(handle, plane, major, minor, startAngle, sweepAngle, xRadius, yRadius);
+                    }
+                    return EllipseArc.ByPlaneRadiiAngles(plane, xRadius, yRadius, startAngle, sweepAngle);
                 }
 
                 case HelixTypeId:

@@ -318,6 +318,20 @@ namespace Autodesk.DesignScript.Geometry
         }
 
         /// <inheritdoc />
+        public override bool IsAlmostEqualTo(Geometry other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other is not Surface s || GetType() != other.GetType())
+                return false;
+            var bb1 = BoundingBox;
+            var bb2 = s.BoundingBox;
+            return bb1.MinPoint.DistanceTo(bb2.MinPoint) <= 1e-4
+                && bb1.MaxPoint.DistanceTo(bb2.MaxPoint) <= 1e-4
+                && Math.Abs(Area - s.Area) <= Math.Max(1e-4, Math.Abs(Area) * 1e-5);
+        }
+
+        /// <inheritdoc />
         public override double DistanceTo(Geometry other)
         {
             ArgumentNullException.ThrowIfNull(other);

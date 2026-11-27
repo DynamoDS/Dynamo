@@ -21,6 +21,20 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>Gets the number of component curves in this polycurve.</summary>
         public int NumberOfCurves => segments.Length;
 
+        /// <summary>Gets the ordered vertices connecting the curves of this polycurve.</summary>
+        public virtual Point[] Points
+        {
+            get
+            {
+                var pts = new List<Point>(segments.Length + 1);
+                foreach (var seg in segments)
+                    pts.Add(seg.StartPoint);
+                if (!IsClosed)
+                    pts.Add(segments[^1].EndPoint);
+                return pts.ToArray();
+            }
+        }
+
         /// <summary>Returns the ordered component curves making up this polycurve.</summary>
         public Curve[] Curves() => segments.Select(s => (Curve)s.Translate(0, 0, 0)).ToArray();
 
@@ -151,7 +165,7 @@ namespace Autodesk.DesignScript.Geometry
         public override bool IsClosed => StartPoint.DistanceTo(EndPoint) <= 1e-6;
 
         /// <inheritdoc />
-        public override Point PointAtParameter(double param)
+        public override Point PointAtParameter(double param = 0)
         {
             var (seg, localT) = MapParameter(param);
             return seg.PointAtParameter(localT);
@@ -273,6 +287,21 @@ namespace Autodesk.DesignScript.Geometry
         internal override Geometry MirrorCore(Plane mirrorPlane)
         {
             return new PolyCurve(segments.Select(s => (Curve)s.Mirror(mirrorPlane)).ToArray());
+        }
+
+        /// <inheritdoc />
+        public override bool IsAlmostEqualTo(Geometry other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other is not PolyCurve pc || GetType() != other.GetType() || pc.segments.Length != segments.Length)
+                return false;
+            for (var i = 0; i < segments.Length; i++)
+            {
+                if (!segments[i].IsAlmostEqualTo(pc.segments[i]))
+                    return false;
+            }
+            return true;
         }
 
         /// <inheritdoc />

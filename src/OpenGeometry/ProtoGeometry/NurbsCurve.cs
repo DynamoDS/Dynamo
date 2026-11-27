@@ -16,6 +16,23 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>Gets the polynomial degree of this NURBS curve.</summary>
         public int Degree { get; }
 
+        /// <summary>Returns the ordered 3D control points of this NURBS curve.</summary>
+        public Point[] ControlPoints()
+        {
+            var (pts, _) = NativeGeometry.CurveNurbsControlPoints(Handle);
+            return pts.Select(p => new Point(p)).ToArray();
+        }
+
+        /// <summary>Returns the control point weights of this NURBS curve.</summary>
+        public double[] Weights()
+        {
+            var (_, wts) = NativeGeometry.CurveNurbsControlPoints(Handle);
+            return wts;
+        }
+
+        /// <summary>Returns the knot vector of this NURBS curve.</summary>
+        public double[] Knots() => NativeGeometry.CurveNurbsKnots(Handle);
+
         /// <summary>Creates a NURBS curve interpolating a sequence of 3D points.</summary>
         /// <param name="points">Ordered points through which the curve passes (at least 2).</param>
         /// <returns>The interpolated NURBS curve.</returns>
@@ -31,11 +48,16 @@ namespace Autodesk.DesignScript.Geometry
             return new NurbsCurve(handle, degree);
         }
 
+        /// <summary>Creates a cubic (or lower when fewer than 4 points) NURBS curve from control points.</summary>
+        /// <param name="points">Control polygon points.</param>
+        /// <returns>The created NURBS curve.</returns>
+        public static NurbsCurve ByControlPoints(IEnumerable<Point> points) => ByControlPoints(points, 3);
+
         /// <summary>Creates a NURBS curve from control points and polynomial degree.</summary>
         /// <param name="points">Control polygon points.</param>
         /// <param name="degree">Curve degree (at least 1 and less than the number of control points).</param>
         /// <returns>The created NURBS curve.</returns>
-        public static NurbsCurve ByControlPoints(IEnumerable<Point> points, int degree = 3)
+        public static NurbsCurve ByControlPoints(IEnumerable<Point> points, int degree)
         {
             ArgumentNullException.ThrowIfNull(points);
             var pts = points.Where(p => p != null).Select(p => p.Position).ToArray();
@@ -54,7 +76,7 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="degree">Curve degree (at least 1 and less than the control point count).</param>
         /// <param name="closeCurve">If true, closes the curve back to the first control point.</param>
         /// <returns>The created NURBS curve.</returns>
-        public static NurbsCurve ByControlPoints(IEnumerable<Point> points, int degree, bool closeCurve)
+        public static NurbsCurve ByControlPoints(IEnumerable<Point> points, int degree = 3, bool closeCurve = false)
         {
             ArgumentNullException.ThrowIfNull(points);
             var list = points.Where(p => p != null).ToList();
@@ -88,5 +110,43 @@ namespace Autodesk.DesignScript.Geometry
             var handle = NativeGeometry.RationalCurve(pts, weights, knots, degree);
             return new NurbsCurve(handle, degree);
         }
+
+        /// <inheritdoc />
+        public override Curve Reverse() => new NurbsCurve(NativeGeometry.CurveReverse(Handle), Degree);
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) =>
+            new NurbsCurve(NativeGeometry.CurveTranslate(Handle, new NativePoint(xTranslation, yTranslation, zTranslation)), Degree);
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees)
+        {
+            ArgumentNullException.ThrowIfNull(origin);
+            ArgumentNullException.ThrowIfNull(axis);
+            return new NurbsCurve(NativeGeometry.CurveRotate(Handle, origin.Position, axis.Components, degrees), Degree);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount)
+        {
+            ArgumentNullException.ThrowIfNull(basePoint);
+            return new NurbsCurve(NativeGeometry.CurveScale(Handle, basePoint.Position, xamount, yamount, zamount), Degree);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs)
+        {
+            ArgumentNullException.ThrowIfNull(cs);
+            return new NurbsCurve(
+                NativeGeometry.CurveTransform(
+                    Handle, cs.Origin.Position, cs.XAxis.Components, cs.YAxis.Components, cs.ZAxis.Components),
+                Degree);
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane) =>
+            new NurbsCurve(
+                NativeGeometry.CurveMirror(
+                    Handle, mirrorPlane.Origin.Position, mirrorPlane.XAxis.Components, mirrorPlane.YAxis.Components),
+                Degree);
     }
 }

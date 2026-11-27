@@ -56,5 +56,78 @@ namespace Autodesk.DesignScript.Geometry
             var end = start.Add(cs.ZAxis.Normalized().Scale(height));
             return ByPointsRadius(start, end, radius);
         }
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)
+        {
+            var h = NativeGeometry.Translate(Handle, new NativePoint(xTranslation, yTranslation, zTranslation));
+            return new Cylinder(
+                h,
+                (Point)StartPoint.Translate(xTranslation, yTranslation, zTranslation),
+                (Point)EndPoint.Translate(xTranslation, yTranslation, zTranslation),
+                Radius);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees)
+        {
+            ArgumentNullException.ThrowIfNull(origin);
+            ArgumentNullException.ThrowIfNull(axis);
+            var h = NativeGeometry.Rotate(Handle, origin.Position, axis.Components, degrees);
+            return new Cylinder(
+                h,
+                (Point)StartPoint.Rotate(origin, axis, degrees),
+                (Point)EndPoint.Rotate(origin, axis, degrees),
+                Radius);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount)
+        {
+            ArgumentNullException.ThrowIfNull(basePoint);
+            if (Math.Abs(xamount - yamount) <= 1e-6 && Math.Abs(xamount - zamount) <= 1e-6 && xamount > 0)
+            {
+                var h = NativeGeometry.Scale(Handle, basePoint.Position, xamount, yamount, zamount);
+                return new Cylinder(
+                    h,
+                    (Point)StartPoint.Scale(basePoint, xamount, yamount, zamount),
+                    (Point)EndPoint.Scale(basePoint, xamount, yamount, zamount),
+                    Radius * xamount);
+            }
+            return base.Scale(basePoint, xamount, yamount, zamount);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs)
+        {
+            ArgumentNullException.ThrowIfNull(cs);
+            var sx = cs.XScaleFactor;
+            var sy = cs.YScaleFactor;
+            var sz = cs.ZScaleFactor;
+            var isUniformOrtho = Math.Abs(sx - sy) <= 1e-6 && Math.Abs(sx - sz) <= 1e-6
+                && cs.XAxis.IsPerpendicular(cs.YAxis) && cs.XAxis.IsPerpendicular(cs.ZAxis) && cs.YAxis.IsPerpendicular(cs.ZAxis);
+            if (isUniformOrtho)
+            {
+                var h = NativeGeometry.Transform(
+                    Handle, cs.Origin.Position, cs.XAxis.Components, cs.YAxis.Components, cs.ZAxis.Components);
+                return new Cylinder(
+                    h,
+                    (Point)StartPoint.Transform(cs),
+                    (Point)EndPoint.Transform(cs),
+                    Radius * sx);
+            }
+            return base.Transform(cs);
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var h = NativeGeometry.BrepMirror(
+                Handle, mirrorPlane.Origin.Position, mirrorPlane.XAxis.Components, mirrorPlane.YAxis.Components);
+            return new Cylinder(
+                h,
+                (Point)StartPoint.Mirror(mirrorPlane),
+                (Point)EndPoint.Mirror(mirrorPlane),
+                Radius);
+        }
     }
 }

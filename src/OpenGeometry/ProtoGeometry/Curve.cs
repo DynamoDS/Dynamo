@@ -32,8 +32,30 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>Gets a value indicating whether the start and end points coincide.</summary>
         public virtual bool IsClosed => NativeGeometry.CurveIsClosed(Handle);
 
+        /// <summary>Gets the unit normal vector of the plane containing this curve (or principal normal if non-planar).</summary>
+        public virtual Vector Normal
+        {
+            get
+            {
+                var p0 = PointAtParameter(0.0);
+                var pMid = PointAtParameter(0.5);
+                var p1 = PointAtParameter(1.0);
+                var cross = Vector.ByTwoPoints(p0, pMid).Cross(Vector.ByTwoPoints(p0, p1));
+                if (cross.Length > 1e-9)
+                    return cross.Normalized();
+
+                var pQ = PointAtParameter(0.25);
+                cross = Vector.ByTwoPoints(p0, pQ).Cross(Vector.ByTwoPoints(p0, pMid));
+                if (cross.Length > 1e-9)
+                    return cross.Normalized();
+
+                var nrm = NormalAtParameter(0.0);
+                return nrm.Length > 1e-9 ? nrm.Normalized() : Vector.ZAxis();
+            }
+        }
+
         /// <summary>Evaluates a point along the curve at normalized parameter <paramref name="param"/> in [0, 1].</summary>
-        public virtual Point PointAtParameter(double param)
+        public virtual Point PointAtParameter(double param = 0)
         {
             var (pt, _, _) = NativeGeometry.CurveEvaluate(Handle, param);
             return new Point(pt);
@@ -235,6 +257,25 @@ namespace Autodesk.DesignScript.Geometry
                 mirrorPlane.Origin.Position,
                 mirrorPlane.XAxis.Components,
                 mirrorPlane.YAxis.Components));
+        }
+
+        /// <inheritdoc />
+        public override bool IsAlmostEqualTo(Geometry other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other is not Curve c || GetType() != other.GetType())
+                return false;
+            if (Math.Abs(Length - c.Length) > 1e-4)
+                return false;
+
+            double[] samples = [0.0, 0.25, 0.5, 0.75, 1.0];
+            foreach (var t in samples)
+            {
+                if (PointAtParameter(t).DistanceTo(c.PointAtParameter(t)) > 1e-4)
+                    return false;
+            }
+            return true;
         }
 
         /// <inheritdoc />

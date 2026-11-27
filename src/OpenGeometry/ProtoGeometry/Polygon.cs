@@ -15,7 +15,7 @@ namespace Autodesk.DesignScript.Geometry
         }
 
         /// <summary>Gets the ordered vertices of this polygon.</summary>
-        public Point[] Points => vertices.ToArray();
+        public override Point[] Points => vertices.ToArray();
 
         /// <summary>Returns the centroid (average of vertices) of this polygon.</summary>
         public Point Center()
@@ -46,7 +46,7 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="circle">Circumscribed circle.</param>
         /// <param name="numberSides">Number of sides (at least 3).</param>
         /// <returns>The regular polygon.</returns>
-        public static Polygon RegularPolygon(Circle circle, int numberSides)
+        public static Polygon RegularPolygon(Circle circle, int numberSides = 5)
         {
             ArgumentNullException.ThrowIfNull(circle);
             if (numberSides < 3)
@@ -65,6 +65,50 @@ namespace Autodesk.DesignScript.Geometry
                     .Add(plane.YAxis.Scale(dy));
             }
             return new Polygon(pts, BuildClosedEdges(pts));
+        }
+
+        /// <inheritdoc />
+        public override Curve Reverse()
+        {
+            var reversed = new Point[vertices.Length];
+            reversed[0] = vertices[0];
+            for (var i = 1; i < vertices.Length; i++)
+                reversed[i] = vertices[vertices.Length - i];
+            return new Polygon(reversed, BuildClosedEdges(reversed));
+        }
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)
+        {
+            var moved = vertices.Select(v => (Point)v.Translate(xTranslation, yTranslation, zTranslation)).ToArray();
+            return new Polygon(moved, BuildClosedEdges(moved));
+        }
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees)
+        {
+            var moved = vertices.Select(v => (Point)v.Rotate(origin, axis, degrees)).ToArray();
+            return new Polygon(moved, BuildClosedEdges(moved));
+        }
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount)
+        {
+            var moved = vertices.Select(v => (Point)v.Scale(basePoint, xamount, yamount, zamount)).ToArray();
+            return new Polygon(moved, BuildClosedEdges(moved));
+        }
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs)
+        {
+            var moved = vertices.Select(v => (Point)v.Transform(cs)).ToArray();
+            return new Polygon(moved, BuildClosedEdges(moved));
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var moved = vertices.Select(v => (Point)v.Mirror(mirrorPlane)).ToArray();
+            return new Polygon(moved, BuildClosedEdges(moved));
         }
 
         internal static Curve[] BuildClosedEdges(Point[] pts)

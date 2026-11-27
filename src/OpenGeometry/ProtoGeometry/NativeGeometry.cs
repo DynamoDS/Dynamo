@@ -18,7 +18,7 @@ namespace OpenGeometry
     internal static class NativeGeometry
     {
         private const string Bridge = "OpenGeometryBridge";
-        private const uint SupportedAbi = 11;
+        private const uint SupportedAbi = 12;
         private static readonly ResourceManager Messages = new("OpenGeometry.Messages", typeof(NativeGeometry).Assembly);
 
         internal sealed class SolidHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -836,6 +836,27 @@ namespace OpenGeometry
             return CheckHandle(status, result, "SurfaceIsoCurve");
         }
 
+        /* ==================== Slice K: NURBS Curve Queries ==================== */
+
+        internal static (NativePoint[] Points, double[] Weights) CurveNurbsControlPoints(CurveHandle curve)
+        {
+            Check(GetCurveNurbsControlPoints(curve, null, null, 0, out var count), "NurbsCurve");
+            var pts = new NativePoint[checked((int)count)];
+            var wts = new double[checked((int)count)];
+            if (count > 0)
+                Check(GetCurveNurbsControlPoints(curve, pts, wts, count, out _), "NurbsCurve");
+            return (pts, wts);
+        }
+
+        internal static double[] CurveNurbsKnots(CurveHandle curve)
+        {
+            Check(GetCurveNurbsKnots(curve, null, 0, out var count), "NurbsCurve");
+            var knots = new double[checked((int)count)];
+            if (count > 0)
+                Check(GetCurveNurbsKnots(curve, knots, count, out _), "NurbsCurve");
+            return knots;
+        }
+
         private static byte[] DrainBytes(BytesHandle handle, string operation)
         {
             var len = GetBytesLength(handle);
@@ -1445,5 +1466,21 @@ namespace OpenGeometry
         [DllImport(Bridge, EntryPoint = "og_surface_isocurve", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ExtractSurfaceIsoCurve(
             SolidHandle surface, int isoDirection, double normalizedParam, out CurveHandle result);
+
+        /* Slice K P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_curve_nurbs_control_points", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetCurveNurbsControlPoints(
+            CurveHandle curve,
+            [Out] NativePoint[] points,
+            [Out] double[] weights,
+            uint capacity,
+            out uint actualCount);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_nurbs_knots", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetCurveNurbsKnots(
+            CurveHandle curve,
+            [Out] double[] knots,
+            uint capacity,
+            out uint actualCount);
     }
 }

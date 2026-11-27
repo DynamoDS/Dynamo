@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A closed circular curve in 3D space.</summary>
     public class Circle : Curve
     {
-        private Circle(NativeGeometry.CurveHandle handle, Point center, double radius, Plane plane)
+        internal Circle(NativeGeometry.CurveHandle handle, Point center, double radius, Plane plane)
             : base(handle)
         {
             CenterPoint = center;
@@ -21,7 +21,7 @@ namespace Autodesk.DesignScript.Geometry
         public double Radius { get; }
 
         /// <summary>Gets the unit normal of the plane containing the circle.</summary>
-        public Vector Normal => Plane.Normal;
+        public override Vector Normal => Plane.Normal;
 
         internal Plane Plane { get; }
 
@@ -61,6 +61,82 @@ namespace Autodesk.DesignScript.Geometry
 
             var (center, radius, plane) = ComputeCircumcircle(p1, p2, p3);
             return ByPlaneRadius(plane, radius);
+        }
+
+        /// <inheritdoc />
+        public override Curve Reverse()
+        {
+            var reversedHandle = NativeGeometry.CurveReverse(Handle);
+            var flippedPlane = Plane.ByOriginNormalXAxis(CenterPoint, Plane.Normal.Reverse(), Plane.XAxis);
+            return new Circle(reversedHandle, CenterPoint, Radius, flippedPlane);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)
+        {
+            var h = NativeGeometry.CurveTranslate(Handle, new NativePoint(xTranslation, yTranslation, zTranslation));
+            var newPlane = (Plane)Plane.Translate(xTranslation, yTranslation, zTranslation);
+            return new Circle(h, newPlane.Origin, Radius, newPlane);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Rotate(Point origin, Vector axis, double degrees)
+        {
+            ArgumentNullException.ThrowIfNull(origin);
+            ArgumentNullException.ThrowIfNull(axis);
+            var h = NativeGeometry.CurveRotate(Handle, origin.Position, axis.Components, degrees);
+            var newPlane = (Plane)Plane.Rotate(origin, axis, degrees);
+            return new Circle(h, newPlane.Origin, Radius, newPlane);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Scale(Point basePoint, double xamount, double yamount, double zamount)
+        {
+            ArgumentNullException.ThrowIfNull(basePoint);
+            if (Math.Abs(xamount - yamount) <= 1e-6 && Math.Abs(xamount - zamount) <= 1e-6 && xamount > 0)
+            {
+                var h = NativeGeometry.CurveScale(Handle, basePoint.Position, xamount, yamount, zamount);
+                var newCenter = (Point)CenterPoint.Scale(basePoint, xamount, yamount, zamount);
+                var newPlane = Plane.ByOriginNormalXAxis(newCenter, Plane.Normal, Plane.XAxis);
+                return new Circle(h, newCenter, Radius * xamount, newPlane);
+            }
+            return base.Scale(basePoint, xamount, yamount, zamount);
+        }
+
+        /// <inheritdoc />
+        public override Geometry Transform(CoordinateSystem cs)
+        {
+            ArgumentNullException.ThrowIfNull(cs);
+            var sx = cs.XScaleFactor;
+            var sy = cs.YScaleFactor;
+            var sz = cs.ZScaleFactor;
+            var isUniformOrtho = Math.Abs(sx - sy) <= 1e-6 && Math.Abs(sx - sz) <= 1e-6
+                && cs.XAxis.IsPerpendicular(cs.YAxis) && cs.XAxis.IsPerpendicular(cs.ZAxis) && cs.YAxis.IsPerpendicular(cs.ZAxis);
+            if (isUniformOrtho)
+            {
+                var h = NativeGeometry.CurveTransform(
+                    Handle, cs.Origin.Position, cs.XAxis.Components, cs.YAxis.Components, cs.ZAxis.Components);
+                var newPlane = (Plane)Plane.Transform(cs);
+                return new Circle(h, newPlane.Origin, Radius * sx, newPlane);
+            }
+            return base.Transform(cs);
+        }
+
+        internal override Geometry MirrorCore(Plane mirrorPlane)
+        {
+            var h = NativeGeometry.CurveMirror(
+                Handle, mirrorPlane.Origin.Position, mirrorPlane.XAxis.Components, mirrorPlane.YAxis.Components);
+            var newCenter = (Point)CenterPoint.Mirror(mirrorPlane);
+            var newStart = (Point)StartPoint.Mirror(mirrorPlane);
+            var newX = Vector.ByTwoPoints(newCenter, newStart).Normalized();
+            var (_, tan0Native, _) = NativeGeometry.CurveEvaluate(h, 0.0);
+            var tan0 = new Vector(tan0Native);
+            var newNormal = newX.Cross(tan0);
+            var orientedNormal = newNormal.Length > 1e-9
+                ? newNormal.Normalized()
+                : ((Plane)Plane.Mirror(mirrorPlane)).Normal.Reverse();
+            var newPlane = Plane.ByOriginNormalXAxis(newCenter, orientedNormal, newX);
+            return new Circle(h, newCenter, Radius, newPlane);
         }
 
         internal static (Point Center, double Radius, Plane Plane) ComputeCircumcircle(Point p1, Point p2, Point p3)

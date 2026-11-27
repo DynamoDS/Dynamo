@@ -397,7 +397,7 @@ int32_t copy_index_array(
 
 uint32_t og_abi_version()
 {
-    return 11;
+    return 12;
 }
 
 int32_t og_create_box(const OgPoint* corner, double size_x, double size_y, double size_z, OgSolid** result)
@@ -922,16 +922,33 @@ int32_t og_curve_create_arc(
     if (std::abs(ux.Dot(uy)) > 1e-6)
         return OG_INVALID_ARGUMENT;
 
-    return with_kernel([&] {
+    return with_kernel([&]() -> int32_t {
+        const bool reversed = end_deg < start_deg;
+        const double a0 = reversed ? end_deg : start_deg;
+        const double a1 = reversed ? start_deg : end_deg;
+        const double sweep = a1 - a0;
+        if (sweep <= 1e-9 || sweep > 360.0 + 1e-6)
+            return OG_INVALID_ARGUMENT;
+
+        constexpr double rad_per_deg = 3.14159265358979323846 / 180.0;
+        const double rad = a0 * rad_per_deg;
+        const double c = std::cos(rad);
+        const double s = std::sin(rad);
+        const SmVector3d rx = ux * c + uy * s;
+        const SmVector3d ry = uy * c - ux * s;
+
         SmBSplineCurve* arc = nullptr;
-        auto status = SmApiCreateArc(SmPoint3d(0, 0, 0), radius, start_deg, end_deg, arc);
+        auto status = SmApiCreateArc(SmPoint3d(0, 0, 0), radius, 0.0, sweep, arc);
         std::unique_ptr<SmCurve> owner(arc);
         if (status == SM_SUCCESS && owner)
         {
-            SmAxis2Placement placement(to_sm_point(*center), ux, uy);
+            SmAxis2Placement placement(to_sm_point(*center), rx, ry);
             status = SmApiTransform(owner.get(), placement);
         }
-        return publish_curve_natural(status, std::move(owner), result);
+        if (status != SM_SUCCESS || !owner)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        const SmExtent1d ivl = owner->GetNaturalInterval();
+        return publish_curve(status, std::move(owner), ivl.GetMin(), ivl.GetMax(), reversed, result);
     });
 }
 
@@ -2525,10 +2542,13 @@ int32_t og_curve_create_ellipse_arc(
         const bool reversed = sweep_deg < 0.0;
         const double a0 = reversed ? end_deg : start_deg;
         const double a1 = reversed ? start_deg : end_deg;
+        const double sweep = a1 - a0;
 
         SmBSplineCurve* arc = nullptr;
-        auto status = SmApiCreateArc(SmPoint3d(0, 0, 0), 1.0, a0, a1, arc);
+        auto status = SmApiCreateArc(SmPoint3d(0, 0, 0), 1.0, 0.0, sweep, arc);
         std::unique_ptr<SmCurve> owner(arc);
+        if (status == SM_SUCCESS && owner && std::abs(a0) > 1e-12)
+            status = SmApiRotate(owner.get(), SmPoint3d(0, 0, 0), SmVector3d(0, 0, 1), a0);
         if (status == SM_SUCCESS && owner)
             status = SmApiScale(owner.get(), SmVector3d(radius_x, radius_y, 1.0));
         if (status == SM_SUCCESS && owner)
@@ -4087,5 +4107,81 @@ int32_t og_surface_isocurve(
         if (stat != SM_SUCCESS || !iso_curve)
             return OG_KERNEL_ERROR;
         return publish_curve_natural(SM_SUCCESS, std::unique_ptr<SmCurve>(iso_curve), result);
+    });
+}
+
+/* =========================== Slice K: NURBS Curve Queries =========================== */
+
+int32_t og_curve_nurbs_control_points(
+    const OgCurve* curve,
+    OgPoint* points,
+    double* weights,
+    uint32_t capacity,
+    uint32_t* actual_count)
+{
+    if (!actual_count)
+        return OG_INVALID_ARGUMENT;
+    *actual_count = 0;
+    if (!curve || !curve->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto bspline = materialize_bspline_curve(*curve);
+        if (!bspline)
+            return OG_KERNEL_ERROR;
+
+        const ULONG count = bspline->GetNumberControlPoints();
+        *actual_count = static_cast<uint32_t>(count);
+        if (points == nullptr && weights == nullptr && capacity == 0)
+            return OG_SUCCESS;
+        if (capacity < count || (!points && count > 0) || (!weights && count > 0))
+            return OG_INVALID_ARGUMENT;
+
+        const bool is_rational = bspline->IsRational() != FALSE;
+        const SmControlPointFormType form = is_rational ? SM_CP_EUCLIDIAN_RATIONAL : SM_CP_NON_RATIONAL;
+        for (ULONG i = 0; i < count; ++i)
+        {
+            SmPoint3d pt;
+            double w = 1.0;
+            if (bspline->GetControlPoint(form, i, pt, w) != SM_SUCCESS)
+                return OG_KERNEL_ERROR;
+            points[i] = {pt.x, pt.y, pt.z};
+            weights[i] = is_rational ? w : 1.0;
+        }
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_curve_nurbs_knots(
+    const OgCurve* curve,
+    double* knots,
+    uint32_t capacity,
+    uint32_t* actual_count)
+{
+    if (!actual_count)
+        return OG_INVALID_ARGUMENT;
+    *actual_count = 0;
+    if (!curve || !curve->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto bspline = materialize_bspline_curve(*curve);
+        if (!bspline)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<double> all_knots;
+        if (bspline->GetKnotsAll(all_knots) != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        const ULONG count = all_knots.GetSize();
+        *actual_count = static_cast<uint32_t>(count);
+        if (knots == nullptr && capacity == 0)
+            return OG_SUCCESS;
+        if (capacity < count || (!knots && count > 0))
+            return OG_INVALID_ARGUMENT;
+
+        for (ULONG i = 0; i < count; ++i)
+            knots[i] = all_knots[i];
+        return OG_SUCCESS;
     });
 }

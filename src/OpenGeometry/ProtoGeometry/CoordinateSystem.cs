@@ -31,6 +31,18 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>Gets the determinant of the 3x3 linear basis matrix.</summary>
         public double Determinant => XAxis.Cross(YAxis).Dot(ZAxis);
 
+        /// <summary>Gets the scale factor along the X axis.</summary>
+        public double XScaleFactor => XAxis.Length;
+
+        /// <summary>Gets the scale factor along the Y axis.</summary>
+        public double YScaleFactor => YAxis.Length;
+
+        /// <summary>Gets the scale factor along the Z axis.</summary>
+        public double ZScaleFactor => ZAxis.Length;
+
+        /// <summary>Gets the XY plane defined by this coordinate system's origin, X axis, and Z normal.</summary>
+        public Plane XYPlane => Plane.ByOriginNormalXAxis(Origin, ZAxis, XAxis);
+
         /// <summary>Gets true when the basis vectors are mutually orthogonal unit vectors with positive determinant.</summary>
         public bool IsUnscaledOrtho =>
             Math.Abs(XAxis.Length - 1.0) <= 1e-6
@@ -41,9 +53,31 @@ namespace Autodesk.DesignScript.Geometry
             && YAxis.IsPerpendicular(ZAxis)
             && Determinant > 0;
 
+        /// <summary>Returns true if this coordinate system is equal to <paramref name="other"/> within tolerance.</summary>
+        /// <param name="other">Coordinate system to compare.</param>
+        /// <returns>True when origin and all three basis axes match within tolerance.</returns>
+        public bool IsEqualTo(CoordinateSystem other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other is null)
+                return false;
+            return Origin.DistanceTo(other.Origin) <= 1e-6
+                && XAxis.IsAlmostEqualTo(other.XAxis)
+                && YAxis.IsAlmostEqualTo(other.YAxis)
+                && ZAxis.IsAlmostEqualTo(other.ZAxis);
+        }
+
         /// <summary>Returns the world identity coordinate system.</summary>
         public static CoordinateSystem Identity() =>
             new(Point.Origin(), Vector.XAxis(), Vector.YAxis(), Vector.ZAxis());
+
+        /// <summary>Creates an axis-aligned coordinate system translated to the given 2D coordinates on the XY plane.</summary>
+        /// <param name="x">Origin X.</param>
+        /// <param name="y">Origin Y.</param>
+        /// <returns>The translated coordinate system.</returns>
+        public static CoordinateSystem ByOrigin(double x = 0, double y = 0) =>
+            ByOrigin(x, y, 0.0);
 
         /// <summary>Creates an axis-aligned coordinate system translated to the given coordinates.</summary>
         /// <param name="x">Origin X.</param>

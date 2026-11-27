@@ -143,6 +143,18 @@ namespace Autodesk.DesignScript.Geometry
             return ByOriginNormalXAxis(newOrigin, newNormal, newX);
         }
 
+        /// <inheritdoc />
+        public override bool IsAlmostEqualTo(Geometry other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other is not Plane p)
+                return false;
+            return Origin.IsAlmostEqualTo(p.Origin)
+                && Normal.IsAlmostEqualTo(p.Normal)
+                && XAxis.IsAlmostEqualTo(p.XAxis);
+        }
+
         internal override void WritePreview(IRenderPackage package, TessellationParameters parameters)
         {
             const byte midTone = 180;
