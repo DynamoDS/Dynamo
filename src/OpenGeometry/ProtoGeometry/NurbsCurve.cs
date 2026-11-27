@@ -48,5 +48,19 @@ namespace Autodesk.DesignScript.Geometry
             var handle = NativeGeometry.ControlPointCurve(pts, clampedDegree);
             return new NurbsCurve(handle, clampedDegree);
         }
+
+        /// <summary>Creates a NURBS curve from control points, polynomial degree, and optional closure.</summary>
+        /// <param name="points">Control polygon points.</param>
+        /// <param name="degree">Curve degree (at least 1 and less than the control point count).</param>
+        /// <param name="closeCurve">If true, closes the curve back to the first control point.</param>
+        /// <returns>The created NURBS curve.</returns>
+        public static NurbsCurve ByControlPoints(IEnumerable<Point> points, int degree, bool closeCurve)
+        {
+            ArgumentNullException.ThrowIfNull(points);
+            var list = points.Where(p => p != null).ToList();
+            if (closeCurve && list.Count >= 2 && list[0].DistanceTo(list[^1]) > 1e-6)
+                list.Add(list[0]);
+            return ByControlPoints(list, degree);
+        }
     }
 }

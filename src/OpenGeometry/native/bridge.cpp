@@ -11,16 +11,20 @@
 #include <SmApiBrep.h>
 #include <SmApiCurves.h>
 #include <SmApiGeneral.h>
+#include <SmApiIntersectors.h>
+#include <SmApiPolygons.h>
 #include <SmApiPrimitives.h>
 #include <SmApiQueries.h>
 #include <SmApiSurfaces.h>
 #include <SmApiTrimmedSurfaces.h>
 #include <SmAxis2Placement.h>
 #include <SmBSplineCurve.h>
+#include <SmBSplineSurface.h>
 #include <SmBrep.h>
 #include <SmCircle.h>
 #include <SmCurve.h>
 #include <SmEdge.h>
+#include <SmEllipse.h>
 #include <SmFace.h>
 #include <SmLine.h>
 #include <SmPoly.h>
@@ -43,6 +47,12 @@ struct OgCurve
 struct OgMesh
 {
     std::vector<OgVertex> vertices;
+};
+
+struct OgGeomList
+{
+    std::vector<OgPoint> points;
+    std::vector<std::unique_ptr<OgCurve>> curves;
 };
 
 namespace
@@ -375,7 +385,7 @@ int32_t copy_index_array(
 
 uint32_t og_abi_version()
 {
-    return 3;
+    return 6;
 }
 
 int32_t og_create_box(const OgPoint* corner, double size_x, double size_y, double size_z, OgSolid** result)
@@ -1895,6 +1905,412 @@ int32_t og_brep_vertex_faces(
     });
 }
 
+/* =========================== Modeling Operations =========================== */
+
+int32_t og_curve_extrude(
+    const OgCurve* const* curves,
+    uint32_t count,
+    const OgPoint* direction,
+    double distance,
+    int32_t cap_ends,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curves || count == 0 || !finite(direction) || !finite(distance) || std::abs(distance) <= 1e-12)
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d dir = to_vector(*direction);
+    const double dir_len = dir.Length();
+    if (!positive(dir_len))
+        return OG_INVALID_ARGUMENT;
+    const SmVector3d unit_dir = dir / dir_len;
+
+    return with_kernel([&]() -> int32_t {
+        std::vector<std::unique_ptr<SmBSplineCurve>> owned;
+        owned.reserve(count);
+        SmTArray<SmCurve*> arr;
+        for (uint32_t i = 0; i < count; ++i)
+        {
+            if (!curves[i] || !curves[i]->curve)
+                return OG_INVALID_ARGUMENT;
+            auto mat = materialize_bspline_curve(*curves[i]);
+            if (!mat)
+                return OG_KERNEL_ERROR;
+            arr.Add(mat.get());
+            owned.push_back(std::move(mat));
+        }
+
+        SmBrep* out = nullptr;
+        const auto status = SmApiCreateLinearSweep(arr, unit_dir, distance, cap_ends ? TRUE : FALSE, out);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_solid_by_loft(
+    const OgCurve* const* curves,
+    const uint32_t* curves_per_profile,
+    uint32_t profile_count,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curves || !curves_per_profile || profile_count < 2)
+        return OG_INVALID_ARGUMENT;
+
+    uint32_t total = 0;
+    for (uint32_t i = 0; i < profile_count; ++i)
+    {
+        if (curves_per_profile[i] == 0)
+            return OG_INVALID_ARGUMENT;
+        total += curves_per_profile[i];
+    }
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<ULONG> counts;
+        for (uint32_t i = 0; i < profile_count; ++i)
+            counts.Add(static_cast<ULONG>(curves_per_profile[i]));
+
+        std::vector<std::unique_ptr<SmBSplineCurve>> owned;
+        owned.reserve(total);
+        SmTArray<const SmCurve*> arr;
+        for (uint32_t i = 0; i < total; ++i)
+        {
+            if (!curves[i] || !curves[i]->curve)
+                return OG_INVALID_ARGUMENT;
+            auto mat = materialize_bspline_curve(*curves[i]);
+            if (!mat)
+                return OG_KERNEL_ERROR;
+            arr.Add(mat.get());
+            owned.push_back(std::move(mat));
+        }
+
+        const ULONG degree = profile_count == 2 ? 1 : (profile_count == 3 ? 2 : 3);
+        SmBrep* out = nullptr;
+        const auto status = SmApiCreateSkinPrimitive(
+            counts, arr, degree, TRUE, out, nullptr, nullptr, nullptr);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_solid_by_sweep(
+    const OgCurve* const* profile_curves,
+    uint32_t profile_count,
+    const OgCurve* path_curve,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!profile_curves || profile_count == 0 || !path_curve || !path_curve->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        std::vector<std::unique_ptr<SmBSplineCurve>> owned;
+        owned.reserve(profile_count);
+        SmTArray<SmCurve*> arr;
+        for (uint32_t i = 0; i < profile_count; ++i)
+        {
+            if (!profile_curves[i] || !profile_curves[i]->curve)
+                return OG_INVALID_ARGUMENT;
+            auto mat = materialize_bspline_curve(*profile_curves[i]);
+            if (!mat)
+                return OG_KERNEL_ERROR;
+            arr.Add(mat.get());
+            owned.push_back(std::move(mat));
+        }
+
+        auto path_bsp = materialize_bspline_curve(*path_curve);
+        if (!path_bsp)
+            return OG_KERNEL_ERROR;
+
+        SmSweepOptions options;
+        options.bCapEndsArg = TRUE;
+        SmBrep* out = nullptr;
+        const auto status = SmApiCreateCurveSweep(
+            arr, path_bsp.get(), nullptr, nullptr, &options, out, nullptr, nullptr, nullptr);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_solid_by_revolve(
+    const OgCurve* const* profile_curves,
+    uint32_t profile_count,
+    const OgPoint* axis_origin,
+    const OgPoint* axis_dir,
+    double start_deg,
+    double sweep_deg,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!profile_curves || profile_count == 0 || !finite(axis_origin) || !finite(axis_dir)
+        || !finite(start_deg) || !finite(sweep_deg) || std::abs(sweep_deg) <= 1e-9 || std::abs(sweep_deg) > 360.0 + 1e-6)
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d axis = to_vector(*axis_dir);
+    if (!positive(axis.Length()))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        std::vector<std::unique_ptr<SmBSplineCurve>> owned;
+        owned.reserve(profile_count);
+        SmTArray<SmCurve*> arr;
+        const SmPoint3d origin = to_sm_point(*axis_origin);
+
+        for (uint32_t i = 0; i < profile_count; ++i)
+        {
+            if (!profile_curves[i] || !profile_curves[i]->curve)
+                return OG_INVALID_ARGUMENT;
+            auto mat = materialize_bspline_curve(*profile_curves[i]);
+            if (!mat)
+                return OG_KERNEL_ERROR;
+            if (std::abs(start_deg) > 1e-9)
+            {
+                if (SmApiRotate(mat.get(), origin, axis, start_deg) != SM_SUCCESS)
+                    return OG_KERNEL_ERROR;
+            }
+            arr.Add(mat.get());
+            owned.push_back(std::move(mat));
+        }
+
+        SmBrep* out = nullptr;
+        const auto status = SmApiCreateRotationalSweep(arr, origin, axis, sweep_deg, TRUE, out);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_surface_offset(const OgSolid* surface_brep, double distance, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!surface_brep || !surface_brep->brep || !finite(distance))
+        return OG_INVALID_ARGUMENT;
+
+    if (std::abs(distance) <= 1e-12)
+    {
+        return with_kernel([&]() -> int32_t {
+            auto copy = copy_solid(*surface_brep);
+            return publish_solid(copy ? SM_SUCCESS : SM_ERR, std::move(copy), result);
+        });
+    }
+
+    return with_kernel([&]() -> int32_t {
+        auto copy = copy_solid(*surface_brep);
+        if (!copy)
+            return OG_KERNEL_ERROR;
+        SmBrep* out = nullptr;
+        const auto status = SmApiOffsetBrepFull(copy.get(), distance, TRUE, TRUE, out);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_surface_thicken(
+    const OgSolid* surface_brep, double thickness, int32_t both_sides, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!surface_brep || !surface_brep->brep || !finite(thickness) || std::abs(thickness) <= 1e-9)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<const SmFace*> empty_faces;
+        if (both_sides)
+        {
+            // Shift the sheet by -thickness/2 along its normal, then shell by +thickness.
+            auto base_copy = copy_solid(*surface_brep);
+            if (!base_copy)
+                return OG_KERNEL_ERROR;
+            SmBrep* shifted_raw = nullptr;
+            const auto off_stat = SmApiOffsetBrepFull(base_copy.get(), -0.5 * thickness, TRUE, TRUE, shifted_raw);
+            std::unique_ptr<SmBrep> shifted(shifted_raw);
+            if (off_stat != SM_SUCCESS || !shifted)
+                return OG_KERNEL_ERROR;
+
+            SmBrep* out = nullptr;
+            const auto status = SmApiShellBrepFull(shifted.get(), thickness, TRUE, TRUE, TRUE, empty_faces, out);
+            return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+        }
+
+        SmBrep* out = nullptr;
+        const auto status = SmApiShellBrepFull(
+            surface_brep->brep.get(), thickness, TRUE, TRUE, TRUE, empty_faces, out);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_solid_fillet_edges(
+    const OgSolid* solid,
+    const uint32_t* edge_indices,
+    uint32_t edge_count,
+    double radius,
+    int32_t chamfer,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!solid || !solid->brep || !edge_indices || edge_count == 0 || !positive(radius))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto copy = copy_solid(*solid);
+        if (!copy)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmEdge*> all_edges;
+        copy->GetEdges(all_edges);
+        SmTArray<SmEdge*> selected;
+        for (uint32_t i = 0; i < edge_count; ++i)
+        {
+            if (edge_indices[i] >= all_edges.GetSize())
+                return OG_INVALID_ARGUMENT;
+            selected.Add(all_edges[edge_indices[i]]);
+        }
+
+        const ULONG xsect = chamfer ? 0 : 1; // 0 = linear chamfer setback, 1 = circular fillet
+        const auto status = SmApiFilletEdges(copy.get(), selected, radius, xsect, 1, 1.0);
+        return publish_solid(status, std::move(copy), result);
+    });
+}
+
+int32_t og_solid_thin_shell(
+    const OgSolid* solid, double internal_thickness, double external_thickness, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!solid || !solid->brep || !non_negative(internal_thickness) || !non_negative(external_thickness)
+        || (internal_thickness <= 1e-9 && external_thickness <= 1e-9))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<const SmFace*> empty_faces;
+        if (external_thickness <= 1e-9)
+        {
+            SmBrep* out = nullptr;
+            const auto status = SmApiShellBrepFull(
+                solid->brep.get(), -internal_thickness, TRUE, TRUE, TRUE, empty_faces, out);
+            return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+        }
+        if (internal_thickness <= 1e-9)
+        {
+            SmBrep* out = nullptr;
+            const auto status = SmApiShellBrepFull(
+                solid->brep.get(), external_thickness, TRUE, TRUE, TRUE, empty_faces, out);
+            return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+        }
+
+        // Both internal and external thickness > 0: outer offset minus inner offset.
+        auto copy_for_outer = copy_solid(*solid);
+        auto copy_for_inner = copy_solid(*solid);
+        if (!copy_for_outer || !copy_for_inner)
+            return OG_KERNEL_ERROR;
+
+        SmBrep* outer_raw = nullptr;
+        SmBrep* inner_raw = nullptr;
+        const auto s1 = SmApiOffsetBrepFull(copy_for_outer.get(), external_thickness, TRUE, TRUE, outer_raw);
+        std::unique_ptr<SmBrep> outer(outer_raw);
+        if (s1 != SM_SUCCESS || !outer)
+            return OG_KERNEL_ERROR;
+
+        const auto s2 = SmApiOffsetBrepFull(copy_for_inner.get(), -internal_thickness, TRUE, TRUE, inner_raw);
+        std::unique_ptr<SmBrep> inner(inner_raw);
+        if (s2 != SM_SUCCESS || !inner)
+            return OG_KERNEL_ERROR;
+
+        SmBrep* diff_raw = nullptr;
+        const auto sd = SmApiBooleanDifference(outer.get(), inner.get(), diff_raw);
+        if (sd != SM_SUCCESS || diff_raw != outer.get())
+            return OG_KERNEL_ERROR;
+        inner.release();
+        return publish_solid(sd, std::move(outer), result);
+    });
+}
+
+int32_t og_solid_cut_plane(
+    const OgSolid* solid, const OgPoint* plane_origin, const OgPoint* plane_normal, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!solid || !solid->brep || !finite(plane_origin) || !finite(plane_normal))
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d normal = to_vector(*plane_normal);
+    const double nlen = normal.Length();
+    if (!positive(nlen))
+        return OG_INVALID_ARGUMENT;
+    const SmVector3d un = normal / nlen;
+
+    return with_kernel([&]() -> int32_t {
+        SmPoint3d mn, mx;
+        if (SmApiBrepBoundingBox(solid->brep.get(), FALSE, mn, mx) != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        const SmPoint3d center(0.5 * (mn.x + mx.x), 0.5 * (mn.y + mx.y), 0.5 * (mn.z + mx.z));
+        const double diag = (mx - mn).Length();
+        const double extent = std::max(diag, 1.0) * 2.0;
+
+        const SmVector3d offset = center - to_sm_point(*plane_origin);
+        const double signed_dist = offset.Dot(un);
+        if (signed_dist <= -diag - 1e-6)
+        {
+            *result = nullptr;
+            return OG_SUCCESS;
+        }
+        if (signed_dist >= diag + 1e-6)
+        {
+            auto copy = copy_solid(*solid);
+            return publish_solid(copy ? SM_SUCCESS : SM_ERR, std::move(copy), result);
+        }
+
+        // Build an orthonormal frame on the cutting plane centered near the solid.
+        const SmVector3d ref = std::abs(un.z) < 0.9 ? SmVector3d(0, 0, 1) : SmVector3d(0, 1, 0);
+        SmVector3d ux = ref * un;
+        ux.Unitize();
+        SmVector3d uy = un * ux;
+        uy.Unitize();
+        const SmPoint3d plane_center = center - un * signed_dist;
+
+        SmBrep* half_space_raw = nullptr;
+        auto status = SmApiCreateBox(
+            SmVector3d(-extent, -extent, 0.0), 2.0 * extent, 2.0 * extent, extent, half_space_raw);
+        std::unique_ptr<SmBrep> half_space(half_space_raw);
+        if (status != SM_SUCCESS || !half_space)
+            return OG_KERNEL_ERROR;
+
+        SmAxis2Placement placement(plane_center, ux, uy);
+        status = SmApiTransform(half_space.get(), placement);
+        if (status != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        auto copy = copy_solid(*solid);
+        if (!copy)
+            return OG_KERNEL_ERROR;
+
+        SmBrep* out = nullptr;
+        status = SmApiBooleanIntersection(copy.get(), half_space.get(), out);
+        if (status != SM_SUCCESS || out != copy.get())
+            return OG_KERNEL_ERROR;
+        half_space.release();
+
+        SmTArray<SmFace*> faces;
+        copy->GetFaces(faces);
+        if (faces.GetSize() == 0)
+        {
+            *result = nullptr;
+            return OG_SUCCESS;
+        }
+        return publish_solid(SM_SUCCESS, std::move(copy), result);
+    });
+}
+
 /* =========================== Mesh =========================== */
 
 uint32_t og_mesh_vertex_count(const OgMesh* mesh)
@@ -1914,4 +2330,1124 @@ int32_t og_copy_mesh_vertices(const OgMesh* mesh, OgVertex* vertices, uint32_t c
 void og_release_mesh(OgMesh* mesh)
 {
     delete mesh;
+}
+
+/* =========================== Slice D: Curves, NURBS Surfaces, Trimming, Intersections =========================== */
+
+namespace
+{
+bool build_unit_frame(
+    const OgPoint* x_axis, const OgPoint* y_axis, SmVector3d& ux, SmVector3d& uy)
+{
+    if (!finite(x_axis) || !finite(y_axis))
+        return false;
+    const SmVector3d xv = to_vector(*x_axis);
+    const SmVector3d yv = to_vector(*y_axis);
+    const double xl = xv.Length();
+    const double yl = yv.Length();
+    if (!positive(xl) || !positive(yl))
+        return false;
+    ux = xv / xl;
+    uy = yv / yl;
+    return std::abs(ux.Dot(uy)) <= 1e-6;
+}
+
+SmBSplineSurface* get_first_bspline_surface(const OgSolid* surface_brep, std::unique_ptr<SmBSplineSurface>& temp_copy)
+{
+    if (!surface_brep || !surface_brep->brep)
+        return nullptr;
+    SmTArray<SmFace*> faces;
+    surface_brep->brep->GetFaces(faces);
+    if (faces.GetSize() == 0)
+        return nullptr;
+    SmSurface* srf = faces[0]->GetSurface();
+    if (!srf)
+        return nullptr;
+    if (srf->IsKindOf(SmBSplineSurface_TYPE))
+        return static_cast<SmBSplineSurface*>(srf);
+    SmBSplineSurface* exact = nullptr;
+    if (srf->MakeExactBSplineIfPossible(exact) == SM_SUCCESS && exact)
+    {
+        temp_copy.reset(exact);
+        return temp_copy.get();
+    }
+    return nullptr;
+}
+
+std::unique_ptr<OgCurve> wrap_owned_curve(SmCurve* raw)
+{
+    if (!raw)
+        return nullptr;
+    const SmExtent1d ivl = raw->GetNaturalInterval();
+    if (!finite(ivl.GetMin()) || !finite(ivl.GetMax()) || ivl.GetMax() <= ivl.GetMin())
+    {
+        delete raw;
+        return nullptr;
+    }
+    return std::make_unique<OgCurve>(OgCurve{std::unique_ptr<SmCurve>(raw), ivl.GetMin(), ivl.GetMax(), false});
+}
+} // namespace
+
+int32_t og_curve_create_ellipse(
+    const OgPoint* center,
+    const OgPoint* x_axis,
+    const OgPoint* y_axis,
+    double radius_x,
+    double radius_y,
+    OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    SmVector3d ux, uy;
+    if (!finite(center) || !positive(radius_x) || !positive(radius_y) || !build_unit_frame(x_axis, y_axis, ux, uy))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&] {
+        SmEllipse* ellipse = nullptr;
+        auto status = SmApiCreateEllipse(SmPoint3d(0, 0, 0), radius_x, radius_y, ellipse);
+        std::unique_ptr<SmCurve> owner(ellipse);
+        if (status == SM_SUCCESS && owner)
+        {
+            SmAxis2Placement placement(to_sm_point(*center), ux, uy);
+            status = SmApiTransform(owner.get(), placement);
+        }
+        return publish_curve_natural(status, std::move(owner), result);
+    });
+}
+
+int32_t og_curve_create_ellipse_arc(
+    const OgPoint* center,
+    const OgPoint* x_axis,
+    const OgPoint* y_axis,
+    double radius_x,
+    double radius_y,
+    double start_deg,
+    double sweep_deg,
+    OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    SmVector3d ux, uy;
+    if (!finite(center) || !positive(radius_x) || !positive(radius_y)
+        || !finite(start_deg) || !finite(sweep_deg)
+        || std::abs(sweep_deg) <= 1e-9 || std::abs(sweep_deg) > 360.0 + 1e-6
+        || !build_unit_frame(x_axis, y_axis, ux, uy))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        const double end_deg = start_deg + sweep_deg;
+        const bool reversed = sweep_deg < 0.0;
+        const double a0 = reversed ? end_deg : start_deg;
+        const double a1 = reversed ? start_deg : end_deg;
+
+        SmBSplineCurve* arc = nullptr;
+        auto status = SmApiCreateArc(SmPoint3d(0, 0, 0), 1.0, a0, a1, arc);
+        std::unique_ptr<SmCurve> owner(arc);
+        if (status == SM_SUCCESS && owner)
+            status = SmApiScale(owner.get(), SmVector3d(radius_x, radius_y, 1.0));
+        if (status == SM_SUCCESS && owner)
+        {
+            SmAxis2Placement placement(to_sm_point(*center), ux, uy);
+            status = SmApiTransform(owner.get(), placement);
+        }
+        if (status != SM_SUCCESS || !owner)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        const SmExtent1d ivl = owner->GetNaturalInterval();
+        return publish_curve(status, std::move(owner), ivl.GetMin(), ivl.GetMax(), reversed, result);
+    });
+}
+
+int32_t og_curve_create_helix(
+    const OgPoint* axis_point,
+    const OgPoint* axis_dir,
+    const OgPoint* start_point,
+    double pitch,
+    double angle_turns_deg,
+    OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!finite(axis_point) || !finite(axis_dir) || !finite(start_point)
+        || !finite(pitch) || std::abs(pitch) <= 1e-7
+        || !finite(angle_turns_deg) || std::abs(angle_turns_deg) <= 1e-6)
+        return OG_INVALID_ARGUMENT;
+
+    SmVector3d uz = to_vector(*axis_dir);
+    const double uz_len = uz.Length();
+    if (!positive(uz_len))
+        return OG_INVALID_ARGUMENT;
+    uz /= uz_len;
+
+    const SmPoint3d ap = to_sm_point(*axis_point);
+    const SmPoint3d sp = to_sm_point(*start_point);
+    const double proj = (sp - ap).Dot(uz);
+    const SmPoint3d base = ap + uz * proj;
+    const SmVector3d radial = sp - base;
+    const double radius = radial.Length();
+    if (radius <= 1e-7)
+        return OG_INVALID_ARGUMENT;
+
+    SmVector3d ux = radial / radius;
+    const bool neg_pitch = pitch < 0.0;
+    if (neg_pitch)
+        uz *= -1.0;
+    SmVector3d uy = uz * ux;
+    uy.Unitize();
+
+    const double num_turns = std::abs(angle_turns_deg) / 360.0;
+    const double height = std::abs(pitch) * num_turns;
+    const SmBoolean right_handed = ((angle_turns_deg >= 0.0) != neg_pitch) ? TRUE : FALSE;
+
+    return with_kernel([&] {
+        SmBSplineCurve* helix = nullptr;
+        auto status = SmApiCreateHelix(
+            SmPoint3d(0, 0, 0), height, radius, radius, num_turns, right_handed, 1e-4, helix);
+        std::unique_ptr<SmCurve> owner(helix);
+        if (status == SM_SUCCESS && owner)
+        {
+            SmAxis2Placement placement(base, ux, uy);
+            status = SmApiTransform(owner.get(), placement);
+        }
+        return publish_curve_natural(status, std::move(owner), result);
+    });
+}
+
+int32_t og_curve_offset(const OgCurve* curve, double distance, OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curve || !curve->curve || !finite(distance))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        if (std::abs(distance) <= 1e-12)
+        {
+            auto copy = copy_curve_raw(*curve->curve, false);
+            return publish_curve(
+                copy ? SM_SUCCESS : SM_ERR, std::move(copy), curve->t_min, curve->t_max, curve->reversed, result);
+        }
+
+        auto bsp = materialize_bspline_curve(*curve);
+        if (!bsp)
+            return OG_KERNEL_ERROR;
+        SmBSplineCurve* offset = nullptr;
+        const auto status = SmApiOffsetCurve(bsp.get(), distance, offset);
+        return publish_curve_natural(status, std::unique_ptr<SmCurve>(offset), result);
+    });
+}
+
+int32_t og_curve_project_onto_brep(
+    const OgCurve* curve, const OgSolid* brep, const OgPoint* direction, OgGeomList** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curve || !curve->curve || !brep || !brep->brep || !finite(direction))
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d dir = to_vector(*direction);
+    if (!positive(dir.Length()))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto bsp = materialize_bspline_curve(*curve);
+        auto brep_copy = copy_solid(*brep);
+        if (!bsp || !brep_copy)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmCurve*> projected;
+        const auto status = SmApiProjectCurve(brep_copy.get(), bsp.get(), dir, projected);
+        auto list = std::make_unique<OgGeomList>();
+        if (status == SM_SUCCESS)
+        {
+            for (ULONG i = 0; i < projected.GetSize(); ++i)
+            {
+                if (auto wrapped = wrap_owned_curve(projected[i]))
+                    list->curves.push_back(std::move(wrapped));
+            }
+        }
+        else if (status != SM_ERR)
+        {
+            for (ULONG i = 0; i < projected.GetSize(); ++i)
+                delete projected[i];
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        }
+        *result = list.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_nurbs_surface_by_control_points(
+    const OgPoint* points, uint32_t u_count, uint32_t v_count, int32_t u_degree, int32_t v_degree, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!points || u_count < 2 || v_count < 2 || u_degree < 1 || v_degree < 1
+        || static_cast<uint32_t>(u_degree) >= u_count || static_cast<uint32_t>(v_degree) >= v_count)
+        return OG_INVALID_ARGUMENT;
+
+    const uint32_t total = u_count * v_count;
+    for (uint32_t i = 0; i < total; ++i)
+    {
+        if (!finite(&points[i]))
+            return OG_INVALID_ARGUMENT;
+    }
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<SmPoint3d> ctrl_pts;
+        for (uint32_t i = 0; i < total; ++i)
+            ctrl_pts.Add(to_sm_point(points[i]));
+
+        const ULONG deg_u = static_cast<ULONG>(u_degree);
+        const ULONG deg_v = static_cast<ULONG>(v_degree);
+        const ULONG n_knots_u = u_count - deg_u + 1;
+        const ULONG n_knots_v = v_count - deg_v + 1;
+
+        SmTArray<double> knots_u;
+        SmTArray<ULONG> mult_u;
+        for (ULONG i = 0; i < n_knots_u; ++i)
+        {
+            knots_u.Add(n_knots_u > 1 ? static_cast<double>(i) / static_cast<double>(n_knots_u - 1) : 0.0);
+            mult_u.Add((i == 0 || i == n_knots_u - 1) ? (deg_u + 1) : 1);
+        }
+
+        SmTArray<double> knots_v;
+        SmTArray<ULONG> mult_v;
+        for (ULONG i = 0; i < n_knots_v; ++i)
+        {
+            knots_v.Add(n_knots_v > 1 ? static_cast<double>(i) / static_cast<double>(n_knots_v - 1) : 0.0);
+            mult_v.Add((i == 0 || i == n_knots_v - 1) ? (deg_v + 1) : 1);
+        }
+
+        SmBSplineSurface* srf = nullptr;
+        const auto status = SmBSplineSurface::CreateCanonical(
+            *SmApiGetOrCreateContext(),
+            deg_u,
+            deg_v,
+            ctrl_pts,
+            SM_SF_UNSPECIFIED,
+            mult_u,
+            mult_v,
+            knots_u,
+            knots_v,
+            SM_KT_UNSPECIFIED,
+            nullptr,
+            nullptr,
+            srf);
+        if (status != SM_SUCCESS || !srf)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        return wrap_surface_as_brep(srf, result);
+    });
+}
+
+int32_t og_nurbs_surface_by_points(
+    const OgPoint* points, uint32_t u_count, uint32_t v_count, int32_t u_degree, int32_t v_degree, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!points || u_count < 2 || v_count < 2 || u_degree < 1 || v_degree < 1
+        || static_cast<uint32_t>(u_degree) >= u_count || static_cast<uint32_t>(v_degree) >= v_count)
+        return OG_INVALID_ARGUMENT;
+
+    const uint32_t total = u_count * v_count;
+    for (uint32_t i = 0; i < total; ++i)
+    {
+        if (!finite(&points[i]))
+            return OG_INVALID_ARGUMENT;
+    }
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<SmPoint3d> pts;
+        for (uint32_t i = 0; i < total; ++i)
+            pts.Add(to_sm_point(points[i]));
+
+        SmContext& ctx = *SmApiGetOrCreateContext();
+        SmBSplineSurface* srf = nullptr;
+        auto status = SmBSplineSurface::InterpolatePoints(
+            ctx,
+            pts,
+            static_cast<ULONG>(u_count),
+            static_cast<ULONG>(v_count),
+            static_cast<ULONG>(u_degree),
+            static_cast<ULONG>(v_degree),
+            nullptr,
+            nullptr,
+            nullptr,
+            SM_IT_CHORDLENGTH,
+            srf);
+
+        if (status != SM_SUCCESS || !srf)
+        {
+            delete srf;
+            srf = nullptr;
+            status = SmBSplineSurface::ApproximatePoints(
+                ctx,
+                pts,
+                static_cast<ULONG>(u_count),
+                static_cast<ULONG>(v_count),
+                static_cast<ULONG>(u_degree),
+                static_cast<ULONG>(v_degree),
+                nullptr,
+                srf,
+                TRUE);
+        }
+
+        if (status != SM_SUCCESS || !srf)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        return wrap_surface_as_brep(srf, result);
+    });
+}
+
+int32_t og_nurbs_surface_info(
+    const OgSolid* surface_brep,
+    int32_t* u_degree,
+    int32_t* v_degree,
+    uint32_t* u_count,
+    uint32_t* v_count,
+    int32_t* is_rational,
+    int32_t* is_periodic_u,
+    int32_t* is_periodic_v)
+{
+    if (!surface_brep || !u_degree || !v_degree || !u_count || !v_count
+        || !is_rational || !is_periodic_u || !is_periodic_v)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        std::unique_ptr<SmBSplineSurface> temp;
+        SmBSplineSurface* bsp = get_first_bspline_surface(surface_brep, temp);
+        if (!bsp)
+            return OG_KERNEL_ERROR;
+
+        *u_degree = static_cast<int32_t>(bsp->GetDegree(SM_SP_U));
+        *v_degree = static_cast<int32_t>(bsp->GetDegree(SM_SP_V));
+        *u_count = static_cast<uint32_t>(bsp->GetNumberControlPoints(SM_SP_U));
+        *v_count = static_cast<uint32_t>(bsp->GetNumberControlPoints(SM_SP_V));
+        const SmExtent2d dom = bsp->GetNaturalUVDomain();
+        *is_rational = bsp->IsRational() ? 1 : 0;
+        *is_periodic_u = bsp->IsPeriodic(dom, SM_SP_U) ? 1 : 0;
+        *is_periodic_v = bsp->IsPeriodic(dom, SM_SP_V) ? 1 : 0;
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_nurbs_surface_control_points(
+    const OgSolid* surface_brep,
+    OgPoint* points,
+    double* weights,
+    uint32_t capacity,
+    uint32_t* actual_count)
+{
+    if (!actual_count)
+        return OG_INVALID_ARGUMENT;
+    *actual_count = 0;
+    if (!surface_brep)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        std::unique_ptr<SmBSplineSurface> temp;
+        SmBSplineSurface* bsp = get_first_bspline_surface(surface_brep, temp);
+        if (!bsp)
+            return OG_KERNEL_ERROR;
+
+        ULONG uc = 0, vc = 0;
+        SmTArray<SmPoint3d> cps;
+        SmTArray<double> wts;
+        if (bsp->GetControlPointNet(uc, vc, cps, wts) != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        const uint32_t total = static_cast<uint32_t>(cps.GetSize());
+        *actual_count = total;
+        if (points == nullptr && capacity == 0)
+            return OG_SUCCESS;
+        if (!points || !weights || capacity < total)
+            return OG_INVALID_ARGUMENT;
+
+        const bool has_weights = wts.GetSize() == cps.GetSize();
+        for (uint32_t i = 0; i < total; ++i)
+        {
+            points[i] = {cps[i].x, cps[i].y, cps[i].z};
+            weights[i] = has_weights ? wts[i] : 1.0;
+        }
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_nurbs_surface_knots(
+    const OgSolid* surface_brep,
+    int32_t v_direction,
+    double* knots,
+    uint32_t capacity,
+    uint32_t* actual_count)
+{
+    if (!actual_count)
+        return OG_INVALID_ARGUMENT;
+    *actual_count = 0;
+    if (!surface_brep)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        std::unique_ptr<SmBSplineSurface> temp;
+        SmBSplineSurface* bsp = get_first_bspline_surface(surface_brep, temp);
+        if (!bsp)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<double> unique_knots;
+        SmTArray<ULONG> mults;
+        const SmSurfParamType dir = v_direction ? SM_SP_V : SM_SP_U;
+        if (bsp->GetKnots(dir, unique_knots, &mults) != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        std::vector<double> expanded;
+        for (ULONG i = 0; i < unique_knots.GetSize(); ++i)
+        {
+            const ULONG m = i < mults.GetSize() ? mults[i] : 1;
+            for (ULONG k = 0; k < m; ++k)
+                expanded.push_back(unique_knots[i]);
+        }
+
+        const uint32_t total = static_cast<uint32_t>(expanded.size());
+        *actual_count = total;
+        if (knots == nullptr && capacity == 0)
+            return OG_SUCCESS;
+        if (!knots || capacity < total)
+            return OG_INVALID_ARGUMENT;
+
+        if (!expanded.empty())
+            std::copy(expanded.begin(), expanded.end(), knots);
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_surface_by_sweep(const OgCurve* profile, const OgCurve* path, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!profile || !profile->curve || !path || !path->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto prof_bsp = materialize_bspline_curve(*profile);
+        auto path_bsp = materialize_bspline_curve(*path);
+        if (!prof_bsp || !path_bsp)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmCurve*> arr;
+        arr.Add(prof_bsp.get());
+        SmSweepOptions options;
+        options.bCapEndsArg = FALSE;
+        SmBrep* out = nullptr;
+        auto status = SmApiCreateCurveSweep(
+            arr, path_bsp.get(), nullptr, nullptr, &options, out, nullptr, nullptr, nullptr);
+        if (status == SM_SUCCESS && out)
+            return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+
+        delete out;
+        SmSurface* srf = nullptr;
+        status = SmApiCreateSweep(prof_bsp.get(), path_bsp.get(), srf);
+        if (status != SM_SUCCESS || !srf)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        return wrap_surface_as_brep(srf, result);
+    });
+}
+
+int32_t og_surface_by_sweep_2_rails(
+    const OgCurve* path, const OgCurve* guide_rail, const OgCurve* profile, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!path || !path->curve || !guide_rail || !guide_rail->curve || !profile || !profile->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto r1 = materialize_bspline_curve(*path);
+        auto r2 = materialize_bspline_curve(*guide_rail);
+        auto prof = materialize_bspline_curve(*profile);
+        if (!r1 || !r2 || !prof)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmBSplineCurve*> profiles;
+        profiles.Add(prof.get());
+        SmTArray<SmBSplineCurve*> rails;
+        rails.Add(r1.get());
+        rails.Add(r2.get());
+
+        SmBSplineSurface* srf = nullptr;
+        auto status = SmBSplineSurface::CreateSweepSurface(
+            *SmApiGetOrCreateContext(), profiles, rails, 1e-4, srf, 8, 2);
+        if (status == SM_SUCCESS && srf)
+            return wrap_surface_as_brep(srf, result);
+
+        // Fallback: generate compatible cross-section profiles positioned and scaled between the two rails.
+        delete srf;
+        srf = nullptr;
+
+        const SmExtent1d r1_ivl = r1->GetNaturalInterval();
+        const SmExtent1d r2_ivl = r2->GetNaturalInterval();
+        const SmExtent1d p_ivl = prof->GetNaturalInterval();
+        SmPoint3d p0, p1;
+        if (prof->EvaluatePoint(p_ivl.GetMin(), p0) != SM_SUCCESS
+            || prof->EvaluatePoint(p_ivl.GetMax(), p1) != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        const SmVector3d chord0 = p1 - p0;
+        const double chord0_len = chord0.Length();
+        if (!positive(chord0_len))
+            return OG_KERNEL_ERROR;
+        const SmVector3d e0 = chord0 / chord0_len;
+
+        // Build reference orthonormal frame from profile chord + profile midpoint deviation.
+        SmPoint3d p_mid;
+        prof->EvaluatePoint(0.5 * (p_ivl.GetMin() + p_ivl.GetMax()), p_mid);
+        SmVector3d dev = (p_mid - p0) - e0 * (p_mid - p0).Dot(e0);
+        if (dev.Length() <= 1e-8)
+        {
+            const SmVector3d ref = std::abs(e0.z) < 0.9 ? SmVector3d(0, 0, 1) : SmVector3d(0, 1, 0);
+            dev = ref * e0;
+        }
+        dev.Unitize();
+        SmVector3d b0 = e0 * dev;
+        b0.Unitize();
+
+        constexpr int kSections = 9;
+        constexpr int kSamples = 17;
+        SmTArray<SmPoint3d> grid;
+        std::vector<SmPoint3d> local_pts;
+        local_pts.reserve(kSamples);
+        for (int j = 0; j < kSamples; ++j)
+        {
+            const double v = static_cast<double>(j) / static_cast<double>(kSamples - 1);
+            SmPoint3d pt;
+            if (prof->EvaluatePoint(p_ivl.GetMin() + v * (p_ivl.GetMax() - p_ivl.GetMin()), pt) != SM_SUCCESS)
+                return OG_KERNEL_ERROR;
+            const SmVector3d rel = pt - p0;
+            local_pts.push_back(SmPoint3d(rel.Dot(e0) / chord0_len, rel.Dot(dev) / chord0_len, rel.Dot(b0) / chord0_len));
+        }
+
+        SmVector3d prev_n = dev;
+        for (int i = 0; i < kSections; ++i)
+        {
+            const double u = static_cast<double>(i) / static_cast<double>(kSections - 1);
+            SmPoint3d a, b;
+            if (r1->EvaluatePoint(r1_ivl.GetMin() + u * (r1_ivl.GetMax() - r1_ivl.GetMin()), a) != SM_SUCCESS
+                || r2->EvaluatePoint(r2_ivl.GetMin() + u * (r2_ivl.GetMax() - r2_ivl.GetMin()), b) != SM_SUCCESS)
+                return OG_KERNEL_ERROR;
+
+            const SmVector3d chord = b - a;
+            const double len = chord.Length();
+            if (!positive(len))
+                return OG_KERNEL_ERROR;
+            const SmVector3d ex = chord / len;
+            SmVector3d ey = prev_n - ex * prev_n.Dot(ex);
+            if (ey.Length() <= 1e-8)
+            {
+                const SmVector3d ref = std::abs(ex.z) < 0.9 ? SmVector3d(0, 0, 1) : SmVector3d(0, 1, 0);
+                ey = ref * ex;
+            }
+            ey.Unitize();
+            prev_n = ey;
+            SmVector3d ez = ex * ey;
+            ez.Unitize();
+
+            for (int j = 0; j < kSamples; ++j)
+            {
+                const SmPoint3d& lp = local_pts[j];
+                grid.Add(a + ex * (lp.x * len) + ey * (lp.y * len) + ez * (lp.z * len));
+            }
+        }
+
+        status = SmBSplineSurface::InterpolatePoints(
+            *SmApiGetOrCreateContext(), grid, kSections, kSamples, 3, 3, nullptr, nullptr, nullptr, SM_IT_CHORDLENGTH, srf);
+        if (status != SM_SUCCESS || !srf)
+            return OG_KERNEL_ERROR;
+        return wrap_surface_as_brep(srf, result);
+    });
+}
+
+int32_t og_surface_by_revolve(
+    const OgCurve* const* profile_curves,
+    uint32_t profile_count,
+    const OgPoint* axis_origin,
+    const OgPoint* axis_dir,
+    double start_deg,
+    double sweep_deg,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!profile_curves || profile_count == 0 || !finite(axis_origin) || !finite(axis_dir)
+        || !finite(start_deg) || !finite(sweep_deg) || std::abs(sweep_deg) <= 1e-9 || std::abs(sweep_deg) > 360.0 + 1e-6)
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d axis = to_vector(*axis_dir);
+    if (!positive(axis.Length()))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        std::vector<std::unique_ptr<SmBSplineCurve>> owned;
+        owned.reserve(profile_count);
+        SmTArray<SmCurve*> arr;
+        const SmPoint3d origin = to_sm_point(*axis_origin);
+
+        for (uint32_t i = 0; i < profile_count; ++i)
+        {
+            if (!profile_curves[i] || !profile_curves[i]->curve)
+                return OG_INVALID_ARGUMENT;
+            auto mat = materialize_bspline_curve(*profile_curves[i]);
+            if (!mat)
+                return OG_KERNEL_ERROR;
+            if (std::abs(start_deg) > 1e-9)
+            {
+                if (SmApiRotate(mat.get(), origin, axis, start_deg) != SM_SUCCESS)
+                    return OG_KERNEL_ERROR;
+            }
+            arr.Add(mat.get());
+            owned.push_back(std::move(mat));
+        }
+
+        SmBrep* out = nullptr;
+        const auto status = SmApiCreateRotationalSweep(arr, origin, axis, sweep_deg, FALSE, out);
+        return publish_solid(status, std::unique_ptr<SmBrep>(out), result);
+    });
+}
+
+int32_t og_surface_trim_with_curves(
+    const OgSolid* surface_brep,
+    const OgCurve* const* curves,
+    const uint32_t* curves_per_loop,
+    uint32_t loop_count,
+    OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!surface_brep || !surface_brep->brep || !curves || !curves_per_loop || loop_count == 0)
+        return OG_INVALID_ARGUMENT;
+
+    uint32_t total = 0;
+    for (uint32_t i = 0; i < loop_count; ++i)
+    {
+        if (curves_per_loop[i] == 0)
+            return OG_INVALID_ARGUMENT;
+        total += curves_per_loop[i];
+    }
+
+    return with_kernel([&]() -> int32_t {
+        SmTArray<SmFace*> faces;
+        surface_brep->brep->GetFaces(faces);
+        if (faces.GetSize() == 0)
+            return OG_KERNEL_ERROR;
+        SmSurface* base_srf = faces[0]->GetSurface();
+        if (!base_srf)
+            return OG_KERNEL_ERROR;
+
+        SmSurface* copied_srf = nullptr;
+        if (base_srf->Copy(*SmApiGetOrCreateContext(), copied_srf) != SM_SUCCESS || !copied_srf)
+            return OG_KERNEL_ERROR;
+        std::unique_ptr<SmSurface> srf_owner(copied_srf);
+
+        SmTArray<ULONG> loop_counts;
+        for (uint32_t i = 0; i < loop_count; ++i)
+            loop_counts.Add(static_cast<ULONG>(curves_per_loop[i]));
+
+        std::vector<std::unique_ptr<SmBSplineCurve>> owned_curves;
+        owned_curves.reserve(total);
+        SmTArray<SmCurve*> trim_curves;
+        for (uint32_t i = 0; i < total; ++i)
+        {
+            if (!curves[i] || !curves[i]->curve)
+                return OG_INVALID_ARGUMENT;
+            auto mat = materialize_bspline_curve(*curves[i]);
+            if (!mat)
+                return OG_KERNEL_ERROR;
+            trim_curves.Add(mat.get());
+            owned_curves.push_back(std::move(mat));
+        }
+
+        SmBrep* trimmed = nullptr;
+        const auto status = SmApiTrimSurfaceWith3dCurves(srf_owner.get(), loop_counts, trim_curves, trimmed);
+        if (status != SM_SUCCESS || !trimmed)
+        {
+            // SmApiTrimSurfaceWith3dCurves may have attached objects to an internal partial Brep on failure.
+            if (srf_owner->GetOwner() != nullptr)
+                srf_owner.release();
+            for (auto& c : owned_curves)
+            {
+                if (c->GetOwner() != nullptr)
+                    c.release();
+            }
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        }
+
+        srf_owner.release();
+        for (auto& c : owned_curves)
+            c.release();
+        return publish_solid(SM_SUCCESS, std::unique_ptr<SmBrep>(trimmed), result);
+    });
+}
+
+int32_t og_intersect_curves(const OgCurve* curve_a, const OgCurve* curve_b, OgGeomList** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curve_a || !curve_a->curve || !curve_b || !curve_b->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto a = materialize_bspline_curve(*curve_a);
+        auto b = materialize_bspline_curve(*curve_b);
+        if (!a || !b)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmPoint3d> pts;
+        const auto status = SmApiIntersectCurves(a.get(), b.get(), &pts, nullptr, nullptr);
+        auto list = std::make_unique<OgGeomList>();
+        if (status == SM_SUCCESS)
+        {
+            for (ULONG i = 0; i < pts.GetSize(); ++i)
+                list->points.push_back({pts[i].x, pts[i].y, pts[i].z});
+        }
+        else if (status != SM_ERR)
+        {
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        }
+        *result = list.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_intersect_curve_brep(const OgCurve* curve, const OgSolid* brep, OgGeomList** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curve || !curve->curve || !brep || !brep->brep)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto crv = materialize_bspline_curve(*curve);
+        auto copy = copy_solid(*brep);
+        if (!crv || !copy)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmCurve*> curves;
+        SmTArray<SmPoint3d> pts;
+        const auto status = SmApiIntersectCurveBrep(crv.get(), copy.get(), curves, pts);
+        auto list = std::make_unique<OgGeomList>();
+        if (status == SM_SUCCESS)
+        {
+            for (ULONG i = 0; i < pts.GetSize(); ++i)
+                list->points.push_back({pts[i].x, pts[i].y, pts[i].z});
+            for (ULONG i = 0; i < curves.GetSize(); ++i)
+            {
+                if (auto wrapped = wrap_owned_curve(curves[i]))
+                    list->curves.push_back(std::move(wrapped));
+            }
+        }
+        else if (status != SM_ERR)
+        {
+            for (ULONG i = 0; i < curves.GetSize(); ++i)
+                delete curves[i];
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        }
+        *result = list.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_intersect_breps(const OgSolid* brep_a, const OgSolid* brep_b, OgGeomList** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!brep_a || !brep_a->brep || !brep_b || !brep_b->brep)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto copy_a = copy_solid(*brep_a);
+        auto copy_b = copy_solid(*brep_b);
+        if (!copy_a || !copy_b)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmCurve*> curves;
+        SmTArray<SmPoint3d> pts;
+        const auto status = SmApiIntersectBreps(copy_a.get(), copy_b.get(), curves, &pts);
+        auto list = std::make_unique<OgGeomList>();
+        if (status == SM_SUCCESS)
+        {
+            for (ULONG i = 0; i < pts.GetSize(); ++i)
+                list->points.push_back({pts[i].x, pts[i].y, pts[i].z});
+            for (ULONG i = 0; i < curves.GetSize(); ++i)
+            {
+                if (auto wrapped = wrap_owned_curve(curves[i]))
+                    list->curves.push_back(std::move(wrapped));
+            }
+        }
+        else if (status != SM_ERR)
+        {
+            for (ULONG i = 0; i < curves.GetSize(); ++i)
+                delete curves[i];
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        }
+        *result = list.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_intersect_brep_plane(
+    const OgSolid* brep, const OgPoint* plane_origin, const OgPoint* plane_normal, OgGeomList** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!brep || !brep->brep || !finite(plane_origin) || !finite(plane_normal))
+        return OG_INVALID_ARGUMENT;
+
+    const SmVector3d n = to_vector(*plane_normal);
+    if (!positive(n.Length()))
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto copy = copy_solid(*brep);
+        if (!copy)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmCurve*> curves;
+        const auto status = SmApiIntersectBrepWithPlane(copy.get(), to_vector(*plane_origin), n, curves);
+        auto list = std::make_unique<OgGeomList>();
+        if (status == SM_SUCCESS)
+        {
+            for (ULONG i = 0; i < curves.GetSize(); ++i)
+            {
+                if (auto wrapped = wrap_owned_curve(curves[i]))
+                    list->curves.push_back(std::move(wrapped));
+            }
+        }
+        else if (status != SM_ERR)
+        {
+            for (ULONG i = 0; i < curves.GetSize(); ++i)
+                delete curves[i];
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+        }
+        *result = list.release();
+        return OG_SUCCESS;
+    });
+}
+
+uint32_t og_geom_list_point_count(const OgGeomList* list)
+{
+    return list ? static_cast<uint32_t>(list->points.size()) : 0;
+}
+
+int32_t og_geom_list_get_point(const OgGeomList* list, uint32_t index, OgPoint* point)
+{
+    if (!list || !point || index >= list->points.size())
+        return OG_INVALID_ARGUMENT;
+    *point = list->points[index];
+    return OG_SUCCESS;
+}
+
+uint32_t og_geom_list_curve_count(const OgGeomList* list)
+{
+    return list ? static_cast<uint32_t>(list->curves.size()) : 0;
+}
+
+int32_t og_geom_list_take_curve(OgGeomList* list, uint32_t index, OgCurve** curve)
+{
+    if (!curve)
+        return OG_INVALID_ARGUMENT;
+    *curve = nullptr;
+    if (!list || index >= list->curves.size() || !list->curves[index])
+        return OG_INVALID_ARGUMENT;
+    *curve = list->curves[index].release();
+    return OG_SUCCESS;
+}
+
+void og_release_geom_list(OgGeomList* list)
+{
+    std::lock_guard<std::mutex> lock(kernel_mutex);
+    delete list;
+}
+
+/* =========================== Slice E: Polygon Mesh Booleans =========================== */
+
+namespace
+{
+struct QuantizedPointKey
+{
+    int64_t x, y, z;
+    bool operator==(const QuantizedPointKey& o) const { return x == o.x && y == o.y && z == o.z; }
+};
+
+struct QuantizedPointHash
+{
+    size_t operator()(const QuantizedPointKey& k) const
+    {
+        size_t h = static_cast<size_t>(k.x) * 73856093ULL;
+        h ^= static_cast<size_t>(k.y) * 19349663ULL;
+        h ^= static_cast<size_t>(k.z) * 83492791ULL;
+        return h;
+    }
+};
+
+std::unique_ptr<SmPolyBrep> build_poly_brep(
+    const OgPoint* verts, uint32_t vert_count, const uint32_t* tris, uint32_t tri_count)
+{
+    SmContext* ctx = SmApiGetOrCreateContext();
+    const SmZoneTol3d tol(1e-6);
+    std::unique_ptr<SmPolyBrep> poly(new (*ctx) SmPolyBrep(tol, std::max<ULONG>(32, tri_count * 4)));
+    SmPolyRegion* region = new (poly.get()) SmPolyRegion(poly.get());
+    SmPolyShell* shell = new (poly.get()) SmPolyShell(region);
+
+    std::unordered_map<QuantizedPointKey, SmPolyVertex*, QuantizedPointHash> unique_verts;
+    unique_verts.reserve(vert_count);
+    std::vector<SmPolyVertex*> mapped(vert_count, nullptr);
+    for (uint32_t i = 0; i < vert_count; ++i)
+    {
+        if (!finite(&verts[i]))
+            return nullptr;
+        const QuantizedPointKey key{
+            static_cast<int64_t>(std::llround(verts[i].x * 1e6)),
+            static_cast<int64_t>(std::llround(verts[i].y * 1e6)),
+            static_cast<int64_t>(std::llround(verts[i].z * 1e6))};
+        auto it = unique_verts.find(key);
+        if (it != unique_verts.end())
+        {
+            mapped[i] = it->second;
+        }
+        else
+        {
+            SmPolyVertex* pv = new (poly.get()) SmPolyVertex(to_sm_point(verts[i]), tol);
+            unique_verts[key] = pv;
+            mapped[i] = pv;
+        }
+    }
+
+    for (uint32_t t = 0; t < tri_count; ++t)
+    {
+        const uint32_t i0 = tris[t * 3];
+        const uint32_t i1 = tris[t * 3 + 1];
+        const uint32_t i2 = tris[t * 3 + 2];
+        if (i0 >= vert_count || i1 >= vert_count || i2 >= vert_count)
+            return nullptr;
+        SmPolyVertex* v0 = mapped[i0];
+        SmPolyVertex* v1 = mapped[i1];
+        SmPolyVertex* v2 = mapped[i2];
+        if (v0 == v1 || v1 == v2 || v0 == v2)
+            continue;
+        SmPolyFace* face = nullptr;
+        if (poly->CreatePolyTriangle(region, shell, v0, v1, v2, face) != SM_SUCCESS || !face)
+            return nullptr;
+    }
+
+    ULONG stitched = 0, lamina = 0;
+    if (poly->Stitch(SmZoneTol3d(1e-5), TRUE, FALSE, TRUE, stitched, lamina, TRUE) != SM_SUCCESS)
+        return nullptr;
+
+    return poly;
+}
+
+std::unique_ptr<OgMesh> extract_poly_mesh(SmPolyBrep& poly)
+{
+    auto mesh = std::make_unique<OgMesh>();
+    SmTArray<SmPolyFace*> poly_faces;
+    poly.GetPolyFaces(poly_faces);
+    for (ULONG i = 0; i < poly_faces.GetSize(); ++i)
+    {
+        SmPolyFace* pf = poly_faces[i];
+        SmPolyLoop* loop = pf ? pf->GetOuterPolyLoop() : nullptr;
+        if (!loop)
+            continue;
+        SmTArray<SmPolyEdge*> edges;
+        loop->GetPolyEdges(edges);
+        const ULONG n = edges.GetSize();
+        if (n < 3)
+            continue;
+
+        SmVector3d fn = pf->GetNormal(TRUE, FALSE);
+        const double fn_len = fn.Length();
+        const OgPoint face_norm = positive(fn_len) ? to_point(fn / fn_len) : OgPoint{0, 0, 1};
+
+        SmPolyVertex* v0 = edges[0]->GetStartPolyVertex();
+        if (!v0)
+            continue;
+        const OgPoint p0 = to_point(v0->GetPoint());
+        for (ULONG j = 1; j + 1 < n; ++j)
+        {
+            SmPolyVertex* v1 = edges[j]->GetStartPolyVertex();
+            SmPolyVertex* v2 = edges[j + 1]->GetStartPolyVertex();
+            if (!v1 || !v2)
+                continue;
+            mesh->vertices.push_back({p0, face_norm});
+            mesh->vertices.push_back({to_point(v1->GetPoint()), face_norm});
+            mesh->vertices.push_back({to_point(v2->GetPoint()), face_norm});
+        }
+    }
+    return mesh;
+}
+} // namespace
+
+int32_t og_poly_boolean(
+    const OgPoint* verts_a,
+    uint32_t vert_count_a,
+    const uint32_t* tris_a,
+    uint32_t tri_count_a,
+    const OgPoint* verts_b,
+    uint32_t vert_count_b,
+    const uint32_t* tris_b,
+    uint32_t tri_count_b,
+    int32_t operation,
+    OgMesh** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!verts_a || vert_count_a < 4 || !tris_a || tri_count_a < 4
+        || !verts_b || vert_count_b < 4 || !tris_b || tri_count_b < 4
+        || operation < 0 || operation > 2)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        auto poly_a = build_poly_brep(verts_a, vert_count_a, tris_a, tri_count_a);
+        auto poly_b = build_poly_brep(verts_b, vert_count_b, tris_b, tri_count_b);
+        if (!poly_a || !poly_b)
+            return OG_INVALID_ARGUMENT;
+
+        SmPolyBrep* out = nullptr;
+        SmApiStatus status = SM_ERR;
+        if (operation == 0)
+            status = SmApiPolyBooleanUnion(poly_a.get(), poly_b.get(), out);
+        else if (operation == 1)
+            status = SmApiPolyBooleanIntersection(poly_a.get(), poly_b.get(), out);
+        else
+            status = SmApiPolyBooleanDifference(poly_a.get(), poly_b.get(), out);
+
+        if (status != SM_SUCCESS || !out)
+            return status == SM_ERR_INVALID_INPUT ? OG_INVALID_ARGUMENT : OG_KERNEL_ERROR;
+
+        // SmApiPolyBoolean* consumes poly_b on success and returns poly_a in place.
+        poly_b.release();
+        std::unique_ptr<SmPolyBrep> out_owner;
+        SmPolyBrep* target = poly_a.get();
+        if (out != poly_a.get())
+        {
+            out_owner.reset(out);
+            target = out_owner.get();
+        }
+
+        auto mesh = extract_poly_mesh(*target);
+        if (!mesh || mesh->vertices.empty())
+            return OG_KERNEL_ERROR;
+        *result = mesh.release();
+        return OG_SUCCESS;
+    });
 }

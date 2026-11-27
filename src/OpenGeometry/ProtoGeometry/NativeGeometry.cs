@@ -15,7 +15,7 @@ namespace OpenGeometry
     internal static class NativeGeometry
     {
         private const string Bridge = "OpenGeometryBridge";
-        private const uint SupportedAbi = 3;
+        private const uint SupportedAbi = 6;
         private static readonly ResourceManager Messages = new("OpenGeometry.Messages", typeof(NativeGeometry).Assembly);
 
         internal sealed class SolidHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -47,6 +47,17 @@ namespace OpenGeometry
             protected override bool ReleaseHandle()
             {
                 ReleaseMesh(handle);
+                return true;
+            }
+        }
+
+        internal sealed class GeomListHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            private GeomListHandle() : base(true) { }
+
+            protected override bool ReleaseHandle()
+            {
+                ReleaseGeomList(handle);
                 return true;
             }
         }
@@ -400,6 +411,284 @@ namespace OpenGeometry
             return QueryIndexArray((buf, cap, out count) => GetVertexFaces(brep, vertexIndex, buf, cap, out count));
         }
 
+        /* ==================== Modeling Operations ==================== */
+
+        internal static SolidHandle CurveExtrude(CurveHandle[] curves, NativePoint direction, double distance, bool capEnds)
+        {
+            return WithCurveHandlePointers(curves, (ptrs, count) =>
+            {
+                var status = ExtrudeCurves(ptrs, count, in direction, distance, capEnds ? 1 : 0, out var result);
+                return CheckHandle(status, result, "Extrude");
+            });
+        }
+
+        internal static SolidHandle SolidByLoft(CurveHandle[] curves, uint[] curvesPerProfile)
+        {
+            return WithCurveHandlePointers(curves, (ptrs, _) =>
+            {
+                var status = CreateSolidByLoft(ptrs, curvesPerProfile, (uint)curvesPerProfile.Length, out var result);
+                return CheckHandle(status, result, "Loft");
+            });
+        }
+
+        internal static SolidHandle SolidBySweep(CurveHandle[] profileCurves, CurveHandle pathCurve)
+        {
+            return WithCurveHandlePointers(profileCurves, (ptrs, count) =>
+            {
+                var status = CreateSolidBySweep(ptrs, count, pathCurve, out var result);
+                return CheckHandle(status, result, "Sweep");
+            });
+        }
+
+        internal static SolidHandle SolidByRevolve(
+            CurveHandle[] profileCurves, NativePoint axisOrigin, NativePoint axisDir, double startDeg, double sweepDeg)
+        {
+            return WithCurveHandlePointers(profileCurves, (ptrs, count) =>
+            {
+                var status = CreateSolidByRevolve(ptrs, count, in axisOrigin, in axisDir, startDeg, sweepDeg, out var result);
+                return CheckHandle(status, result, "Revolve");
+            });
+        }
+
+        internal static SolidHandle SurfaceOffset(SolidHandle surface, double distance)
+        {
+            var status = OffsetSurfaceBrep(surface, distance, out var result);
+            return CheckHandle(status, result, "Offset");
+        }
+
+        internal static SolidHandle SurfaceThicken(SolidHandle surface, double thickness, bool bothSides)
+        {
+            var status = ThickenSurfaceBrep(surface, thickness, bothSides ? 1 : 0, out var result);
+            return CheckHandle(status, result, "Thicken");
+        }
+
+        internal static SolidHandle SolidFilletEdges(SolidHandle solid, uint[] edgeIndices, double radius, bool chamfer)
+        {
+            var status = FilletSolidEdges(solid, edgeIndices, (uint)edgeIndices.Length, radius, chamfer ? 1 : 0, out var result);
+            return CheckHandle(status, result, chamfer ? "Chamfer" : "Fillet");
+        }
+
+        internal static SolidHandle SolidThinShell(SolidHandle solid, double internalThickness, double externalThickness)
+        {
+            var status = ThinShellSolid(solid, internalThickness, externalThickness, out var result);
+            return CheckHandle(status, result, "ThinShell");
+        }
+
+        internal static SolidHandle SolidCutPlaneOrNull(SolidHandle solid, NativePoint origin, NativePoint normal)
+        {
+            var status = CutSolidPlane(solid, in origin, in normal, out var result);
+            if (status != 0)
+            {
+                result.Dispose();
+                throw CreateException(status, "Split");
+            }
+            if (result.IsInvalid)
+            {
+                result.Dispose();
+                return null;
+            }
+            return result;
+        }
+
+        /* ==================== Slice D: Curves, NURBS Surfaces, Trimming, Intersections ==================== */
+
+        internal static CurveHandle Ellipse(
+            NativePoint center, NativePoint xAxis, NativePoint yAxis, double radiusX, double radiusY)
+        {
+            var status = CreateEllipse(in center, in xAxis, in yAxis, radiusX, radiusY, out var curve);
+            return CheckHandle(status, curve, "Ellipse");
+        }
+
+        internal static CurveHandle EllipseArc(
+            NativePoint center,
+            NativePoint xAxis,
+            NativePoint yAxis,
+            double radiusX,
+            double radiusY,
+            double startDeg,
+            double sweepDeg)
+        {
+            var status = CreateEllipseArc(
+                in center, in xAxis, in yAxis, radiusX, radiusY, startDeg, sweepDeg, out var curve);
+            return CheckHandle(status, curve, "Ellipse");
+        }
+
+        internal static CurveHandle Helix(
+            NativePoint axisPoint, NativePoint axisDir, NativePoint startPoint, double pitch, double angleTurnsDeg)
+        {
+            var status = CreateHelix(in axisPoint, in axisDir, in startPoint, pitch, angleTurnsDeg, out var curve);
+            return CheckHandle(status, curve, "Helix");
+        }
+
+        internal static CurveHandle CurveOffset(CurveHandle curve, double distance)
+        {
+            var status = OffsetCurve(curve, distance, out var result);
+            return CheckHandle(status, result, "CurveOffset");
+        }
+
+        internal static (NativePoint[] Points, CurveHandle[] Curves) CurveProjectOntoBrep(
+            CurveHandle curve, SolidHandle brep, NativePoint direction)
+        {
+            var status = ProjectCurveOntoBrep(curve, brep, in direction, out var list);
+            using var owned = CheckHandle(status, list, "CurveProject");
+            return DrainGeomList(owned, "CurveProject");
+        }
+
+        internal static SolidHandle NurbsSurfaceByControlPoints(
+            NativePoint[] points, uint uCount, uint vCount, int uDegree, int vDegree)
+        {
+            var status = CreateNurbsSurfaceByControlPoints(points, uCount, vCount, uDegree, vDegree, out var result);
+            return CheckHandle(status, result, "NurbsSurface");
+        }
+
+        internal static SolidHandle NurbsSurfaceByPoints(
+            NativePoint[] points, uint uCount, uint vCount, int uDegree, int vDegree)
+        {
+            var status = CreateNurbsSurfaceByPoints(points, uCount, vCount, uDegree, vDegree, out var result);
+            return CheckHandle(status, result, "NurbsSurface");
+        }
+
+        internal static (int UDegree, int VDegree, uint UCount, uint VCount, bool IsRational, bool IsPeriodicU, bool IsPeriodicV)
+            NurbsSurfaceInfo(SolidHandle surface)
+        {
+            Check(
+                GetNurbsSurfaceInfo(
+                    surface,
+                    out var uDeg,
+                    out var vDeg,
+                    out var uCount,
+                    out var vCount,
+                    out var rational,
+                    out var periodicU,
+                    out var periodicV),
+                "NurbsSurface");
+            return (uDeg, vDeg, uCount, vCount, rational != 0, periodicU != 0, periodicV != 0);
+        }
+
+        internal static (NativePoint[] Points, double[] Weights) NurbsSurfaceControlPoints(SolidHandle surface)
+        {
+            Check(GetNurbsSurfaceControlPoints(surface, null, null, 0, out var count), "NurbsSurface");
+            var pts = new NativePoint[checked((int)count)];
+            var wts = new double[checked((int)count)];
+            Check(GetNurbsSurfaceControlPoints(surface, pts, wts, count, out _), "NurbsSurface");
+            return (pts, wts);
+        }
+
+        internal static double[] NurbsSurfaceKnots(SolidHandle surface, bool vDirection)
+        {
+            var dir = vDirection ? 1 : 0;
+            Check(GetNurbsSurfaceKnots(surface, dir, null, 0, out var count), "NurbsSurface");
+            var knots = new double[checked((int)count)];
+            Check(GetNurbsSurfaceKnots(surface, dir, knots, count, out _), "NurbsSurface");
+            return knots;
+        }
+
+        internal static SolidHandle SurfaceBySweep(CurveHandle profile, CurveHandle path)
+        {
+            var status = CreateSurfaceBySweep(profile, path, out var result);
+            return CheckHandle(status, result, "Sweep");
+        }
+
+        internal static SolidHandle SurfaceBySweep2Rails(CurveHandle path, CurveHandle guideRail, CurveHandle profile)
+        {
+            var status = CreateSurfaceBySweep2Rails(path, guideRail, profile, out var result);
+            return CheckHandle(status, result, "Sweep");
+        }
+
+        internal static SolidHandle SurfaceByRevolve(
+            CurveHandle[] profileCurves, NativePoint axisOrigin, NativePoint axisDir, double startDeg, double sweepDeg)
+        {
+            return WithCurveHandlePointers(profileCurves, (ptrs, count) =>
+            {
+                var status = CreateSurfaceByRevolve(
+                    ptrs, count, in axisOrigin, in axisDir, startDeg, sweepDeg, out var result);
+                return CheckHandle(status, result, "Revolve");
+            });
+        }
+
+        internal static SolidHandle SurfaceTrimWithCurves(
+            SolidHandle surface, CurveHandle[] curves, uint[] curvesPerLoop)
+        {
+            return WithCurveHandlePointers(curves, (ptrs, _) =>
+            {
+                var status = TrimSurfaceWithCurves(
+                    surface, ptrs, curvesPerLoop, (uint)curvesPerLoop.Length, out var result);
+                return CheckHandle(status, result, "SurfaceTrim");
+            });
+        }
+
+        internal static (NativePoint[] Points, CurveHandle[] Curves) IntersectCurves(CurveHandle a, CurveHandle b)
+        {
+            var status = IntersectCurvePair(a, b, out var list);
+            using var owned = CheckHandle(status, list, "Intersection");
+            return DrainGeomList(owned, "Intersection");
+        }
+
+        internal static (NativePoint[] Points, CurveHandle[] Curves) IntersectCurveBrep(
+            CurveHandle curve, SolidHandle brep)
+        {
+            var status = IntersectCurveWithBrep(curve, brep, out var list);
+            using var owned = CheckHandle(status, list, "Intersection");
+            return DrainGeomList(owned, "Intersection");
+        }
+
+        internal static (NativePoint[] Points, CurveHandle[] Curves) IntersectBreps(SolidHandle a, SolidHandle b)
+        {
+            var status = IntersectBrepPair(a, b, out var list);
+            using var owned = CheckHandle(status, list, "Intersection");
+            return DrainGeomList(owned, "Intersection");
+        }
+
+        internal static (NativePoint[] Points, CurveHandle[] Curves) IntersectBrepPlane(
+            SolidHandle brep, NativePoint origin, NativePoint normal)
+        {
+            var status = IntersectBrepWithPlane(brep, in origin, in normal, out var list);
+            using var owned = CheckHandle(status, list, "Intersection");
+            return DrainGeomList(owned, "Intersection");
+        }
+
+        internal static NativeVertex[] PolyBoolean(
+            NativePoint[] vertsA,
+            uint[] trisA,
+            NativePoint[] vertsB,
+            uint[] trisB,
+            int operation)
+        {
+            var status = RunPolyBoolean(
+                vertsA,
+                (uint)vertsA.Length,
+                trisA,
+                (uint)(trisA.Length / 3),
+                vertsB,
+                (uint)vertsB.Length,
+                trisB,
+                (uint)(trisB.Length / 3),
+                operation,
+                out var mesh);
+            using var snapshot = CheckHandle(status, mesh, "MeshBoolean");
+            var vertices = new NativeVertex[checked((int)GetVertexCount(snapshot))];
+            Check(CopyVertices(snapshot, vertices, (uint)vertices.Length), "MeshBoolean");
+            return vertices;
+        }
+
+        private static (NativePoint[] Points, CurveHandle[] Curves) DrainGeomList(
+            GeomListHandle list, string operation)
+        {
+            var ptCount = checked((int)GetGeomListPointCount(list));
+            var points = new NativePoint[ptCount];
+            for (var i = 0; i < ptCount; i++)
+                Check(GetGeomListPoint(list, (uint)i, out points[i]), operation);
+
+            var crvCount = checked((int)GetGeomListCurveCount(list));
+            var curves = new CurveHandle[crvCount];
+            for (var i = 0; i < crvCount; i++)
+            {
+                var status = TakeGeomListCurve(list, (uint)i, out var curve);
+                curves[i] = CheckHandle(status, curve, operation);
+            }
+            return (points, curves);
+        }
+
         /* ==================== Helpers ==================== */
 
         private delegate int IndexQueryCallback(uint[] buffer, uint capacity, out uint actualCount);
@@ -705,5 +994,206 @@ namespace OpenGeometry
         [DllImport(Bridge, EntryPoint = "og_brep_vertex_faces", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int GetVertexFaces(
             SolidHandle brep, uint vertexIndex, [Out] uint[] faceIndices, uint capacity, out uint actualCount);
+
+        /* Modeling P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_curve_extrude", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ExtrudeCurves(
+            [In] IntPtr[] curves,
+            uint count,
+            in NativePoint direction,
+            double distance,
+            int capEnds,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_solid_by_loft", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateSolidByLoft(
+            [In] IntPtr[] curves,
+            [In] uint[] curvesPerProfile,
+            uint profileCount,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_solid_by_sweep", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateSolidBySweep(
+            [In] IntPtr[] profileCurves,
+            uint profileCount,
+            CurveHandle pathCurve,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_solid_by_revolve", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateSolidByRevolve(
+            [In] IntPtr[] profileCurves,
+            uint profileCount,
+            in NativePoint axisOrigin,
+            in NativePoint axisDir,
+            double startDeg,
+            double sweepDeg,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_surface_offset", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int OffsetSurfaceBrep(SolidHandle surface, double distance, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_surface_thicken", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ThickenSurfaceBrep(
+            SolidHandle surface, double thickness, int bothSides, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_solid_fillet_edges", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int FilletSolidEdges(
+            SolidHandle solid,
+            [In] uint[] edgeIndices,
+            uint edgeCount,
+            double radius,
+            int chamfer,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_solid_thin_shell", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ThinShellSolid(
+            SolidHandle solid, double internalThickness, double externalThickness, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_solid_cut_plane", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CutSolidPlane(
+            SolidHandle solid, in NativePoint origin, in NativePoint normal, out SolidHandle result);
+
+        /* Slice D P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_curve_create_ellipse", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateEllipse(
+            in NativePoint center,
+            in NativePoint xAxis,
+            in NativePoint yAxis,
+            double radiusX,
+            double radiusY,
+            out CurveHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_create_ellipse_arc", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateEllipseArc(
+            in NativePoint center,
+            in NativePoint xAxis,
+            in NativePoint yAxis,
+            double radiusX,
+            double radiusY,
+            double startDeg,
+            double sweepDeg,
+            out CurveHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_create_helix", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateHelix(
+            in NativePoint axisPoint,
+            in NativePoint axisDir,
+            in NativePoint startPoint,
+            double pitch,
+            double angleTurnsDeg,
+            out CurveHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_offset", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int OffsetCurve(CurveHandle curve, double distance, out CurveHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_project_onto_brep", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ProjectCurveOntoBrep(
+            CurveHandle curve, SolidHandle brep, in NativePoint direction, out GeomListHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_nurbs_surface_by_control_points", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateNurbsSurfaceByControlPoints(
+            [In] NativePoint[] points, uint uCount, uint vCount, int uDegree, int vDegree, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_nurbs_surface_by_points", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateNurbsSurfaceByPoints(
+            [In] NativePoint[] points, uint uCount, uint vCount, int uDegree, int vDegree, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_nurbs_surface_info", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetNurbsSurfaceInfo(
+            SolidHandle surface,
+            out int uDegree,
+            out int vDegree,
+            out uint uCount,
+            out uint vCount,
+            out int isRational,
+            out int isPeriodicU,
+            out int isPeriodicV);
+
+        [DllImport(Bridge, EntryPoint = "og_nurbs_surface_control_points", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetNurbsSurfaceControlPoints(
+            SolidHandle surface,
+            [Out] NativePoint[] points,
+            [Out] double[] weights,
+            uint capacity,
+            out uint actualCount);
+
+        [DllImport(Bridge, EntryPoint = "og_nurbs_surface_knots", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetNurbsSurfaceKnots(
+            SolidHandle surface,
+            int vDirection,
+            [Out] double[] knots,
+            uint capacity,
+            out uint actualCount);
+
+        [DllImport(Bridge, EntryPoint = "og_surface_by_sweep", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateSurfaceBySweep(
+            CurveHandle profile, CurveHandle path, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_surface_by_sweep_2_rails", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateSurfaceBySweep2Rails(
+            CurveHandle path, CurveHandle guideRail, CurveHandle profile, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_surface_by_revolve", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CreateSurfaceByRevolve(
+            [In] IntPtr[] profileCurves,
+            uint profileCount,
+            in NativePoint axisOrigin,
+            in NativePoint axisDir,
+            double startDeg,
+            double sweepDeg,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_surface_trim_with_curves", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TrimSurfaceWithCurves(
+            SolidHandle surface,
+            [In] IntPtr[] curves,
+            [In] uint[] curvesPerLoop,
+            uint loopCount,
+            out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_intersect_curves", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int IntersectCurvePair(
+            CurveHandle curveA, CurveHandle curveB, out GeomListHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_intersect_curve_brep", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int IntersectCurveWithBrep(
+            CurveHandle curve, SolidHandle brep, out GeomListHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_intersect_breps", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int IntersectBrepPair(
+            SolidHandle brepA, SolidHandle brepB, out GeomListHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_intersect_brep_plane", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int IntersectBrepWithPlane(
+            SolidHandle brep, in NativePoint planeOrigin, in NativePoint planeNormal, out GeomListHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_geom_list_point_count", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint GetGeomListPointCount(GeomListHandle list);
+
+        [DllImport(Bridge, EntryPoint = "og_geom_list_get_point", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetGeomListPoint(GeomListHandle list, uint index, out NativePoint point);
+
+        [DllImport(Bridge, EntryPoint = "og_geom_list_curve_count", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint GetGeomListCurveCount(GeomListHandle list);
+
+        [DllImport(Bridge, EntryPoint = "og_geom_list_take_curve", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeGeomListCurve(GeomListHandle list, uint index, out CurveHandle curve);
+
+        [DllImport(Bridge, EntryPoint = "og_release_geom_list", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ReleaseGeomList(IntPtr list);
+
+        /* Slice E P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_poly_boolean", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RunPolyBoolean(
+            [In] NativePoint[] vertsA,
+            uint vertCountA,
+            [In] uint[] trisA,
+            uint triCountA,
+            [In] NativePoint[] vertsB,
+            uint vertCountB,
+            [In] uint[] trisB,
+            uint triCountB,
+            int operation,
+            out MeshHandle result);
     }
 }

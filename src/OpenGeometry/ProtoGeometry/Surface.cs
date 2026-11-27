@@ -36,6 +36,23 @@ namespace Autodesk.DesignScript.Geometry
             return new Vector(nrm);
         }
 
+        /// <summary>Creates a new surface offset along the surface normal by <paramref name="distance"/>.</summary>
+        /// <param name="distance">Signed offset distance along surface normal.</param>
+        /// <returns>The offset surface.</returns>
+        public Surface Offset(double distance) => new(NativeGeometry.SurfaceOffset(Handle, distance));
+
+        /// <summary>Thickens this surface into a solid symmetrically on both sides.</summary>
+        /// <param name="thickness">Total solid thickness.</param>
+        /// <returns>The thickened solid.</returns>
+        public Solid Thicken(double thickness) => Thicken(thickness, both_sides: true);
+
+        /// <summary>Thickens this surface into a solid.</summary>
+        /// <param name="thickness">Total thickness (positive along normal when single-sided).</param>
+        /// <param name="both_sides">If true, thickens equally on both sides of the surface; if false, thickens on the normal side only.</param>
+        /// <returns>The thickened solid.</returns>
+        public Solid Thicken(double thickness, bool both_sides) =>
+            new(NativeGeometry.SurfaceThicken(Handle, thickness, both_sides));
+
         /// <summary>Creates a surface bounded by an ordered list of perimeter points (4 points creates a bilinear patch; 3 or 5+ planar points creates a planar face).</summary>
         /// <param name="points">Ordered boundary points.</param>
         /// <returns>The created surface.</returns>
@@ -93,6 +110,105 @@ namespace Autodesk.DesignScript.Geometry
 
         /// <summary>Creates a ruled loft surface linearly interpolating between cross-section curves.</summary>
         public static Surface ByRuledLoft(IEnumerable<Curve> crossSections) => ByLoft(crossSections);
+
+        /// <summary>Creates a surface by sweeping a profile curve along a path curve.</summary>
+        /// <param name="profile">Curve to sweep.</param>
+        /// <param name="path">Path curve to sweep along.</param>
+        /// <returns>The swept surface.</returns>
+        public static Surface BySweep(Curve profile, Curve path)
+        {
+            ArgumentNullException.ThrowIfNull(profile);
+            ArgumentNullException.ThrowIfNull(path);
+            var profileAtomic = profile.GetAtomicHandles();
+            var pathAtomic = path.GetAtomicHandles();
+            if (profileAtomic.Length != 1)
+                throw new ArgumentException("Surface.BySweep requires a single-segment profile curve.", nameof(profile));
+            if (pathAtomic.Length != 1)
+                throw new ArgumentException("Surface.BySweep requires a single-segment path curve.", nameof(path));
+            return new Surface(NativeGeometry.SurfaceBySweep(profileAtomic[0], pathAtomic[0]));
+        }
+
+        /// <summary>Creates a surface by sweeping a profile curve along a path curve.</summary>
+        /// <param name="profile">Curve to sweep.</param>
+        /// <param name="path">Path curve to sweep along.</param>
+        /// <param name="cutEndOff">Optional end-cut option.</param>
+        /// <returns>The swept surface.</returns>
+        public static Surface BySweep(Curve profile, Curve path, bool cutEndOff)
+        {
+            _ = cutEndOff;
+            return BySweep(profile, path);
+        }
+
+        /// <summary>Creates a surface by sweeping a profile curve along two rail curves.</summary>
+        /// <param name="path">Primary rail curve to sweep along.</param>
+        /// <param name="guideRail">Secondary rail curve guiding sweep orientation and width.</param>
+        /// <param name="profile">Profile curve spanning between the rails.</param>
+        /// <returns>The two-rail swept surface.</returns>
+        public static Surface BySweep2Rails(Curve path, Curve guideRail, Curve profile)
+        {
+            ArgumentNullException.ThrowIfNull(path);
+            ArgumentNullException.ThrowIfNull(guideRail);
+            ArgumentNullException.ThrowIfNull(profile);
+            var pathAtomic = path.GetAtomicHandles();
+            var guideAtomic = guideRail.GetAtomicHandles();
+            var profileAtomic = profile.GetAtomicHandles();
+            if (pathAtomic.Length != 1)
+                throw new ArgumentException("Surface.BySweep2Rails requires a single-segment path curve.", nameof(path));
+            if (guideAtomic.Length != 1)
+                throw new ArgumentException("Surface.BySweep2Rails requires a single-segment guide rail curve.", nameof(guideRail));
+            if (profileAtomic.Length != 1)
+                throw new ArgumentException("Surface.BySweep2Rails requires a single-segment profile curve.", nameof(profile));
+            return new Surface(NativeGeometry.SurfaceBySweep2Rails(pathAtomic[0], guideAtomic[0], profileAtomic[0]));
+        }
+
+        /// <summary>Creates a surface by revolving a profile curve around an axis.</summary>
+        /// <param name="profile">Profile curve to revolve.</param>
+        /// <param name="axisOrigin">Origin point of the axis of revolution.</param>
+        /// <param name="axisDirection">Direction vector of the axis of revolution.</param>
+        /// <param name="startAngle">Start angle in degrees.</param>
+        /// <param name="sweepAngle">Sweep angle in degrees.</param>
+        /// <returns>The revolved surface.</returns>
+        public static Surface ByRevolve(
+            Curve profile, Point axisOrigin, Vector axisDirection, double startAngle, double sweepAngle)
+        {
+            ArgumentNullException.ThrowIfNull(profile);
+            ArgumentNullException.ThrowIfNull(axisOrigin);
+            ArgumentNullException.ThrowIfNull(axisDirection);
+            return new Surface(NativeGeometry.SurfaceByRevolve(
+                profile.GetAtomicHandles(),
+                axisOrigin.Position,
+                axisDirection.Components,
+                startAngle,
+                sweepAngle));
+        }
+
+        /// <summary>Trims this surface with one or more closed edge loops lying on the surface.</summary>
+        /// <param name="loops">Closed boundary loops (first loop is outer boundary; subsequent loops are inner holes).</param>
+        /// <returns>The trimmed surface.</returns>
+        public Surface TrimWithEdgeLoops(IEnumerable<PolyCurve> loops) => TrimWithEdgeLoops(loops, 0.0);
+
+        /// <summary>Trims this surface with one or more closed edge loops lying on the surface.</summary>
+        /// <param name="loops">Closed boundary loops (first loop is outer boundary; subsequent loops are inner holes).</param>
+        /// <param name="tolerance">Optional loop coincidence tolerance.</param>
+        /// <returns>The trimmed surface.</returns>
+        public Surface TrimWithEdgeLoops(IEnumerable<PolyCurve> loops, double tolerance)
+        {
+            ArgumentNullException.ThrowIfNull(loops);
+            _ = tolerance;
+            var loopArray = loops.Where(l => l != null).ToArray();
+            if (loopArray.Length == 0)
+                throw new ArgumentException("Surface.TrimWithEdgeLoops requires at least one loop.", nameof(loops));
+
+            var allHandles = new List<NativeGeometry.CurveHandle>();
+            var counts = new uint[loopArray.Length];
+            for (var i = 0; i < loopArray.Length; i++)
+            {
+                var atomic = loopArray[i].GetAtomicHandles();
+                counts[i] = (uint)atomic.Length;
+                allHandles.AddRange(atomic);
+            }
+            return new Surface(NativeGeometry.SurfaceTrimWithCurves(Handle, allHandles.ToArray(), counts));
+        }
 
         /// <inheritdoc />
         public override Geometry Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0)

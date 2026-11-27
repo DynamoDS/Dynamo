@@ -7,7 +7,7 @@ using OpenGeometry;
 namespace Autodesk.DesignScript.Geometry
 {
     /// <summary>A stitched shell or collection of contiguous surfaces backed by an SMLib BRep.</summary>
-    public class PolySurface : Topology
+    public class PolySurface : Surface
     {
         internal PolySurface(NativeGeometry.SolidHandle handle) : base(handle)
         {
@@ -21,9 +21,6 @@ namespace Autodesk.DesignScript.Geometry
 
         /// <summary>Gets the number of vertices in this polysurface.</summary>
         public int VertexCount => checked((int)NativeGeometry.TopologyCounts(Handle).Vertices);
-
-        /// <summary>Gets the total surface area of all faces in this polysurface.</summary>
-        public double Area => NativeGeometry.Area(Handle);
 
         /// <summary>Returns standalone <see cref="Surface"/> copies for each face in this polysurface.</summary>
         public Surface[] Surfaces() => Faces.Select(f => f.SurfaceGeometry()).ToArray();

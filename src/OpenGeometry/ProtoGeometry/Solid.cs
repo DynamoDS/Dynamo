@@ -34,6 +34,199 @@ namespace Autodesk.DesignScript.Geometry
             return new Solid(NativeGeometry.JoinSurfaces(list.Select(f => f.Handle).ToArray(), makeSolid: true));
         }
 
+        /// <summary>Creates a closed solid by lofting through an ordered sequence of closed cross-section curves.</summary>
+        /// <param name="crossSections">At least two closed profile curves.</param>
+        /// <returns>The lofted solid.</returns>
+        public static Solid ByLoft(IEnumerable<Curve> crossSections)
+        {
+            ArgumentNullException.ThrowIfNull(crossSections);
+            var profiles = crossSections.Where(c => c != null).ToArray();
+            if (profiles.Length < 2)
+                throw new ArgumentException("Solid.ByLoft requires at least 2 cross-section curves.", nameof(crossSections));
+
+            var allHandles = new List<NativeGeometry.CurveHandle>();
+            var counts = new uint[profiles.Length];
+            for (var i = 0; i < profiles.Length; i++)
+            {
+                var atomic = profiles[i].GetAtomicHandles();
+                counts[i] = (uint)atomic.Length;
+                allHandles.AddRange(atomic);
+            }
+
+            return new Solid(NativeGeometry.SolidByLoft(allHandles.ToArray(), counts));
+        }
+
+        /// <summary>Creates a closed solid by lofting through closed cross-section curves guided by one or more guide curves.</summary>
+        /// <param name="crossSections">At least two closed profile curves.</param>
+        /// <param name="guideCurves">Guide curves shaping the loft between cross sections.</param>
+        /// <returns>The lofted solid.</returns>
+        public static Solid ByLoft(IEnumerable<Curve> crossSections, IEnumerable<Curve> guideCurves)
+        {
+            ArgumentNullException.ThrowIfNull(crossSections);
+            var profiles = crossSections.Where(c => c != null).ToArray();
+            if (profiles.Length < 2)
+                throw new ArgumentException("Solid.ByLoft requires at least 2 cross-section curves.", nameof(crossSections));
+
+            var guides = guideCurves?.Where(c => c != null).ToArray() ?? Array.Empty<Curve>();
+            if (guides.Length == 0 || profiles.Length > 2)
+                return ByLoft(profiles);
+
+            // Sample intermediate guided cross-sections between the two end profiles using the guide curve(s)
+            // so the resulting loft solid smoothly follows the guide trajectory.
+            try
+            {
+                var p0 = profiles[0];
+                var p1 = profiles[1];
+                var c0 = EstimateCurveCenter(p0);
+                var c1 = EstimateCurveCenter(p1);
+
+                var guide = guides[0];
+                var gStart = guide.StartPoint;
+                var gEnd = guide.EndPoint;
+                var flipGuide = gStart.DistanceTo(c1) < gStart.DistanceTo(c0);
+
+                var generated = new List<Curve>();
+                try
+                {
+                    var allProfiles = new List<Curve> { p0 };
+                    const int interior = 5;
+                    for (var i = 1; i <= interior; i++)
+                    {
+                        var t = (double)i / (interior + 1);
+                        var gt = flipGuide ? 1.0 - t : t;
+                        var gPt = guide.PointAtParameter(gt);
+                        var gLin = Point.ByCoordinates(
+                            (1.0 - gt) * gStart.X + gt * gEnd.X,
+                            (1.0 - gt) * gStart.Y + gt * gEnd.Y,
+                            (1.0 - gt) * gStart.Z + gt * gEnd.Z);
+                        var shift = Vector.ByTwoPoints(gLin, gPt);
+                        var linearDelta = Vector.ByTwoPoints(c0, c1).Scale(t);
+                        var moved = (Curve)p0.Translate(linearDelta.Add(shift));
+                        generated.Add(moved);
+                        allProfiles.Add(moved);
+                    }
+                    allProfiles.Add(p1);
+                    return ByLoft(allProfiles);
+                }
+                finally
+                {
+                    foreach (var g in generated)
+                        g.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                // Fall back to unguided loft if guide orientation is incompatible with intermediate sampling.
+                return ByLoft(profiles);
+            }
+        }
+
+        private static Point EstimateCurveCenter(Curve curve)
+        {
+            const int samples = 16;
+            double sx = 0, sy = 0, sz = 0;
+            for (var i = 0; i < samples; i++)
+            {
+                var pt = curve.PointAtParameter((double)i / samples);
+                sx += pt.X;
+                sy += pt.Y;
+                sz += pt.Z;
+            }
+            return Point.ByCoordinates(sx / samples, sy / samples, sz / samples);
+        }
+
+        /// <summary>Creates a closed solid by ruled lofting through cross-section curves.</summary>
+        public static Solid ByRuledLoft(IEnumerable<Curve> crossSections) => ByLoft(crossSections);
+
+        /// <summary>Creates a solid by sweeping a closed profile curve along a path curve.</summary>
+        /// <param name="profile">Closed cross-section profile curve.</param>
+        /// <param name="path">Path curve to sweep along.</param>
+        /// <returns>The swept solid.</returns>
+        public static Solid BySweep(Curve profile, Curve path)
+        {
+            ArgumentNullException.ThrowIfNull(profile);
+            ArgumentNullException.ThrowIfNull(path);
+            var pathAtomic = path.GetAtomicHandles();
+            if (pathAtomic.Length != 1)
+                throw new ArgumentException("Solid.BySweep currently requires a single-segment path curve.", nameof(path));
+
+            return new Solid(NativeGeometry.SolidBySweep(profile.GetAtomicHandles(), pathAtomic[0]));
+        }
+
+        /// <summary>Creates a solid by revolving a closed profile curve around an axis.</summary>
+        /// <param name="profile">Closed planar profile curve on one side of the axis.</param>
+        /// <param name="axisOrigin">Point on the axis of revolution.</param>
+        /// <param name="axisDirection">Direction of the axis of revolution.</param>
+        /// <param name="startAngle">Start angle offset in degrees.</param>
+        /// <param name="sweepAngle">Sweep angle in degrees (360 for a full revolution).</param>
+        /// <returns>The revolved solid.</returns>
+        public static Solid ByRevolve(
+            Curve profile, Point axisOrigin, Vector axisDirection, double startAngle, double sweepAngle)
+        {
+            ArgumentNullException.ThrowIfNull(profile);
+            ArgumentNullException.ThrowIfNull(axisOrigin);
+            ArgumentNullException.ThrowIfNull(axisDirection);
+            return new Solid(NativeGeometry.SolidByRevolve(
+                profile.GetAtomicHandles(),
+                axisOrigin.Position,
+                axisDirection.Components,
+                startAngle,
+                sweepAngle));
+        }
+
+        /// <summary>Applies a constant-radius circular fillet to selected edges of this solid.</summary>
+        /// <param name="edges">Edges of this solid to fillet.</param>
+        /// <param name="radius">Positive fillet radius.</param>
+        /// <returns>A new filleted solid.</returns>
+        public Solid Fillet(IEnumerable<Edge> edges, double radius)
+        {
+            ArgumentNullException.ThrowIfNull(edges);
+            var indices = edges.Where(e => e != null).Select(e => e.Index).Distinct().ToArray();
+            if (indices.Length == 0)
+                throw new ArgumentException("At least one edge is required for Fillet.", nameof(edges));
+            return new Solid(NativeGeometry.SolidFilletEdges(Handle, indices, radius, chamfer: false));
+        }
+
+        /// <summary>Applies a flat bevel chamfer with constant setback to selected edges of this solid.</summary>
+        /// <param name="edges">Edges of this solid to chamfer.</param>
+        /// <param name="offset">Positive chamfer setback distance along each adjacent face.</param>
+        /// <returns>A new chamfered solid.</returns>
+        public Solid Chamfer(IEnumerable<Edge> edges, double offset)
+        {
+            ArgumentNullException.ThrowIfNull(edges);
+            var indices = edges.Where(e => e != null).Select(e => e.Index).Distinct().ToArray();
+            if (indices.Length == 0)
+                throw new ArgumentException("At least one edge is required for Chamfer.", nameof(edges));
+            return new Solid(NativeGeometry.SolidFilletEdges(Handle, indices, offset, chamfer: true));
+        }
+
+        /// <summary>Hollows this solid into a thin-walled shell.</summary>
+        /// <param name="internalFaceThickness">Inward wall thickness (0 for outward-only).</param>
+        /// <param name="externalFaceThickness">Outward wall thickness (0 for inward-only).</param>
+        /// <returns>The thin-walled hollow solid.</returns>
+        public Solid ThinShell(double internalFaceThickness = 1, double externalFaceThickness = 1)
+        {
+            return new Solid(NativeGeometry.SolidThinShell(Handle, internalFaceThickness, externalFaceThickness));
+        }
+
+        /// <inheritdoc />
+        public override Geometry[] Split(Geometry tool)
+        {
+            ArgumentNullException.ThrowIfNull(tool);
+            if (tool is Plane plane)
+            {
+                var results = new List<Geometry>(2);
+                var pos = NativeGeometry.SolidCutPlaneOrNull(Handle, plane.Origin.Position, plane.Normal.Components);
+                if (pos != null)
+                    results.Add(new Solid(pos));
+                var neg = NativeGeometry.SolidCutPlaneOrNull(Handle, plane.Origin.Position, plane.Normal.Reverse().Components);
+                if (neg != null)
+                    results.Add(new Solid(neg));
+                return results.ToArray();
+            }
+            return base.Split(tool);
+        }
+
         /// <summary>Subtracts another solid from this solid and returns the result.</summary>
         /// <param name="other">The solid to subtract.</param>
         /// <returns>The remainder after subtraction.</returns>

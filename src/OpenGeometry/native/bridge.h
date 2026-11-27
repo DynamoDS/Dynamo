@@ -15,6 +15,7 @@ extern "C" {
 typedef struct OgSolid OgSolid;
 typedef struct OgCurve OgCurve;
 typedef struct OgMesh OgMesh;
+typedef struct OgGeomList OgGeomList;
 
 typedef struct OgPoint
 {
@@ -153,10 +154,148 @@ OG_API int32_t og_brep_vertex_edges(
 OG_API int32_t og_brep_vertex_faces(
     const OgSolid* brep, uint32_t vertex_index, uint32_t* face_indices, uint32_t capacity, uint32_t* actual_count);
 
+/* Modeling operations (extrude, loft, sweep, revolve, offset, thicken, fillet/chamfer, shell, split) */
+OG_API int32_t og_curve_extrude(
+    const OgCurve* const* curves,
+    uint32_t count,
+    const OgPoint* direction,
+    double distance,
+    int32_t cap_ends,
+    OgSolid** result);
+OG_API int32_t og_solid_by_loft(
+    const OgCurve* const* curves,
+    const uint32_t* curves_per_profile,
+    uint32_t profile_count,
+    OgSolid** result);
+OG_API int32_t og_solid_by_sweep(
+    const OgCurve* const* profile_curves,
+    uint32_t profile_count,
+    const OgCurve* path_curve,
+    OgSolid** result);
+OG_API int32_t og_solid_by_revolve(
+    const OgCurve* const* profile_curves,
+    uint32_t profile_count,
+    const OgPoint* axis_origin,
+    const OgPoint* axis_dir,
+    double start_deg,
+    double sweep_deg,
+    OgSolid** result);
+OG_API int32_t og_surface_offset(const OgSolid* surface_brep, double distance, OgSolid** result);
+OG_API int32_t og_surface_thicken(
+    const OgSolid* surface_brep, double thickness, int32_t both_sides, OgSolid** result);
+OG_API int32_t og_solid_fillet_edges(
+    const OgSolid* solid,
+    const uint32_t* edge_indices,
+    uint32_t edge_count,
+    double radius,
+    int32_t chamfer,
+    OgSolid** result);
+OG_API int32_t og_solid_thin_shell(
+    const OgSolid* solid, double internal_thickness, double external_thickness, OgSolid** result);
+OG_API int32_t og_solid_cut_plane(
+    const OgSolid* solid, const OgPoint* plane_origin, const OgPoint* plane_normal, OgSolid** result);
+
 /* Immutable snapshot. Each consecutive group of three vertices is a triangle. */
 OG_API uint32_t og_mesh_vertex_count(const OgMesh* mesh);
 OG_API int32_t og_copy_mesh_vertices(const OgMesh* mesh, OgVertex* vertices, uint32_t capacity);
 OG_API void og_release_mesh(OgMesh* mesh);
+
+/* Slice D: Ellipse, EllipseArc, Helix, curve offset/project, NurbsSurface, surface sweep/revolve/trim, intersections */
+OG_API int32_t og_curve_create_ellipse(
+    const OgPoint* center,
+    const OgPoint* x_axis,
+    const OgPoint* y_axis,
+    double radius_x,
+    double radius_y,
+    OgCurve** result);
+OG_API int32_t og_curve_create_ellipse_arc(
+    const OgPoint* center,
+    const OgPoint* x_axis,
+    const OgPoint* y_axis,
+    double radius_x,
+    double radius_y,
+    double start_deg,
+    double sweep_deg,
+    OgCurve** result);
+OG_API int32_t og_curve_create_helix(
+    const OgPoint* axis_point,
+    const OgPoint* axis_dir,
+    const OgPoint* start_point,
+    double pitch,
+    double angle_turns_deg,
+    OgCurve** result);
+OG_API int32_t og_curve_offset(const OgCurve* curve, double distance, OgCurve** result);
+OG_API int32_t og_curve_project_onto_brep(
+    const OgCurve* curve, const OgSolid* brep, const OgPoint* direction, OgGeomList** result);
+
+OG_API int32_t og_nurbs_surface_by_control_points(
+    const OgPoint* points, uint32_t u_count, uint32_t v_count, int32_t u_degree, int32_t v_degree, OgSolid** result);
+OG_API int32_t og_nurbs_surface_by_points(
+    const OgPoint* points, uint32_t u_count, uint32_t v_count, int32_t u_degree, int32_t v_degree, OgSolid** result);
+OG_API int32_t og_nurbs_surface_info(
+    const OgSolid* surface_brep,
+    int32_t* u_degree,
+    int32_t* v_degree,
+    uint32_t* u_count,
+    uint32_t* v_count,
+    int32_t* is_rational,
+    int32_t* is_periodic_u,
+    int32_t* is_periodic_v);
+OG_API int32_t og_nurbs_surface_control_points(
+    const OgSolid* surface_brep,
+    OgPoint* points,
+    double* weights,
+    uint32_t capacity,
+    uint32_t* actual_count);
+OG_API int32_t og_nurbs_surface_knots(
+    const OgSolid* surface_brep,
+    int32_t v_direction,
+    double* knots,
+    uint32_t capacity,
+    uint32_t* actual_count);
+
+OG_API int32_t og_surface_by_sweep(const OgCurve* profile, const OgCurve* path, OgSolid** result);
+OG_API int32_t og_surface_by_sweep_2_rails(
+    const OgCurve* path, const OgCurve* guide_rail, const OgCurve* profile, OgSolid** result);
+OG_API int32_t og_surface_by_revolve(
+    const OgCurve* const* profile_curves,
+    uint32_t profile_count,
+    const OgPoint* axis_origin,
+    const OgPoint* axis_dir,
+    double start_deg,
+    double sweep_deg,
+    OgSolid** result);
+OG_API int32_t og_surface_trim_with_curves(
+    const OgSolid* surface_brep,
+    const OgCurve* const* curves,
+    const uint32_t* curves_per_loop,
+    uint32_t loop_count,
+    OgSolid** result);
+
+OG_API int32_t og_intersect_curves(const OgCurve* curve_a, const OgCurve* curve_b, OgGeomList** result);
+OG_API int32_t og_intersect_curve_brep(const OgCurve* curve, const OgSolid* brep, OgGeomList** result);
+OG_API int32_t og_intersect_breps(const OgSolid* brep_a, const OgSolid* brep_b, OgGeomList** result);
+OG_API int32_t og_intersect_brep_plane(
+    const OgSolid* brep, const OgPoint* plane_origin, const OgPoint* plane_normal, OgGeomList** result);
+
+OG_API uint32_t og_geom_list_point_count(const OgGeomList* list);
+OG_API int32_t og_geom_list_get_point(const OgGeomList* list, uint32_t index, OgPoint* point);
+OG_API uint32_t og_geom_list_curve_count(const OgGeomList* list);
+OG_API int32_t og_geom_list_take_curve(OgGeomList* list, uint32_t index, OgCurve** curve);
+OG_API void og_release_geom_list(OgGeomList* list);
+
+/* Slice E: Polygon mesh Booleans via SMLib SmPolyBrep (op: 0=union, 1=intersection, 2=difference) */
+OG_API int32_t og_poly_boolean(
+    const OgPoint* verts_a,
+    uint32_t vert_count_a,
+    const uint32_t* tris_a,
+    uint32_t tri_count_a,
+    const OgPoint* verts_b,
+    uint32_t vert_count_b,
+    const uint32_t* tris_b,
+    uint32_t tri_count_b,
+    int32_t operation,
+    OgMesh** result);
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Autodesk.DesignScript.Interfaces;
 using OpenGeometry;
 
@@ -94,6 +95,80 @@ namespace Autodesk.DesignScript.Geometry
             return new Curve(NativeGeometry.CurveTrim(Handle, startParameter, endParameter));
         }
 
+        /// <summary>Creates a planar surface bounded by this closed curve.</summary>
+        public Surface Patch() => Surface.ByPatch(this);
+
+        /// <summary>Offsets this planar curve within its own plane by <paramref name="distance"/>.</summary>
+        /// <param name="distance">Signed offset distance.</param>
+        /// <returns>The offset curve.</returns>
+        public virtual Curve Offset(double distance) => new(NativeGeometry.CurveOffset(Handle, distance));
+
+        /// <summary>Projects this curve onto <paramref name="baseGeometry"/> along <paramref name="projectionDirection"/>.</summary>
+        /// <param name="baseGeometry">Target surface, polysurface, solid, or plane.</param>
+        /// <param name="projectionDirection">Direction vector along which to project.</param>
+        /// <returns>Projected curves on the target geometry.</returns>
+        public Geometry[] Project(Geometry baseGeometry, Vector projectionDirection)
+        {
+            ArgumentNullException.ThrowIfNull(baseGeometry);
+            ArgumentNullException.ThrowIfNull(projectionDirection);
+
+            if (baseGeometry is Plane plane)
+            {
+                using var sheet = GeometryIntersections.CreatePlaneSheetForCurve(this, plane);
+                return ProjectOntoTopology(sheet, projectionDirection);
+            }
+            if (baseGeometry is Topology topo)
+                return ProjectOntoTopology(topo, projectionDirection);
+
+            throw new NotSupportedException($"Curve.Project onto {baseGeometry.GetType().Name} is not supported.");
+        }
+
+        private Geometry[] ProjectOntoTopology(Topology target, Vector direction)
+        {
+            var results = new List<Geometry>();
+            foreach (var handle in GetAtomicHandles())
+            {
+                var (_, curves) = NativeGeometry.CurveProjectOntoBrep(handle, target.Handle, direction.Components);
+                foreach (var c in curves)
+                    results.Add(new Curve(c));
+            }
+            return results.ToArray();
+        }
+
+        /// <summary>Extrudes this curve into a surface along its default plane normal (or world Z) by <paramref name="distance"/>.</summary>
+        public Surface Extrude(double distance) => Extrude(GetDefaultExtrudeDirection(), distance);
+
+        /// <summary>Extrudes this curve into a surface along <paramref name="direction"/> (length of vector determines extrusion distance).</summary>
+        public Surface Extrude(Vector direction)
+        {
+            ArgumentNullException.ThrowIfNull(direction);
+            return Extrude(direction, direction.Length);
+        }
+
+        /// <summary>Extrudes this curve into a surface along <paramref name="direction"/> by <paramref name="distance"/>.</summary>
+        public Surface Extrude(Vector direction, double distance)
+        {
+            ArgumentNullException.ThrowIfNull(direction);
+            return new Surface(NativeGeometry.CurveExtrude(GetAtomicHandles(), direction.Components, distance, capEnds: false));
+        }
+
+        /// <summary>Extrudes this closed planar curve into a capped solid along its default plane normal (or world Z) by <paramref name="distance"/>.</summary>
+        public Solid ExtrudeAsSolid(double distance) => ExtrudeAsSolid(GetDefaultExtrudeDirection(), distance);
+
+        /// <summary>Extrudes this closed planar curve into a capped solid along <paramref name="direction"/> (length of vector determines distance).</summary>
+        public Solid ExtrudeAsSolid(Vector direction)
+        {
+            ArgumentNullException.ThrowIfNull(direction);
+            return ExtrudeAsSolid(direction, direction.Length);
+        }
+
+        /// <summary>Extrudes this closed planar curve into a capped solid along <paramref name="direction"/> by <paramref name="distance"/>.</summary>
+        public Solid ExtrudeAsSolid(Vector direction, double distance)
+        {
+            ArgumentNullException.ThrowIfNull(direction);
+            return new Solid(NativeGeometry.CurveExtrude(GetAtomicHandles(), direction.Components, distance, capEnds: true));
+        }
+
         /// <inheritdoc />
         public override BoundingBox BoundingBox
         {
@@ -147,6 +222,23 @@ namespace Autodesk.DesignScript.Geometry
         }
 
         internal virtual NativeGeometry.CurveHandle[] GetAtomicHandles() => new[] { Handle };
+
+        private Vector GetDefaultExtrudeDirection()
+        {
+            if (this is Circle circle)
+                return circle.Normal;
+            if (this is Arc arc)
+                return arc.Normal;
+            if (this is Polygon polygon && polygon.Points.Length >= 3)
+            {
+                var v1 = Vector.ByTwoPoints(polygon.Points[0], polygon.Points[1]);
+                var v2 = Vector.ByTwoPoints(polygon.Points[0], polygon.Points[2]);
+                var n = v1.Cross(v2);
+                if (n.Length > 1e-9)
+                    return n.Normalized();
+            }
+            return Vector.ZAxis();
+        }
 
         internal virtual uint PreviewSegmentCount => 64;
 

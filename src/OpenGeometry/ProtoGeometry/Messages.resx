@@ -32,4 +32,22 @@
   <data name="SurfaceEvaluation" xml:space="preserve"><value>Surface evaluation</value></data>
   <data name="SurfaceJoin" xml:space="preserve"><value>Surface joining</value></data>
   <data name="TopologyQuery" xml:space="preserve"><value>Topology query</value></data>
+  <data name="Extrude" xml:space="preserve"><value>Curve extrusion</value></data>
+  <data name="Loft" xml:space="preserve"><value>Solid loft</value></data>
+  <data name="Sweep" xml:space="preserve"><value>Solid sweep</value></data>
+  <data name="Revolve" xml:space="preserve"><value>Solid revolve</value></data>
+  <data name="Offset" xml:space="preserve"><value>Surface offset</value></data>
+  <data name="Thicken" xml:space="preserve"><value>Surface thicken</value></data>
+  <data name="Fillet" xml:space="preserve"><value>Solid fillet</value></data>
+  <data name="Chamfer" xml:space="preserve"><value>Solid chamfer</value></data>
+  <data name="ThinShell" xml:space="preserve"><value>Solid thin shell</value></data>
+  <data name="Split" xml:space="preserve"><value>Geometry split</value></data>
+  <data name="Ellipse" xml:space="preserve"><value>Ellipse creation</value></data>
+  <data name="Helix" xml:space="preserve"><value>Helix creation</value></data>
+  <data name="CurveOffset" xml:space="preserve"><value>Curve offset</value></data>
+  <data name="CurveProject" xml:space="preserve"><value>Curve projection</value></data>
+  <data name="NurbsSurface" xml:space="preserve"><value>NURBS surface operation</value></data>
+  <data name="SurfaceTrim" xml:space="preserve"><value>Surface trimming</value></data>
+  <data name="Intersection" xml:space="preserve"><value>Geometry intersection</value></data>
+  <data name="MeshBoolean" xml:space="preserve"><value>Mesh Boolean operation</value></data>
 </root>

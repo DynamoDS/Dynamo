@@ -1,17 +1,39 @@
-# Open Geometry proof of concept
+# Open Geometry for Dynamo
 
-This is the first testable slice of the SMLib geometry stack for Windows x64. It builds a fork-owned `ProtoGeometry.dll` and a C ABI bridge. The NUnit tests use Dynamo's DesignScript engine and render-package interface. The Sandbox startup and saved `.dyn` integration are future steps.
+OpenGeometry replaces Autodesk's proprietary ASM / LibG / `ProtoGeometry.dll` stack with a fork-owned `ProtoGeometry.dll` backed by NVIDIA's open-source `usd-brep` BRep solid modeling kernel (`SMLib` + `SM_API`) behind a versioned C ABI bridge (`OpenGeometryBridge.dll`, ABI v4).
 
-## Run the tests
+The Sandbox integration is opt-in (`-p:UseOpenGeometry=true`), keeping upstream Dynamo's default build profile intact while staging an isolated Windows x64 Sandbox build under `bin/open-geometry/sandbox/Release` with zero ASM, LibG, Autodesk ProtoGeometry, OpenUSD, Python, or TBB dependencies.
 
-Use Git, CMake 3.24 or newer, MSVC x64 with the Windows SDK, Visual Studio MSBuild with .NET 10 support and the .NET 10 SDK. The CMake generator defaults to Visual Studio 2022. Pass `-CMakeGenerator` if you use a different installed generator with x64 support.
+## Build and Test Entry Points
 
-From the Dynamo repository root, point the test script to a checkout of NVIDIA's `usd-brep` at the commit in [usd-brep.ref](native/usd-brep.ref). Keep its `source/SMLib` and `source/SM_API` directories clean. A sibling `usd-brep` checkout is the default.
+Prerequisites: Git, CMake 3.24+, MSVC x64 with Windows SDK, Visual Studio MSBuild with .NET 10 support, and the .NET 10 SDK. Point `-UsdBrepSource` at a clean checkout of NVIDIA `usd-brep` pinned to the commit in [usd-brep.ref](native/usd-brep.ref).
+
+1. **Native + managed geometry & DesignScript unit tests** (Primitives, Transforms, Booleans, Curves, Surfaces, Topology, Extrude/Loft/Sweep/Revolve/Offset/Thicken/Fillet/Chamfer/ThinShell/Split, and Mesh):
 
 ```powershell
 .\tools\OpenGeometry\Test-OpenGeometry.ps1 -UsdBrepSource ..\usd-brep
 ```
 
-The script builds SMLib, SM_API and the bridge from source into `bin/open-geometry/native/Release`. It uses Visual Studio MSBuild for the engine's resource generation, then runs NUnit via `dotnet test`. The native build uses the pinned sources with the optional parallel and TBB allocator paths disabled. It needs no OpenUSD or Python packages. The test process loads the three native libraries and the Visual C++ runtime.
+2. **Opt-in Windows x64 Sandbox build** (isolated staging in `bin/open-geometry/sandbox/Release`):
 
-The fixture subtracts a radius-2 cylinder from a centered 10 × 10 × 10 cuboid. It checks the analytic volume, reuse of both original solids after disposing of the result, and an open bore in Dynamo's triangle render package. A DesignScript test imports the replacement by its managed identity and checks the volume on both graph branches.
+```powershell
+.\tools\OpenGeometry\Build-OpenGeometrySandbox.ps1 -UsdBrepSource ..\usd-brep -CleanStaging
+```
+
+3. **Full Sandbox integration, WPF/Helix preview, live `DynamoSandbox.exe` module audit, and dependency boundary verification**:
+
+```powershell
+.\tools\OpenGeometry\Test-OpenGeometrySandbox.ps1 -UsdBrepSource ..\usd-brep
+```
+
+4. **PublicAPI CI gate on fork `ProtoGeometry.dll`**:
+
+```powershell
+dotnet build src/OpenGeometry/ProtoGeometry/ProtoGeometry.csproj -c Release /p:PublicApiAnalyzers=true /warnaserror:RS0016,RS0017
+```
+
+## Architecture and Compatibility
+
+- **Native boundary**: `src/OpenGeometry/native/` builds `SMLib.dll`, `SM_API.dll`, and `OpenGeometryBridge.dll` from pinned sources with parallel/TBB allocators disabled and no OpenUSD/Python dependencies. All SMLib calls are serialized behind a process-global mutex, and non-mutating Dynamo semantics are enforced by deep-copying operands before kernel mutators/consumers.
+- **Managed geometry**: `src/OpenGeometry/ProtoGeometry/` implements `Autodesk.DesignScript.Geometry` types, Zero-Touch signatures, `IGraphicItem` preview tessellation, localized `Messages.resx` diagnostics, and `PublicAPI.Unshipped.txt` tracking.
+- **Compatibility inventory**: See [COMPATIBILITY.md](COMPATIBILITY.md) for type-by-type coverage across Slices A–C and tracked gaps (T-Splines, SAT/SAB/SolidDef, downstream binary compatibility).

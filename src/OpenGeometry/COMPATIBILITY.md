@@ -1,44 +1,54 @@
 # OpenGeometry Compatibility Inventory
 
-This inventory is derived from Dynamo's checked-in public node documentation (`doc/distrib/NodeHelpFiles/en-US/Autodesk.DesignScript.Geometry.*.md`, 533 documented members across 43 types) and checked-in sample graphs (`doc/distrib/Samples/**/*.dyn`, 294 graphs).
+This inventory is derived from Dynamo's checked-in public node documentation (`doc/distrib/NodeHelpFiles/en-US/Autodesk.DesignScript.Geometry.*.md`, 533 documented members across 43 types) and checked-in sample graphs (`doc/distrib/Samples/**/*.dyn`, 294 graphs across 14 locales; 21 distinct English sample graphs).
 
-The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h).
+The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v6).
+
+## Sample Corpus Coverage
+
+- **13 / 13** non-Excel, non-Python, non-intentional-warning English Dynamo samples under `doc/distrib/Samples/en-US/` run with **0 DummyNodes, 0 errors, and 0 warnings** in `SampleCorpusTests`:
+  - `Basics_Basic01.dyn`, `Basics_Basic02.dyn`, `Basics_Basic03.dyn`
+  - `Core_AttractorPoint.dyn`, `Core_CodeBlocks.dyn`, `Core_ListAtLevel.dyn`, `Core_ListLacing.dyn`, `Core_PassingFunctions.dyn`, `Core_RangeSyntax.dyn`
+  - `Geometry_Curves.dyn`, `Geometry_Points.dyn`, `Geometry_Solids.dyn`, `Geometry_Surfaces.dyn`
+- `Core_Strings.dyn` resolves all 53 nodes with 0 DummyNodes and 0 errors (its single `DSCore.String.ToNumber` warning is an intentional tutorial demonstration).
 
 ## Type and Slice Status
 
-| Type | Public Docs | Status | Target Slice | Notes |
+| Type | Public Docs | Status | Implemented Slice | Notes |
 |---|---:|---|---|---|
-| `Geometry` | 26 | Partial | Baseline + Slice A/C | `Dispose`, `IGraphicItem.Tessellate`, rigid transforms (`Translate`, `Rotate`, `Scale`, `Transform`), `BoundingBox`, `Split`; explicit `NotSupportedException` for SAT/SAB/SolidDef |
-| `Point` | 14 | Implemented (core) | Baseline + Slice A | `ByCoordinates` (2D & 3D), `Origin`, `ByCartesianCoordinates`, `X/Y/Z`, `Add`, `Subtract`, `AsVector`, `DistanceTo`, `Translate`, `Rotate`, `Scale`, `Transform` |
-| `Vector` | 26 | Planned → Slice A | Slice A | `ByCoordinates`, `ByTwoPoints`, `XAxis/YAxis/ZAxis`, `Length`, `Normalized`, `Dot`, `Cross`, `Scale`, `Add`, `Subtract`, `Reverse`, `AngleWithVector`, `IsParallel`, `IsPerpendicular`, `AsPoint` |
-| `UV` | 3 | Planned → Slice A | Slice A | `ByCoordinates`, `U`, `V` |
-| `CoordinateSystem` | 28 | Planned → Slice A | Slice A | `Identity`, `ByOrigin`, `ByOriginVectors`, `ByPlane`, `Origin`, `XAxis`, `YAxis`, `ZAxis`, `Translate`, `Rotate`, `Scale`, `Inverse` |
-| `Plane` | 15 | Planned → Slice A | Slice A | `XY`, `YZ`, `XZ`, `ByOriginNormal`, `ByOriginNormalXAxis`, `ByThreePoints`, `Origin`, `Normal`, `XAxis`, `YAxis`, `Offset` |
-| `BoundingBox` | 11 | Planned → Slice A | Slice A | `ByCorners`, `ByGeometry`, `MinPoint`, `MaxPoint`, `Contains`, `Intersects`, `ToCuboid`, `IsEmpty` |
-| `Solid` | 19 | Partial → Slice A/B/C | Baseline + Slice A/C | `Volume`, `Area`, `Centroid`, `Difference`, `DifferenceAll`, `Union`, `ByUnion`, `Intersect`, `ThinShell`, `Fillet`, `Chamfer`, `ByLoft`, `BySweep`, `ByJoinedSurfaces` |
-| `Cuboid` | 4 | Implemented (core) | Baseline + Slice A | `ByLengths` (origin & world defaults), `ByCorners`, `Width`, `Length`, `Height` |
-| `Cylinder` | 5 | Implemented (core) | Baseline + Slice A | `ByPointsRadius`, `ByRadiusHeight`, `Radius`, `Height`, `StartPoint`, `EndPoint` |
-| `Sphere` | 5 | Planned → Slice A | Slice A | `ByCenterPointRadius`, `ByFourPoints`, `CenterPoint`, `Radius` |
-| `Cone` | 10 | Planned → Slice A | Slice A | `ByPointsRadii`, `ByPointsRadius`, `ByCoordinateSystemHeightRadii`, `StartPoint`, `EndPoint`, `StartRadius`, `EndRadius`, `Height` |
-| `Topology` | 3 | Planned → Slice B | Slice B | Base class for `Solid` and `Surface`; `Faces`, `Edges`, `Vertices` |
-| `Face` | 3 | Planned → Slice B | Slice B | `SurfaceGeometry`, `Edges`, `Vertices` |
-| `Edge` | 4 | Planned → Slice B | Slice B | `CurveGeometry`, `StartVertex`, `EndVertex`, `AdjacentFaces` |
-| `Vertex` | 3 | Planned → Slice B | Slice B | `PointGeometry`, `AdjacentEdges`, `AdjacentFaces` |
-| `Curve` | 55 | Planned → Slice B/C | Slice B/C | `StartPoint`, `EndPoint`, `Length`, `IsClosed`, `PointAtParameter`, `TangentAtParameter`, `NormalAtParameter`, `PointAtSegmentLength`, `SplitByParameter`, `TrimByParameter`, `Extrude`, `ExtrudeAsSolid`, `Patch`, `Reverse` |
-| `Line` | 5 | Planned → Slice B | Slice B | `ByStartPointEndPoint`, `ByStartPointDirectionLength`, `Direction` |
-| `Circle` | 7 | Planned → Slice B | Slice B | `ByCenterPointRadius`, `ByCenterPointRadiusNormal`, `ByPlaneRadius`, `ByThreePoints`, `CenterPoint`, `Radius`, `Normal` |
-| `Arc` | 12 | Planned → Slice B | Slice B | `ByCenterPointRadiusAngle`, `ByThreePoints`, `ByCenterPointStartPointEndPoint`, `CenterPoint`, `Radius`, `StartAngle`, `SweepAngle` |
-| `NurbsCurve` | 12 | Planned → Slice B | Slice B | `ByPoints`, `ByControlPoints`, `Degree`, `ControlPoints`, `Knots`, `Weights`, `IsPeriodic` |
-| `PolyCurve` | 13 | Planned → Slice B | Slice B | `ByJoinedCurves`, `ByPoints`, `Curves`, `NumberOfCurves` |
-| `Polygon` | 8 | Planned → Slice B | Slice B | `ByPoints`, `RegularPolygon`, `Points`, `Center` |
-| `Rectangle` | 3 | Planned → Slice B | Slice B | `ByWidthLength`, `ByCornerPoints`, `Width`, `Length` |
-| `Ellipse` / `EllipseArc` / `Helix` | 20 | Planned | Future | Analytic/NURBS curve extensions |
-| `Surface` | 35 | Planned → Slice B/C | Slice B/C | `Area`, `PerimeterCurves`, `PointAtParameter`, `NormalAtParameter`, `ByPatch`, `ByLoft`, `BySweep`, `ByPerimeterPoints`, `Thicken`, `Offset`, `TrimWithEdgeLoops` |
-| `NurbsSurface` | 14 | Planned | Future | Control-point NURBS surface construction and queries |
-| `PolySurface` | 15 | Planned → Slice B/C | Slice B/C | `ByJoinedSurfaces`, `Surfaces`, `Solid`, `SurfaceCount`, `UnconnectedBoundaries` |
-| `Mesh` | 53 | Planned → Slice C | Slice C | `ByPointsFaceIndices`, `VertexPositions`, `VertexNormals`, `FaceIndices`, `Triangles`, `Area`, `Volume`, `Translate`, `Scale` |
-| `IndexGroup` | 7 | Planned → Slice C | Slice C | `ByIndices` (3 & 4 indices), `A`, `B`, `C`, `D`, `Count` |
-| `PanelSurface` / `PanelSurfaceBoundaryCondition` | 24 | Deferred | Future | Paneling domain types |
+| `Geometry` | 26 | Implemented (core) | Baseline + A–D | `Dispose`, `Tessellate` (`IGraphicItem`), `Translate`, `Rotate`, `Scale`, `Transform`, `BoundingBox`, `DistanceTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`; explicit `NotSupportedException` for SAT/SAB/SolidDef |
+| `Point` | 14 | Implemented (core) | Baseline + A | `ByCoordinates` (2D & 3D), `Origin`, `ByCartesianCoordinates`, `X/Y/Z`, `Add`, `Subtract`, `AsVector`, `DistanceTo`, transforms |
+| `Vector` | 26 | Implemented (core) | Slice A | `ByCoordinates`, `ByTwoPoints`, `XAxis/YAxis/ZAxis`, `Length`, `Normalized`, `Dot`, `Cross`, `Scale`, `Add`, `Subtract`, `Reverse`, `AngleWithVector`, `IsParallel`, `IsPerpendicular`, `AsPoint` |
+| `UV` | 3 | Implemented | Slice A | `ByCoordinates`, `U`, `V` |
+| `CoordinateSystem` | 28 | Implemented (core) | Slice A | `Identity`, `ByOrigin`, `ByOriginVectors`, `ByPlane`, `Origin`, `XAxis`, `YAxis`, `ZAxis`, `Determinant`, `IsUnscaledOrtho`, `Translate`, `Rotate`, `Scale`, `Inverse` |
+| `Plane` | 15 | Implemented (core) | Slice A | `XY`, `YZ`, `XZ`, `ByOriginNormal`, `ByOriginNormalXAxis`, `ByThreePoints`, `Origin`, `Normal`, `XAxis`, `YAxis`, `Offset`, transforms |
+| `BoundingBox` | 11 | Implemented (core) | Slice A | `ByCorners`, `ByGeometry`, `MinPoint`, `MaxPoint`, `Contains`, `Intersects`, `ToCuboid`, `IsEmpty` |
+| `Solid` | 19 | Implemented (core) | Baseline + A–D | `Volume`, `Area`, `Centroid`, `Difference`, `DifferenceAll`, `Union`, `ByUnion`, `Intersect`, `ByJoinedSurfaces`, `ByLoft` (cross-sections + guide curves), `ByRuledLoft`, `BySweep`, `ByRevolve`, `Fillet`, `Chamfer`, `ThinShell`, `Split(Plane)` |
+| `Cuboid` | 4 | Implemented | Baseline + A | `ByLengths` (default, point, CS overloads), `ByCorners`, `Width`, `Length`, `Height` |
+| `Cylinder` | 5 | Implemented | Baseline + A | `ByPointsRadius`, `ByRadiusHeight`, `Radius`, `Height`, `StartPoint`, `EndPoint` |
+| `Sphere` | 5 | Implemented (core) | Slice A | `ByCenterPointRadius`, `CenterPoint`, `Radius` |
+| `Cone` | 10 | Implemented (core) | Slice A | `ByPointsRadii`, `ByPointsRadius`, `ByCoordinateSystemHeightRadii`, `StartPoint`, `EndPoint`, `StartRadius`, `EndRadius`, `Height` |
+| `Topology` | 3 | Implemented | Slice B | Base class for `Solid`, `Surface`, `PolySurface`; `Faces`, `Edges`, `Vertices` |
+| `Face` | 3 | Implemented | Slice B | `SurfaceGeometry()`, `Edges`, `Vertices`, `Area`, `BoundingBox` |
+| `Edge` | 4 | Implemented | Slice B | `CurveGeometry`, `StartVertex`, `EndVertex`, `AdjacentFaces`, `Length` |
+| `Vertex` | 3 | Implemented | Slice B | `PointGeometry`, `AdjacentEdges`, `AdjacentFaces` |
+| `Curve` | 55 | Implemented (core) | Slice B–D | `StartPoint`, `EndPoint`, `Length`, `IsClosed`, `PointAtParameter`, `TangentAtParameter`, `NormalAtParameter`, `PointAtSegmentLength`, `ParameterAtSegmentLength`, `ParameterAtPoint`, `Reverse`, `SplitByParameter`, `TrimByParameter`, `Offset`, `Project`, `Patch`, `Extrude`, `ExtrudeAsSolid`, transforms, preview |
+| `Line` | 5 | Implemented (core) | Slice B + Corpus | `ByStartPointEndPoint`, `ByStartPointDirectionLength`, `ByBestFitThroughPoints`, `Direction` |
+| `Circle` | 7 | Implemented (core) | Slice B | `ByCenterPointRadius`, `ByCenterPointRadiusNormal`, `ByPlaneRadius`, `ByThreePoints`, `CenterPoint`, `Radius`, `Normal` |
+| `Arc` | 12 | Implemented (core) | Slice B | `ByCenterPointRadiusAngle`, `ByThreePoints`, `CenterPoint`, `Radius`, `StartAngle`, `SweepAngle`, `Normal` |
+| `Ellipse` | 7 | Implemented | Slice D | `ByOriginRadii`, `ByOriginVectors`, `ByCoordinateSystemRadii`, `ByPlaneRadii`, `CenterPoint`, `MajorAxis`, `MinorAxis` |
+| `EllipseArc` | 7 | Implemented | Slice D | `ByPlaneRadiiAngles`, `CenterPoint`, `MajorAxis`, `MinorAxis`, `Plane`, `StartAngle`, `SweepAngle` |
+| `Helix` | 6 | Implemented | Slice D | `ByAxis`, `AxisPoint`, `AxisDirection`, `Pitch`, `Radius`, `Angle` |
+| `NurbsCurve` | 12 | Implemented (core) | Slice B + Corpus | `ByPoints`, `ByControlPoints` (with degree & closure), `Degree` |
+| `PolyCurve` | 13 | Implemented (core) | Slice B | `ByJoinedCurves`, `ByPoints`, `Curves()`, `NumberOfCurves`, full `Curve` overrides |
+| `Polygon` | 8 | Implemented (core) | Slice B | `ByPoints`, `RegularPolygon`, `Points`, `Center()` |
+| `Rectangle` | 3 | Implemented | Slice B | `ByWidthLength` (default, CS, Plane overloads), `ByCornerPoints`, `Width`, `Height` |
+| `Surface` | 35 | Implemented (core) | Slice B–D | `ByPerimeterPoints`, `ByPatch`, `ByLoft`, `ByRuledLoft`, `BySweep`, `BySweep2Rails`, `ByRevolve`, `TrimWithEdgeLoops`, `Area`, `Perimeter`, `PerimeterCurves()`, `PointAtParameter`, `NormalAtParameter`, `Offset`, `Thicken`, transforms, preview |
+| `NurbsSurface` | 14 | Implemented (core) | Slice D | `ByPoints`, `ByControlPoints`, `DegreeU`, `DegreeV`, `NumControlPointsU`, `NumControlPointsV`, `IsPeriodicInU`, `IsPeriodicInV`, `IsRational`, `ControlPoints()`, `Weights()`, `UKnots()`, `VKnots()` |
+| `PolySurface` | 15 | Implemented (core) | Slice B + Corpus | Inherits `Surface`; `ByJoinedSurfaces`, `BySolid`, `Surfaces()`, `SurfaceCount`, `EdgeCount`, `VertexCount`, `Solid()` |
+| `Mesh` | 53 | Implemented (core) | Slice C + E | `ByGeometry`, `ByPointsFaceIndices`, `ByPointsIndexGroups`, `ByPointsIndices`, `ByVerticesAndIndices`, `Cuboid`, `Sphere`, `Cone`, `Plane`, `BooleanUnion`, `BooleanDifference`, `BooleanIntersection` (via `SmPolyBrep`), `Triangles`, `TriangleNormals`, `TriangleCentroids`, flat coordinate accessors, `Area`, `Volume`, transforms, preview |
+| `IndexGroup` | 7 | Implemented | Slice C | `ByIndices` (3 & 4 indices), `A`, `B`, `C`, `D`, `Count` |
+| `PanelSurface` / `PanelSurfaceBoundaryCondition` | 24 | Implemented (core) | Slice E | `PanelSurfaceBoundaryCondition` enum (`CoreNodes/ProtoGeometryHelper.cs` unguarded), `ByQuads`, `ByDiagonallySplitSquares`, `ByCrossSplitSquares`, `NumPanels`, `NumVertices`, `GetPoint`, `GetVertexIndex`, `GetNumPanelVertices`, `GetPanelPoints`, `GetPanelPolygon`, transforms, preview |
 
 ## Tracked Compatibility Gaps
 
