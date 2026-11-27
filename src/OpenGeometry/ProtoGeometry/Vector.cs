@@ -158,6 +158,15 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>Converts this vector to a point with the same coordinates.</summary>
         public Point AsPoint() => Point.ByCoordinates(X, Y, Z);
 
+        /// <summary>Serializes this vector to JSON.</summary>
+        /// <returns>A JSON representation of this vector.</returns>
+        public string ToJson() => GeometryJsonSerializer.SerializeVector(this);
+
+        /// <summary>Deserializes a vector from JSON.</summary>
+        /// <param name="json">JSON string representing a vector.</param>
+        /// <returns>The deserialized vector.</returns>
+        public static Vector FromJson(string json) => GeometryJsonSerializer.DeserializeVector(json);
+
         /// <summary>Releases resources owned by this vector.</summary>
         public void Dispose() { }
 

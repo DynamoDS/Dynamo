@@ -2,7 +2,7 @@
 
 This inventory is derived from Dynamo's checked-in public node documentation (`doc/distrib/NodeHelpFiles/en-US/Autodesk.DesignScript.Geometry.*.md`, 533 documented members across 43 types) and checked-in sample graphs (`doc/distrib/Samples/**/*.dyn`, 294 graphs across 14 locales; 21 distinct English sample graphs).
 
-The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v8).
+The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe379290b3032e9407deb220df` (`v1.0.2`), built from `source/SMLib` and `source/SM_API` behind the versioned C ABI bridge in [bridge.h](native/bridge.h) (currently ABI v9).
 
 ## Sample Corpus Coverage
 
@@ -16,13 +16,13 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 
 | Type | Public Docs | Status | Implemented Slice | Notes |
 |---|---:|---|---|---|
-| `Geometry` | 26 | Implemented (core) | Baseline + A–G | `Dispose`, `Tessellate` (`IGraphicItem`), `Translate`, `Rotate`, `Scale`, `Transform`, `Mirror`, `BoundingBox`, `DistanceTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`; explicit `NotSupportedException` for SAT/SAB/SolidDef |
+| `Geometry` | 26 | Implemented (core) | Baseline + A–H | `Dispose`, `Tessellate` (`IGraphicItem` with per-vertex preview colors), `Translate`, `Rotate`, `Scale`, `Transform`, `Mirror`, `BoundingBox`, `DistanceTo`, `Split`, `Trim`, `Intersect`, `IntersectAll`, `DoesIntersect`, `ToJson`/`FromJson` (exact SMLib BRep/curve stream payloads, wired to `DSCore.Data.StringifyJSON`/`ParseJSON`/`Remember`); explicit `NotSupportedException` for SAT/SAB/SolidDef |
 | `Point` | 14 | Implemented (core) | Baseline + A | `ByCoordinates` (2D & 3D), `Origin`, `ByCartesianCoordinates`, `X/Y/Z`, `Add`, `Subtract`, `AsVector`, `DistanceTo`, transforms |
-| `Vector` | 26 | Implemented (core) | Slice A | `ByCoordinates`, `ByTwoPoints`, `XAxis/YAxis/ZAxis`, `Length`, `Normalized`, `Dot`, `Cross`, `Scale`, `Add`, `Subtract`, `Reverse`, `AngleWithVector`, `IsParallel`, `IsPerpendicular`, `AsPoint` |
+| `Vector` | 26 | Implemented (core) | Slice A + H | `ByCoordinates`, `ByTwoPoints`, `XAxis/YAxis/ZAxis`, `Length`, `Normalized`, `Dot`, `Cross`, `Scale`, `Add`, `Subtract`, `Reverse`, `AngleWithVector`, `IsParallel`, `IsPerpendicular`, `AsPoint`, `ToJson`/`FromJson` |
 | `UV` | 3 | Implemented | Slice A | `ByCoordinates`, `U`, `V` |
-| `CoordinateSystem` | 28 | Implemented (core) | Slice A | `Identity`, `ByOrigin`, `ByOriginVectors`, `ByPlane`, `Origin`, `XAxis`, `YAxis`, `ZAxis`, `Determinant`, `IsUnscaledOrtho`, `Translate`, `Rotate`, `Scale`, `Inverse` |
+| `CoordinateSystem` | 28 | Implemented (core) | Slice A + H | `Identity`, `ByOrigin`, `ByOriginVectors`, `ByPlane`, `Origin`, `XAxis`, `YAxis`, `ZAxis`, `Determinant`, `IsUnscaledOrtho`, `Translate`, `Rotate`, `Scale`, `Inverse`, `ToJson`/`FromJson`, RGB axis `IGraphicItem` preview |
 | `Plane` | 15 | Implemented (core) | Slice A | `XY`, `YZ`, `XZ`, `ByOriginNormal`, `ByOriginNormalXAxis`, `ByThreePoints`, `Origin`, `Normal`, `XAxis`, `YAxis`, `Offset`, transforms |
-| `BoundingBox` | 11 | Implemented (core) | Slice A | `ByCorners`, `ByGeometry`, `MinPoint`, `MaxPoint`, `Contains`, `Intersects`, `ToCuboid`, `IsEmpty` |
+| `BoundingBox` | 11 | Implemented (core) | Slice A + H | `ByCorners`, `ByGeometry`, `MinPoint`, `MaxPoint`, `Contains`, `Intersects`, `ToCuboid`, `IsEmpty`, `ToJson`/`FromJson` |
 | `Solid` | 19 | Implemented (core) | Baseline + A–D | `Volume`, `Area`, `Centroid`, `Difference`, `DifferenceAll`, `Union`, `ByUnion`, `Intersect`, `ByJoinedSurfaces`, `ByLoft` (cross-sections + guide curves), `ByRuledLoft`, `BySweep`, `ByRevolve`, `Fillet`, `Chamfer`, `ThinShell`, `Split(Plane)` |
 | `Cuboid` | 4 | Implemented | Baseline + A | `ByLengths` (default, point, CS overloads), `ByCorners`, `Width`, `Length`, `Height` |
 | `Cylinder` | 5 | Implemented | Baseline + A | `ByPointsRadius`, `ByRadiusHeight`, `Radius`, `Height`, `StartPoint`, `EndPoint` |
@@ -46,7 +46,7 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 | `Surface` | 35 | Implemented (core) | Slice B–G | `ByPerimeterPoints`, `ByPatch`, `ByLoft` (with & without guide curves), `ByRuledLoft`, `BySweep`, `BySweep2Rails`, `ByRevolve`, `TrimWithEdgeLoops`, `Area`, `Perimeter`, `PerimeterCurves()`, `PointAtParameter`, `NormalAtParameter`, `Offset`, `Thicken`, transforms, `Mirror`, preview |
 | `NurbsSurface` | 14 | Implemented (core) | Slice D | `ByPoints`, `ByControlPoints`, `DegreeU`, `DegreeV`, `NumControlPointsU`, `NumControlPointsV`, `IsPeriodicInU`, `IsPeriodicInV`, `IsRational`, `ControlPoints()`, `Weights()`, `UKnots()`, `VKnots()` |
 | `PolySurface` | 15 | Implemented (core) | Slice B + Corpus | Inherits `Surface`; `ByJoinedSurfaces`, `BySolid`, `Surfaces()`, `SurfaceCount`, `EdgeCount`, `VertexCount`, `Solid()` |
-| `Mesh` | 53 | Implemented (core) | Slice C + E + F | `ByGeometry`, `ByPointsFaceIndices`, `ByPointsIndexGroups`, `ByPointsIndices`, `ByVerticesAndIndices`, `Cuboid`, `Sphere`, `Cone`, `Plane`, `BooleanUnion`/`Difference`/`Intersection`, `PlaneCut`, `Intersect(Plane)`, `MakeWatertight`, `Nearest`, `Mirror`, `Edges`, `Explode`, `Smooth`, `ImportFile`/`ExportMeshes` (`.obj`/`.stl`/`.ply`), `Triangles`, `TriangleNormals`, `TriangleCentroids`, flat coordinate accessors, `Area`, `Volume`, transforms, preview |
+| `Mesh` | 53 | Implemented (core) | Slice C + E + F + H | `ByGeometry`, `ByPointsFaceIndices`, `ByPointsIndexGroups`, `ByPointsIndices`, `ByVerticesAndIndices`, `Cuboid`, `Sphere`, `Cone`, `Plane`, `BooleanUnion`/`Difference`/`Intersection`, `PlaneCut`, `Intersect(Plane)`, `MakeWatertight`, `Nearest`, `Mirror`, `Edges`, `Explode`, `Smooth`, `ImportFile`/`ExportMeshes` (`.obj`/`.stl`/`.ply`), `ToJson`/`FromJson`, `Triangles`, `TriangleNormals`, `TriangleCentroids`, flat coordinate accessors, `Area`, `Volume`, transforms, preview |
 | `IndexGroup` | 7 | Implemented | Slice C | `ByIndices` (3 & 4 indices), `A`, `B`, `C`, `D`, `Count` |
 | `PanelSurface` / `PanelSurfaceBoundaryCondition` | 24 | Implemented (core) | Slice E + G | `PanelSurfaceBoundaryCondition` enum (`CoreNodes/ProtoGeometryHelper.cs` unguarded), `ByQuads`, `ByDiagonallySplitSquares`, `ByCrossSplitSquares`, `ByDiamonds`, `ByHexagons`, `ByStaggeredQuads`, `ByParallelograms`, `NumPanels`, `NumVertices`, `GetPoint`, `GetVertexIndex`, `GetNumPanelVertices`, `GetPanelPoints`, `GetPanelPolygon`, transforms, `Mirror`, preview |
 
@@ -60,7 +60,7 @@ These areas are intentionally tracked separately from the core BRep/curve/surfac
 2. **SAT / SAB / SolidDef binary and text interchange (`ExportToSAT`, `ImportFromSAT`, `SerializeAsSAB`, `DeserializeFromSAB`, `ToSolidDef`, `FromSolidDef`)**
    - SAT/SAB are proprietary ACIS/ASM persistence formats; `SolidDef` is Autodesk's internal interchange schema.
    - Exposed serialization/interchange signatures throw explicit `NotSupportedException` naming the unsupported format and explaining that OpenGeometry uses SMLib rather than ASM.
-   - Future open-format interchange (e.g., STEP / IGES / OBJ / glTF / USD BrepArray) can be layered independently without re-introducing ASM.
+   - Open-format JSON persistence (`ToJson`/`FromJson`, `DSCore.Data.StringifyJSON`/`ParseJSON`/`Remember`) is implemented using exact in-memory SMLib binary BRep/curve streams plus open mesh formats (`.obj`/`.stl`/`.ply`) and native SMLib `.smb` export/import in `OpenGeometryBridge.dll`. Future CAD interchange formats (e.g., STEP / IGES / glTF / USD BrepArray) can be layered independently without re-introducing ASM.
 3. **Downstream Package Binary Compatibility (Strong-Name / Assembly Identity / LibG Internals)**
    - Fork-owned `ProtoGeometry.dll` is intentionally unsigned (`PublicKeyToken=null`, `Product="OpenGeometry for Dynamo"`, `OpenGeometry.Kernel=SMLib`) so runtime audits can prove no Autodesk-built `ProtoGeometry.dll` or `LibG.Interface.dll` is loaded.
    - Zero-Touch graphs (`.dyn` files) bind by type/method name and `FunctionSignature` and survive cleanly across OpenGeometry.

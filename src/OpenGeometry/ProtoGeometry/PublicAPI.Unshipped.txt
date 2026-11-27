@@ -12,6 +12,7 @@ Autodesk.DesignScript.Geometry.BoundingBox.IsEmpty() -> bool
 Autodesk.DesignScript.Geometry.BoundingBox.MaxPoint.get -> Autodesk.DesignScript.Geometry.Point
 Autodesk.DesignScript.Geometry.BoundingBox.MinPoint.get -> Autodesk.DesignScript.Geometry.Point
 Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid() -> Autodesk.DesignScript.Geometry.Cuboid
+Autodesk.DesignScript.Geometry.BoundingBox.ToJson() -> string
 override Autodesk.DesignScript.Geometry.BoundingBox.ToString() -> string
 Autodesk.DesignScript.Geometry.Circle
 Autodesk.DesignScript.Geometry.Circle.CenterPoint.get -> Autodesk.DesignScript.Geometry.Point
@@ -33,6 +34,7 @@ Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geo
 Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(double amount) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(double xAmount, double yAmount, double zAmount) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage package, Autodesk.DesignScript.Interfaces.TessellationParameters parameters) -> void
+Autodesk.DesignScript.Geometry.CoordinateSystem.ToJson() -> string
 Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector direction) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.XAxis.get -> Autodesk.DesignScript.Geometry.Vector
@@ -119,6 +121,7 @@ Autodesk.DesignScript.Geometry.Geometry.Scale(double xamount, double yamount, do
 Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB() -> byte[]
 virtual Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry tool) -> Autodesk.DesignScript.Geometry.Geometry[]
 Autodesk.DesignScript.Geometry.Geometry.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage package, Autodesk.DesignScript.Interfaces.TessellationParameters parameters) -> void
+virtual Autodesk.DesignScript.Geometry.Geometry.ToJson() -> string
 Autodesk.DesignScript.Geometry.Geometry.ToSolidDef() -> string
 abstract Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem cs) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem fromCoordinateSystem, Autodesk.DesignScript.Geometry.CoordinateSystem contextCoordinateSystem) -> Autodesk.DesignScript.Geometry.Geometry
@@ -162,6 +165,7 @@ Autodesk.DesignScript.Geometry.Mesh.PlaneCut(Autodesk.DesignScript.Geometry.Plan
 override Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector axis, double degrees) -> Autodesk.DesignScript.Geometry.Geometry
 override Autodesk.DesignScript.Geometry.Mesh.Scale(Autodesk.DesignScript.Geometry.Point basePoint, double xamount, double yamount, double zamount) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Mesh.Smooth(double scale = 1) -> Autodesk.DesignScript.Geometry.Mesh
+override Autodesk.DesignScript.Geometry.Mesh.ToJson() -> string
 override Autodesk.DesignScript.Geometry.Mesh.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem cs) -> Autodesk.DesignScript.Geometry.Geometry
 override Autodesk.DesignScript.Geometry.Mesh.Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) -> Autodesk.DesignScript.Geometry.Geometry
 Autodesk.DesignScript.Geometry.Mesh.TriangleCentroids() -> Autodesk.DesignScript.Geometry.Point[]
@@ -329,6 +333,7 @@ Autodesk.DesignScript.Geometry.Vector.Normalized() -> Autodesk.DesignScript.Geom
 Autodesk.DesignScript.Geometry.Vector.Reverse() -> Autodesk.DesignScript.Geometry.Vector
 Autodesk.DesignScript.Geometry.Vector.Scale(double scale_factor) -> Autodesk.DesignScript.Geometry.Vector
 Autodesk.DesignScript.Geometry.Vector.Subtract(Autodesk.DesignScript.Geometry.Vector vectorToSubtract) -> Autodesk.DesignScript.Geometry.Vector
+Autodesk.DesignScript.Geometry.Vector.ToJson() -> string
 override Autodesk.DesignScript.Geometry.Vector.ToString() -> string
 Autodesk.DesignScript.Geometry.Vector.X.get -> double
 Autodesk.DesignScript.Geometry.Vector.Y.get -> double
@@ -343,6 +348,7 @@ static Autodesk.DesignScript.Geometry.Arc.ByThreePoints(Autodesk.DesignScript.Ge
 static Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point min, Autodesk.DesignScript.Geometry.Point max) -> Autodesk.DesignScript.Geometry.BoundingBox
 static Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(Autodesk.DesignScript.Geometry.Geometry geom) -> Autodesk.DesignScript.Geometry.BoundingBox
 static Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Geometry> geom) -> Autodesk.DesignScript.Geometry.BoundingBox
+static Autodesk.DesignScript.Geometry.BoundingBox.FromJson(string json) -> Autodesk.DesignScript.Geometry.BoundingBox
 static Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point centerPoint, double radius = 1) -> Autodesk.DesignScript.Geometry.Circle
 static Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadiusNormal(Autodesk.DesignScript.Geometry.Point centerPoint, double radius, Autodesk.DesignScript.Geometry.Vector normal) -> Autodesk.DesignScript.Geometry.Circle
 static Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius(Autodesk.DesignScript.Geometry.Plane plane, double radius = 1) -> Autodesk.DesignScript.Geometry.Circle
@@ -355,6 +361,7 @@ static Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(double x = 0, do
 static Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector xAxis, Autodesk.DesignScript.Geometry.Vector yAxis) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 static Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector xAxis, Autodesk.DesignScript.Geometry.Vector yAxis, Autodesk.DesignScript.Geometry.Vector zAxis) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 static Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane plane) -> Autodesk.DesignScript.Geometry.CoordinateSystem
+static Autodesk.DesignScript.Geometry.CoordinateSystem.FromJson(string json) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 static Autodesk.DesignScript.Geometry.CoordinateSystem.Identity() -> Autodesk.DesignScript.Geometry.CoordinateSystem
 static Autodesk.DesignScript.Geometry.Cuboid.ByCorners(Autodesk.DesignScript.Geometry.Point lowPoint, Autodesk.DesignScript.Geometry.Point highPoint) -> Autodesk.DesignScript.Geometry.Cuboid
 static Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.CoordinateSystem cs, double width = 1, double length = 1, double height = 1) -> Autodesk.DesignScript.Geometry.Cuboid
@@ -367,6 +374,8 @@ static Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScrip
 static Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector xAxisRadius, Autodesk.DesignScript.Geometry.Vector yAxisRadius) -> Autodesk.DesignScript.Geometry.Ellipse
 static Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane plane, double xAxisRadius, double yAxisRadius) -> Autodesk.DesignScript.Geometry.Ellipse
 static Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles(Autodesk.DesignScript.Geometry.Plane plane, double xRadius, double yRadius, double startAngle, double sweepAngle) -> Autodesk.DesignScript.Geometry.EllipseArc
+static Autodesk.DesignScript.Geometry.Geometry.FromJson(string json) -> Autodesk.DesignScript.Geometry.Geometry
+static Autodesk.DesignScript.Geometry.Geometry.FromSolidDef(string solidDefJson) -> Autodesk.DesignScript.Geometry.Geometry[]
 static Autodesk.DesignScript.Geometry.GeometryExtension.ForEach<T>(this T[] array, System.Action<T> action) -> void
 static Autodesk.DesignScript.Geometry.GeometryExtension.ForEach<T>(this T[][] array, System.Action<T> action) -> void
 static Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point axisPoint, Autodesk.DesignScript.Geometry.Vector axisDirection, Autodesk.DesignScript.Geometry.Point startPoint, double pitch, double angleTurns) -> Autodesk.DesignScript.Geometry.Helix
@@ -383,6 +392,7 @@ static Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices(System.Collectio
 static Autodesk.DesignScript.Geometry.Mesh.Cone(Autodesk.DesignScript.Geometry.Point origin, double baseRadius = 1, double topRadius = 0, double height = 1, int divisions = 32, bool cap = true) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.Cuboid(Autodesk.DesignScript.Geometry.Point origin, double length = 1, double width = 1, double height = 1, int xDivisions = 1, int yDivisions = 1, int zDivisions = 1) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.ExportMeshes(string filePath, System.Collections.Generic.IEnumerable<Autodesk.DesignScript.Geometry.Mesh> meshes) -> string
+static Autodesk.DesignScript.Geometry.Mesh.FromJson(string json) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.ImportFile(string filePath) -> Autodesk.DesignScript.Geometry.Mesh[]
 static Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point origin, double xWidth = 1, double yWidth = 1, int xDivisions = 1, int yDivisions = 1) -> Autodesk.DesignScript.Geometry.Mesh
 static Autodesk.DesignScript.Geometry.Mesh.Sphere(Autodesk.DesignScript.Geometry.Point origin, double radius = 1, int divisions = 2, bool icosphere = false) -> Autodesk.DesignScript.Geometry.Mesh
@@ -440,6 +450,7 @@ static Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScrip
 static Autodesk.DesignScript.Geometry.UV.ByCoordinates(double u = 0, double v = 0) -> Autodesk.DesignScript.Geometry.UV
 static Autodesk.DesignScript.Geometry.Vector.ByCoordinates(double x = 0, double y = 0, double z = 0) -> Autodesk.DesignScript.Geometry.Vector
 static Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(Autodesk.DesignScript.Geometry.Point start, Autodesk.DesignScript.Geometry.Point end) -> Autodesk.DesignScript.Geometry.Vector
+static Autodesk.DesignScript.Geometry.Vector.FromJson(string json) -> Autodesk.DesignScript.Geometry.Vector
 static Autodesk.DesignScript.Geometry.Vector.XAxis() -> Autodesk.DesignScript.Geometry.Vector
 static Autodesk.DesignScript.Geometry.Vector.YAxis() -> Autodesk.DesignScript.Geometry.Vector
 static Autodesk.DesignScript.Geometry.Vector.ZAxis() -> Autodesk.DesignScript.Geometry.Vector

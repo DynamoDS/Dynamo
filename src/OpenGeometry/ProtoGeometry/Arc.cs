@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A circular arc in 3D space.</summary>
     public class Arc : Curve
     {
-        private Arc(
+        internal Arc(
             NativeGeometry.CurveHandle handle,
             Point center,
             double radius,

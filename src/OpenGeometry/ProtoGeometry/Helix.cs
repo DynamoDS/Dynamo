@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A 3D cylindrical helix curve.</summary>
     public class Helix : Curve
     {
-        private Helix(
+        internal Helix(
             NativeGeometry.CurveHandle handle,
             Point axisPoint,
             Vector axisDirection,

@@ -16,6 +16,7 @@ typedef struct OgSolid OgSolid;
 typedef struct OgCurve OgCurve;
 typedef struct OgMesh OgMesh;
 typedef struct OgGeomList OgGeomList;
+typedef struct OgBytes OgBytes;
 
 typedef struct OgPoint
 {
@@ -343,6 +344,17 @@ OG_API int32_t og_curve_create_rational(
     uint32_t knot_count,
     int32_t degree,
     OgCurve** result);
+
+/* Slice H: Open-format BRep & curve serialization (SMLib stream & .smb files) */
+OG_API int32_t og_brep_serialize(const OgSolid* solid, OgBytes** result);
+OG_API int32_t og_brep_deserialize(const uint8_t* data, uint32_t length, OgSolid** result);
+OG_API int32_t og_curve_serialize(const OgCurve* curve, OgBytes** result);
+OG_API int32_t og_curve_deserialize(const uint8_t* data, uint32_t length, OgCurve** result);
+OG_API uint32_t og_bytes_length(const OgBytes* bytes);
+OG_API int32_t og_bytes_copy(const OgBytes* bytes, uint8_t* out_data, uint32_t capacity);
+OG_API void og_release_bytes(OgBytes* bytes);
+OG_API int32_t og_brep_export_smb(const OgSolid* solid, const char* file_path, int32_t binary);
+OG_API int32_t og_brep_import_smb(const char* file_path, int32_t binary, OgSolid** result);
 
 #ifdef __cplusplus
 }

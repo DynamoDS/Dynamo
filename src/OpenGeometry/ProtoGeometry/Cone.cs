@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A solid circular cone or frustum.</summary>
     public sealed class Cone : Solid
     {
-        private Cone(
+        internal Cone(
             NativeGeometry.SolidHandle handle,
             Point startPoint,
             Point endPoint,

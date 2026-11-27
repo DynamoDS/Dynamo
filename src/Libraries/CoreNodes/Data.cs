@@ -91,7 +91,6 @@ namespace DSCore
 
                 switch (typeid)
                 {
-#if !OPEN_GEOMETRY
                     //autodesk.math to abstract ProtoGeometry types
                     case "autodesk.math:vector3d-1.0.0":
                         return Vector.FromJson(jObject.ToString());
@@ -115,7 +114,6 @@ namespace DSCore
                     case "dynamo.geometry:solid-1.0.0":
                     case string geoId when geoId.Contains("autodesk.geometry"):
                         return Geometry.FromJson(jObject.ToString());
-#endif
 
                     //Dynamo types
                     case "dynamo.graphics:color-1.0.0":
@@ -175,7 +173,6 @@ namespace DSCore
                 }
             }
 
-#if !OPEN_GEOMETRY
             if (jObject.ContainsKey("typeid"))
             {
                 var typeid = jObject["typeid"].ToString();
@@ -184,7 +181,6 @@ namespace DSCore
                     return Geometry.FromSolidDef(jObject.ToString());
                 }
             }
-#endif
 
             return null;
         }
@@ -312,11 +308,11 @@ namespace DSCore
         {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
-#if !OPEN_GEOMETRY
-                string serializedValue;
-
                 switch (value)
                 {
+                    case Mesh item:
+                        writer.WriteRawValue(item.ToJson());
+                        return;
                     case Geometry item:
                         var geoString = item.ToJson();
 
@@ -332,14 +328,10 @@ namespace DSCore
                     case CoordinateSystem item:
                         writer.WriteRawValue(item.ToJson());
                         return;
-                    case Mesh item:
-                        writer.WriteRawValue(item.ToJson());
-                        return;
                     case Vector item:
                         writer.WriteRawValue(item.ToJson());
                         return;
                 }
-#endif
 
                 throw new NotSupportedException(Properties.Resources.Exception_Serialize_DesignScript_Unsupported);
             }
@@ -357,7 +349,10 @@ namespace DSCore
             public override bool CanConvert(Type objectType)
             {
 #if OPEN_GEOMETRY
-                return typeof(Geometry).IsAssignableFrom(objectType);
+                return typeof(Geometry).IsAssignableFrom(objectType)
+                    || typeof(BoundingBox).IsAssignableFrom(objectType)
+                    || typeof(CoordinateSystem).IsAssignableFrom(objectType)
+                    || typeof(Vector).IsAssignableFrom(objectType);
 #else
                 return typeof(DesignScriptEntity).IsAssignableFrom(objectType);
 #endif

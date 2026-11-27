@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenGeometry;
 
 namespace Autodesk.DesignScript.Geometry
 {
@@ -84,6 +85,15 @@ namespace Autodesk.DesignScript.Geometry
 
         /// <summary>Converts this bounding box into a solid cuboid.</summary>
         public Cuboid ToCuboid() => Cuboid.ByCorners(MinPoint, MaxPoint);
+
+        /// <summary>Serializes this bounding box to JSON.</summary>
+        /// <returns>A JSON representation of this bounding box.</returns>
+        public string ToJson() => GeometryJsonSerializer.SerializeBoundingBox(this);
+
+        /// <summary>Deserializes a bounding box from JSON.</summary>
+        /// <param name="json">JSON string representing a bounding box.</param>
+        /// <returns>The deserialized bounding box.</returns>
+        public static BoundingBox FromJson(string json) => GeometryJsonSerializer.DeserializeBoundingBox(json);
 
         /// <summary>Releases resources owned by this bounding box.</summary>
         public void Dispose() { }

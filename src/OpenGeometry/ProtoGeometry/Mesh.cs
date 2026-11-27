@@ -658,6 +658,14 @@ namespace Autodesk.DesignScript.Geometry
         }
 
         /// <inheritdoc />
+        public override string ToJson() => GeometryJsonSerializer.SerializeMesh(this);
+
+        /// <summary>Deserializes a mesh from JSON.</summary>
+        /// <param name="json">JSON string representing a mesh.</param>
+        /// <returns>The deserialized mesh.</returns>
+        public new static Mesh FromJson(string json) => GeometryJsonSerializer.DeserializeMesh(json);
+
+        /// <inheritdoc />
         public override Geometry Transform(CoordinateSystem cs)
         {
             var moved = vertices.Select(v => (Point)v.Transform(cs)).ToArray();

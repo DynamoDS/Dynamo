@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A rectangular solid.</summary>
     public sealed class Cuboid : Solid
     {
-        private Cuboid(NativeGeometry.SolidHandle handle, double width, double length, double height) : base(handle)
+        internal Cuboid(NativeGeometry.SolidHandle handle, double width, double length, double height) : base(handle)
         {
             Width = width;
             Length = length;

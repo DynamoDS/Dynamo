@@ -15,7 +15,7 @@ namespace OpenGeometry
     internal static class NativeGeometry
     {
         private const string Bridge = "OpenGeometryBridge";
-        private const uint SupportedAbi = 8;
+        private const uint SupportedAbi = 9;
         private static readonly ResourceManager Messages = new("OpenGeometry.Messages", typeof(NativeGeometry).Assembly);
 
         internal sealed class SolidHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -58,6 +58,17 @@ namespace OpenGeometry
             protected override bool ReleaseHandle()
             {
                 ReleaseGeomList(handle);
+                return true;
+            }
+        }
+
+        internal sealed class BytesHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            private BytesHandle() : base(true) { }
+
+            protected override bool ReleaseHandle()
+            {
+                ReleaseBytes(handle);
                 return true;
             }
         }
@@ -755,6 +766,62 @@ namespace OpenGeometry
             return (points, curves);
         }
 
+        /* ==================== Slice H: Open-Format BRep & Curve Serialization ==================== */
+
+        internal static byte[] SerializeBrep(SolidHandle solid)
+        {
+            var status = SerializeBrepNative(solid, out var handle);
+            using var owned = CheckHandle(status, handle, "SerializeBrep");
+            return DrainBytes(owned, "SerializeBrep");
+        }
+
+        internal static SolidHandle DeserializeBrep(byte[] data)
+        {
+            if (data == null || data.Length == 0)
+                throw new ArgumentException("Serialized BRep payload must not be empty.", nameof(data));
+            var status = DeserializeBrepNative(data, checked((uint)data.Length), out var result);
+            return CheckHandle(status, result, "DeserializeBrep");
+        }
+
+        internal static byte[] SerializeCurve(CurveHandle curve)
+        {
+            var status = SerializeCurveNative(curve, out var handle);
+            using var owned = CheckHandle(status, handle, "SerializeCurve");
+            return DrainBytes(owned, "SerializeCurve");
+        }
+
+        internal static CurveHandle DeserializeCurve(byte[] data)
+        {
+            if (data == null || data.Length == 0)
+                throw new ArgumentException("Serialized curve payload must not be empty.", nameof(data));
+            var status = DeserializeCurveNative(data, checked((uint)data.Length), out var result);
+            return CheckHandle(status, result, "DeserializeCurve");
+        }
+
+        internal static void ExportBrepSmb(SolidHandle solid, string filePath, bool binary = false)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path must not be empty.", nameof(filePath));
+            Check(ExportBrepSmbNative(solid, filePath, binary ? 1 : 0), "ExportSmb");
+        }
+
+        internal static SolidHandle ImportBrepSmb(string filePath, bool binary = false)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path must not be empty.", nameof(filePath));
+            var status = ImportBrepSmbNative(filePath, binary ? 1 : 0, out var result);
+            return CheckHandle(status, result, "ImportSmb");
+        }
+
+        private static byte[] DrainBytes(BytesHandle handle, string operation)
+        {
+            var len = GetBytesLength(handle);
+            var buffer = new byte[checked((int)len)];
+            if (len > 0)
+                Check(CopyBytes(handle, buffer, len), operation);
+            return buffer;
+        }
+
         /* ==================== Helpers ==================== */
 
         private delegate int IndexQueryCallback(uint[] buffer, uint capacity, out uint actualCount);
@@ -1318,5 +1385,33 @@ namespace OpenGeometry
             uint knotCount,
             int degree,
             out CurveHandle result);
+
+        /* Slice H P/Invokes */
+        [DllImport(Bridge, EntryPoint = "og_brep_serialize", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int SerializeBrepNative(SolidHandle solid, out BytesHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_brep_deserialize", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int DeserializeBrepNative([In] byte[] data, uint length, out SolidHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_serialize", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int SerializeCurveNative(CurveHandle curve, out BytesHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_curve_deserialize", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int DeserializeCurveNative([In] byte[] data, uint length, out CurveHandle result);
+
+        [DllImport(Bridge, EntryPoint = "og_bytes_length", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint GetBytesLength(BytesHandle bytes);
+
+        [DllImport(Bridge, EntryPoint = "og_bytes_copy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int CopyBytes(BytesHandle bytes, [Out] byte[] outData, uint capacity);
+
+        [DllImport(Bridge, EntryPoint = "og_release_bytes", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ReleaseBytes(IntPtr bytes);
+
+        [DllImport(Bridge, EntryPoint = "og_brep_export_smb", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int ExportBrepSmbNative(SolidHandle solid, string filePath, int binary);
+
+        [DllImport(Bridge, EntryPoint = "og_brep_import_smb", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int ImportBrepSmbNative(string filePath, int binary, out SolidHandle result);
     }
 }

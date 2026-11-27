@@ -213,6 +213,15 @@ namespace Autodesk.DesignScript.Geometry
             package.AddLineStripVertexCount(2);
         }
 
+        /// <summary>Serializes this coordinate system to JSON.</summary>
+        /// <returns>A JSON representation of this coordinate system.</returns>
+        public string ToJson() => GeometryJsonSerializer.SerializeCoordinateSystem(this);
+
+        /// <summary>Deserializes a coordinate system from JSON.</summary>
+        /// <param name="json">JSON string representing a coordinate system.</param>
+        /// <returns>The deserialized coordinate system.</returns>
+        public static CoordinateSystem FromJson(string json) => GeometryJsonSerializer.DeserializeCoordinateSystem(json);
+
         /// <summary>Releases resources owned by this coordinate system.</summary>
         public void Dispose() { }
     }

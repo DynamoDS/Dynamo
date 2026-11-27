@@ -8,7 +8,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A non-uniform rational B-spline curve.</summary>
     public class NurbsCurve : Curve
     {
-        private NurbsCurve(NativeGeometry.CurveHandle handle, int degree) : base(handle)
+        internal NurbsCurve(NativeGeometry.CurveHandle handle, int degree) : base(handle)
         {
             Degree = degree;
         }

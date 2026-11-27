@@ -208,6 +208,21 @@ namespace Autodesk.DesignScript.Geometry
         /// <summary>SolidDef serialization is unsupported in OpenGeometry (tracked compatibility gap).</summary>
         public string ToSolidDef() => throw NativeGeometry.UnsupportedFormat("SolidDef serialization");
 
+        /// <summary>SolidDef deserialization is unsupported in OpenGeometry (tracked compatibility gap).</summary>
+        /// <param name="solidDefJson">SolidDef JSON payload.</param>
+        /// <returns>Never returns; throws <see cref="NotSupportedException"/>.</returns>
+        public static Geometry[] FromSolidDef(string solidDefJson) =>
+            throw NativeGeometry.UnsupportedFormat("SolidDef deserialization");
+
+        /// <summary>Serializes this geometry to an open-format JSON string.</summary>
+        /// <returns>A JSON representation of this geometry.</returns>
+        public virtual string ToJson() => GeometryJsonSerializer.SerializeGeometry(this);
+
+        /// <summary>Deserializes a geometry object from a JSON string produced by <see cref="ToJson"/>.</summary>
+        /// <param name="json">JSON string representing a geometry object.</param>
+        /// <returns>The deserialized geometry.</returns>
+        public static Geometry FromJson(string json) => GeometryJsonSerializer.DeserializeGeometry(json);
+
         /// <summary>Releases resources owned by this object.</summary>
         public void Dispose()
         {

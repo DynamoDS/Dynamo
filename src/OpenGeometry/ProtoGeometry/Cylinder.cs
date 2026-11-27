@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A capped circular cylinder.</summary>
     public sealed class Cylinder : Solid
     {
-        private Cylinder(NativeGeometry.SolidHandle handle, Point startPoint, Point endPoint, double radius)
+        internal Cylinder(NativeGeometry.SolidHandle handle, Point startPoint, Point endPoint, double radius)
             : base(handle)
         {
             StartPoint = startPoint;

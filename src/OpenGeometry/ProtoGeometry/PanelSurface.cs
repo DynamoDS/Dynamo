@@ -24,11 +24,14 @@ namespace Autodesk.DesignScript.Geometry
         private readonly Point[] vertices;
         private readonly int[][] panels;
 
-        private PanelSurface(Point[] vertices, int[][] panels)
+        internal PanelSurface(Point[] vertices, int[][] panels)
         {
             this.vertices = vertices;
             this.panels = panels;
         }
+
+        internal Point[] VerticesArray => vertices;
+        internal int[][] PanelsArray => panels;
 
         /// <summary>Gets the total number of panels in this panelized surface.</summary>
         public int NumPanels => panels.Length;

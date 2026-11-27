@@ -6,7 +6,7 @@ namespace Autodesk.DesignScript.Geometry
     /// <summary>A solid sphere.</summary>
     public sealed class Sphere : Solid
     {
-        private Sphere(NativeGeometry.SolidHandle handle, Point centerPoint, double radius)
+        internal Sphere(NativeGeometry.SolidHandle handle, Point centerPoint, double radius)
             : base(handle)
         {
             CenterPoint = centerPoint;

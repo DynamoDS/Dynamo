@@ -2,9 +2,12 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <sstream>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -21,8 +24,10 @@
 #include <SmBSplineCurve.h>
 #include <SmBSplineSurface.h>
 #include <SmBrep.h>
+#include <SmBrepData.h>
 #include <SmCircle.h>
 #include <SmCurve.h>
+#include <SmDatabaseIO.h>
 #include <SmEdge.h>
 #include <SmEllipse.h>
 #include <SmFace.h>
@@ -53,6 +58,11 @@ struct OgGeomList
 {
     std::vector<OgPoint> points;
     std::vector<std::unique_ptr<OgCurve>> curves;
+};
+
+struct OgBytes
+{
+    std::vector<uint8_t> data;
 };
 
 namespace
@@ -385,7 +395,7 @@ int32_t copy_index_array(
 
 uint32_t og_abi_version()
 {
-    return 8;
+    return 9;
 }
 
 int32_t og_create_box(const OgPoint* corner, double size_x, double size_y, double size_z, OgSolid** result)
@@ -3715,5 +3725,250 @@ int32_t og_curve_create_rational(
         const auto status = SmApiCreateCanonicalCurve(
             cps, unique_knots, mults, &wts, static_cast<ULONG>(degree), SM_CF_UNSPECIFIED, crv);
         return publish_curve_natural(status, std::unique_ptr<SmCurve>(crv), result);
+    });
+}
+
+/* =========================== Slice H: Open-Format BRep & Curve Serialization =========================== */
+
+namespace
+{
+std::basic_string<TCHAR> to_tstring(const char* utf8)
+{
+#ifdef UNICODE
+    std::string s(utf8 ? utf8 : "");
+    return std::wstring(s.begin(), s.end());
+#else
+    return std::string(utf8 ? utf8 : "");
+#endif
+}
+} // namespace
+
+int32_t og_brep_serialize(const OgSolid* solid, OgBytes** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!solid || !solid->brep)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmContext* ctx = SmApiGetOrCreateContext();
+        std::ostringstream oss(std::ios::binary);
+        const char magic[4] = {'O', 'G', 'B', '1'};
+        const uint32_t db_ver = SM_CURRENT_DATABASE_VERSION;
+        const uint32_t healer_ver = SM_HEALER_VERSION;
+        oss.write(magic, 4);
+        oss.write(reinterpret_cast<const char*>(&db_ver), sizeof(db_ver));
+        oss.write(reinterpret_cast<const char*>(&healer_ver), sizeof(healer_ver));
+
+        SmBrepData* brep_data = new (*ctx) SmBrepData(FALSE, SM_DS_SMLIB);
+        SmObjDelete cleanup(brep_data);
+        SmTArray<SmAttribute*> attrs;
+        brep_data->FromBrep(*solid->brep, attrs);
+        attrs.RemoveAll();
+        SmMapTypeToType<SmAttribute*, ULONG> attr_map;
+
+        SmDatabaseIO db(SM_BINARY, &oss);
+        db.SetVersionNum(db_ver);
+        if (db.BeginWriting() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+        const auto stat = brep_data->WriteToDB(
+            *ctx, db_ver, attrs, attr_map, db, FALSE, 0.0, FALSE);
+        if (stat != SM_SUCCESS || db.EndWriting() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        const std::string bytes = oss.str();
+        if (bytes.size() > std::numeric_limits<uint32_t>::max())
+            return OG_INTERNAL_ERROR;
+
+        auto out = std::make_unique<OgBytes>();
+        out->data.assign(
+            reinterpret_cast<const uint8_t*>(bytes.data()),
+            reinterpret_cast<const uint8_t*>(bytes.data()) + bytes.size());
+        *result = out.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_brep_deserialize(const uint8_t* data, uint32_t length, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!data || length < 12 || std::memcmp(data, "OGB1", 4) != 0)
+        return OG_INVALID_ARGUMENT;
+
+    uint32_t db_ver = 0;
+    uint32_t healer_ver = 0;
+    std::memcpy(&db_ver, data + 4, sizeof(db_ver));
+    std::memcpy(&healer_ver, data + 8, sizeof(healer_ver));
+    if (db_ver == 0)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmContext* ctx = SmApiGetOrCreateContext();
+        std::string payload(reinterpret_cast<const char*>(data + 12), length - 12);
+        std::istringstream iss(payload, std::ios::binary);
+        SmDatabaseIO db(SM_BINARY, &iss);
+        db.SetVersionNum(db_ver);
+        if (db.BeginReading() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmAttribute*> attrs;
+        SmBrepData* brep_data = nullptr;
+        const auto read_stat = SmBrepData::ReadFromDB(*ctx, db_ver, attrs, brep_data, db, FALSE);
+        db.EndReading();
+        if (read_stat != SM_SUCCESS || !brep_data)
+        {
+            delete brep_data;
+            return OG_KERNEL_ERROR;
+        }
+
+        brep_data->SetHealerVersion(healer_ver);
+        std::unique_ptr<SmBrep> brep(new (*ctx) SmBrep());
+        const auto topo_stat = brep->MakeTopologyFromData(brep_data, attrs, FALSE, TRUE, TRUE);
+        delete brep_data;
+        if (topo_stat != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        return publish_solid(SM_SUCCESS, std::move(brep), result);
+    });
+}
+
+int32_t og_curve_serialize(const OgCurve* curve, OgBytes** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!curve || !curve->curve)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmContext* ctx = SmApiGetOrCreateContext();
+        std::ostringstream oss(std::ios::binary);
+        const char magic[4] = {'O', 'G', 'C', '1'};
+        const uint32_t db_ver = SM_CURRENT_DATABASE_VERSION;
+        const double t_min = curve->t_min;
+        const double t_max = curve->t_max;
+        const uint8_t rev = curve->reversed ? 1 : 0;
+        oss.write(magic, 4);
+        oss.write(reinterpret_cast<const char*>(&db_ver), sizeof(db_ver));
+        oss.write(reinterpret_cast<const char*>(&t_min), sizeof(t_min));
+        oss.write(reinterpret_cast<const char*>(&t_max), sizeof(t_max));
+        oss.write(reinterpret_cast<const char*>(&rev), sizeof(rev));
+
+        SmTArray<SmAttribute*> attrs;
+        SmMapTypeToType<SmAttribute*, ULONG> attr_map;
+        SmDatabaseIO db(SM_BINARY, &oss);
+        db.SetVersionNum(db_ver);
+        if (db.BeginWriting() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+        const auto stat = SmBrepData::WriteCurveToDB(
+            *ctx, curve->curve.get(), db_ver, attrs, attr_map, db, FALSE, 0.0, FALSE);
+        if (stat != SM_SUCCESS || db.EndWriting() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        const std::string bytes = oss.str();
+        if (bytes.size() > std::numeric_limits<uint32_t>::max())
+            return OG_INTERNAL_ERROR;
+
+        auto out = std::make_unique<OgBytes>();
+        out->data.assign(
+            reinterpret_cast<const uint8_t*>(bytes.data()),
+            reinterpret_cast<const uint8_t*>(bytes.data()) + bytes.size());
+        *result = out.release();
+        return OG_SUCCESS;
+    });
+}
+
+int32_t og_curve_deserialize(const uint8_t* data, uint32_t length, OgCurve** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!data || length < 25 || std::memcmp(data, "OGC1", 4) != 0)
+        return OG_INVALID_ARGUMENT;
+
+    uint32_t db_ver = 0;
+    double t_min = 0.0;
+    double t_max = 0.0;
+    uint8_t rev = 0;
+    std::memcpy(&db_ver, data + 4, sizeof(db_ver));
+    std::memcpy(&t_min, data + 8, sizeof(t_min));
+    std::memcpy(&t_max, data + 16, sizeof(t_max));
+    rev = data[24];
+    if (db_ver == 0 || !finite(t_min) || !finite(t_max) || t_max <= t_min)
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmContext* ctx = SmApiGetOrCreateContext();
+        std::string payload(reinterpret_cast<const char*>(data + 25), length - 25);
+        std::istringstream iss(payload, std::ios::binary);
+        SmDatabaseIO db(SM_BINARY, &iss);
+        db.SetVersionNum(db_ver);
+        if (db.BeginReading() != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+
+        SmTArray<SmAttribute*> attrs;
+        SmCurve* raw_curve = nullptr;
+        const auto stat = SmBrepData::ReadCurveFromDB(*ctx, 3, db_ver, attrs, raw_curve, db, FALSE);
+        db.EndReading();
+        std::unique_ptr<SmCurve> owner(raw_curve);
+        if (stat != SM_SUCCESS || !owner)
+            return OG_KERNEL_ERROR;
+
+        return publish_curve(SM_SUCCESS, std::move(owner), t_min, t_max, rev != 0, result);
+    });
+}
+
+uint32_t og_bytes_length(const OgBytes* bytes)
+{
+    return bytes ? static_cast<uint32_t>(bytes->data.size()) : 0;
+}
+
+int32_t og_bytes_copy(const OgBytes* bytes, uint8_t* out_data, uint32_t capacity)
+{
+    if (!bytes || (!out_data && !bytes->data.empty()) || capacity < bytes->data.size())
+        return OG_INVALID_ARGUMENT;
+    if (!bytes->data.empty())
+        std::memcpy(out_data, bytes->data.data(), bytes->data.size());
+    return OG_SUCCESS;
+}
+
+void og_release_bytes(OgBytes* bytes)
+{
+    delete bytes;
+}
+
+int32_t og_brep_export_smb(const OgSolid* solid, const char* file_path, int32_t binary)
+{
+    if (!solid || !solid->brep || !file_path || file_path[0] == '\0')
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        const auto tpath = to_tstring(file_path);
+        const auto stat = solid->brep->WriteToFile(
+            tpath.c_str(), binary ? SM_BINARY : SM_ASCII, TRUE);
+        return stat == SM_SUCCESS ? OG_SUCCESS : OG_KERNEL_ERROR;
+    });
+}
+
+int32_t og_brep_import_smb(const char* file_path, int32_t binary, OgSolid** result)
+{
+    if (!result)
+        return OG_INVALID_ARGUMENT;
+    *result = nullptr;
+    if (!file_path || file_path[0] == '\0')
+        return OG_INVALID_ARGUMENT;
+
+    return with_kernel([&]() -> int32_t {
+        SmContext* ctx = SmApiGetOrCreateContext();
+        const auto tpath = to_tstring(file_path);
+        std::unique_ptr<SmBrep> brep(new (*ctx) SmBrep());
+        const auto stat = brep->ReadFromFile(
+            *ctx, tpath.c_str(), binary ? SM_BINARY : SM_ASCII, FALSE);
+        if (stat != SM_SUCCESS)
+            return OG_KERNEL_ERROR;
+        return publish_solid(SM_SUCCESS, std::move(brep), result);
     });
 }
