@@ -1,10 +1,12 @@
 using System;
+using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using OpenGeometry;
 
 namespace Autodesk.DesignScript.Geometry
 {
     /// <summary>An affine 3D coordinate system defined by origin and three basis vectors.</summary>
-    public sealed class CoordinateSystem : IDisposable
+    public sealed class CoordinateSystem : IGraphicItem, IDisposable
     {
         private CoordinateSystem(Point origin, Vector xAxis, Vector yAxis, Vector zAxis)
         {
@@ -186,6 +188,29 @@ namespace Autodesk.DesignScript.Geometry
                 v.X * XAxis.X + v.Y * YAxis.X + v.Z * ZAxis.X,
                 v.X * XAxis.Y + v.Y * YAxis.Y + v.Z * ZAxis.Y,
                 v.X * XAxis.Z + v.Y * YAxis.Z + v.Z * ZAxis.Z);
+        }
+
+        /// <summary>Populates a Dynamo render package with RGB axis lines for this coordinate system.</summary>
+        /// <param name="package">Target render package.</param>
+        /// <param name="parameters">Tessellation quality parameters.</param>
+        [IsVisibleInDynamoLibrary(false)]
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
+        {
+            ArgumentNullException.ThrowIfNull(package);
+            ArgumentNullException.ThrowIfNull(parameters);
+
+            EmitAxis(package, Origin, XAxis, 255, 0, 0);
+            EmitAxis(package, Origin, YAxis, 0, 255, 0);
+            EmitAxis(package, Origin, ZAxis, 0, 0, 255);
+        }
+
+        private static void EmitAxis(IRenderPackage package, Point origin, Vector axis, byte r, byte g, byte b)
+        {
+            package.AddLineStripVertex(origin.X, origin.Y, origin.Z);
+            package.AddLineStripVertexColor(r, g, b, 255);
+            package.AddLineStripVertex(origin.X + axis.X, origin.Y + axis.Y, origin.Z + axis.Z);
+            package.AddLineStripVertexColor(r, g, b, 255);
+            package.AddLineStripVertexCount(2);
         }
 
         /// <summary>Releases resources owned by this coordinate system.</summary>

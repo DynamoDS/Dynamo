@@ -116,15 +116,7 @@ namespace Autodesk.DesignScript.Geometry
 
         internal override void WritePreview(IRenderPackage package, TessellationParameters parameters)
         {
-            var chordTolerance = parameters.Tolerance > 0 ? parameters.Tolerance : 0;
-            foreach (var vertex in NativeGeometry.Tessellate(Handle, chordTolerance))
-            {
-                var position = vertex.Position;
-                var normal = vertex.Normal;
-                package.AddTriangleVertex(position.X, position.Y, position.Z);
-                package.AddTriangleVertexNormal(normal.X, normal.Y, normal.Z);
-                package.AddTriangleVertexUV(0, 0);
-            }
+            WriteNativeMeshPreview(package, Handle, parameters);
         }
     }
 }

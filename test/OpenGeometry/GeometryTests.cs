@@ -119,6 +119,63 @@ namespace OpenGeometry.Tests
             });
         }
 
+        [Test]
+        public void WhenGeometriesTessellateThenPerVertexPreviewColorsArePopulated()
+        {
+            var tessParams = new TessellationParameters();
+
+            using var box = Cuboid.ByLengths(4, 4, 4);
+            var boxPkg = new DefaultRenderPackage();
+            box.Tessellate(boxPkg, tessParams);
+            var boxColors = boxPkg.MeshVertexColors.ToArray();
+
+            using var surf = box.Faces[0].SurfaceGeometry();
+            var surfPkg = new DefaultRenderPackage();
+            surf.Tessellate(surfPkg, tessParams);
+            var surfColors = surfPkg.MeshVertexColors.ToArray();
+
+            using var mesh = Mesh.ByGeometry(box);
+            var meshPkg = new DefaultRenderPackage();
+            mesh.Tessellate(meshPkg, tessParams);
+            var meshColors = meshPkg.MeshVertexColors.ToArray();
+
+            using var panels = PanelSurface.ByQuads(surf, 2, 2);
+            var panelPkg = new DefaultRenderPackage();
+            panels.Tessellate(panelPkg, tessParams);
+            var panelColors = panelPkg.MeshVertexColors.ToArray();
+
+            using var line = Line.ByStartPointEndPoint(Point.Origin(), Point.ByCoordinates(5, 0, 0));
+            var linePkg = new DefaultRenderPackage();
+            line.Tessellate(linePkg, tessParams);
+            var lineColors = linePkg.LineStripVertexColors.ToArray();
+
+            using var pt = Point.ByCoordinates(1, 2, 3);
+            var ptPkg = new DefaultRenderPackage();
+            pt.Tessellate(ptPkg, tessParams);
+            var ptColors = ptPkg.PointVertexColors.ToArray();
+
+            using var cs = CoordinateSystem.Identity();
+            var csPkg = new DefaultRenderPackage();
+            cs.Tessellate(csPkg, tessParams);
+            var csColors = csPkg.LineStripVertexColors.ToArray();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(boxColors.Length, Is.EqualTo(boxPkg.MeshVertexCount * 4));
+                Assert.That(boxColors, Is.All.EqualTo((byte)255), "Solid preview vertices must default to white (255,255,255,255).");
+                Assert.That(surfColors.Length, Is.EqualTo(surfPkg.MeshVertexCount * 4));
+                Assert.That(surfColors, Is.All.EqualTo((byte)255));
+                Assert.That(meshColors.Length, Is.EqualTo(meshPkg.MeshVertexCount * 4));
+                Assert.That(meshColors, Is.All.EqualTo((byte)255));
+                Assert.That(panelColors.Length, Is.EqualTo(panelPkg.MeshVertexCount * 4));
+                Assert.That(panelColors, Is.All.EqualTo((byte)255));
+                Assert.That(lineColors.Length, Is.EqualTo(linePkg.LineVertexCount * 4));
+                Assert.That(ptColors.Length, Is.EqualTo(ptPkg.PointVertexCount * 4));
+                Assert.That(csPkg.LineVertexCount, Is.EqualTo(6));
+                Assert.That(csColors.Length, Is.EqualTo(24));
+            });
+        }
+
         private static Cylinder ThroughCutter()
         {
             using var start = Point.ByCoordinates(0, 0, -6);

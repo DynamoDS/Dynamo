@@ -145,6 +145,7 @@ namespace Autodesk.DesignScript.Geometry
 
         internal override void WritePreview(IRenderPackage package, TessellationParameters parameters)
         {
+            const byte midTone = 180;
             var s = 2.5;
             var cs = CoordinateSystem.ByPlane(this);
             var a = Point.ByCartesianCoordinates(cs, s, s, 0);
@@ -152,6 +153,7 @@ namespace Autodesk.DesignScript.Geometry
             var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
             var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
 
+            package.RequiresPerVertexColoration = true;
             package.AddTriangleVertex(a.X, a.Y, a.Z);
             package.AddTriangleVertex(b.X, b.Y, b.Z);
             package.AddTriangleVertex(c.X, c.Y, c.Z);
@@ -163,6 +165,26 @@ namespace Autodesk.DesignScript.Geometry
             {
                 package.AddTriangleVertexNormal(Normal.X, Normal.Y, Normal.Z);
                 package.AddTriangleVertexUV(0, 0);
+                package.AddTriangleVertexColor(0, 0, 0, 10);
+            }
+
+            package.AddLineStripVertex(a.X, a.Y, a.Z);
+            package.AddLineStripVertex(b.X, b.Y, b.Z);
+            package.AddLineStripVertex(b.X, b.Y, b.Z);
+            package.AddLineStripVertex(c.X, c.Y, c.Z);
+            package.AddLineStripVertex(c.X, c.Y, c.Z);
+            package.AddLineStripVertex(d.X, d.Y, d.Z);
+            package.AddLineStripVertex(d.X, d.Y, d.Z);
+            package.AddLineStripVertex(a.X, a.Y, a.Z);
+            package.AddLineStripVertex(Origin.X, Origin.Y, Origin.Z);
+            var nEnd = Origin.Add(Normal.Scale(s));
+            package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+
+            for (var i = 0; i < 5; i++)
+            {
+                package.AddLineStripVertexCount(2);
+                package.AddLineStripVertexColor(midTone, midTone, midTone, 255);
+                package.AddLineStripVertexColor(midTone, midTone, midTone, 255);
             }
         }
     }

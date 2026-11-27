@@ -32,6 +32,7 @@ Autodesk.DesignScript.Geometry.CoordinateSystem.Origin.get -> Autodesk.DesignScr
 Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Point origin, Autodesk.DesignScript.Geometry.Vector axis, double degrees) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(double amount) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(double xAmount, double yAmount, double zAmount) -> Autodesk.DesignScript.Geometry.CoordinateSystem
+Autodesk.DesignScript.Geometry.CoordinateSystem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage package, Autodesk.DesignScript.Interfaces.TessellationParameters parameters) -> void
 Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector direction) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(double xTranslation = 0, double yTranslation = 0, double zTranslation = 0) -> Autodesk.DesignScript.Geometry.CoordinateSystem
 Autodesk.DesignScript.Geometry.CoordinateSystem.XAxis.get -> Autodesk.DesignScript.Geometry.Vector

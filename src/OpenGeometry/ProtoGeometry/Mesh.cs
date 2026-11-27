@@ -765,6 +765,8 @@ namespace Autodesk.DesignScript.Geometry
             package.AddTriangleVertex(p.X, p.Y, p.Z);
             package.AddTriangleVertexNormal(n.X, n.Y, n.Z);
             package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexColor(
+                DefaultMeshColorR, DefaultMeshColorG, DefaultMeshColorB, DefaultMeshColorA);
         }
 
         private IEnumerable<(int A, int B, int C)> EnumerateTriangles()

@@ -274,7 +274,11 @@ namespace Autodesk.DesignScript.Geometry
                 return;
 
             foreach (var pt in points)
+            {
                 package.AddLineStripVertex(pt.X, pt.Y, pt.Z);
+                package.AddLineStripVertexColor(
+                    DefaultLineColorR, DefaultLineColorG, DefaultLineColorB, DefaultLineColorA);
+            }
             package.AddLineStripVertexCount(points.Length);
         }
 

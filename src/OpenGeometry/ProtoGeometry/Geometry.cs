@@ -225,6 +225,35 @@ namespace Autodesk.DesignScript.Geometry
             WritePreview(package, parameters);
         }
 
+        internal const byte DefaultMeshColorR = 255;
+        internal const byte DefaultMeshColorG = 255;
+        internal const byte DefaultMeshColorB = 255;
+        internal const byte DefaultMeshColorA = 255;
+        internal const byte DefaultLineColorR = 0;
+        internal const byte DefaultLineColorG = 0;
+        internal const byte DefaultLineColorB = 0;
+        internal const byte DefaultLineColorA = 255;
+        internal const byte DefaultPointColorR = 0;
+        internal const byte DefaultPointColorG = 0;
+        internal const byte DefaultPointColorB = 0;
+        internal const byte DefaultPointColorA = 255;
+
+        internal static void WriteNativeMeshPreview(
+            IRenderPackage package, NativeGeometry.SolidHandle handle, TessellationParameters parameters)
+        {
+            var chordTolerance = parameters.Tolerance > 0 ? parameters.Tolerance : 0;
+            foreach (var vertex in NativeGeometry.Tessellate(handle, chordTolerance))
+            {
+                var position = vertex.Position;
+                var normal = vertex.Normal;
+                package.AddTriangleVertex(position.X, position.Y, position.Z);
+                package.AddTriangleVertexNormal(normal.X, normal.Y, normal.Z);
+                package.AddTriangleVertexUV(0, 0);
+                package.AddTriangleVertexColor(
+                    DefaultMeshColorR, DefaultMeshColorG, DefaultMeshColorB, DefaultMeshColorA);
+            }
+        }
+
         internal abstract void WritePreview(IRenderPackage package, TessellationParameters parameters);
 
         internal virtual void ReleaseResources() { }

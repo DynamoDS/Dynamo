@@ -118,11 +118,87 @@ namespace OpenGeometry.SandboxTests
                     OnBoreRadius(t.A) && OnBoreRadius(t.B) && OnBoreRadius(t.C));
                 bool coversBoreCenter = triangles.Any(CoversHelixBoreCenter);
 
+                // Verify vertex colors are lit white (not black!) and normals are unit-length and consistent.
+                int totalMeshVerts = 0;
+                int whiteMeshVerts = 0;
+                int unitNormals = 0;
+                int windingAlignedTris = 0;
+                int nonDegenerateTris = 0;
+                foreach (var mesh in meshes)
+                {
+                    Assert.That(mesh.Colors.Count, Is.EqualTo(mesh.Positions.Count),
+                        "Every mesh vertex must have an explicit per-vertex color.");
+                    Assert.That(mesh.Normals.Count, Is.EqualTo(mesh.Positions.Count),
+                        "Every mesh vertex must have a normal.");
+
+                    for (int i = 0; i < mesh.Positions.Count; i++)
+                    {
+                        totalMeshVerts++;
+                        var c = mesh.Colors[i];
+                        if (c.Red > 0.99f && c.Green > 0.99f && c.Blue > 0.99f && c.Alpha > 0.99f)
+                            whiteMeshVerts++;
+                        var nLen = mesh.Normals[i].Length();
+                        if (Math.Abs(nLen - 1.0f) < 1e-3f)
+                            unitNormals++;
+                    }
+
+                    for (int i = 0; i + 2 < mesh.Indices.Count; i += 3)
+                    {
+                        var ia = mesh.Indices[i];
+                        var ib = mesh.Indices[i + 1];
+                        var ic = mesh.Indices[i + 2];
+                        var cross = SharpDX.Vector3.Cross(
+                            mesh.Positions[ib] - mesh.Positions[ia],
+                            mesh.Positions[ic] - mesh.Positions[ia]);
+                        if (cross.LengthSquared() < 1e-10f)
+                            continue;
+                        nonDegenerateTris++;
+                        var avgNormal = mesh.Normals[ia] + mesh.Normals[ib] + mesh.Normals[ic];
+                        if (SharpDX.Vector3.Dot(cross, avgNormal) > 0)
+                            windingAlignedTris++;
+                    }
+                }
+
+                // Verify edge lines (when ShowEdges is enabled) also keep Colors in sync with Positions.
+                var lineModels = helixVm.SceneItems
+                    .OfType<DynamoLineGeometryModel3D>()
+                    .Select(m => m.Geometry as LineGeometry3D)
+                    .Where(g => g != null && g.Positions != null && g.Positions.Count > 0)
+                    .ToArray();
+
                 Assert.Multiple(() =>
                 {
                     Assert.That(triangles.Count, Is.GreaterThan(0));
                     Assert.That(hasCylinderWall, Is.True, "Helix mesh should include the cylindrical bore wall at X^2 + Z^2 = 4.");
                     Assert.That(coversBoreCenter, Is.False, "Helix top/bottom faces must leave the through-hole open.");
+                    Assert.That(whiteMeshVerts, Is.EqualTo(totalMeshVerts),
+                        "Default solid preview vertices must be white (255,255,255,255) so Phong shading is not multiplied by black.");
+                    Assert.That(unitNormals, Is.EqualTo(totalMeshVerts),
+                        "All preview mesh normals should be unit-length.");
+                    Assert.That(windingAlignedTris, Is.EqualTo(nonDegenerateTris),
+                        "All non-degenerate preview triangles should have normals aligned with triangle winding.");
+                    foreach (var lineGeom in lineModels)
+                    {
+                        Assert.That(lineGeom.Colors.Count, Is.EqualTo(lineGeom.Positions.Count),
+                            "Edge/curve line vertices must have matching per-vertex colors.");
+                    }
+                });
+
+                // Verify IRenderPackageSupplement range updates (used by GeometryColor.ByGeometryColor) work without ValidateRange errors.
+                using var coloredBox = Autodesk.DesignScript.Geometry.Cuboid.ByLengths(2, 2, 2);
+                var colorPkg = (HelixRenderPackage)helixFactory.CreateRenderPackage();
+                coloredBox.Tessellate(colorPkg, helixFactory.TessellationParameters);
+                colorPkg.UpdateMeshVertexColorForRange(0, colorPkg.MeshVertexCount - 1, 40, 180, 90, 255);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(colorPkg.Mesh.Positions.Count, Is.GreaterThan(0));
+                    Assert.That(colorPkg.Mesh.Colors.Count, Is.EqualTo(colorPkg.Mesh.Positions.Count));
+                    Assert.That(colorPkg.Mesh.Colors.All(c =>
+                        Math.Abs(c.Red - 40f / 255f) < 0.01f
+                        && Math.Abs(c.Green - 180f / 255f) < 0.01f
+                        && Math.Abs(c.Blue - 90f / 255f) < 0.01f
+                        && Math.Abs(c.Alpha - 1f) < 0.01f), Is.True,
+                        "UpdateMeshVertexColorForRange should update all mesh vertex colors cleanly.");
                 });
             }
             finally

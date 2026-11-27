@@ -149,6 +149,8 @@ namespace Autodesk.DesignScript.Geometry
         internal override void WritePreview(IRenderPackage package, TessellationParameters parameters)
         {
             package.AddPointVertex(X, Y, Z);
+            package.AddPointVertexColor(
+                DefaultPointColorR, DefaultPointColorG, DefaultPointColorB, DefaultPointColorA);
         }
 
         /// <inheritdoc />
