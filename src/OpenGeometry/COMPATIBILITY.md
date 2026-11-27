@@ -53,11 +53,11 @@ The pinned native modeling kernel is NVIDIA `usd-brep` commit `9701dd0cf4b8f4fe3
 
 ## Tracked Compatibility Gaps
 
-These areas are intentionally tracked separately from the core BRep/curve/surface/mesh slices and return explicit `NotSupportedException` diagnostics whenever an exposed signature reaches them:
+These areas are intentionally tracked separately from the core BRep/curve/surface/mesh slices (exposed proprietary-format signatures throw explicit `NotSupportedException` diagnostics, while T-Spline types are omitted from `ProtoGeometry.dll`):
 
 1. **T-Splines (`Autodesk.DesignScript.Geometry.TSpline.*`, 10 types / 83 documented members)**
    - Autodesk-specific T-Spline subdivision surface engine (`TSplineSurface`, `TSplineTopology`, `TSplineVertex`, `TSplineEdge`, `TSplineFace`, `TSplineInitialSymmetry`, `TSplineReflection`, `TSplineUVNFrame`).
-   - Not present in SMLib. Tracked as a separate gap; T-Spline experimental UI remains gated and unsupported in OpenGeometry.
+   - Not present in SMLib and omitted from fork-owned `ProtoGeometry.dll`. Core BRep/NURBS/curve/surface/mesh/sample workflows are unaffected, but legacy T-Spline `.dyn` graphs load T-Spline nodes as unresolved `DummyNode`s, DesignScript/Python `TSpline` references fail to resolve, freeform subdivision-cage workflows (`BuildPipes`, `BuildFromLines`, cage editing, symmetry, `ToBRep`/`ToMesh`) and `.tsm`/`.tss` interchange are unavailable, and upstream T-Spline-specific tests (`HelixImageComparisonTests`, `PythonEditTests`, `SearchSideEffects`, `NodeAutoCompleteSearchTests`) do not apply.
 2. **SAT / SAB / SolidDef binary and text interchange (`ExportToSAT`, `ImportFromSAT`, `SerializeAsSAB`, `DeserializeFromSAB`, `ToSolidDef`, `FromSolidDef`)**
    - SAT/SAB are proprietary ACIS/ASM persistence formats; `SolidDef` is Autodesk's internal interchange schema.
    - Exposed serialization/interchange signatures throw explicit `NotSupportedException` naming the unsupported format and explaining that OpenGeometry uses SMLib rather than ASM.
